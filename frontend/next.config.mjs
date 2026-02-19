@@ -21,6 +21,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: process.env.NEXT_PUBLIC_API_HOST ?? 'localhost',
       },
+      {
+        protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+      },
     ],
   },
 

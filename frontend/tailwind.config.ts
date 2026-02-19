@@ -10,8 +10,15 @@ const config: Config = {
     extend: {
       fontFamily: {
         sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+        serif: ['Playfair Display', 'Georgia', 'serif'],
       },
       colors: {
+        // Aura Essence store palette
+        'aura-gold':       '#D4AF37',
+        'aura-purple':     '#634A8E',
+        'aura-soft-gray':  '#F9F9F9',
+        'aura-accent':     '#E5D9F2',
+        // Internal brand (admin/auth)
         brand: {
           50:  '#fdf4ff',
           100: '#fae8ff',
@@ -20,6 +27,15 @@ const config: Config = {
           700: '#7e22ce',
           900: '#581c87',
         },
+      },
+      keyframes: {
+        marquee: {
+          '0%':   { transform: 'translateX(100%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        },
+      },
+      animation: {
+        marquee: 'marquee 22s linear infinite',
       },
     },
   },

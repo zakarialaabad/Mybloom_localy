@@ -12,13 +12,17 @@
     font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
   }
 
+  h1, h2, h3, .serif-font {
+    font-family: 'Playfair Display', Georgia, serif;
+  }
+
   body {
     @apply bg-white text-gray-900 antialiased;
   }
 }
 
 @layer components {
-  /* Reusable form input */
+  /* Form inputs */
   .form-input {
     @apply block w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm
       text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-brand-500
@@ -26,7 +30,7 @@
       disabled:opacity-50;
   }
 
-  /* Primary button */
+  /* Buttons */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600
       px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors
@@ -34,11 +38,34 @@
       disabled:cursor-not-allowed disabled:opacity-60;
   }
 
-  /* Secondary / ghost button */
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg border border-gray-300
       bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 shadow-sm transition-colors
       hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-300
       disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  /* Product card wishlist hover reveal */
+  .product-card:hover .wishlist-btn {
+    opacity: 1;
+  }
+
+  /* Hero gradient overlay */
+  .hero-gradient {
+    background: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+  }
+}
+
+@layer utilities {
+  /* Marquee / scrolling-text */
+  .scrolling-text {
+    display: inline-block;
+    white-space: nowrap;
+    animation: marquee 22s linear infinite;
+  }
+
+  @keyframes marquee {
+    0%   { transform: translateX(100vw); }
+    100% { transform: translateX(-100%); }
   }
 }
