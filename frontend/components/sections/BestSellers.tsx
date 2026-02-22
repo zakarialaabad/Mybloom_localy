@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import ProductCard, { type ProductCardProps } from '@/components/ui/ProductCard';
+import SectionContainer from '@/components/SectionContainer';
 
 const PRODUCTS: ProductCardProps[] = [
   {
@@ -76,7 +77,7 @@ export default function BestSellers() {
   return (
     <section id="best-sellers" className="pb-24 pt-16">
       {/* Section header */}
-      <div className="container mx-auto mb-10 flex items-end justify-between px-4">
+      <SectionContainer className="mb-10 flex items-end justify-between">
         <div>
           <h2 className="mb-4 font-serif text-4xl">
             Best <span className="italic text-aura-gold">Sellers</span>
@@ -96,10 +97,10 @@ export default function BestSellers() {
         >
           Shop Best Sellers &rsaquo;
         </Link>
-      </div>
+      </SectionContainer>
 
       {/* Product grid */}
-      <div className="container mx-auto px-4">
+      <SectionContainer>
         <div className="relative">
           {/* Prev arrow */}
           <button
@@ -131,7 +132,7 @@ export default function BestSellers() {
             ))}
           </div>
         </div>
-      </div>
+      </SectionContainer>
     </section>
   );
 }

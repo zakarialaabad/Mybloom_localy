@@ -14,13 +14,15 @@ export default function BrandLogos() {
   return (
     <section className="border-b border-gray-100 py-12">
       <div className="container mx-auto px-4">
-        <div className="flex flex-wrap items-center justify-between gap-8 opacity-70
-          grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0">
-          {BRANDS.map(({ label, className }) => (
-            <span key={label} className={className}>
-              {label}
-            </span>
-          ))}
+        <div className="overflow-hidden">
+          <div className="scrolling-row items-center justify-start gap-8 opacity-70
+            grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0">
+            {BRANDS.map(({ label, className }) => (
+              <span key={label} className={className}>
+                {label}
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>

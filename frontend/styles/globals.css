@@ -64,8 +64,29 @@
     animation: marquee 22s linear infinite;
   }
 
+  .scrolling-text:hover {
+    animation-play-state: paused;
+  }
+
+  /* Scrolling row for brand logos (preserves gaps and flex behavior) */
+  .scrolling-row {
+    display: inline-flex;
+    white-space: nowrap;
+    animation: marquee 30s linear infinite;
+  }
+
+  .scrolling-row:hover {
+    animation-play-state: paused;
+  }
+
   @keyframes marquee {
     0%   { transform: translateX(100vw); }
     100% { transform: translateX(-100%); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scrolling-text {
+      animation: none !important;
+    }
   }
 }

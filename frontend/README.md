@@ -78,3 +78,31 @@ frontend/
 3. `services/api.ts` attaches `Authorization: Bearer <token>` on every request.
 4. On 401, the interceptor hits `/auth/refresh` once then redirects to `/login`.
 5. The dashboard `page.tsx` reads the cookie server-side and pre-fetches `/auth/me` via `serverFetch()`.
+
+## How the frontend home page is organized (what I added)
+
+- **Sections (components):** The home page is assembled from isolated components imported in `app/page.tsx` in this order: `HeroSection`, `BrandLogos`, `BestSellers`, `CategoriesSection`, `UniversSection`, `ValentinesSection`, `CustomerReviewsSection`, then `Footer`.
+- **`SectionContainer` (shared):** A new wrapper component at `components/SectionContainer.tsx` centralizes horizontal padding for sections (`mx-auto max-w-7xl px-4 sm:px-6 lg:px-8`) so all sections align consistently.
+- **`CategoriesSection` (Discover by Notes):** Converted from the reference HTML — includes the "Why Shop" row and the circular category grid. It now uses `SectionContainer` so its left/right padding matches other sections.
+- **`UniversSection`:** Extracted from `code.html` and implemented as `components/UniversSection.tsx` (header + product grid), also wrapped by `SectionContainer`.
+- **`ValentinesSection`:** Extracted and implemented as `components/ValentinesSection.tsx`. Uses the same markup and styling from the reference and is wrapped by `SectionContainer`.
+- **`CustomerReviewsSection`:** Extracted the "Nos Clients, Notre Fierté" section into `components/CustomerReviewsSection.tsx` and wrapped with `SectionContainer`.
+- **Brand logos:** `components/sections/BrandLogos.tsx` contains the brand row (includes BOSS, SAUVAGE, GUCCI, Balenciaga). It was made to scroll using the same marquee animation (`.scrolling-row`) while preserving the original spacing/gaps. On the page the brand row appears behind the hero background (moved into `HeroSection`) so it visually sits with the hero.
+- **Announcement bar:** The top announcement uses `.scrolling-text` in the header — global CSS (`styles/globals.css`) adds the marquee animation and hover/reduced-motion accessibility support.
+
+## Verify changes locally
+
+1. Start the frontend dev server:
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+2. Open http://localhost:3000 and check the homepage: the sections listed above should appear in the order described. Pay special attention to:
+- The left/right padding of sections (they should align). 
+- Brand row: it should scroll horizontally and appear behind the hero.
+- Announcement bar: should scroll and pause on hover (and not animate when `prefers-reduced-motion` is enabled).
+
+If you want, I can run the dev server and iterate on any pixel-spacing tweaks you request.

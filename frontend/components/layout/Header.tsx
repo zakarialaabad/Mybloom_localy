@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
 
 const NAV_LINKS = [
@@ -34,12 +35,15 @@ export default function Header() {
       <div className="container mx-auto flex items-center justify-between px-4 py-5">
         {/* Logo */}
         <div className="w-1/4">
-          <Link
-            href="/"
-            className="font-serif text-3xl italic leading-none text-aura-purple"
-          >
-            Aura<br />
-            <span className="ml-4 text-xl">Essence</span>
+          <Link href="/" className="inline-block">
+            <Image
+              src="/logo.jpeg"
+              alt="Bloom Parfums"
+              width={220}
+              height={64}
+              className="object-contain h-12 w-auto"
+              priority
+            />
           </Link>
         </div>
 

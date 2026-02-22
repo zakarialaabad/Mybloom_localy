@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import Link from 'next/link';
 
 export interface ProductCardProps {
   id: number;
@@ -31,20 +32,25 @@ function StarIcon({ filled }: { filled: boolean }) {
 }
 
 export default function ProductCard({
-  name, subtitle, description, price, originalPrice,
+  id, name, subtitle, description, price, originalPrice,
   rating, reviewCount, imageUrl, badge, isBestSeller,
 }: ProductCardProps) {
   const [wished, setWished] = useState(false);
   const stars = [1, 2, 3, 4, 5];
 
   return (
-    <article className="product-card group relative">
-      {/* Image container */}
-      <div className="relative mb-4 aspect-[4/5] overflow-hidden rounded-sm bg-aura-soft-gray">
+    <Link href={`/product/${id}`} className="product-card group relative block">
+      <article className="cursor-pointer">
+        {/* Image container */}
+        <div className="relative mb-4 aspect-[4/5] overflow-hidden rounded-sm bg-aura-soft-gray">
 
-        {/* Wishlist button */}
-        <button
-          onClick={() => setWished((w) => !w)}
+          {/* Wishlist button */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setWished((w) => !w);
+            }}
           aria-label="Toggle wishlist"
           className="absolute left-4 top-4 z-10 rounded-full bg-white/80 p-2 transition-colors
             hover:bg-white"
@@ -107,16 +113,8 @@ export default function ProductCard({
             {rating} ({reviewCount})
           </span>
         </div>
-
-        {/* Add to cart */}
-        <button
-          className="mt-3 w-full rounded-md border border-aura-gold py-2 text-xs
-            font-semibold tracking-widest text-aura-gold transition-colors
-            hover:bg-aura-gold hover:text-white"
-        >
-          ADD TO CART
-        </button>
       </div>
-    </article>
+      </article>
+    </Link>
   );
 }
