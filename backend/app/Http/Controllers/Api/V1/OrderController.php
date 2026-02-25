@@ -25,8 +25,11 @@ class OrderController extends Controller
         $order = $this->orderService->createOrder($request->validated());
 
         return response()->json([
-            'message'      => 'Order placed successfully.',
-            'order_number' => $order->order_number,
+            'data' => [
+                'order_number' => $order->order_number,
+                'total'        => (float) $order->total,
+            ],
+            'message' => 'Order placed successfully.',
         ], 201);
     }
 

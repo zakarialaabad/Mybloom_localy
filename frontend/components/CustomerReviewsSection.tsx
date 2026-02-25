@@ -1,7 +1,28 @@
 "use client";
+import { useEffect, useState } from 'react';
 import SectionContainer from '@/components/SectionContainer';
+import { reviewService, ReviewItem } from '@/services/api';
+
+function StarRating({ rating }: { rating: number }) {
+  return (
+    <div className="flex text-aura-gold scale-75">
+      {[1,2,3,4,5].map((s) => (
+        <svg key={s} className={`w-4 h-4 fill-current ${s > rating ? 'opacity-30' : ''}`} viewBox="0 0 20 20">
+          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+        </svg>
+      ))}
+    </div>
+  );
+}
 
 export default function CustomerReviewsSection() {
+  const [reviews, setReviews] = useState<ReviewItem[]>([]);
+
+  useEffect(() => {
+    reviewService.list({ approved: true, featured: true, limit: 4 })
+      .then(setReviews)
+      .catch(() => {});
+  }, []);
   return (
     <section className="mt-12 py-20 bg-white border-t border-gray-100" id="customer-reviews">
       <SectionContainer>
@@ -66,50 +87,23 @@ export default function CustomerReviewsSection() {
           {/* Right Column: Testimonials Carousel */}
           <div className="lg:col-span-8 relative">
             <div className="flex gap-6 overflow-hidden">
-              {/* Review Card 1 */}
-              <div className="flex-1 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
-                <div className="aspect-square w-full rounded-xl overflow-hidden bg-gray-100">
-                  <img alt="Review Item" className="w-full h-full object-contain mix-blend-multiply p-4" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyl3GrcFE17JoEJNvOf9ZJMzxlxrZmfg4EUOWHo60uMD4EGj2gBUopjHKk8wQkMBt8M4SztrtddZVblKaLtHr-OK_l4Zx28-iHpx6Sa7KMnJkEQDiecBMcUU5yJ7zwA3RQEmYeJYhUihMwQteNoCPYothbIU3w6XzOymHDV_weHVk8dKOQKz3O924F5Y03A2S1xIEo7EYBu5inrX9V344pdiNhgdn6E9AKATBxBYuj2sNeYcpmxeJ9cDDysGYofhwtpTX-mB6cwu0" />
-                </div>
-                <div className="space-y-2">
-                  <p className="text-sm font-medium text-right" dir="rtl">واعررررريين كيحمققوووو 😍😍😍😍</p>
-                  <p className="text-xs text-gray-400 text-right" dir="rtl">شكرااا بزااف.</p>
-                </div>
-                <div className="pt-4 border-t border-gray-50 flex flex-col items-center">
-                  <span className="text-xs font-semibold text-gray-800">Zineb Elmakoudi</span>
-                  <div className="flex text-aura-gold scale-75">
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+              {reviews.map((review) => (
+                <div key={review.id} className="flex-1 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
+                  {review.images.length > 0 && (
+                    <div className="aspect-square w-full rounded-xl overflow-hidden bg-gray-100">
+                      <img alt="Review" className="w-full h-full object-contain mix-blend-multiply p-4" src={review.images[0].image_url} />
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <p className="text-sm text-gray-700 leading-relaxed">{review.body}</p>
                   </div>
-                  <span className="text-[8px] text-gray-300">16 mai 2024</span>
-                </div>
-              </div>
-
-              {/* Review Card 2 */}
-              <div className="flex-1 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
-                <div className="aspect-square w-full rounded-xl overflow-hidden">
-                  <img alt="Review Interface" className="w-full h-full object-cover scale-150" src="{{DATA:IMAGE:IMAGE_14}}" />
-                </div>
-                <div className="space-y-2">
-                  <p className="text-xs text-gray-700 text-right leading-relaxed" dir="rtl">
-                    لبنى الله يعطيك صحة تبارك الله هاد ريحة عرفتي شحال شريتها من مرة ماعمر ريحتها كانت بحال هادي كيما شميتها اول مرة الله يسهل عليك
-                  </p>
-                </div>
-                <div className="pt-4 border-t border-gray-50 flex flex-col items-center">
-                  <span className="text-xs font-semibold text-gray-800">Zineb Elmakoudi</span>
-                  <div className="flex text-aura-gold scale-75">
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                    <svg className="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                  <div className="pt-4 border-t border-gray-50 flex flex-col items-center">
+                    <span className="text-xs font-semibold text-gray-800">{review.reviewer_name}</span>
+                    <StarRating rating={review.rating} />
+                    <span className="text-[8px] text-gray-300">{new Date(review.created_at).toLocaleDateString('fr-MA')}</span>
                   </div>
-                  <span className="text-[8px] text-gray-300">16 mai 2024</span>
                 </div>
-              </div>
+              ))}
             </div>
 
             {/* Navigation Arrows */}

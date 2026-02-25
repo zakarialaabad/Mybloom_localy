@@ -22,6 +22,13 @@ class ProductDetailResource extends JsonResource
             'stock'          => $this->stock,
             'is_active'      => $this->is_active,
             'is_featured'    => $this->is_featured,
+            // price aliases expected by the frontend
+            'min_price'      => (float) $this->price,
+            'max_price'      => $this->original_price ? (float) $this->original_price : (float) $this->price,
+            // review aggregates injected by withAvg / withCount in the controller
+            'avg_rating'     => round((float) ($this->avg_rating ?? 0), 1),
+            'review_count'   => (int) ($this->review_count ?? 0),
+            'badges'         => $this->is_featured ? ['Bestseller'] : [],
             'brand'          => $this->whenLoaded('brand', fn () => [
                 'id'       => $this->brand?->id,
                 'name'     => $this->brand?->name,
@@ -33,6 +40,11 @@ class ProductDetailResource extends JsonResource
                 'name' => $this->category?->name,
                 'slug' => $this->category?->slug,
             ]),
+            // String URL for components that use primary_image directly
+            'primary_image'  => $this->whenLoaded('images', function () {
+                $primary = $this->images->firstWhere('is_primary', true) ?? $this->images->first();
+                return $primary?->url;
+            }),
             'images'         => $this->whenLoaded('images', fn () =>
                 $this->images->map(fn ($img) => [
                     'id'         => $img->id,

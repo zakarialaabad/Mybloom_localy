@@ -75,6 +75,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       productId:   product.id,
       productName: product.name,
       slug:        product.slug,
+      sizeId:      selectedSize.id,
       sizeLabel:   `${selectedSize.volume_ml}ml`,
       quantity,
       unitPrice:   selectedSize.price,

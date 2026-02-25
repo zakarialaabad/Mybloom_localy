@@ -1,10 +1,19 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { Headphones } from 'lucide-react';
 
 export default function OrderSuccessPage() {
+  const params  = useSearchParams();
+  const order   = params.get('order')  ?? '';
+  const total   = params.get('total')  ?? '';
+  const name    = params.get('name')   ?? '';
+  const phone   = params.get('phone')  ?? '';
+  const city    = params.get('city')   ?? 'MAROC';
   return (
     <>
       <Header />
@@ -23,7 +32,7 @@ export default function OrderSuccessPage() {
               {/* Simulated Shipping Label Overlay */}
               <div className="absolute bottom-12 left-12 bg-white/90 backdrop-blur-sm p-4 rounded-sm shadow-lg border border-gray-200 max-w-[240px] transform -rotate-2">
                 <div className="text-[10px] text-gray-500 font-mono mb-1">TO: MyBloom Client</div>
-                <div className="text-sm font-bold text-gray-800 font-mono mb-2">LAAYOUNE, MAROC</div>
+                <div className="text-sm font-bold text-gray-800 font-mono mb-2">{city.toUpperCase()}, MAROC</div>
                 <div className="w-full h-8 bg-[url('https://www.freepnglogos.com/uploads/barcode-png/barcode-laser-code-vector-graphic-pixabay-3.png')] bg-contain bg-no-repeat bg-center opacity-70"></div>
               </div>
             </div>
@@ -53,24 +62,22 @@ export default function OrderSuccessPage() {
                 <div className="space-y-6 border-t border-b border-gray-100 py-6 mb-8">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-400 font-serif text-xs tracking-wider">ORDER ID</span>
-                    <span className="font-bold text-gray-900 font-serif">#LX-8921-Q</span>
+                    <span className="font-bold text-gray-900 font-serif">{order ? `#${order}` : '—'}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-gray-400 font-serif text-xs tracking-wider">DATE</span>
-                    <span className="font-bold text-gray-900 font-serif">October 24, 2026</span>
+                    <span className="font-bold text-gray-900 font-serif">{new Date().toLocaleDateString('fr-MA', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                   </div>
                   <div className="flex justify-between items-start text-sm">
                     <span className="text-gray-400 font-serif text-xs tracking-wider mt-1">DELIVERY TO</span>
                     <div className="text-right">
-                      <div className="font-bold text-gray-900 font-serif">Ayoub LAGHZAL</div>
-                      <div className="text-gray-500 font-serif text-xs mt-1 max-w-[180px] leading-relaxed">
-                        N° 10, Rue XYZ, Appt 3 Hay Hassani 20230, CASABLANCA MAROC
-                      </div>
+                      <div className="font-bold text-gray-900 font-serif">{name || '—'}</div>
+                      <div className="text-gray-500 font-serif text-xs mt-1 max-w-[180px] leading-relaxed">{city}, MAROC</div>
                     </div>
                   </div>
                   <div className="flex justify-between items-center text-sm pt-4 border-t border-gray-100">
                     <span className="font-bold text-gray-900 font-serif text-xs tracking-wider">TOTAL AMOUNT</span>
-                    <span className="font-bold text-gray-900 font-serif text-base">720.00 DH</span>
+                    <span className="font-bold text-gray-900 font-serif text-base">{total ? `${total} DH` : '—'}</span>
                   </div>
                 </div>
 
@@ -81,7 +88,7 @@ export default function OrderSuccessPage() {
                     <span className="text-[#cda873] font-serif font-bold text-[10px] tracking-widest uppercase">Confirmation Call</span>
                   </div>
                   <p className="text-gray-500 text-xs font-serif leading-relaxed">
-                    Our concierge will contact you shortly at <strong className="text-gray-800">+ 212 6 11 95 50 60</strong> to confirm your delivery preferences
+                    Our concierge will contact you shortly at <strong className="text-gray-800">{phone || '—'}</strong> to confirm your delivery preferences
                   </p>
                 </div>
 
@@ -93,8 +100,8 @@ export default function OrderSuccessPage() {
                   >
                     Continue Shopping ›
                   </Link>
-                  <Link 
-                    href="/track-order"
+                  <Link
+                    href={`/order-status?order=${encodeURIComponent(order)}&phone=${encodeURIComponent(phone)}`}
                     className="flex-1 bg-white text-[#4a403a] border border-gray-200 py-4 rounded-sm font-serif italic text-sm hover:bg-gray-50 transition-colors text-center"
                   >
                     Track My Order

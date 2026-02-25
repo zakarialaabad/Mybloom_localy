@@ -1,19 +1,17 @@
  'use client';
 
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import SectionContainer from '@/components/SectionContainer';
-
-const categories = [
-  { name: 'LAVENDER',          slug: 'lavender',           color: 'bg-purple-200', image: 'https://images.unsplash.com/photo-1600619520786-25f0a7164ff2?auto=format&fit=crop&q=80&w=200' },
-  { name: 'LILY OF THE VALLEY', slug: 'lily-of-the-valley', color: 'bg-yellow-100', image: 'https://images.unsplash.com/photo-1620063234583-10e30d7b212f?auto=format&fit=crop&q=80&w=200' },
-  { name: 'PATCHOULI',         slug: 'patchouli',          color: 'bg-purple-300', image: 'https://images.unsplash.com/photo-1615486511484-92e172cc4fe0?auto=format&fit=crop&q=80&w=200' },
-  { name: 'SANDALWOOD',        slug: 'sandalwood',         color: 'bg-orange-100', image: 'https://images.unsplash.com/photo-1616788487900-547dfb29598a?auto=format&fit=crop&q=80&w=200' },
-  { name: 'CITRUS',            slug: 'citrus',             color: 'bg-orange-200', image: 'https://images.unsplash.com/photo-1626508003615-1a84f5cf5712?auto=format&fit=crop&q=80&w=200' },
-  { name: 'JASMINE',           slug: 'jasmine',            color: 'bg-yellow-50',  image: 'https://images.unsplash.com/photo-1598007264887-acc47d519b88?auto=format&fit=crop&q=80&w=200' },
-];
+import { categoryService, Category } from '@/services/api';
 
 export default function CategoriesSection() {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    categoryService.list().then(setCategories).catch(() => {});
+  }, []);
   return (
     <section className="bg-white">
       {/* ── Why Shop with us ────────────────────────────────────────────────── */}
@@ -122,10 +120,10 @@ export default function CategoriesSection() {
 
             <div className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3 lg:grid-cols-6">
             {categories.map((category) => (
-                <Link key={category.name} href={`/category/${category.slug}`} className="group block text-center">
-                    <div className={`relative mx-auto h-40 w-40 rounded-full ${category.color} flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105`}>
+                <Link key={category.id} href={`/category/${category.slug}`} className="group block text-center">
+                    <div className="relative mx-auto h-40 w-40 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105">
                         <Image
-                            src={category.image}
+                            src={category.image_url ?? 'https://images.unsplash.com/photo-1598007264887-acc47d519b88?auto=format&fit=crop&q=80&w=200'}
                             alt={category.name}
                             width={120}
                             height={120}

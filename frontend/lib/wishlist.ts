@@ -62,6 +62,20 @@ export function isInWishlist(productId: number): boolean {
 }
 
 /**
+ * Toggles a product ID in the wishlist — adds if absent, removes if present.
+ * Returns true if the product is now in the wishlist.
+ */
+export function toggleWishlist(productId: number): boolean {
+  if (isInWishlist(productId)) {
+    removeFromWishlist(productId);
+    return false;
+  } else {
+    addToWishlist(productId);
+    return true;
+  }
+}
+
+/**
  * Removes the wishlist cookie entirely.
  */
 export function clearWishlist(): void {

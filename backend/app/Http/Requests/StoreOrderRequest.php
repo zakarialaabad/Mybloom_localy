@@ -14,29 +14,29 @@ class StoreOrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'shipping_method_id'   => ['required', 'exists:shipping_methods,id'],
-            'coupon_code'          => ['nullable', 'string', 'max:50'],
+            'shipping_method_id'               => ['required', 'exists:shipping_methods,id'],
+            'coupon_code'                      => ['nullable', 'string', 'max:50'],
 
             // Customer
-            'customer_name'        => ['required', 'string', 'max:150'],
-            'customer_phone'       => ['required', 'string', 'max:20'],
-            'customer_email'       => ['nullable', 'email', 'max:200'],
+            'customer_name'                    => ['required', 'string', 'max:150'],
+            'customer_phone'                   => ['required', 'string', 'max:20'],
+            'customer_email'                   => ['nullable', 'email', 'max:200'],
 
-            // Shipping address
-            'shipping_address'     => ['required', 'string', 'max:300'],
-            'shipping_city'        => ['required', 'string', 'max:100'],
-            'shipping_province'    => ['nullable', 'string', 'max:100'],
-            'shipping_postal_code' => ['nullable', 'string', 'max:20'],
+            // Shipping address — sent as nested object from the frontend
+            'shipping_address'                 => ['required', 'array'],
+            'shipping_address.address'         => ['required', 'string', 'max:300'],
+            'shipping_address.city'            => ['required', 'string', 'max:100'],
+            'shipping_address.quartier'        => ['nullable', 'string', 'max:100'],
+            'shipping_address.zip'             => ['nullable', 'string', 'max:20'],
 
             // Notes
-            'notes'                => ['nullable', 'string', 'max:1000'],
+            'notes'                            => ['nullable', 'string', 'max:1000'],
 
-            // Items
-            'items'                     => ['required', 'array', 'min:1'],
-            'items.*.product_id'        => ['required', 'exists:products,id'],
-            'items.*.size_label'        => ['nullable', 'string', 'max:50'],
-            'items.*.quantity'          => ['required', 'integer', 'min:1'],
-            'items.*.unit_price'        => ['required', 'numeric', 'min:0'],
+            // Items — frontend sends size_id; price is resolved server-side
+            'items'                            => ['required', 'array', 'min:1'],
+            'items.*.product_id'               => ['required', 'exists:products,id'],
+            'items.*.size_id'                  => ['required', 'exists:product_sizes,id'],
+            'items.*.quantity'                 => ['required', 'integer', 'min:1'],
         ];
     }
 }

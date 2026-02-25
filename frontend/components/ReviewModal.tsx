@@ -10,12 +10,15 @@ interface ReviewModalProps {
   productName: string;
   productDesc: string;
   productImage: string;
+  onSubmit?: (rating: number, body: string) => Promise<void>;
+  isSubmitting?: boolean;
 }
 
-export default function ReviewModal({ isOpen, onClose, productName, productDesc, productImage }: ReviewModalProps) {
+export default function ReviewModal({ isOpen, onClose, productName, productDesc, productImage, onSubmit, isSubmitting }: ReviewModalProps) {
   const [isMounted, setIsMounted] = useState(false);
   const [rating, setRating] = useState(0);
   const [hoveredRating, setHoveredRating] = useState(0);
+  const [reviewText, setReviewText] = useState('');
 
   useEffect(() => {
     setIsMounted(true);
@@ -82,6 +85,8 @@ export default function ReviewModal({ isOpen, onClose, productName, productDesc,
             <div>
               <h3 className="text-[10px] font-bold text-gray-800 tracking-[0.2em] font-serif uppercase mb-4">THE DETAILS</h3>
               <textarea 
+                value={reviewText}
+                onChange={(e) => setReviewText(e.target.value)}
                 placeholder="Describe the notes, the longevity, the feeling ..."
                 className="w-full border-none focus:outline-none resize-none font-serif italic text-sm text-gray-700 placeholder:text-gray-300 min-h-[80px]"
               />
@@ -99,8 +104,12 @@ export default function ReviewModal({ isOpen, onClose, productName, productDesc,
             </div>
 
             {/* Submit Button */}
-            <button className="w-full bg-[#4a403a] text-white py-4 rounded-sm font-serif italic text-sm hover:bg-[#3a322d] transition-colors mt-4">
-              Publish review ›
+            <button
+              onClick={() => onSubmit && rating > 0 && onSubmit(rating, reviewText)}
+              disabled={!rating || isSubmitting}
+              className="w-full bg-[#4a403a] text-white py-4 rounded-sm font-serif italic text-sm hover:bg-[#3a322d] transition-colors mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Publication…' : 'Publish review ›'}
             </button>
 
           </div>

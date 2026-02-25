@@ -5,20 +5,49 @@ import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { Star, CheckCircle2 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import ReviewModal from '@/components/ReviewModal';
+import { orderService, reviewService, OrderTrackResult } from '@/services/api';
 
 export default function FeedbackPage() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState({
-    name: '',
-    desc: '',
-    image: ''
-  });
+  const searchParams = useSearchParams();
+  const orderNumber = searchParams.get('order') ?? '';
+  const phone = searchParams.get('phone') ?? '';
 
-  const openModal = (name: string, desc: string, image: string) => {
-    setSelectedProduct({ name, desc, image });
+  const [orderData, setOrderData] = useState<OrderTrackResult | null>(null);
+  const [ratedProductIds, setRatedProductIds] = useState<Set<number>>(new Set());
+  const [submitting, setSubmitting] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState({ name: '', desc: '', image: '', productId: 0 });
+
+  useEffect(() => {
+    if (!orderNumber || !phone) return;
+    orderService.track(orderNumber, phone)
+      .then(data => setOrderData(data))
+      .catch(() => {});
+  }, [orderNumber, phone]);
+
+  const openModal = (name: string, desc: string, image: string, productId: number) => {
+    setSelectedProduct({ name, desc, image, productId });
     setIsModalOpen(true);
+  };
+
+  const handleSubmitReview = async (rating: number, body: string) => {
+    if (!selectedProduct.productId) return;
+    setSubmitting(true);
+    try {
+      await reviewService.submit({
+        product_id: selectedProduct.productId,
+        reviewer_name: orderData?.customer_name ?? 'Client',
+        rating,
+        body,
+      });
+      setRatedProductIds(prev => new Set([...prev, selectedProduct.productId]));
+      setIsModalOpen(false);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -79,90 +108,63 @@ export default function FeedbackPage() {
 
               {/* Products List */}
               <div className="bg-[#fdfbf5] border border-[#f5eedf] rounded-sm p-6 mb-10">
-                
-                {/* Product 1 (Rated) */}
-                <div 
-                  className="flex items-center justify-between py-4 border-b border-[#f5eedf] cursor-pointer hover:bg-[#fdf8f1] transition-colors px-2 -mx-2 rounded-sm"
-                  onClick={() => openModal('SUGAR POP', 'Body Butter / Size 50ml', 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=100')}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-12 h-12 bg-white rounded-sm border border-gray-100 shrink-0">
-                      <Image src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=100" alt="Sugar Pop" fill className="object-cover mix-blend-multiply p-1" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-serif font-bold text-gray-900 text-sm">SUGAR POP</h4>
-                        <span className="text-[10px] text-[#2e7d32] font-serif italic flex items-center gap-1">
-                          Rated <CheckCircle2 className="w-3 h-3" />
-                        </span>
+                {(orderData?.items ?? []).map((item, idx) => {
+                  const isRated = ratedProductIds.has(item.product_id);
+                  const isLast = idx === (orderData?.items.length ?? 0) - 1;
+                  return (
+                    <div
+                      key={item.product_id}
+                      className={`flex items-center justify-between py-4 ${isLast ? '' : 'border-b border-[#f5eedf]'} cursor-pointer hover:bg-[#fdf8f1] transition-colors px-2 -mx-2 rounded-sm`}
+                      onClick={() => openModal(
+                        item.product_name,
+                        item.product_size_label ?? '',
+                        item.image_url ?? '',
+                        item.product_id
+                      )}
+                    >
+                      <div className="flex items-center gap-4">
+                        {item.image_url && (
+                          <div className="relative w-12 h-12 bg-white rounded-sm border border-gray-100 shrink-0">
+                            <Image src={item.image_url} alt={item.product_name} fill className="object-cover mix-blend-multiply p-1" />
+                          </div>
+                        )}
+                        <div>
+                          {isRated ? (
+                            <div className="flex items-center gap-2">
+                              <h4 className="font-serif font-bold text-gray-900 text-sm">{item.product_name}</h4>
+                              <span className="text-[10px] text-[#2e7d32] font-serif italic flex items-center gap-1">
+                                Rated <CheckCircle2 className="w-3 h-3" />
+                              </span>
+                            </div>
+                          ) : (
+                            <h4 className="font-serif font-bold text-gray-900 text-sm">{item.product_name}</h4>
+                          )}
+                          <p className="font-serif italic text-[10px] text-gray-400 mt-0.5">{item.product_size_label}</p>
+                        </div>
                       </div>
-                      <p className="font-serif italic text-[10px] text-gray-400 mt-0.5">Body Butter / Size 50ml</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-[#cda873] font-serif italic block mb-1">Excellent</span>
-                    <div className="flex gap-1">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star key={star} className="w-3.5 h-3.5 fill-[#cda873] text-[#cda873]" />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Product 2 (Rated) */}
-                <div 
-                  className="flex items-center justify-between py-4 border-b border-[#f5eedf] cursor-pointer hover:bg-[#fdf8f1] transition-colors px-2 -mx-2 rounded-sm"
-                  onClick={() => openModal('OVER DOSE', 'Bold Body Mist / Size 50ml', 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=100')}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-12 h-12 bg-white rounded-sm border border-gray-100 shrink-0">
-                      <Image src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=100" alt="Over Dose" fill className="object-cover mix-blend-multiply p-1" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h4 className="font-serif font-bold text-gray-900 text-sm">OVER DOSE</h4>
-                        <span className="text-[10px] text-[#2e7d32] font-serif italic flex items-center gap-1">
-                          Rated <CheckCircle2 className="w-3 h-3" />
-                        </span>
+                      <div className="text-right">
+                        {isRated ? (
+                          <>
+                            <span className="text-[10px] text-[#cda873] font-serif italic block mb-1">Merci !</span>
+                            <div className="flex gap-1">
+                              {[1,2,3,4,5].map(s => <Star key={s} className="w-3.5 h-3.5 fill-[#cda873] text-[#cda873]" />)}
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <span className="text-[10px] text-gray-400 font-serif italic block mb-1">Rate this item</span>
+                            <div className="flex gap-1">
+                              {[1,2,3,4,5].map(s => <Star key={s} className="w-3.5 h-3.5 text-gray-300 hover:text-[#cda873] transition-colors" />)}
+                            </div>
+                          </>
+                        )}
                       </div>
-                      <p className="font-serif italic text-[10px] text-gray-400 mt-0.5">Bold Body Mist / Size 50ml</p>
                     </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-[#cda873] font-serif italic block mb-1">Good</span>
-                    <div className="flex gap-1">
-                      {[1, 2, 3, 4].map((star) => (
-                        <Star key={star} className="w-3.5 h-3.5 fill-[#cda873] text-[#cda873]" />
-                      ))}
-                      <Star className="w-3.5 h-3.5 text-gray-300" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Product 3 (Unrated) */}
-                <div 
-                  className="flex items-center justify-between py-4 cursor-pointer hover:bg-[#fdf8f1] transition-colors px-2 -mx-2 rounded-sm"
-                  onClick={() => openModal('SUGAR POP', 'Body Butter / Size 50ml', 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=100')}
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-12 h-12 bg-white rounded-sm border border-gray-100 shrink-0">
-                      <Image src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=100" alt="Sugar Pop" fill className="object-cover mix-blend-multiply p-1" />
-                    </div>
-                    <div>
-                      <h4 className="font-serif font-bold text-gray-900 text-sm">SUGAR POP</h4>
-                      <p className="font-serif italic text-[10px] text-gray-400 mt-0.5">Body Butter / Size 50ml</p>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <span className="text-[10px] text-gray-400 font-serif italic block mb-1">Rate this item</span>
-                    <div className="flex gap-1 cursor-pointer">
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <Star key={star} className="w-3.5 h-3.5 text-gray-300 hover:text-[#cda873] transition-colors" />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
+                  );
+                })}
+                {!orderData && (
+                  <p className="text-center text-gray-400 font-serif italic py-4 text-sm">Loading your order…</p>
+                )}
               </div>
 
               {/* Thank You Message */}
@@ -192,6 +194,8 @@ export default function FeedbackPage() {
         productName={selectedProduct.name}
         productDesc={selectedProduct.desc}
         productImage={selectedProduct.image}
+        onSubmit={handleSubmitReview}
+        isSubmitting={submitting}
       />
     </>
   );

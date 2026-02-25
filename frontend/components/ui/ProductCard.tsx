@@ -3,9 +3,11 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import Link from 'next/link';
+import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
 
 export interface ProductCardProps {
   id: number;
+  slug: string;
   name: string;
   subtitle: string;
   description: string;
@@ -32,14 +34,14 @@ function StarIcon({ filled }: { filled: boolean }) {
 }
 
 export default function ProductCard({
-  id, name, subtitle, description, price, originalPrice,
+  id, slug, name, subtitle, description, price, originalPrice,
   rating, reviewCount, imageUrl, badge, isBestSeller,
 }: ProductCardProps) {
-  const [wished, setWished] = useState(false);
+  const [wished, setWished] = useState(() => isInWishlist(id));
   const stars = [1, 2, 3, 4, 5];
 
   return (
-    <Link href={`/product/${id}`} className="product-card group relative block">
+    <Link href={`/product/${slug}`} className="product-card group relative block">
       <article className="cursor-pointer">
         {/* Image container */}
         <div className="relative mb-4 aspect-[4/5] overflow-hidden rounded-sm bg-aura-soft-gray">
@@ -49,6 +51,7 @@ export default function ProductCard({
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              toggleWishlist(id);
               setWished((w) => !w);
             }}
           aria-label="Toggle wishlist"

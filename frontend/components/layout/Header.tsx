@@ -2,9 +2,10 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import CartDrawer from '@/components/CartDrawer';
 import FilterModal from '@/components/FilterModal';
+import useCartStore from '@/store/cart';
 
 const NAV_LINKS = [
   { label: 'MEN',          href: '#' },
@@ -17,10 +18,13 @@ const NAV_LINKS = [
 ];
 
 export default function Header() {
-  const [cartCount] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
+  const cartItemCount = useCartStore((s) => s.itemCount());
   const [query, setQuery] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  useEffect(() => { setIsMounted(true); }, []);
 
   return (
     <>
@@ -107,10 +111,12 @@ export default function Header() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                 d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
             </svg>
-            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center
-              rounded-full bg-red-500 text-[10px] text-white">
-              {cartCount}
-            </span>
+            {isMounted && cartItemCount > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center
+                rounded-full bg-red-500 text-[10px] text-white">
+                {cartItemCount}
+              </span>
+            )}
           </button>
         </div>
       </div>

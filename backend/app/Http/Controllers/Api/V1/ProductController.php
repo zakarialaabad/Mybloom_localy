@@ -14,11 +14,14 @@ class ProductController extends Controller
 {
     /**
      * GET /api/v1/products
-     * Supports: ?search=, ?brand=, ?category=, ?gender=, ?sort=popular|price_asc|price_desc|newest, ?page=
+     * Supports: ?search=, ?brand=, ?brand_ids[]=, ?category=, ?category_ids[]=,
+     *           ?gender=, ?is_featured=, ?limit=, ?sort=popular|price_asc|price_desc|newest, ?page=
      */
     public function index(Request $request): AnonymousResourceCollection
     {
         $query = Product::with(['brand', 'category', 'images' => fn ($q) => $q->where('is_primary', true)])
+            ->withAvg('reviews as avg_rating', 'rating')
+            ->withCount('reviews as review_count')
             ->where('is_active', true);
 
         // Search
@@ -35,23 +38,37 @@ class ProductController extends Controller
             $query->whereHas('brand', fn ($q) => $q->where('slug', $brand));
         }
 
+        if ($brandIds = $request->query('brand_ids')) {
+            $query->whereIn('brand_id', (array) $brandIds);
+        }
+
         if ($category = $request->query('category')) {
             $query->whereHas('category', fn ($q) => $q->where('slug', $category));
+        }
+
+        if ($categoryIds = $request->query('category_ids')) {
+            $query->whereIn('category_id', (array) $categoryIds);
         }
 
         if ($gender = $request->query('gender')) {
             $query->where('gender', $gender);
         }
 
+        if ($request->query('is_featured')) {
+            $query->where('is_featured', true);
+        }
+
         // Sorting
         match ($request->query('sort', 'newest')) {
             'price_asc'  => $query->orderBy('price', 'asc'),
             'price_desc' => $query->orderBy('price', 'desc'),
-            'popular'    => $query->withCount(['allReviews as reviews_count'])->orderBy('reviews_count', 'desc'),
+            'popular'    => $query->orderBy('review_count', 'desc'),
             default      => $query->orderBy('created_at', 'desc'),
         };
 
-        return ProductResource::collection($query->paginate(20));
+        $perPage = min((int) ($request->query('limit', 20)), 100);
+
+        return ProductResource::collection($query->paginate($perPage));
     }
 
     /**
@@ -65,7 +82,12 @@ class ProductController extends Controller
             'images',
             'sizes',
             'reviews.images',
-        ])->where('slug', $slug)->where('is_active', true)->first();
+        ])
+        ->withAvg('reviews as avg_rating', 'rating')
+        ->withCount('reviews as review_count')
+        ->where('slug', $slug)
+        ->where('is_active', true)
+        ->first();
 
         if (! $product) {
             return response()->json(['message' => 'Product not found.'], 404);

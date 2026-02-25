@@ -4,6 +4,7 @@ import { X, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import useCartStore from '@/store/cart';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -12,6 +13,11 @@ interface CartDrawerProps {
 
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const [isMounted, setIsMounted] = useState(false);
+  const items      = useCartStore((s) => s.items);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const updateQty  = useCartStore((s) => s.updateQty);
+  const subtotal   = useCartStore((s) => s.subtotal());
+  const itemCount  = useCartStore((s) => s.itemCount());
 
   useEffect(() => {
     setIsMounted(true);
@@ -31,7 +37,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       <div className={`fixed inset-y-0 right-0 z-[101] w-full max-w-[480px] bg-[#f9f9f9] shadow-xl flex flex-col transform transition-transform duration-300 ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         {/* Header */}
         <div className="flex items-center justify-center p-6 relative shrink-0">
-          <h2 className="text-xl font-serif font-bold text-gray-800">YOUR CART (3 ITEMS)</h2>
+          <h2 className="text-xl font-serif font-bold text-gray-800">YOUR CART ({itemCount} {itemCount === 1 ? 'ITEM' : 'ITEMS'})</h2>
           <button 
             onClick={onClose}
             className="absolute right-6 p-2 bg-gray-200 hover:bg-gray-300 rounded-full transition-colors text-gray-600"
@@ -45,106 +51,60 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           {/* Products Container */}
           <div className="bg-white border border-gray-200 rounded-sm mb-8">
             <div className="px-4 py-3 border-b border-gray-200 bg-[#fdfdfd]">
-              <h3 className="font-serif font-bold text-gray-700 text-sm">Other Products ( 3 items )</h3>
+              <h3 className="font-serif font-bold text-gray-700 text-sm">Products ({itemCount} {itemCount === 1 ? 'item' : 'items'})</h3>
             </div>
-            
-            <div className="flex flex-col">
-              {/* Item 1 */}
-              <div className="p-4 flex gap-4 border-b border-gray-100">
-                <div className="relative w-24 h-24 bg-gray-50 shrink-0 border border-gray-100">
-                  <Image src="https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=200" alt="Sugar Pop" fill className="object-cover mix-blend-multiply p-2" />
-                </div>
-                <div className="flex-1 flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="font-serif font-bold text-gray-900">SUGAR POP</h4>
-                      <p className="font-serif italic text-xs text-gray-400 mt-0.5">Body Butter</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-serif font-bold italic text-gray-900">140 DH</div>
-                      <div className="font-serif italic text-xs text-gray-400 line-through">200 DH</div>
-                    </div>
-                  </div>
-                  <div className="text-xs text-gray-500 mt-2 font-serif">Size 50ml</div>
-                  <div className="flex justify-between items-center mt-2">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-gray-500 font-serif">Quantity</span>
-                      <div className="flex items-center bg-gray-100 rounded-full px-1 py-0.5">
-                        <button className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-200 transition-colors">-</button>
-                        <span className="w-6 text-center text-xs font-serif italic">1</span>
-                        <button className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-200 transition-colors">+</button>
-                      </div>
-                    </div>
-                    <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-600 transition-colors">
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
 
-              {/* Item 2 */}
-              <div className="p-4 flex gap-4">
-                <div className="relative w-24 h-24 bg-gray-50 shrink-0 border border-gray-100">
-                  <Image src="https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=200" alt="Over Dose" fill className="object-cover mix-blend-multiply p-2" />
-                </div>
-                <div className="flex-1 flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h4 className="font-serif font-bold text-gray-900">OVER DOSE</h4>
-                      <p className="font-serif italic text-xs text-gray-400 mt-0.5">Bold Body Mist</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="font-serif font-bold italic text-gray-900">100 DH</div>
-                      <div className="font-serif italic text-xs text-gray-400 line-through">180 DH</div>
-                    </div>
+            <div className="flex flex-col">
+              {items.length === 0 ? (
+                <p className="p-6 text-center font-serif italic text-gray-400 text-sm">Your cart is empty.</p>
+              ) : items.map((item, idx) => (
+                <div key={`${item.productId}-${item.sizeLabel}-${idx}`} className={`p-4 flex gap-4 ${idx < items.length - 1 ? 'border-b border-gray-100' : ''}`}>
+                  <div className="relative w-24 h-24 bg-gray-50 shrink-0 border border-gray-100">
+                    <Image src={item.imageUrl} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
                   </div>
-                  <div className="text-xs text-gray-500 mt-2 font-serif">Size 50ml</div>
-                  <div className="flex justify-between items-center mt-2">
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-gray-500 font-serif">Quantity</span>
-                      <div className="flex items-center bg-gray-100 rounded-full px-1 py-0.5">
-                        <button className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-200 transition-colors">-</button>
-                        <span className="w-6 text-center text-xs font-serif italic">1</span>
-                        <button className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-200 transition-colors">+</button>
+                  <div className="flex-1 flex flex-col justify-between">
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-serif font-bold text-gray-900">{item.productName}</h4>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-serif font-bold italic text-gray-900">{item.unitPrice * item.quantity} DH</div>
                       </div>
                     </div>
-                    <button className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-600 transition-colors">
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                    <div className="text-xs text-gray-500 mt-2 font-serif">{item.sizeLabel}</div>
+                    <div className="flex justify-between items-center mt-2">
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs text-gray-500 font-serif">Quantity</span>
+                        <div className="flex items-center bg-gray-100 rounded-full px-1 py-0.5">
+                          <button onClick={() => updateQty(item.productId, item.sizeLabel, item.quantity - 1)} className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-200 transition-colors">-</button>
+                          <span className="w-6 text-center text-xs font-serif italic">{item.quantity}</span>
+                          <button onClick={() => updateQty(item.productId, item.sizeLabel, item.quantity + 1)} className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 rounded-full hover:bg-gray-200 transition-colors">+</button>
+                        </div>
+                      </div>
+                      <button onClick={() => removeItem(item.productId, item.sizeLabel)} className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-600 transition-colors">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
 
           {/* Summary */}
           <div className="space-y-4 mb-6">
             <div className="flex justify-between items-center">
-              <span className="font-serif font-bold text-gray-800">Your Price</span>
-              <span className="font-serif font-bold italic text-gray-900">360 DH</span>
+              <span className="font-serif font-bold text-gray-800">Sous-total</span>
+              <span className="font-serif font-bold italic text-gray-900">{subtotal} DH</span>
             </div>
             <div className="flex justify-between items-start">
               <div>
                 <div className="font-serif font-bold text-gray-800">Expédition</div>
-                <div className="font-serif italic text-xs text-gray-500 mt-0.5">Gratuit dès 590 DH</div>
+                <div className="font-serif italic text-xs text-gray-500 mt-0.5">Calculé au checkout</div>
               </div>
-              <span className="font-serif font-bold italic text-gray-900">30 DH</span>
+              <span className="font-serif font-bold italic text-gray-900">—</span>
             </div>
-            <div className="flex justify-between items-start">
-              <div>
-                <div className="font-serif font-bold text-gray-800">Coupon</div>
-                <div className="font-serif italic text-xs text-gray-500 mt-0.5">Ajoutez un code promo et économisez sur votre commande.</div>
-              </div>
-              <span className="font-serif font-bold italic text-gray-900">0 DH</span>
-            </div>
-            
-            <hr className="border-gray-200 my-4" />
-            
-            <div className="flex justify-between items-center">
-              <span className="font-serif font-bold text-gray-800">Total</span>
-              <span className="font-serif font-bold italic text-xl text-gray-900">390 DH</span>
-            </div>
-          </div>
+            <hr className="border-gray-200 my-4" />          </div>
 
           {/* Coupon Input */}
           <div className="mb-8">
