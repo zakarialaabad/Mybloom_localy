@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import CartDrawer from '@/components/CartDrawer';
+import FilterModal from '@/components/FilterModal';
 
 const NAV_LINKS = [
   { label: 'MEN',          href: '#' },
@@ -17,9 +19,12 @@ const NAV_LINKS = [
 export default function Header() {
   const [cartCount] = useState(0);
   const [query, setQuery] = useState('');
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-50 bg-white shadow-sm">
+    <>
+      <header className="sticky top-0 z-50 bg-white shadow-sm">
       {/* ── Announcement Bar ─────────────────────────────────────────────── */}
       <div className="overflow-hidden bg-black py-2 text-[10px] font-medium uppercase tracking-widest text-white">
         <span className="scrolling-text">
@@ -68,7 +73,8 @@ export default function Header() {
             />
             {/* filter icon */}
             <svg
-              className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-gray-400"
+              onClick={() => setIsFilterOpen(true)}
+              className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
               fill="none" stroke="currentColor" viewBox="0 0 24 24"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -80,7 +86,8 @@ export default function Header() {
         {/* Icons */}
         <div className="flex w-1/4 items-center justify-end space-x-6">
           {/* Wishlist */}
-          <button
+          <Link
+            href="/wishlist"
             aria-label="Wishlist"
             className="text-gray-600 transition-colors hover:text-aura-purple"
           >
@@ -88,11 +95,12 @@ export default function Header() {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
-          </button>
+          </Link>
 
           {/* Cart */}
           <button
             aria-label="Cart"
+            onClick={() => setIsCartOpen(true)}
             className="relative text-gray-600 transition-colors hover:text-aura-purple"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,5 +133,15 @@ export default function Header() {
         </ul>
       </nav>
     </header>
+
+    <CartDrawer 
+      isOpen={isCartOpen} 
+      onClose={() => setIsCartOpen(false)} 
+    />
+    <FilterModal 
+      isOpen={isFilterOpen} 
+      onClose={() => setIsFilterOpen(false)} 
+    />
+    </>
   );
 }

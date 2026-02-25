@@ -16,7 +16,7 @@ export default function UniversSection() {
               Explorez notre catalogue complet regroupant tous nos produits, développés avec exigence pour répondre aux attentes les plus élevées, des solutions fiables et innovantes pensées pour vous apporter satisfaction, confiance et excellence.
             </p>
           </div>
-          <Link href="#" className="bg-[#3D2B1F] text-white px-8 py-3 rounded-md text-sm font-medium flex items-center gap-2 hover:bg-black transition-colors shrink-0">
+          <Link href="/collection" className="bg-[#3D2B1F] text-white px-8 py-3 rounded-md text-sm font-medium flex items-center gap-2 hover:bg-black transition-colors shrink-0">
             See all collection <span>›</span>
           </Link>
         </div>

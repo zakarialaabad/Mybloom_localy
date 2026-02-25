@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { Check, Truck, Headphones, Banknote } from 'lucide-react';
 import SectionContainer from '@/components/SectionContainer';
 
 const categories = [
@@ -30,8 +29,14 @@ export default function CategoriesSection() {
           <div className="grid grid-cols-1 px-2 gap-12 sm:grid-cols-2 lg:grid-cols-4">
             {/* 1. Authentic */}
             <div className="flex flex-col items-center">
-              <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full border-2 border-gray-900">
-                <Check className="h-8 w-8 text-gray-900" strokeWidth={1.5} />
+              <div className="mb-6 flex h-20 w-20 items-center justify-center">
+                <Image 
+                  src="/100_icon.jpeg" 
+                  alt="Authentic icon" 
+                  width={80} 
+                  height={80} 
+                  className="object-contain"
+                />
               </div>
               <h3 className="text-lg font-bold text-gray-900 font-serif">100% Authentic Products</h3>
               <p className="mt-2 text-sm text-gray-500 font-light">Sourced from Authorized<br />Suppliers.</p>
@@ -39,8 +44,14 @@ export default function CategoriesSection() {
 
             {/* 2. Pricing */}
             <div className="flex flex-col items-center">
-              <div className="mb-6 flex h-16 w-16 items-center justify-center">
-                <Truck className="h-10 w-10 text-gray-900" strokeWidth={1.5} />
+              <div className="mb-6 flex h-20 w-20 items-center justify-center">
+                <Image 
+                  src="/Competitive_icon.jpeg" 
+                  alt="Competitive icon" 
+                  width={80} 
+                  height={80} 
+                  className="object-contain"
+                />
               </div>
               <h3 className="text-lg font-bold text-gray-900 font-serif">Competitive Pricing</h3>
               <p className="mt-2 text-sm text-gray-500 font-light">Best Prices, Guaranteed<br />Savings!</p>
@@ -48,8 +59,14 @@ export default function CategoriesSection() {
 
             {/* 3. Support */}
             <div className="flex flex-col items-center">
-              <div className="mb-6 flex h-16 w-16 items-center justify-center">
-                <Headphones className="h-10 w-10 text-gray-900" strokeWidth={1.5} />
+              <div className="mb-6 flex h-20 w-20 items-center justify-center">
+                <Image 
+                  src="/Customer_icon.jpeg" 
+                  alt="Support icon" 
+                  width={80} 
+                  height={80} 
+                  className="object-contain"
+                />
               </div>
               <h3 className="text-lg font-bold text-gray-900 font-serif">Customer Support</h3>
               <p className="mt-2 text-sm text-gray-500 font-light">We’re here whenever<br />you need us.</p>
@@ -57,8 +74,14 @@ export default function CategoriesSection() {
 
             {/* 4. COD */}
             <div className="flex flex-col items-center">
-              <div className="mb-6 flex h-16 w-16 items-center justify-center">
-                <Banknote className="h-10 w-10 text-gray-900" strokeWidth={1.5} />
+              <div className="mb-6 flex h-20 w-20 items-center justify-center">
+                <Image 
+                  src="/Cash_Icon.jpeg" 
+                  alt="COD icon" 
+                  width={80} 
+                  height={80} 
+                  className="object-contain"
+                />
               </div>
               <h3 className="text-lg font-bold text-gray-900 font-serif">Cash on Delivery</h3>
               <p className="mt-2 text-sm text-gray-500 font-light">Pay when you<br />receive.</p>
