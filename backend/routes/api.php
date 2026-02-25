@@ -1,17 +1,28 @@
 <?php
 
-use App\Http\Controllers\Api\V1\AuthController;
-use App\Http\Controllers\Api\V1\UserController;
+use App\Http\Controllers\Api\V1\BrandController;
+use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\CouponController;
+use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ProductController;
+use App\Http\Controllers\Api\V1\ReviewController;
+use App\Http\Controllers\Api\V1\ShippingMethodController;
+use App\Http\Controllers\Api\V1\Admin\AdminAuthController;
+use App\Http\Controllers\Api\V1\Admin\BrandController as AdminBrandController;
+use App\Http\Controllers\Api\V1\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Api\V1\Admin\CouponController as AdminCouponController;
+use App\Http\Controllers\Api\V1\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Api\V1\Admin\ReviewController as AdminReviewController;
 use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| API Routes  —  all endpoints are prefixed with /api  (set in bootstrap/app.php)
+| API Routes
 |--------------------------------------------------------------------------
 |
-| Versioned under /v1 so future breaking changes can ship as /v2 without
-| disrupting existing clients.
+| All routes are prefixed with /api (set in bootstrap/app.php).
+| Versioned under /v1 — future breaking changes ship as /v2.
 |
 */
 
@@ -23,40 +34,64 @@ Route::prefix('api')->group(function () {
     // ── v1 ──────────────────────────────────────────────────────────────────
     Route::prefix('v1')->name('v1.')->group(function () {
 
-        // Auth — public
-        Route::prefix('auth')->name('auth.')->group(function () {
-            Route::post('/register', [AuthController::class, 'register'])->name('register');
-            Route::post('/login',    [AuthController::class, 'login'])->name('login');
+        // ── Public routes — throttle 120 req/min ────────────────────────────
+        Route::middleware('throttle:120,1')->group(function () {
+
+            // Catalogue
+            Route::get('/products',                    [ProductController::class, 'index']);
+            Route::get('/products/{slug}',             [ProductController::class, 'show']);
+            Route::get('/brands',                      [BrandController::class, 'index']);
+            Route::get('/categories',                  [CategoryController::class, 'index']);
+            Route::get('/shipping-methods',            [ShippingMethodController::class, 'index']);
+
+            // Coupon validation
+            Route::post('/coupons/validate',           [CouponController::class, 'validate']);
+
+            // Orders — create + track (no auth)
+            Route::post('/orders',                                [OrderController::class, 'store']);
+            Route::get('/orders/{orderNumber}/track',             [OrderController::class, 'track']);
+
+            // Reviews — post (linked by order_number, no auth)
+            Route::post('/reviews',                    [ReviewController::class, 'store']);
         });
 
-        // Auth — protected
-        Route::prefix('auth')->name('auth.')->middleware('auth.jwt')->group(function () {
-            Route::post('/logout',  [AuthController::class, 'logout'])->name('logout');
-            Route::post('/refresh', [AuthController::class, 'refresh'])->name('refresh');
-            Route::get('/me',       [AuthController::class, 'me'])->name('me');
+        // ── Admin — auth endpoint (no sanctum guard, only throttle) ─────────
+        Route::prefix('admin/auth')->name('admin.auth.')->middleware('throttle:10,1')->group(function () {
+            Route::post('/login',  [AdminAuthController::class, 'login'])->name('login');
+            Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
+            Route::get('/me',      [AdminAuthController::class, 'me'])->name('me');
         });
 
-        // Users — admin only
-        Route::middleware(['auth.jwt', 'throttle:60,1'])
-            ->prefix('users')
-            ->name('users.')
+        // ── Admin — protected routes ─────────────────────────────────────────
+        Route::prefix('admin')->name('admin.')
+            ->middleware(['auth:sanctum', 'ensure.admin', 'throttle:300,1'])
             ->group(function () {
-                Route::get('/',        [UserController::class, 'index'])->name('index');
-                Route::get('/{user}',  [UserController::class, 'show'])->name('show');
-                Route::put('/{user}',  [UserController::class, 'update'])->name('update');
-                Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
-            });
 
-        // Products — public read, authenticated write
-        Route::prefix('products')->name('products.')->group(function () {
-            Route::get('/',             [ProductController::class, 'index'])->name('index');
-            Route::get('/{product}',    [ProductController::class, 'show'])->name('show');
+                // Products
+                Route::apiResource('products', AdminProductController::class);
+                Route::post('products/{product}/images',        [AdminProductController::class, 'storeImage']);
+                Route::delete('products/{product}/images/{id}', [AdminProductController::class, 'destroyImage']);
 
-            Route::middleware('auth.jwt')->group(function () {
-                Route::post('/',            [ProductController::class, 'store'])->name('store');
-                Route::put('/{product}',    [ProductController::class, 'update'])->name('update');
-                Route::delete('/{product}', [ProductController::class, 'destroy'])->name('destroy');
+                // Brands
+                Route::apiResource('brands',     AdminBrandController::class);
+
+                // Categories
+                Route::apiResource('categories', AdminCategoryController::class);
+
+                // Coupons
+                Route::apiResource('coupons',    AdminCouponController::class);
+
+                // Orders
+                Route::get('orders',                       [AdminOrderController::class, 'index']);
+                Route::get('orders/{order}',               [AdminOrderController::class, 'show']);
+                Route::patch('orders/{order}/status',      [AdminOrderController::class, 'updateStatus']);
+                Route::post('orders/{order}/status-history', [AdminOrderController::class, 'addStatusHistory']);
+
+                // Reviews
+                Route::get('reviews',                      [AdminReviewController::class, 'index']);
+                Route::patch('reviews/{review}/approve',   [AdminReviewController::class, 'approve']);
+                Route::patch('reviews/{review}/reject',    [AdminReviewController::class, 'reject']);
+                Route::delete('reviews/{review}',          [AdminReviewController::class, 'destroy']);
             });
-        });
     });
 });

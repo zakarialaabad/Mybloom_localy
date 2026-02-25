@@ -3,80 +3,74 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
 use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductDetailResource;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class ProductController extends Controller
 {
     /**
-     * List products (public) with optional search/filter.
+     * GET /api/v1/products
+     * Supports: ?search=, ?brand=, ?category=, ?gender=, ?sort=popular|price_asc|price_desc|newest, ?page=
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $products = Product::query()
-            ->when($request->search, fn ($q, $s) => $q->where('name', 'like', "%{$s}%"))
-            ->when($request->category, fn ($q, $c) => $q->where('category', $c))
-            ->orderBy($request->sort_by ?? 'created_at', $request->sort_dir ?? 'desc')
-            ->paginate($request->per_page ?? 20);
+        $query = Product::with(['brand', 'category', 'images' => fn ($q) => $q->where('is_primary', true)])
+            ->where('is_active', true);
 
-        return ProductResource::collection($products);
-    }
-
-    /**
-     * Show a single product (public).
-     */
-    public function show(Product $product): JsonResponse
-    {
-        return response()->json(['data' => new ProductResource($product)]);
-    }
-
-    /**
-     * Create a new product — admin only.
-     */
-    public function store(StoreProductRequest $request): JsonResponse
-    {
-        $this->authorizeAdmin();
-
-        $product = Product::create($request->validated());
-
-        return response()->json(['data' => new ProductResource($product)], 201);
-    }
-
-    /**
-     * Update a product — admin only.
-     */
-    public function update(UpdateProductRequest $request, Product $product): JsonResponse
-    {
-        $this->authorizeAdmin();
-
-        $product->update($request->validated());
-
-        return response()->json(['data' => new ProductResource($product)]);
-    }
-
-    /**
-     * Delete a product — admin only.
-     */
-    public function destroy(Product $product): JsonResponse
-    {
-        $this->authorizeAdmin();
-
-        $product->delete();
-
-        return response()->json(['message' => 'Product deleted successfully.']);
-    }
-
-    // ── Helpers ───────────────────────────────────────────────────────────────
-
-    private function authorizeAdmin(): void
-    {
-        if (auth()->user()?->role !== 'admin') {
-            abort(403, 'Forbidden: admin access required.');
+        // Search
+        if ($search = $request->query('search')) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('subtitle', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
         }
+
+        // Filters
+        if ($brand = $request->query('brand')) {
+            $query->whereHas('brand', fn ($q) => $q->where('slug', $brand));
+        }
+
+        if ($category = $request->query('category')) {
+            $query->whereHas('category', fn ($q) => $q->where('slug', $category));
+        }
+
+        if ($gender = $request->query('gender')) {
+            $query->where('gender', $gender);
+        }
+
+        // Sorting
+        match ($request->query('sort', 'newest')) {
+            'price_asc'  => $query->orderBy('price', 'asc'),
+            'price_desc' => $query->orderBy('price', 'desc'),
+            'popular'    => $query->withCount(['allReviews as reviews_count'])->orderBy('reviews_count', 'desc'),
+            default      => $query->orderBy('created_at', 'desc'),
+        };
+
+        return ProductResource::collection($query->paginate(20));
+    }
+
+    /**
+     * GET /api/v1/products/{slug}
+     */
+    public function show(string $slug): ProductDetailResource|JsonResponse
+    {
+        $product = Product::with([
+            'brand',
+            'category',
+            'images',
+            'sizes',
+            'reviews.images',
+        ])->where('slug', $slug)->where('is_active', true)->first();
+
+        if (! $product) {
+            return response()->json(['message' => 'Product not found.'], 404);
+        }
+
+        return new ProductDetailResource($product);
     }
 }

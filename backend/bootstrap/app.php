@@ -23,9 +23,14 @@ return Application::configure(basePath: dirname(__DIR__))
         // Throttle
         $middleware->throttleApi();
 
-        // Rate limiting aliases
+        // Security headers on every response
+        $middleware->api(append: [
+            \App\Http\Middleware\SecurityHeaders::class,
+        ]);
+
+        // Route middleware aliases
         $middleware->alias([
-            'auth.jwt' => \App\Http\Middleware\JwtAuthenticate::class,
+            'ensure.admin' => \App\Http\Middleware\EnsureAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
