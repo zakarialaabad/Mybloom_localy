@@ -1,13 +1,29 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Heart, ShoppingCart, Share2, ChevronUp, ChevronDown, Truck, Clock, Banknote, Package, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Heart, ShoppingCart, Share2, ChevronUp, ChevronDown,
+  Truck, Clock, Banknote, Package,
+} from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { productService, Product, ProductSize } from '@/services/api';
+import useCartStore from '@/store/cart';
+import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
 
 export default function ProductPage({ params }: { params: { id: string } }) {
+  const slug = params.id; // route param value is used as slug
+
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState(false);
+  const [mainImage, setMainImage] = useState('');
+  const [selectedSize, setSelectedSize] = useState<ProductSize | null>(null);
+  const [wished, setWished] = useState(false);
+
+  const addItem = useCartStore((s) => s.addItem);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('50ml');
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(true);

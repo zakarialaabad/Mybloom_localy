@@ -77,16 +77,21 @@ export default function CollectionPage() {
                   <h3 className="font-serif text-gray-700">Price</h3>
                   <ChevronUp className="h-4 w-4 text-gray-400" />
                 </div>
-                {/* Histogram mockup */}
-                <div className="h-16 flex items-end gap-[1px] mb-2 px-2">
-                  {Array.from({length: 30}).map((_, i) => (
-                    <div 
-                      key={i} 
-                      className="flex-1 bg-[#d4af37] opacity-50" 
-                      style={{ height: `${Math.max(10, Math.random() * 100)}%` }} 
-                    />
-                  ))}
-                </div>
+                {/* Histogram — fixed values to prevent hydration mismatch */}
+                {(() => {
+                  const bars = [22,35,48,60,75,90,85,70,55,42,30,22,18,28,40,58,72,88,80,65,50,38,28,20,32,45,62,78,68,52];
+                  return (
+                    <div className="h-16 flex items-end gap-[1px] mb-2 px-2">
+                      {bars.map((h, i) => (
+                        <div
+                          key={i}
+                          className="flex-1 bg-[#d4af37] opacity-50"
+                          style={{ height: `${h}%` }}
+                        />
+                      ))}
+                    </div>
+                  );
+                })()}
                 {/* Slider mockup */}
                 <div className="relative h-1 bg-gray-200 rounded-full mb-6 mx-2">
                   <div className="absolute left-1/4 right-1/4 h-full bg-[#d4af37]" />

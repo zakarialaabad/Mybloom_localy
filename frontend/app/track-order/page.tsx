@@ -1,10 +1,44 @@
+'use client';
+
+import { useState, FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { Package, Info } from 'lucide-react';
+import apiClient from '@/services/api';
 
 export default function TrackOrderPage() {
+  const router = useRouter();
+  const [orderNumber, setOrderNumber] = useState('');
+  const [phone,       setPhone]       = useState('');
+  const [loading,     setLoading]     = useState(false);
+  const [error,       setError]       = useState<string | null>(null);
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setError(null);
+
+    const trimmed = orderNumber.trim().replace(/^#/, '');
+    if (!trimmed || !phone.trim()) {
+      setError('Please enter your Order ID and phone number.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await apiClient.get(`/v1/orders/${trimmed}/track`, {
+        params: { phone: phone.trim() },
+      });
+      router.push(`/order-status?order=${encodeURIComponent(trimmed)}&phone=${encodeURIComponent(phone.trim())}`);
+    } catch {
+      setError('Order not found. Please check your Order ID and phone number.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <>
       <Header />
@@ -51,7 +85,7 @@ export default function TrackOrderPage() {
                 </div>
 
                 {/* Form */}
-                <form className="space-y-8">
+                <form className="space-y-8" onSubmit={handleSubmit}>
                   {/* Order ID Field */}
                   <div>
                     <label className="block text-[10px] font-bold text-gray-400 mb-3 tracking-[0.2em] font-serif uppercase">Order ID</label>
@@ -59,7 +93,10 @@ export default function TrackOrderPage() {
                       <Package className="w-4 h-4 text-gray-400" />
                       <input 
                         type="text" 
-                        placeholder="e.g. #ORD-89302" 
+                        placeholder="e.g. LX-8921-Q7F"
+                        value={orderNumber}
+                        onChange={(e) => setOrderNumber(e.target.value)}
+                        required
                         className="flex-1 bg-transparent border-none focus:outline-none text-sm font-serif italic text-gray-700 placeholder:text-gray-200"
                       />
                     </div>
@@ -83,19 +120,27 @@ export default function TrackOrderPage() {
                       </div>
                       <input 
                         type="tel" 
-                        placeholder="+212 6 00 00 00 00" 
+                        placeholder="+212 6 00 00 00 00"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        required
                         className="flex-1 bg-transparent border-none focus:outline-none text-sm font-serif italic text-gray-700 placeholder:text-gray-200"
                       />
                     </div>
                   </div>
 
-                  {/* Submit Button */}
-                  <Link 
-                    href="/order-status"
-                    className="block w-full text-center bg-[#4a403a] text-white py-4 rounded-sm font-serif italic text-base hover:bg-[#3a322d] transition-transform active:scale-[0.98] shadow-lg shadow-gray-200 mt-4"
+                  {error && (
+                    <p className="text-red-500 text-xs font-serif text-center">{error}</p>
+                  )}
+
+                  {/* Submit */}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="block w-full text-center bg-[#4a403a] text-white py-4 rounded-sm font-serif italic text-base hover:bg-[#3a322d] transition-transform active:scale-[0.98] shadow-lg shadow-gray-200 mt-4 disabled:opacity-50"
                   >
-                    Track Order ›
-                  </Link>
+                    {loading ? 'Searching…' : 'Track Order ›'}
+                  </button>
                 </form>
 
                 {/* Footer Link */}

@@ -1,33 +1,32 @@
-import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import Cookies from 'js-cookie';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 export interface ApiValidationError {
   message: string;
+  code?: string;
   errors?: Record<string, string[]>;
 }
 
-export interface LoginPayload {
+export interface AdminLoginPayload {
   email: string;
   password: string;
 }
 
-export interface RegisterPayload {
-  name: string;
-  email: string;
-  password: string;
-  password_confirmation: string;
+export interface AdminLoginResponse {
+  message: string;
+  admin: { id: number; email: string };
 }
 
-export interface AuthResponse {
-  token: string;
-  token_type: string;
-  expires_in: number;
-  user: import('@/types').User;
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: { current_page: number; last_page: number; per_page: number; total: number };
+  links: { first: string | null; last: string | null; prev: string | null; next: string | null };
 }
 
 // ─── Axios instance ───────────────────────────────────────────────────────────
+// No Bearer token. No js-cookie reads.
+// Sanctum admin_token cookie is sent automatically by the browser (withCredentials).
 
 const apiClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -35,84 +34,40 @@ const apiClient = axios.create({
     'Content-Type': 'application/json',
     Accept: 'application/json',
   },
-  withCredentials: true, // Sends HttpOnly cookies on cross-origin requests
+  withCredentials: true,
   timeout: 15_000,
 });
 
-// ─── Request interceptor — attach Bearer token ────────────────────────────────
-
-apiClient.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  const token = Cookies.get(process.env.NEXT_PUBLIC_TOKEN_COOKIE ?? 'parfum_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
-// ─── Response interceptor — normalise errors ─────────────────────────────────
+// ─── Response interceptor ─────────────────────────────────────────────────────
+// 401 → redirect to /admin/login. No retry. No token refresh.
 
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
-  async (error: AxiosError<ApiValidationError>) => {
-    const status = error.response?.status;
-
-    // Token expired — attempt a refresh, then retry once
-    if (status === 401) {
-      try {
-        const { data } = await axios.post<AuthResponse>(
-          `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-          {},
-          { withCredentials: true },
-        );
-        Cookies.set(process.env.NEXT_PUBLIC_TOKEN_COOKIE ?? 'parfum_token', data.token, {
-          secure: true,
-          sameSite: 'strict',
-        });
-
-        // Retry original request with new token
-        if (error.config) {
-          error.config.headers.Authorization = `Bearer ${data.token}`;
-          return apiClient.request(error.config);
-        }
-      } catch {
-        // Refresh failed — clear session and redirect
-        Cookies.remove(process.env.NEXT_PUBLIC_TOKEN_COOKIE ?? 'parfum_token');
-        if (typeof window !== 'undefined') {
-          window.location.href = '/login';
-        }
+  (error: AxiosError<ApiValidationError>) => {
+    if (error.response?.status === 401) {
+      if (typeof window !== 'undefined') {
+        window.location.href = '/admin/login';
       }
     }
-
     return Promise.reject(error.response?.data ?? error);
   },
 );
 
-// ─── Auth Service ─────────────────────────────────────────────────────────────
+// ─── Admin auth service ───────────────────────────────────────────────────────
 
-export const authService = {
-  login: async (payload: LoginPayload): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>('/auth/login', payload);
-    return data;
-  },
-
-  register: async (payload: RegisterPayload): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>('/auth/register', payload);
+export const adminAuthService = {
+  login: async (payload: AdminLoginPayload): Promise<AdminLoginResponse> => {
+    const { data } = await apiClient.post<AdminLoginResponse>('/v1/admin/auth/login', payload);
     return data;
   },
 
   logout: async (): Promise<void> => {
-    await apiClient.post('/auth/logout');
-    Cookies.remove(process.env.NEXT_PUBLIC_TOKEN_COOKIE ?? 'parfum_token');
+    await apiClient.post('/v1/admin/auth/logout');
   },
 
-  me: async (): Promise<import('@/types').User> => {
-    const { data } = await apiClient.get<{ data: import('@/types').User }>('/auth/me');
+  me: async (): Promise<{ id: number; email: string }> => {
+    const { data } = await apiClient.get<{ data: { id: number; email: string } }>('/v1/admin/auth/me');
     return data.data;
-  },
-
-  refreshToken: async (): Promise<AuthResponse> => {
-    const { data } = await apiClient.post<AuthResponse>('/auth/refresh');
-    return data;
   },
 };
 
@@ -141,6 +96,191 @@ export const resourceService = {
 
   destroy: async (resource: string, id: number | string) => {
     await apiClient.delete(`${resource}/${id}`);
+  },
+};
+
+// ─── Domain types ─────────────────────────────────────────────────────────────
+
+export interface ProductSize {
+  id: number;
+  volume_ml: number;
+  price: number;
+  original_price: number | null;
+  stock_quantity: number;
+  sku: string;
+}
+
+export interface ProductImage {
+  id: number;
+  image_url: string;
+  is_primary: boolean;
+  sort_order: number;
+}
+
+export interface ReviewItem {
+  id: number;
+  reviewer_name: string;
+  rating: number;
+  body: string;
+  images: { image_url: string }[];
+  created_at: string;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  slug: string;
+  subtitle: string;
+  description: string;
+  gender: 'men' | 'women' | 'unisex';
+  is_featured: boolean;
+  brand: { id: number; name: string; slug: string };
+  category: { id: number; name: string; slug: string };
+  primary_image: string;
+  images?: ProductImage[];
+  sizes?: ProductSize[];
+  reviews?: ReviewItem[];
+  avg_rating: number;
+  review_count: number;
+  min_price: number;
+  max_price: number;
+  badges?: string[];
+}
+
+export interface Brand {
+  id: number;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+}
+
+export interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  image_url: string | null;
+  display_order: number;
+}
+
+export interface ShippingMethod {
+  id: number;
+  name: string;
+  label: string;
+  price: number;
+  free_above: number | null;
+}
+
+export interface CouponValidateResult {
+  valid: boolean;
+  discount_type: 'flat' | 'percent';
+  discount_value: number;
+  savings_amount: number;
+  message: string;
+}
+
+export interface PlaceOrderPayload {
+  customer_name: string;
+  customer_phone: string;
+  shipping_address: { city: string; quartier: string; zip: string; address: string };
+  shipping_method_id: number;
+  coupon_code?: string;
+  items: { product_id: number; size_id: number; quantity: number }[];
+}
+
+export interface OrderTrackResult {
+  order_number: string;
+  customer_name: string;
+  status: string;
+  status_histories: { status: string; note: string | null; changed_at: string }[];
+  items: { product_name: string; product_size_label: string; quantity: number; image_url?: string; product_id: number }[];
+  shipping_address: { city: string };
+  subtotal: number;
+  shipping_cost: number;
+  coupon_discount: number;
+  total: number;
+}
+
+// ─── Product service ──────────────────────────────────────────────────────────
+
+export const productService = {
+  list: async (params?: Record<string, unknown>) => {
+    const { data } = await apiClient.get<{ data: Product[]; meta?: unknown }>('/v1/products', { params });
+    return data;
+  },
+
+  show: async (slug: string) => {
+    const { data } = await apiClient.get<{ data: Product }>(`/v1/products/${slug}`);
+    return data.data;
+  },
+};
+
+// ─── Brand service ────────────────────────────────────────────────────────────
+
+export const brandService = {
+  list: async () => {
+    const { data } = await apiClient.get<{ data: Brand[] }>('/v1/brands');
+    return data.data;
+  },
+};
+
+// ─── Category service ─────────────────────────────────────────────────────────
+
+export const categoryService = {
+  list: async () => {
+    const { data } = await apiClient.get<{ data: Category[] }>('/v1/categories');
+    return data.data;
+  },
+};
+
+// ─── Shipping service ─────────────────────────────────────────────────────────
+
+export const shippingService = {
+  list: async () => {
+    const { data } = await apiClient.get<{ data: ShippingMethod[] }>('/v1/shipping-methods');
+    return data.data;
+  },
+};
+
+// ─── Coupon service ───────────────────────────────────────────────────────────
+
+export const couponService = {
+  validate: async (code: string, order_total: number): Promise<CouponValidateResult> => {
+    const { data } = await apiClient.post<{ data: CouponValidateResult }>('/v1/coupons/validate', { code, order_total });
+    return data.data;
+  },
+};
+
+// ─── Order service ────────────────────────────────────────────────────────────
+
+export const orderService = {
+  place: async (payload: PlaceOrderPayload) => {
+    const { data } = await apiClient.post<{ data: { order_number: string; total: number } }>('/v1/orders', payload);
+    return data.data;
+  },
+
+  track: async (orderNumber: string, phone: string): Promise<OrderTrackResult> => {
+    const { data } = await apiClient.get<{ data: OrderTrackResult }>(`/v1/orders/${orderNumber}/track`, { params: { phone } });
+    return data.data;
+  },
+};
+
+// ─── Review service ───────────────────────────────────────────────────────────
+
+export const reviewService = {
+  list: async (params?: Record<string, unknown>) => {
+    const { data } = await apiClient.get<{ data: ReviewItem[] }>('/v1/reviews', { params });
+    return data.data;
+  },
+
+  submit: async (payload: {
+    product_id: number;
+    order_id?: number;
+    reviewer_name: string;
+    rating: number;
+    body: string;
+  }) => {
+    const { data } = await apiClient.post<{ data: { message: string } }>('/v1/reviews', payload);
+    return data.data;
   },
 };
 
