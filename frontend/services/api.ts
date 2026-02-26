@@ -212,6 +212,11 @@ export const productService = {
     const { data } = await apiClient.get<{ data: Product }>(`/v1/products/${slug}`);
     return data.data;
   },
+  // Aggregates for price histogram and min/max
+  aggregates: async () => {
+    const { data } = await apiClient.get<{ data: { min_price: number; max_price: number; buckets: number[] } }>('/v1/products/aggregates');
+    return data.data;
+  },
 };
 
 // ─── Brand service ────────────────────────────────────────────────────────────

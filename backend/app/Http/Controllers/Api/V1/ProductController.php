@@ -9,6 +9,7 @@ use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -54,6 +55,32 @@ class ProductController extends Controller
             $query->where('gender', $gender);
         }
 
+        // Price range filter (frontend sends price_min / price_max)
+        if ($request->filled('price_min')) {
+            $query->where('price', '>=', (float) $request->query('price_min'));
+        }
+
+        if ($request->filled('price_max')) {
+            $query->where('price', '<=', (float) $request->query('price_max'));
+        }
+
+        // Minimum average rating filter (frontend sends min_rating)
+        if ($request->filled('min_rating')) {
+            $minRating = (float) $request->query('min_rating');
+            $query->whereExists(function ($q) use ($minRating) {
+                $q->select(DB::raw('1'))
+                  ->from('reviews')
+                  ->whereColumn('reviews.product_id', 'products.id')
+                  ->groupBy('reviews.product_id')
+                  ->havingRaw('AVG(rating) >= ?', [$minRating]);
+            });
+        }
+
+        // Promotions filter (products where original_price > price)
+        if ($request->filled('on_promotion')) {
+            $query->whereColumn('original_price', '>', 'price');
+        }
+
         if ($request->query('is_featured')) {
             $query->where('is_featured', true);
         }
@@ -94,5 +121,32 @@ class ProductController extends Controller
         }
 
         return new ProductDetailResource($product);
+    }
+
+    /**
+     * GET /api/v1/products/aggregates
+     * Returns min/max price and simple histogram buckets for the UI.
+     */
+    public function aggregates(Request $request): JsonResponse
+    {
+        $prices = Product::where('is_active', true)->pluck('price')->map(fn($p) => (float) $p)->filter(fn($p) => $p > 0);
+
+        if ($prices->isEmpty()) {
+            return response()->json(['data' => ['min_price' => 0, 'max_price' => 0, 'buckets' => array_fill(0, 10, 0)]]);
+        }
+
+        $min = $prices->min();
+        $max = $prices->max();
+        $bucketsCount = 10;
+        $range = $max - $min ?: 1;
+
+        $buckets = array_fill(0, $bucketsCount, 0);
+
+        foreach ($prices as $price) {
+            $index = (int) floor(($price - $min) / $range * ($bucketsCount - 1));
+            $buckets[$index]++;
+        }
+
+        return response()->json(['data' => ['min_price' => $min, 'max_price' => $max, 'buckets' => $buckets]]);
     }
 }

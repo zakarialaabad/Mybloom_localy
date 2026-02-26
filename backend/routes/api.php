@@ -38,6 +38,7 @@ Route::prefix('api')->group(function () {
         Route::middleware('throttle:120,1')->group(function () {
 
             // Catalogue
+            Route::get('/products/aggregates',          [ProductController::class, 'aggregates']);
             Route::get('/products',                    [ProductController::class, 'index']);
             Route::get('/products/{slug}',             [ProductController::class, 'show']);
             Route::get('/brands',                      [BrandController::class, 'index']);
