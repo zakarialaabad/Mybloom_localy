@@ -19,6 +19,8 @@ class StoreReviewRequest extends FormRequest
             'reviewer_name' => ['required', 'string', 'max:100'],
             'rating'        => ['required', 'integer', 'min:1', 'max:5'],
             'body'          => ['nullable', 'string', 'max:2000'],
+            'images'        => ['nullable', 'array', 'max:4'],
+            'images.*'      => ['image', 'mimes:jpeg,png,webp,gif', 'max:4096'],
         ];
     }
 }

@@ -1,14 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { brandService, Brand } from '@/services/api';
+import { useEffect } from 'react';
+import useReferenceStore from '@/store/reference';
 
 export default function BrandLogos() {
-  const [brands, setBrands] = useState<Brand[]>([]);
+  const brands        = useReferenceStore((s) => s.brands);
+  const ensureBrands  = useReferenceStore((s) => s.ensureBrands);
 
-  useEffect(() => {
-    brandService.list().then(setBrands).catch(() => {});
-  }, []);
+  // Idempotent: if brands are already loaded by another component this is a no-op
+  useEffect(() => { ensureBrands(); }, [ensureBrands]);
 
   return (
     <section className="border-b border-gray-100 py-12">

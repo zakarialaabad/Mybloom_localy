@@ -3,11 +3,15 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ChevronDown, ChevronUp, Search, Grid, List } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { productService, brandService, categoryService, Brand, Category, Product } from '@/services/api';
+import { productService, Product } from '@/services/api';
 import ProductCard from '@/components/ui/ProductCard';
+import useReferenceStore from '@/store/reference';
+import useFilterStore from '@/store/filters';
+import PriceHistogram from '@/components/ui/PriceHistogram';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
@@ -27,77 +31,103 @@ function productToCard(p: Product) {
 }
 
 export default function CollectionPage() {
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
+  // Reference data from global store — fetched once, reused across navigations
+  const brands           = useReferenceStore((s) => s.brands);
+  const categories       = useReferenceStore((s) => s.categories);
+  const ensureBrands     = useReferenceStore((s) => s.ensureBrands);
+  const ensureCategories = useReferenceStore((s) => s.ensureCategories);
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
-  const [globalMin, setGlobalMin] = useState<number>(0);
-  const [globalMax, setGlobalMax] = useState<number>(100);
-  const [selectedMin, setSelectedMin] = useState<number>(0);
-  const [selectedMax, setSelectedMax] = useState<number>(100);
-  const [activeThumb, setActiveThumb] = useState<'min' | 'max' | null>(null);
-  const [histogram, setHistogram] = useState<number[]>([]);
-  const [selectedRating, setSelectedRating] = useState<number | null>(null);
-  const [promotionOnly, setPromotionOnly] = useState<boolean>(false);
-  const [selectedBrands, setSelectedBrands] = useState<number[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<number[]>([]);
 
-  // Fetch sidebar options on mount
-  useEffect(() => {
-    brandService.list().then(data => setBrands(data)).catch(() => {});
-    categoryService.list().then(data => setCategories(data)).catch(() => {});
-  }, []);
+  // ── Filter state — shared with FilterModal via useFilterStore ─────────────
+  const globalMin          = useFilterStore((s) => s.globalMin);
+  const globalMax          = useFilterStore((s) => s.globalMax);
+  const selectedMin        = useFilterStore((s) => s.selectedMin);
+  const selectedMax        = useFilterStore((s) => s.selectedMax);
+  const selectedBrands     = useFilterStore((s) => s.selectedBrands);
+  const selectedCategories = useFilterStore((s) => s.selectedCategories);
+  const selectedRating     = useFilterStore((s) => s.selectedRating);
+  const promotionOnly      = useFilterStore((s) => s.promotionOnly);
+  const featuredOnly       = useFilterStore((s) => s.featuredOnly);
 
-  // Fetch products when filters change
-  useEffect(() => {
-    setLoadingProducts(true);
-    const params: Record<string, unknown> = {};
-    if (selectedBrands.length > 0) params['brand_ids[]'] = selectedBrands;
-    if (selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
-    params['price_min'] = selectedMin;
-    params['price_max'] = selectedMax;
-    if (selectedRating !== null) params['min_rating'] = selectedRating;
-    if (promotionOnly) params['on_promotion'] = 1;
-    productService.list(params)
-      .then(({ data }) => setProducts(data))
-      .catch(() => {})
-      .finally(() => setLoadingProducts(false));
-  }, [selectedBrands, selectedCategories, selectedMin, selectedMax, selectedRating, promotionOnly]);
+  const setSelectedMin       = useFilterStore((s) => s.setSelectedMin);
+  const setSelectedMax       = useFilterStore((s) => s.setSelectedMax);
+  const toggleBrand          = useFilterStore((s) => s.toggleBrand);
+  const toggleCategory       = useFilterStore((s) => s.toggleCategory);
+  const setSelectedCategories = useFilterStore((s) => s.setSelectedCategories);
+  const setSelectedRating    = useFilterStore((s) => s.setSelectedRating);
+  const setPromotionOnly     = useFilterStore((s) => s.setPromotionOnly);
+  const setFeaturedOnly      = useFilterStore((s) => s.setFeaturedOnly);
+  const ensureAggregates     = useFilterStore((s) => s.ensureAggregates);
+  const aggregatesReady      = useFilterStore((s) => s.aggregatesReady);
 
-  // Fetch aggregates for histogram / defaults on mount
-  useEffect(() => {
-    let mounted = true;
-    productService.aggregates()
-      .then((agg) => {
-        if (!mounted) return;
-        const gmin = agg.min_price ?? 0;
-        const gmax = agg.max_price ?? 100;
-        setGlobalMin(gmin);
-        setGlobalMax(gmax);
-        setSelectedMin(gmin);
-        setSelectedMax(gmax);
-        setHistogram(agg.buckets);
-      })
-      .catch(() => {});
-    return () => { mounted = false; };
-  }, []);
+  // Reactive URL params — works for both fresh loads and soft navigations
+  const searchParams = useSearchParams();
 
-  // clear active thumb on pointer release
+  // Ensure reference data + price bounds loaded (idempotent — no-op if already in store)
+  useEffect(() => { ensureBrands(); }, [ensureBrands]);
+  useEffect(() => { ensureCategories(); }, [ensureCategories]);
+  useEffect(() => { ensureAggregates(); }, [ensureAggregates]);
+
+  // Apply URL params to filter store — re-runs on every URL change (soft navigation too)
   useEffect(() => {
-    const clear = () => setActiveThumb(null);
-    window.addEventListener('mouseup', clear);
-    window.addEventListener('touchend', clear);
+    const categoryId = searchParams.get('category');
+    const featured   = searchParams.get('featured');
+    // Reset URL-controlled filters first, then apply current URL values
+    setSelectedCategories(categoryId ? [Number(categoryId)] : []);
+    setFeaturedOnly(featured === '1');
+  }, [searchParams, setSelectedCategories, setFeaturedOnly]);
+
+  // Fetch products when filters change.
+  // Debounced (400 ms) so rapid slider drags don't flood the API.
+  // AbortController cancels any in-flight request before issuing a new one,
+  // preventing stale responses from overwriting fresher results (race condition).
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const timer = setTimeout(async () => {
+      setLoadingProducts(true);
+      const params: Record<string, unknown> = {};
+
+      if (featuredOnly) {
+        // "Best Sellers" mode — send ONLY is_featured=1.
+        // No price, brand, category or any other filter.
+        // Stale store values from a previous session must not interfere.
+        params['is_featured'] = 1;
+      } else {
+        if (selectedBrands.length > 0) params['brand_ids[]'] = selectedBrands;
+        if (selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
+        // Only apply price filter once real bounds are known — avoids the default
+        // 0-100 range silently wiping out products before aggregates load.
+        if (aggregatesReady) {
+          params['price_min'] = selectedMin;
+          params['price_max'] = selectedMax;
+        }
+        if (selectedRating !== null) params['min_rating'] = selectedRating;
+        if (promotionOnly) params['on_promotion'] = 1;
+      }
+      try {
+        const result = await productService.list(params, controller.signal);
+        setProducts(result.data);
+      } catch (err: unknown) {
+        // Ignore AbortError — it means a newer request superseded this one
+        if (err instanceof Error && err.name !== 'AbortError' && err.name !== 'CanceledError') {
+          setProducts([]);
+        }
+      } finally {
+        setLoadingProducts(false);
+      }
+    }, 400);
+
+    // Cleanup: cancel the debounce timer AND abort any in-flight request
     return () => {
-      window.removeEventListener('mouseup', clear);
-      window.removeEventListener('touchend', clear);
+      clearTimeout(timer);
+      controller.abort();
     };
-  }, []);
+  }, [selectedBrands, selectedCategories, selectedMin, selectedMax, selectedRating, promotionOnly, featuredOnly, aggregatesReady]);
 
-  const toggleBrand = (id: number) =>
-    setSelectedBrands(prev => prev.includes(id) ? prev.filter(b => b !== id) : [...prev, id]);
 
-  const toggleCategory = (id: number) =>
-    setSelectedCategories(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -148,99 +178,15 @@ export default function CollectionPage() {
                   <ChevronUp className="h-4 w-4 text-gray-400" />
                 </div>
 
-                {/* Histogram */}
-                {(() => {
-                  const staticBars = [22,35,48,60,75,90,85,70,55,42,30,22,18,28,40,58,72,88,80,65,50,38,28,20,32,45,62,78,68,52];
-                  const raw = histogram && histogram.length ? histogram : staticBars;
-                  const bucketCount = raw.length;
-                  const max = Math.max(1, ...raw);
-                  const bars = raw.map((v) => Math.round((v / max) * 100));
-                  const gmin = globalMin;
-                  const gmax = globalMax;
-                  const range = Math.max(1, gmax - gmin);
-                  const selMin = selectedMin;
-                  const selMax = selectedMax;
-
-                  return (
-                    <div className="h-16 mb-2 px-2 flex justify-center">
-                      <div style={{ display: 'flex', alignItems: 'flex-end', gap: 4, height: '100%' }}>
-                        {bars.map((h, i) => {
-                          const bucketStart = gmin + (i * range) / bucketCount;
-                          const bucketEnd = gmin + ((i + 1) * range) / bucketCount;
-                          const inSelection = selMin <= bucketEnd && selMax >= bucketStart;
-                          const color = inSelection ? '#d4af37' : '#eaeaea';
-                          const opacity = inSelection ? 1 : 0.5;
-                          const scale = inSelection ? 1.06 : 1.0;
-                          return (
-                            <div key={i} style={{ height: `${h}%`, width: 6, background: color, opacity, transform: `scaleY(${scale})`, transformOrigin: 'bottom', transition: 'height 180ms ease, background 180ms ease, transform 180ms ease, opacity 180ms ease', borderTopLeftRadius: 6, borderTopRightRadius: 6, boxShadow: inSelection ? '0 1px 0 rgba(0,0,0,0.06) inset' : 'none' }} title={`${Math.round(bucketStart)} - ${Math.round(bucketEnd)}: ${raw[i]} items`} />
-                          );
-                        })}
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Range track + handles */}
-                <div className="relative h-1 bg-gray-200 rounded-full mb-6 mx-2">
-                  {(() => {
-                    const gmin = globalMin;
-                    const gmax = globalMax;
-                    const smin = selectedMin;
-                    const smax = selectedMax;
-                    const range = Math.max(1, gmax - gmin);
-                    const leftPct = ((smin - gmin) / range) * 100;
-                    const rightPct = ((smax - gmin) / range) * 100;
-                    const fillLeft = Math.max(0, leftPct);
-                    const fillWidth = Math.max(0.5, rightPct - leftPct);
-                    return (
-                      <>
-                        <div className="absolute h-full bg-[#d4af37]" style={{ left: `${fillLeft}%`, width: `${fillWidth}%` }} />
-
-                        {/* visual handles */}
-                        <div className="absolute top-1/2 -translate-y-1/2 bg-white border rounded-full shadow-sm cursor-pointer" style={{ left: `calc(${leftPct}% - 10px)`, width: 20, height: 20, borderWidth: 2, boxShadow: '0 2px 6px rgba(0,0,0,0.08)' }} />
-                        <div className="absolute top-1/2 -translate-y-1/2 bg-white border rounded-full shadow-sm cursor-pointer" style={{ left: `calc(${rightPct}% - 10px)`, width: 20, height: 20, borderWidth: 2, boxShadow: '0 2px 6px rgba(0,0,0,0.08)' }} />
-
-                        {/* invisible full-track inputs (min under, max above) so both handles are draggable */}
-                        <input
-                          type="range"
-                          min={gmin}
-                          max={gmax}
-                          value={smin}
-                          onChange={(e) => { const val = Number(e.target.value); const clamped = Math.min(val, smax - 1); setSelectedMin(Math.max(gmin, clamped)); }}
-                          onMouseDown={() => setActiveThumb('min')}
-                          onTouchStart={() => setActiveThumb('min')}
-                          aria-label="Minimum price"
-                          className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-auto opacity-0"
-                          style={{ zIndex: activeThumb === 'min' ? 30 : 20 }}
-                        />
-
-                        <input
-                          type="range"
-                          min={gmin}
-                          max={gmax}
-                          value={smax}
-                          onChange={(e) => { const val = Number(e.target.value); const clamped = Math.max(val, smin + 1); setSelectedMax(Math.min(gmax, clamped)); }}
-                          onMouseDown={() => setActiveThumb('max')}
-                          onTouchStart={() => setActiveThumb('max')}
-                          aria-label="Maximum price"
-                          className="absolute inset-0 w-full appearance-none bg-transparent pointer-events-auto opacity-0"
-                          style={{ zIndex: activeThumb === 'max' ? 40 : 30 }}
-                        />
-                      </>
-                    );
-                  })()}
-                </div>
-
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex-1">
-                    <div className="text-[10px] text-gray-400 mb-1 text-center">Minimum</div>
-                    <div className="mx-auto px-3 py-2 rounded-full bg-white border border-gray-200 text-center text-xs text-gray-600 shadow-sm" style={{ width: '96px' }}>{selectedMin} MAD</div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-[10px] text-gray-400 mb-1 text-center">Maximum</div>
-                    <div className="mx-auto px-3 py-2 rounded-full bg-white border border-gray-200 text-center text-xs text-gray-600 shadow-sm" style={{ width: '96px' }}>{selectedMax} MAD</div>
-                  </div>
-                </div>
+                {/* Unified histogram + range slider (shared PriceHistogram component) */}
+                <PriceHistogram
+                  globalMin={globalMin}
+                  globalMax={globalMax}
+                  selectedMin={selectedMin}
+                  selectedMax={selectedMax}
+                  onMinChange={setSelectedMin}
+                  onMaxChange={setSelectedMax}
+                />
               </div>
 
               {/* Category Filter */}
@@ -284,6 +230,10 @@ export default function CollectionPage() {
                   <label className="flex items-center gap-3 cursor-pointer group">
                     <input type="checkbox" checked={promotionOnly} onChange={(e) => setPromotionOnly(e.target.checked)} className="w-3.5 h-3.5" />
                     <span className="text-xs text-gray-500">Offre Speciales</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <input type="checkbox" checked={featuredOnly} onChange={(e) => setFeaturedOnly(e.target.checked)} className="w-3.5 h-3.5" />
+                    <span className="text-xs text-gray-500">Best Sellers</span>
                   </label>
                 </div>
               </div>

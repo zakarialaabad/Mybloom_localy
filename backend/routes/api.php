@@ -46,13 +46,14 @@ Route::prefix('api')->group(function () {
             Route::get('/shipping-methods',            [ShippingMethodController::class, 'index']);
 
             // Coupon validation
-            Route::post('/coupons/validate',           [CouponController::class, 'validate']);
+            Route::post('/coupons/validate',           [CouponController::class, 'check']);
 
             // Orders — create + track (no auth)
             Route::post('/orders',                                [OrderController::class, 'store']);
             Route::get('/orders/{orderNumber}/track',             [OrderController::class, 'track']);
 
-            // Reviews — post (linked by order_number, no auth)
+            // Reviews — GET (approved, optional product_id scope) | POST (submit, no auth)
+            Route::get('/reviews',                     [ReviewController::class, 'index']);
             Route::post('/reviews',                    [ReviewController::class, 'store']);
         });
 

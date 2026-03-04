@@ -8,6 +8,7 @@ use App\Models\Brand;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class BrandController extends Controller
@@ -26,6 +27,7 @@ class BrandController extends Controller
 
         $data['slug'] = Str::slug($data['name']);
         $brand = Brand::create($data);
+        Cache::forget('api.brands');
 
         return response()->json(['data' => new BrandResource($brand)], 201);
     }
@@ -47,6 +49,7 @@ class BrandController extends Controller
         }
 
         $brand->update($data);
+        Cache::forget('api.brands');
 
         return response()->json(['data' => new BrandResource($brand)]);
     }
@@ -54,6 +57,7 @@ class BrandController extends Controller
     public function destroy(Brand $brand): JsonResponse
     {
         $brand->delete();
+        Cache::forget('api.brands');
 
         return response()->json(['message' => 'Brand deleted.']);
     }

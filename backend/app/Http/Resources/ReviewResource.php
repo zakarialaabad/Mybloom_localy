@@ -17,7 +17,7 @@ class ReviewResource extends JsonResource
             'is_approved'   => $this->is_approved,
             'approved_at'   => $this->approved_at?->toISOString(),
             'images'        => $this->whenLoaded('images', fn () =>
-                $this->images->map(fn ($img) => ['url' => $img->url])
+                $this->images->map(fn ($img) => ['image_url' => $img->url])
             ),
             'product'       => $this->whenLoaded('product', fn () => $this->product ? [
                 'id'   => $this->product->id,

@@ -8,6 +8,7 @@ use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class CategoryController extends Controller
@@ -25,10 +26,12 @@ class CategoryController extends Controller
             'name'       => ['required', 'string', 'max:100'],
             'parent_id'  => ['nullable', 'exists:categories,id'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
+            'image_url'  => ['nullable', 'url', 'max:2048'],
         ]);
 
         $data['slug'] = Str::slug($data['name']);
         $category = Category::create($data);
+        Cache::forget('api.categories');
 
         return response()->json(['data' => new CategoryResource($category)], 201);
     }
@@ -44,6 +47,7 @@ class CategoryController extends Controller
             'name'       => ['sometimes', 'string', 'max:100'],
             'parent_id'  => ['nullable', 'exists:categories,id'],
             'sort_order' => ['nullable', 'integer', 'min:0'],
+            'image_url'  => ['nullable', 'url', 'max:2048'],
         ]);
 
         if (isset($data['name'])) {
@@ -51,6 +55,7 @@ class CategoryController extends Controller
         }
 
         $category->update($data);
+        Cache::forget('api.categories');
 
         return response()->json(['data' => new CategoryResource($category)]);
     }
@@ -58,6 +63,7 @@ class CategoryController extends Controller
     public function destroy(Category $category): JsonResponse
     {
         $category->delete();
+        Cache::forget('api.categories');
 
         return response()->json(['message' => 'Category deleted.']);
     }

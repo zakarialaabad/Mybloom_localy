@@ -42,7 +42,7 @@ class OrderController extends Controller
             'phone' => ['required', 'string'],
         ]);
 
-        $order = Order::with(['items.product', 'statusHistories', 'shippingMethod'])
+        $order = Order::with(['items.product.images', 'statusHistories', 'shippingMethod'])
             ->where('order_number', $orderNumber)
             ->where('customer_phone', $request->phone)
             ->first();

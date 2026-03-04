@@ -25,10 +25,14 @@ class OrderTrackResource extends JsonResource
             ]),
             'items'            => $this->whenLoaded('items', fn () =>
                 $this->items->map(fn ($item) => [
-                    'product_name' => $item->relationLoaded('product') ? $item->product?->name : null,
-                    'size_label'   => $item->size_label,
-                    'quantity'     => $item->quantity,
-                    'unit_price'   => (float) $item->unit_price,
+                    'product_id'        => $item->product_id,
+                    'product_name'      => $item->product?->name,
+                    'product_size_label'=> $item->size_label,
+                    'quantity'          => $item->quantity,
+                    'unit_price'        => (float) $item->unit_price,
+                    'image_url'         => $item->product?->images
+                        ?->firstWhere('is_primary', true)?->url
+                        ?? $item->product?->images?->first()?->url,
                 ])
             ),
             'status_histories' => $this->whenLoaded('statusHistories', fn () =>

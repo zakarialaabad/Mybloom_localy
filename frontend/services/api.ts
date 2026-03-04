@@ -126,6 +126,17 @@ export interface ReviewItem {
   created_at: string;
 }
 
+export interface RatingDistributionEntry {
+  count: number;
+  percentage: number;
+}
+
+export interface RatingSummary {
+  average: number;
+  total: number;
+  distribution: Record<number, RatingDistributionEntry>;
+}
+
 export interface Product {
   id: number;
   name: string;
@@ -160,6 +171,8 @@ export interface Category {
   slug: string;
   image_url: string | null;
   display_order: number;
+  parent_id?: number | null;
+  children?: Category[];
 }
 
 export interface ShippingMethod {
@@ -203,8 +216,8 @@ export interface OrderTrackResult {
 // ─── Product service ──────────────────────────────────────────────────────────
 
 export const productService = {
-  list: async (params?: Record<string, unknown>) => {
-    const { data } = await apiClient.get<{ data: Product[]; meta?: unknown }>('/v1/products', { params });
+  list: async (params?: Record<string, unknown>, signal?: AbortSignal) => {
+    const { data } = await apiClient.get<{ data: Product[]; meta?: unknown }>('/v1/products', { params, signal });
     return data;
   },
 
@@ -272,20 +285,42 @@ export const orderService = {
 // ─── Review service ───────────────────────────────────────────────────────────
 
 export const reviewService = {
-  list: async (params?: Record<string, unknown>) => {
-    const { data } = await apiClient.get<{ data: ReviewItem[] }>('/v1/reviews', { params });
-    return data.data;
+  list: async (params?: Record<string, unknown>): Promise<{ data: ReviewItem[]; rating_summary: RatingSummary }> => {
+    const { data } = await apiClient.get<{ data: ReviewItem[]; rating_summary: RatingSummary }>('/v1/reviews', { params });
+    return { data: data.data, rating_summary: data.rating_summary };
   },
 
-  submit: async (payload: {
-    product_id: number;
-    order_id?: number;
-    reviewer_name: string;
-    rating: number;
-    body: string;
-  }) => {
-    const { data } = await apiClient.post<{ data: { message: string } }>('/v1/reviews', payload);
-    return data.data;
+  submit: async (
+    payload: {
+      product_id: number;
+      order_number?: string;
+      reviewer_name: string;
+      rating: number;
+      body: string;
+    },
+    images: File[] = [],
+  ) => {
+    // Always use FormData so the backend can receive both fields and files
+    const form = new FormData();
+    form.append('product_id',    String(payload.product_id));
+    form.append('reviewer_name', payload.reviewer_name);
+    form.append('rating',        String(payload.rating));
+    form.append('body',          payload.body ?? '');
+    if (payload.order_number) form.append('order_number', payload.order_number);
+    images.forEach((file) => form.append('images[]', file));
+
+    console.log('[reviewService.submit] POST /v1/reviews — product_id:', payload.product_id, 'rating:', payload.rating, 'images:', images.length);
+
+    try {
+      const { data } = await apiClient.post<{ data: ReviewItem }>('/v1/reviews', form, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      console.log('[reviewService.submit] Success — response:', data);
+      return data.data;
+    } catch (err) {
+      console.error('[reviewService.submit] Request failed — error:', err);
+      throw err;
+    }
   },
 };
 

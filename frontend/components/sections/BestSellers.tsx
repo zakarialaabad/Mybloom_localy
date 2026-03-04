@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/ui/ProductCard';
 import SectionContainer from '@/components/SectionContainer';
@@ -24,14 +24,40 @@ function productToCard(p: Product): ProductCardProps {
   };
 }
 
+const VISIBLE = 5; // cards visible at once on desktop
+
 export default function BestSellers() {
   const [products, setProducts] = useState<ProductCardProps[]>([]);
+  const [canPrev, setCanPrev]   = useState(false);
+  const [canNext, setCanNext]   = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    productService.list({ is_featured: true, limit: 5 })
+    // Fetch ALL featured products — no artificial limit
+    productService.list({ is_featured: true, limit: 100 })
       .then(({ data }) => setProducts(data.map(productToCard)))
       .catch(() => {});
   }, []);
+
+  // Update arrow visibility whenever products load or scroll position changes
+  const syncArrows = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    setCanPrev(el.scrollLeft > 4);
+    setCanNext(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  };
+
+  useEffect(() => {
+    syncArrows();
+  }, [products]);
+
+  const scroll = (dir: 'prev' | 'next') => {
+    const el = trackRef.current;
+    if (!el) return;
+    // Scroll by one card width (track width / VISIBLE)
+    const cardWidth = el.scrollWidth / (products.length || 1);
+    el.scrollBy({ left: dir === 'next' ? cardWidth : -cardWidth, behavior: 'smooth' });
+  };
 
   return (
     <section id="best-sellers" className="pb-24 pt-16">
@@ -50,7 +76,7 @@ export default function BestSellers() {
           </p>
         </div>
         <Link
-          href="#"
+          href="/collection?featured=1"
           className="rounded-md bg-aura-gold px-6 py-3 text-sm font-semibold text-white
             transition-colors hover:bg-yellow-600"
         >
@@ -58,15 +84,19 @@ export default function BestSellers() {
         </Link>
       </SectionContainer>
 
-      {/* Product grid */}
+      {/* Carousel */}
       <SectionContainer>
         <div className="relative">
           {/* Prev arrow */}
           <button
             aria-label="Previous"
-            className="absolute -left-4 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2
+            onClick={() => scroll('prev')}
+            disabled={!canPrev}
+            className={`absolute -left-4 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2
               items-center justify-center rounded-full border border-gray-200 bg-white
-              text-gray-400 shadow-sm hover:text-gray-900"
+              shadow-sm transition-opacity ${
+                canPrev ? 'text-gray-700 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
+              }`}
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -76,18 +106,34 @@ export default function BestSellers() {
           {/* Next arrow */}
           <button
             aria-label="Next"
-            className="absolute -right-4 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2
+            onClick={() => scroll('next')}
+            disabled={!canNext}
+            className={`absolute -right-4 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2
               items-center justify-center rounded-full border border-gray-200 bg-white
-              text-gray-400 shadow-sm hover:text-gray-900"
+              shadow-sm transition-opacity ${
+                canNext ? 'text-gray-700 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
+              }`}
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+          {/* Scroll track */}
+          <div
+            ref={trackRef}
+            onScroll={syncArrows}
+            className="flex gap-6 overflow-x-hidden scroll-smooth"
+          >
             {products.map((product) => (
-              <ProductCard key={product.id} {...product} />
+              <div
+                key={product.id}
+                // Always show exactly VISIBLE cards: flex-none with percentage width
+                className="flex-none"
+                style={{ width: `calc((100% - ${(VISIBLE - 1) * 24}px) / ${VISIBLE})` }}
+              >
+                <ProductCard {...product} />
+              </div>
             ))}
           </div>
         </div>

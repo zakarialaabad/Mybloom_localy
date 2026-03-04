@@ -81,8 +81,9 @@ class ProductController extends Controller
             $query->whereColumn('original_price', '>', 'price');
         }
 
-        if ($request->query('is_featured')) {
-            $query->where('is_featured', true);
+        // is_featured=1 → featured only | is_featured=0 → non-featured only
+        if ($request->filled('is_featured')) {
+            $query->where('is_featured', filter_var($request->query('is_featured'), FILTER_VALIDATE_BOOLEAN));
         }
 
         // Sorting
@@ -125,28 +126,24 @@ class ProductController extends Controller
 
     /**
      * GET /api/v1/products/aggregates
-     * Returns min/max price and simple histogram buckets for the UI.
+     * Returns min/max price from the DB using native SQL aggregates.
+     * No PHP-side collection filtering — MySQL computes the true MIN/MAX.
      */
     public function aggregates(Request $request): JsonResponse
     {
-        $prices = Product::where('is_active', true)->pluck('price')->map(fn($p) => (float) $p)->filter(fn($p) => $p > 0);
+        $agg = Product::where('is_active', true)
+            ->whereNotNull('price')
+            ->where('price', '>', 0)
+            ->selectRaw('MIN(price) as min_price, MAX(price) as max_price')
+            ->first();
 
-        if ($prices->isEmpty()) {
+        $min = $agg && $agg->min_price !== null ? (float) $agg->min_price : 0;
+        $max = $agg && $agg->max_price !== null ? (float) $agg->max_price : 0;
+
+        if ($min === 0.0 && $max === 0.0) {
             return response()->json(['data' => ['min_price' => 0, 'max_price' => 0, 'buckets' => array_fill(0, 10, 0)]]);
         }
 
-        $min = $prices->min();
-        $max = $prices->max();
-        $bucketsCount = 10;
-        $range = $max - $min ?: 1;
-
-        $buckets = array_fill(0, $bucketsCount, 0);
-
-        foreach ($prices as $price) {
-            $index = (int) floor(($price - $min) / $range * ($bucketsCount - 1));
-            $buckets[$index]++;
-        }
-
-        return response()->json(['data' => ['min_price' => $min, 'max_price' => $max, 'buckets' => $buckets]]);
+        return response()->json(['data' => ['min_price' => $min, 'max_price' => $max, 'buckets' => []]]);
     }
 }

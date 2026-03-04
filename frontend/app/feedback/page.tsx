@@ -20,6 +20,15 @@ export default function FeedbackPage() {
   const [submitting, setSubmitting] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState({ name: '', desc: '', image: '', productId: 0 });
+  const [errorMsg, setErrorMsg]         = useState<string | undefined>(undefined);
+  const [successBanner, setSuccessBanner] = useState<string | null>(null);
+
+  // Auto-dismiss the success banner after 3.5 s
+  useEffect(() => {
+    if (!successBanner) return;
+    const t = setTimeout(() => setSuccessBanner(null), 3500);
+    return () => clearTimeout(t);
+  }, [successBanner]);
 
   useEffect(() => {
     if (!orderNumber || !phone) return;
@@ -30,21 +39,44 @@ export default function FeedbackPage() {
 
   const openModal = (name: string, desc: string, image: string, productId: number) => {
     setSelectedProduct({ name, desc, image, productId });
+    setErrorMsg(undefined);
     setIsModalOpen(true);
   };
 
-  const handleSubmitReview = async (rating: number, body: string) => {
-    if (!selectedProduct.productId) return;
+  const handleSubmitReview = async (rating: number, body: string, images: File[]) => {
+    console.log('[FeedbackPage] handleSubmitReview called — productId:', selectedProduct.productId, 'rating:', rating, 'images:', images.length);
+
+    if (!selectedProduct.productId) {
+      console.error('[FeedbackPage] Blocked: productId is missing or 0. selectedProduct:', selectedProduct);
+      setErrorMsg('Unable to identify the product. Please close the modal and try again.');
+      return;
+    }
+
     setSubmitting(true);
+    setErrorMsg(undefined);
+
+    const payload = {
+      product_id: selectedProduct.productId,
+      order_number: orderNumber || undefined,
+      reviewer_name: orderData?.customer_name ?? 'Client',
+      rating,
+      body,
+    };
+    console.log('[FeedbackPage] Sending review payload:', payload, '— images count:', images.length);
+
     try {
-      await reviewService.submit({
-        product_id: selectedProduct.productId,
-        reviewer_name: orderData?.customer_name ?? 'Client',
-        rating,
-        body,
-      });
+      const result = await reviewService.submit(payload, images);
+      console.log('[FeedbackPage] Review submitted successfully:', result);
       setRatedProductIds(prev => new Set([...prev, selectedProduct.productId]));
+      setSuccessBanner(selectedProduct.name);
       setIsModalOpen(false);
+    } catch (err: unknown) {
+      console.error('[FeedbackPage] Review submission failed:', err);
+      const apiError = err as { message?: string; errors?: Record<string, string[]> };
+      const detail = apiError?.errors
+        ? Object.values(apiError.errors).flat().join(' ')
+        : (apiError?.message ?? 'Something went wrong. Please try again.');
+      setErrorMsg(detail);
     } finally {
       setSubmitting(false);
     }
@@ -187,8 +219,24 @@ export default function FeedbackPage() {
       </main>
       <Footer />
 
+      {/* Success toast */}
+      <div
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 z-[200] transition-all duration-500 ${
+          successBanner ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'
+        }`}
+      >
+        <div className="flex items-center gap-3 bg-[#4a403a] text-white px-6 py-3 rounded-sm shadow-2xl">
+          <svg className="w-4 h-4 text-[#cda873] shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+            <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          <p className="font-serif italic text-sm">
+            Review submitted — thank you!
+          </p>
+        </div>
+      </div>
+
       {/* Review Modal */}
-      <ReviewModal 
+      <ReviewModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         productName={selectedProduct.name}
@@ -196,6 +244,7 @@ export default function FeedbackPage() {
         productImage={selectedProduct.image}
         onSubmit={handleSubmitReview}
         isSubmitting={submitting}
+        errorMsg={errorMsg}
       />
     </>
   );

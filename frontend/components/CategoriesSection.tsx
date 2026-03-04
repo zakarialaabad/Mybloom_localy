@@ -4,14 +4,21 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import SectionContainer from '@/components/SectionContainer';
-import { categoryService, Category } from '@/services/api';
+import useReferenceStore from '@/store/reference';
+
+const PER_PAGE = 6;
 
 export default function CategoriesSection() {
-  const [categories, setCategories] = useState<Category[]>([]);
+  const categories       = useReferenceStore((s) => s.categories);
+  const ensureCategories = useReferenceStore((s) => s.ensureCategories);
+  const [page, setPage]  = useState(0);
 
-  useEffect(() => {
-    categoryService.list().then(setCategories).catch(() => {});
-  }, []);
+  useEffect(() => { ensureCategories(); }, [ensureCategories]);
+
+  const totalPages   = Math.ceil(categories.length / PER_PAGE);
+  const visible      = categories.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+  const canPrev      = page > 0;
+  const canNext      = page < totalPages - 1;
   return (
     <section className="bg-white">
       {/* ── Why Shop with us ────────────────────────────────────────────────── */}
@@ -111,16 +118,23 @@ export default function CategoriesSection() {
 
         {/* Carousel / Grid */}
         <div className="relative mt-12">
-            {/* Left navigation arrow placeholder (visual only for mockup fidelity) */}
+            {/* Left arrow */}
             <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 hidden lg:flex">
-                <button className="h-12 w-12 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-400 hover:text-gray-600 shadow-sm">
+                <button
+                  onClick={() => setPage((p) => p - 1)}
+                  disabled={!canPrev}
+                  className={`h-12 w-12 rounded-full border border-gray-200 bg-white flex items-center justify-center shadow-sm transition-opacity ${
+                    canPrev ? 'text-gray-600 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
+                  }`}
+                >
                     ‹
                 </button>
             </div>
 
+            {/* 6-per-page grid */}
             <div className="grid grid-cols-2 gap-x-8 gap-y-12 sm:grid-cols-3 lg:grid-cols-6">
-            {categories.map((category) => (
-                <Link key={category.id} href={`/category/${category.slug}`} className="group block text-center">
+            {visible.map((category) => (
+                <Link key={category.id} href={`/collection?category=${category.id}`} className="group block text-center">
                     <div className="relative mx-auto h-40 w-40 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105">
                         <Image
                             src={category.image_url ?? 'https://images.unsplash.com/photo-1598007264887-acc47d519b88?auto=format&fit=crop&q=80&w=200'}
@@ -137,12 +151,33 @@ export default function CategoriesSection() {
             ))}
             </div>
 
-            {/* Right navigation arrow placeholder */}
+            {/* Right arrow */}
             <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 hidden lg:flex">
-                <button className="h-12 w-12 rounded-full border border-gray-200 bg-white flex items-center justify-center text-gray-600 hover:text-gray-900 shadow-sm">
+                <button
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={!canNext}
+                  className={`h-12 w-12 rounded-full border border-gray-200 bg-white flex items-center justify-center shadow-sm transition-opacity ${
+                    canNext ? 'text-gray-600 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
+                  }`}
+                >
                     ›
                 </button>
             </div>
+
+            {/* Page dots */}
+            {totalPages > 1 && (
+              <div className="flex justify-center gap-2 mt-8">
+                {Array.from({ length: totalPages }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setPage(i)}
+                    className={`h-1.5 rounded-full transition-all ${
+                      i === page ? 'w-6 bg-[#4a403a]' : 'w-1.5 bg-gray-300 hover:bg-gray-400'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
         </div>
 
         {/* Mobile button */}

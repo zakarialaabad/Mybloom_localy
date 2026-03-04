@@ -14,7 +14,7 @@ class CouponController extends Controller
      * POST /api/v1/coupons/validate
      * Body: { code: string, order_subtotal: number }
      */
-    public function validate(Request $request): JsonResponse
+    public function check(Request $request): JsonResponse
     {
         $request->validate([
             'code'            => ['required', 'string', 'max:50'],
