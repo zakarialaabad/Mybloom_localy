@@ -52,6 +52,16 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         if (data.sizes && data.sizes.length > 0) {
           const inStock = data.sizes.find((s) => s.stock_quantity > 0) ?? data.sizes[0];
           setSelectedSize(inStock);
+        } else {
+          // No size variants — create a virtual default so buttons are never disabled
+          setSelectedSize({
+            id: 0,
+            volume_ml: 0,
+            price: data.min_price ?? 0,
+            original_price: data.original_price ?? null,
+            stock_quantity: 99,
+            sku: '',
+          });
         }
         setWished(isInWishlist(data.id));
       })
@@ -71,12 +81,16 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   // ─── Add to cart ────────────────────────────────────────────────────────────
   const handleAddToCart = () => {
     if (!product || !selectedSize) return;
+    // volume_ml === 0 means it's a virtual size (no real size variants)
+    const sizeLabel = selectedSize.volume_ml > 0
+      ? `${selectedSize.volume_ml}ml`
+      : null;
     addItem({
       productId:   product.id,
       productName: product.name,
       slug:        product.slug,
       sizeId:      selectedSize.id,
-      sizeLabel:   `${selectedSize.volume_ml}ml`,
+      sizeLabel,
       quantity,
       unitPrice:   selectedSize.price,
       imageUrl:    mainImage,

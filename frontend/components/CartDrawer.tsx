@@ -47,7 +47,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         </div>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto px-6 pb-6">
+        <div className="flex-1 overflow-y-auto px-6 pb-6 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
           {/* Products Container */}
           <div className="bg-white border border-gray-200 rounded-sm mb-8">
             <div className="px-4 py-3 border-b border-gray-200 bg-[#fdfdfd]">

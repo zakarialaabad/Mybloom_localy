@@ -103,7 +103,7 @@ export default function CustomerReviewsSection() {
             <div className="pt-8 italic text-gray-500 text-sm leading-relaxed border-t border-gray-50">
               "Nous croyons que l'excellence ne se revendique pas, elle se constate."
               Chaque produit présenté sur notre boutique est accompagné de notations attribuées par des clients réels, après réception et utilisation.            </div>
-            <a className="inline-block text-xs font-semibold underline uppercase tracking-widest text-gray-800 hover:text-aura-gold transition-colors" href="#">Read All Reviews</a>
+            <a className="hidden lg:inline-block text-xs font-semibold underline uppercase tracking-widest text-gray-800 hover:text-aura-gold transition-colors" href="#">Read All Reviews</a>
           </div>
 
           {/* Right Column: Testimonials Carousel */}
@@ -147,6 +147,11 @@ export default function CustomerReviewsSection() {
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"></path></svg>
             </button>
+          </div>
+          
+          {/* Mobile Button: Below Carousel */}
+          <div className="lg:hidden text-center">
+             <a className="inline-block text-xs font-semibold underline uppercase tracking-widest text-gray-800 hover:text-aura-gold transition-colors" href="#">Read All Reviews</a>
           </div>
         </div>
       </SectionContainer>

@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import CartDrawer from '@/components/CartDrawer';
 import FilterModal from '@/components/FilterModal';
 import useCartStore from '@/store/cart';
+import { getWishlist } from '@/lib/wishlist';
 
 const NAV_LINKS = [
   { label: 'MEN',          href: '#' },
@@ -23,8 +24,15 @@ export default function Header() {
   const [query, setQuery] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [wishlistCount, setWishlistCount] = useState(0);
 
-  useEffect(() => { setIsMounted(true); }, []);
+  useEffect(() => {
+    setIsMounted(true);
+    setWishlistCount(getWishlist().length);
+    const onWishlistChanged = () => setWishlistCount(getWishlist().length);
+    window.addEventListener('wishlist-changed', onWishlistChanged);
+    return () => window.removeEventListener('wishlist-changed', onWishlistChanged);
+  }, []);
 
   return (
     <>
@@ -41,23 +49,32 @@ export default function Header() {
       </div>
 
       {/* ── Logo · Search · Actions ─────────────────────────────────────── */}
-      <div className="container mx-auto flex items-center justify-between px-4 py-5">
+      <div className="container mx-auto flex items-center justify-between px-4 py-4 md:py-5">
+        {/* Mobile Hamburger (hidden on pb-desktop) */}
+        <div className="flex w-1/4 md:hidden">
+          <button aria-label="Menu" className="text-gray-900">
+            <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h8" />
+            </svg>
+          </button>
+        </div>
+
         {/* Logo */}
-        <div className="w-1/4">
+        <div className="flex w-2/4 justify-center md:w-1/4 md:justify-start">
           <Link href="/" className="inline-block">
             <Image
               src="/logo.jpeg"
               alt="Bloom Parfums"
               width={220}
               height={64}
-              className="object-contain h-12 w-auto"
+              className="object-contain h-6 md:h-12 w-auto"
               priority
             />
           </Link>
         </div>
 
         {/* Search */}
-        <div className="w-2/4 px-4">
+        <div className="hidden md:block w-2/4 px-4">
           <div className="relative mx-auto max-w-xl">
             {/* magnifier */}
             <svg
@@ -88,17 +105,23 @@ export default function Header() {
         </div>
 
         {/* Icons */}
-        <div className="flex w-1/4 items-center justify-end space-x-6">
+        <div className="flex w-1/4 items-center justify-end space-x-5 md:space-x-6">
           {/* Wishlist */}
           <Link
             href="/wishlist"
             aria-label="Wishlist"
-            className="text-gray-600 transition-colors hover:text-aura-purple"
+            className="relative text-gray-600 transition-colors hover:text-aura-purple"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                 d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
             </svg>
+            {isMounted && wishlistCount > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center
+                rounded-full bg-red-500 text-[10px] text-white">
+                {wishlistCount}
+              </span>
+            )}
           </Link>
 
           {/* Cart */}
@@ -122,7 +145,7 @@ export default function Header() {
       </div>
 
       {/* ── Main Navigation ─────────────────────────────────────────────── */}
-      <nav className="container mx-auto px-4 pb-4">
+      <nav className="hidden md:block container mx-auto px-4 pb-4">
         <ul className="flex justify-center space-x-10 text-sm font-semibold tracking-widest text-gray-700">
           {NAV_LINKS.map(({ label, href, highlight }) => (
             <li key={label}>

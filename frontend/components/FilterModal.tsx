@@ -153,7 +153,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               />
             </div>
 
-            <div className="space-y-4 max-h-52 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:hidden">
+            <div className="space-y-4 max-h-52 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-gray-300">
               {visibleBrands.length === 0 && (
                 <p className="text-xs text-gray-400 font-serif italic">No brands found.</p>
               )}
@@ -207,7 +207,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               <ChevronUp className="w-4 h-4 text-gray-400" />
             </div>
 
-            <div className="space-y-4 max-h-52 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:hidden">
+            <div className="space-y-4 max-h-52 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-gray-300">
               {categories.map((cat) => (
                 <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
                   <div

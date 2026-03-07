@@ -48,7 +48,7 @@ class ProductDetailResource extends JsonResource
             'images'         => $this->whenLoaded('images', fn () =>
                 $this->images->map(fn ($img) => [
                     'id'         => $img->id,
-                    'url'        => $img->url,
+                    'image_url'  => $img->url,
                     'alt'        => $img->alt,
                     'sort_order' => $img->sort_order,
                     'is_primary' => $img->is_primary,
@@ -57,9 +57,12 @@ class ProductDetailResource extends JsonResource
             'sizes'          => $this->whenLoaded('sizes', fn () =>
                 $this->sizes->map(fn ($s) => [
                     'id'             => $s->id,
+                    'volume_ml'      => (int) $s->label,
                     'label'          => $s->label,
-                    'price_modifier' => (float) $s->price_modifier,
-                    'stock'          => $s->stock,
+                    'price'          => round((float) $this->price + (float) $s->price_modifier, 2),
+                    'original_price' => null,
+                    'stock_quantity' => (int) $s->stock,
+                    'sku'            => null,
                 ])
             ),
             'reviews'        => $this->whenLoaded('reviews', fn () => ReviewResource::collection($this->reviews)),

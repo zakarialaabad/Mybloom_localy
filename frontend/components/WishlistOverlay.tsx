@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import { X, Heart, Grid, List, ChevronDown } from 'lucide-react';
+import ProductCard from '@/components/ui/ProductCard';
 
 interface WishlistOverlayProps {
   isOpen: boolean;
@@ -69,52 +70,23 @@ export default function WishlistOverlay({ isOpen, onClose }: WishlistOverlayProp
         {/* Product Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-10">
           {wishlistItems.map((item) => (
-            <div key={item.id} className="group flex flex-col">
-              {/* Image Container */}
-              <div className="relative aspect-[4/5] w-full bg-[#f8f8f8] mb-4 overflow-hidden rounded-sm">
-                {/* Badges */}
-                <div className="absolute top-3 left-3 z-10">
-                  <button className="text-red-500 hover:scale-110 transition-transform">
-                    <Heart className="h-5 w-5 fill-current" />
-                  </button>
-                </div>
-                <div className="absolute top-3 right-3 z-10">
-                  <span className="bg-[#fdf6e3] text-[#b8860b] text-xs font-medium px-2 py-1 rounded-sm">
-                    {item.discount}
-                  </span>
-                </div>
-                {/* Image */}
-                <Image 
-                  src={item.image} 
-                  alt={item.name} 
-                  fill 
-                  className="object-contain p-4 mix-blend-multiply group-hover:scale-105 transition-transform duration-500" 
+            <div key={item.id} className="relative group flex flex-col h-full">
+              <div className="flex-grow">
+                <ProductCard
+                  id={item.id}
+                  slug={`product-${item.id}`}
+                  name={item.name}
+                  subtitle={item.subtitle}
+                  description={item.desc}
+                  price={item.price}
+                  originalPrice={item.oldPrice}
+                  rating={item.rating}
+                  reviewCount={item.reviews}
+                  imageUrl={item.image}
+                  badge={item.discount}
                 />
               </div>
-
-              {/* Details */}
-              <div className="space-y-1 flex-grow">
-                <h3 className="font-serif font-bold text-lg text-gray-900">{item.name}</h3>
-                <p className="text-xs text-gray-500">{item.subtitle}</p>
-                <p className="text-sm text-gray-500 mt-2">{item.desc}</p>
-                <div className="flex items-baseline gap-2 mt-1">
-                  <span className="font-bold text-gray-900">{item.price} DH</span>
-                  <span className="text-sm text-gray-400 line-through">{item.oldPrice} DH</span>
-                </div>
-                <div className="flex items-center gap-1 mt-2 mb-4">
-                  <div className="flex text-[#d4af37]">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <svg key={star} className="h-3 w-3 fill-current" viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
-                    ))}
-                  </div>
-                  <span className="text-xs text-gray-500 font-medium">{item.rating} ({item.reviews})</span>
-                </div>
-              </div>
-
-              {/* Add to Bag Button */}
-              <button className="w-full bg-[#4a403a] text-white py-3 rounded-sm font-serif italic text-sm hover:bg-[#3a322d] transition-colors mt-auto">
+              <button className="w-full bg-[#4a403a] text-white py-3 rounded-sm font-serif italic text-sm hover:bg-[#3a322d] transition-colors mt-3 opacity-0 group-hover:opacity-100">
                 Add to Bag ›
               </button>
             </div>

@@ -16,9 +16,13 @@ return [
 
     'allowed_methods' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
 
-    'allowed_origins' => [
+    'allowed_origins' => array_filter([
         env('FRONTEND_URL', 'http://localhost:3000'),
-    ],
+        env('FRONTEND_NETWORK_URL'),   // set in .env for LAN/mobile access
+    ]),
+
+    // During local development only: uncomment to allow any LAN device
+    // 'allowed_origins_patterns' => ['/^http:\/\/192\.168\.\d+\.\d+:\d+$/'],
 
     'allowed_origins_patterns' => [],
 

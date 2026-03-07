@@ -51,6 +51,11 @@ class ProductController extends Controller
             $query->whereIn('category_id', (array) $categoryIds);
         }
 
+        // Specific product IDs (used by wishlist page)
+        if ($ids = $request->query('ids')) {
+            $query->whereIn('id', array_map('intval', (array) $ids));
+        }
+
         if ($gender = $request->query('gender')) {
             $query->where('gender', $gender);
         }
@@ -87,16 +92,39 @@ class ProductController extends Controller
         }
 
         // Sorting
-        match ($request->query('sort', 'newest')) {
-            'price_asc'  => $query->orderBy('price', 'asc'),
-            'price_desc' => $query->orderBy('price', 'desc'),
-            'popular'    => $query->orderBy('review_count', 'desc'),
-            default      => $query->orderBy('created_at', 'desc'),
-        };
+        $sort = $request->query('sort', 'newest');
 
-        $perPage = min((int) ($request->query('limit', 20)), 100);
+        if ($sort === 'brand_az') {
+            // Join brands with an alias so it doesn't conflict with the eager-loaded relation
+            $query->leftJoin('brands as sort_brands', 'sort_brands.id', '=', 'products.brand_id')
+                  ->orderBy('sort_brands.name', 'asc')
+                  ->select('products.*');
+        } elseif ($sort === 'last_7_days') {
+            $query->where('products.created_at', '>=', now()->subDays(7))
+                  ->orderBy('products.created_at', 'desc');
+        } elseif ($sort === 'last_30_days') {
+            $query->where('products.created_at', '>=', now()->subDays(30))
+                  ->orderBy('products.created_at', 'desc');
+        } elseif ($sort === 'this_month') {
+            $query->whereMonth('products.created_at', now()->month)
+                  ->whereYear('products.created_at', now()->year)
+                  ->orderBy('products.created_at', 'desc');
+        } else {
+            match ($sort) {
+                'price_asc'  => $query->orderBy('products.price', 'asc'),
+                'price_desc' => $query->orderBy('products.price', 'desc'),
+                'popular'    => $query->orderBy('review_count', 'desc'),
+                default      => $query->orderBy('products.created_at', 'desc'),
+            };
+        }
 
-        return ProductResource::collection($query->paginate($perPage));
+        // If a specific limit is requested (e.g. BestSellers widget), honour it.
+        // Otherwise return ALL matching products with no cap.
+        if ($request->filled('limit')) {
+            return ProductResource::collection($query->paginate((int) $request->query('limit')));
+        }
+
+        return ProductResource::collection($query->get());
     }
 
     /**

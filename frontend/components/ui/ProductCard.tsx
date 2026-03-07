@@ -42,81 +42,91 @@ export default function ProductCard({
 
   return (
     <Link href={`/product/${slug}`} className="product-card group relative block">
-      <article className="cursor-pointer">
+      <article className="cursor-pointer bg-white">
         {/* Image container */}
-        <div className="relative mb-4 aspect-[4/5] overflow-hidden rounded-sm bg-aura-soft-gray">
+        <div className="relative mb-4 aspect-[4/5] overflow-hidden bg-[#f8f5f1]">
 
-          {/* Wishlist button */}
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              toggleWishlist(id);
-              setWished((w) => !w);
-            }}
-          aria-label="Toggle wishlist"
-          className="absolute left-4 top-4 z-10 rounded-full bg-white/80 p-2 transition-colors
-            hover:bg-white"
-        >
-          <svg
-            className={`h-5 w-5 transition-colors ${wished ? 'fill-red-500 text-red-500' : 'fill-none text-gray-400 hover:text-red-500'}`}
-            stroke="currentColor" viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-              d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 
-                00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-          </svg>
-        </button>
 
-        {/* Badges */}
-        <div className="absolute right-4 top-4 z-10 flex flex-col items-end gap-1">
-          {badge && (
-            <span className="rounded bg-aura-gold px-2 py-1 text-[9px] text-white">
-              {badge}
-            </span>
-          )}
-          {isBestSeller && (
-            <span className="rounded border border-aura-gold bg-white px-2 py-1
-              text-[9px] text-aura-gold">
-              Best Seller
-            </span>
-          )}
-        </div>
-
-        {/* Product image */}
-        <Image
-          src={imageUrl}
-          alt={name}
-          fill
-          unoptimized
-          className="object-contain p-8 mix-blend-multiply transition-transform
-            duration-500 group-hover:scale-105"
-        />
-      </div>
-
-      {/* Info */}
-      <div className="space-y-1">
-        <h3 className="font-bold text-gray-900">{name}</h3>
-        <p className="text-xs text-gray-400">{subtitle}</p>
-        <p className="py-1 text-[10px] text-gray-500">{description}</p>
-
-        <div className="flex items-center space-x-2">
-          <span className="font-bold text-gray-900">{price} DH</span>
-          <span className="text-xs text-gray-400 line-through">{originalPrice} DH</span>
-        </div>
-
-        {/* Stars */}
-        <div className="flex items-center space-x-1 pt-1">
-          <div className="flex">
-            {stars.map((s) => (
-              <StarIcon key={s} filled={s <= Math.round(rating)} />
-            ))}
+          {/* Product image */}
+          <div className="relative h-full w-full">
+            <Image
+              src={imageUrl}
+              alt={name}
+              fill
+              unoptimized
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+            />
           </div>
-          <span className="text-[10px] text-gray-400">
-            {rating} ({reviewCount})
-          </span>
+
+          {/* Action buttons overlay bar */}
+          <div className="absolute bottom-0 left-0 w-full translate-y-full bg-white/95 py-3 transition-transform duration-300 ease-in-out group-hover:translate-y-0 flex justify-center items-center gap-7 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+            <button className="text-gray-600 hover:text-black transition-colors" aria-label="Add to cart">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </button>
+            <button className="text-gray-600 hover:text-black transition-colors" aria-label="Quick view">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+              </svg>
+            </button>
+            <button className="text-gray-600 hover:text-black transition-colors" aria-label="Compare">
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
+              </svg>
+            </button>
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleWishlist(id);
+                setWished((w) => !w);
+              }}
+              aria-label="Toggle wishlist"
+              className="transition-colors"
+            >
+              <svg
+                className={`h-5 w-5 ${wished ? 'fill-red-500 text-red-500' : 'fill-none text-gray-600 hover:text-red-500'}`}
+                stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round"
+                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+              </svg>
+            </button>
+          </div>
         </div>
-      </div>
+
+        {/* Info */}
+        <div className="space-y-1.5 px-2 pb-2 text-left">
+          <h3 className="font-serif text-lg font-bold text-gray-900 tracking-wide">{name}</h3>
+          <p className="text-xs text-gray-600 pb-2">{subtitle}</p>
+          
+          <div className="border-t border-gray-100/80 w-full mb-2"></div>
+
+          <p className="text-[11px] text-gray-500 pt-1">{description}</p>
+
+          <div className="flex items-center space-x-2 pt-1 pb-1">
+            <span className="text-[13px] text-gray-900">{price} DH</span>
+            {originalPrice > price && (
+              <>
+                <span className="text-[13px] text-gray-900">-</span>
+                <span className="text-[13px] text-gray-400 line-through decoration-1">{originalPrice} DH</span>
+              </>
+            )}
+          </div>
+
+          {/* Stars */}
+          <div className="flex items-center space-x-1">
+            <div className="flex">
+              {stars.map((s) => (
+                <StarIcon key={s} filled={s <= Math.round(rating)} />
+              ))}
+            </div>
+            <span className="text-[10px] text-gray-500 font-medium">
+              <span className="text-gray-900 font-semibold pr-1">{rating}</span>({reviewCount})
+            </span>
+          </div>
+        </div>
       </article>
     </Link>
   );

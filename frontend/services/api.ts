@@ -155,6 +155,7 @@ export interface Product {
   review_count: number;
   min_price: number;
   max_price: number;
+  original_price?: number;
   badges?: string[];
 }
 

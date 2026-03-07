@@ -1,10 +1,21 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { ChevronDown, ChevronUp, Search, Grid, List } from 'lucide-react';
+
+const SORT_OPTIONS = [
+  { value: 'newest',      label: 'Relevance (Default)' },
+  { value: 'price_asc',   label: 'Price: Low to High' },
+  { value: 'price_desc',  label: 'Price: High to Low' },
+  { value: 'popular',     label: 'Most Popular' },
+  { value: 'brand_az',    label: 'Brand: A–Z' },
+  { value: 'last_7_days', label: 'Added in Last 7 Days' },
+  { value: 'last_30_days',label: 'Added in Last 30 Days' },
+  { value: 'this_month',  label: 'Added This Month' },
+];
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { productService, Product } from '@/services/api';
@@ -37,8 +48,14 @@ export default function CollectionPage() {
   const ensureBrands     = useReferenceStore((s) => s.ensureBrands);
   const ensureCategories = useReferenceStore((s) => s.ensureCategories);
 
+  const PER_PAGE = 10;
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [sortBy, setSortBy] = useState('newest');
+  const [showSortMenu, setShowSortMenu] = useState(false);
+  const sortRef = useRef<HTMLDivElement>(null);
 
   // ── Filter state — shared with FilterModal via useFilterStore ─────────────
   const globalMin          = useFilterStore((s) => s.globalMin);
@@ -70,6 +87,17 @@ export default function CollectionPage() {
   useEffect(() => { ensureCategories(); }, [ensureCategories]);
   useEffect(() => { ensureAggregates(); }, [ensureAggregates]);
 
+  // Close sort dropdown on outside click
+  useEffect(() => {
+    function handleOutside(e: MouseEvent) {
+      if (sortRef.current && !sortRef.current.contains(e.target as Node)) {
+        setShowSortMenu(false);
+      }
+    }
+    document.addEventListener('mousedown', handleOutside);
+    return () => document.removeEventListener('mousedown', handleOutside);
+  }, []);
+
   // Apply URL params to filter store — re-runs on every URL change (soft navigation too)
   useEffect(() => {
     const categoryId = searchParams.get('category');
@@ -90,9 +118,11 @@ export default function CollectionPage() {
       setLoadingProducts(true);
       const params: Record<string, unknown> = {};
 
+      // Sort applies globally (including featuredOnly mode)
+      if (sortBy !== 'newest') params['sort'] = sortBy;
+
       if (featuredOnly) {
-        // "Best Sellers" mode — send ONLY is_featured=1.
-        // No price, brand, category or any other filter.
+        // "Best Sellers" mode — send ONLY is_featured=1 + sort.
         // Stale store values from a previous session must not interfere.
         params['is_featured'] = 1;
       } else {
@@ -125,7 +155,24 @@ export default function CollectionPage() {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [selectedBrands, selectedCategories, selectedMin, selectedMax, selectedRating, promotionOnly, featuredOnly, aggregatesReady]);
+  }, [selectedBrands, selectedCategories, selectedMin, selectedMax, selectedRating, promotionOnly, featuredOnly, aggregatesReady, sortBy]);
+
+  // Reset to page 1 whenever the product list changes (new filter applied)
+  useEffect(() => { setCurrentPage(1); }, [products]);
+
+  const totalPages = Math.ceil(products.length / PER_PAGE);
+  const paginatedProducts = products.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  // Build page number array with ellipsis: e.g. [1, '…', 4, 5, 6, '…', 12]
+  function buildPages(current: number, total: number): (number | '…')[] {
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    const pages: (number | '…')[] = [1];
+    if (current > 3) pages.push('…');
+    for (let i = Math.max(2, current - 1); i <= Math.min(total - 1, current + 1); i++) pages.push(i);
+    if (current < total - 2) pages.push('…');
+    pages.push(total);
+    return pages;
+  }
 
 
 
@@ -245,34 +292,230 @@ export default function CollectionPage() {
           <div className="flex-1">
             {/* Top Bar */}
             <div className="flex justify-between items-center mb-6">
-              <div className="text-xs text-gray-400 font-serif italic">{products.length} Produits</div>
+              <div className="text-xs text-gray-400 font-serif italic">
+                {products.length} Produit{products.length !== 1 ? 's' : ''}
+                {totalPages > 1 && <span className="ml-1 text-gray-300">— page {currentPage}/{totalPages}</span>}
+              </div>
               <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 text-gray-400">
-                  <button className="text-gray-900 hover:text-gray-900 transition-colors"><Grid className="h-4 w-4" /></button>
-                  <button className="hover:text-gray-900 transition-colors"><List className="h-4 w-4" /></button>
+                <div className="flex items-center border border-gray-200 rounded-sm overflow-hidden">
+                  <button
+                    onClick={() => setViewMode('grid')}
+                    title="Vue grille"
+                    className={`p-2 transition-all ${
+                      viewMode === 'grid'
+                        ? 'bg-[#4a403a] text-white'
+                        : 'text-gray-400 hover:bg-[#fdf6e3] hover:text-[#b8860b]'
+                    }`}
+                  >
+                    <Grid className="h-3.5 w-3.5" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode('list')}
+                    title="Vue liste"
+                    className={`p-2 transition-all border-l border-gray-200 ${
+                      viewMode === 'list'
+                        ? 'bg-[#4a403a] text-white'
+                        : 'text-gray-400 hover:bg-[#fdf6e3] hover:text-[#b8860b]'
+                    }`}
+                  >
+                    <List className="h-3.5 w-3.5" />
+                  </button>
                 </div>
-                <div className="flex items-center gap-1 text-xs text-gray-500 font-serif italic cursor-pointer group">
-                  <span>Sort by: <span className="text-gray-900">Relevance (Default)</span></span>
-                  <ChevronDown className="h-3 w-3 group-hover:text-gray-900 transition-colors" />
+                {/* Sort dropdown */}
+                <div ref={sortRef} className="relative">
+                  <button
+                    onClick={() => setShowSortMenu((v) => !v)}
+                    className="flex items-center gap-1 text-xs text-gray-500 font-serif italic hover:text-gray-900 transition-colors select-none"
+                  >
+                    <span>
+                      Sort by:{' '}
+                      <span className="text-gray-900 not-italic font-medium">
+                        {SORT_OPTIONS.find((o) => o.value === sortBy)?.label ?? 'Relevance (Default)'}
+                      </span>
+                    </span>
+                    <ChevronDown className={`h-3 w-3 transition-transform duration-150 ${showSortMenu ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {showSortMenu && (
+                    <div className="absolute right-0 top-full mt-2 z-50 w-52 bg-white border border-gray-200 rounded-sm shadow-lg overflow-hidden">
+                      {SORT_OPTIONS.map((opt) => (
+                        <button
+                          key={opt.value}
+                          onClick={() => { setSortBy(opt.value); setShowSortMenu(false); }}
+                          className={`w-full text-left px-4 py-2.5 text-xs transition-colors ${
+                            sortBy === opt.value
+                              ? 'bg-[#fdf6e3] text-[#b8860b] font-medium'
+                              : 'text-gray-600 hover:bg-[#fdf6e3] hover:text-[#b8860b]'
+                          }`}
+                        >
+                          {opt.value === sortBy && <span className="mr-1.5 text-[#b8860b]">✓</span>}
+                          {opt.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
 
-            {/* Product Grid */}
+            {/* Product Grid / List */}
             {loadingProducts ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div key={i} className="aspect-[4/5] bg-gray-100 rounded-sm animate-pulse" />
-                ))}
-              </div>
+              viewMode === 'grid' ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8">
+                  {Array.from({ length: 8 }).map((_, i) => (
+                    <div key={i} className="aspect-[4/5] bg-gray-100 rounded-sm animate-pulse" />
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <div key={i} className="flex gap-4 p-4 border border-gray-100 rounded-sm animate-pulse">
+                      <div className="w-28 h-28 shrink-0 bg-gray-100 rounded-sm" />
+                      <div className="flex-1 space-y-2 py-1">
+                        <div className="h-4 bg-gray-100 rounded w-1/3" />
+                        <div className="h-3 bg-gray-100 rounded w-1/5" />
+                        <div className="h-3 bg-gray-100 rounded w-2/3" />
+                      </div>
+                      <div className="w-20 space-y-2 py-1">
+                        <div className="h-4 bg-gray-100 rounded" />
+                        <div className="h-3 bg-gray-100 rounded" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )
             ) : products.length === 0 ? (
               <div className="text-center py-20 text-gray-400 font-serif italic">No products found.</div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8">
-                {products.map(p => (
-                  <ProductCard key={p.id} {...productToCard(p)} />
-                ))}
-              </div>
+              <>
+                {viewMode === 'grid' ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8">
+                    {paginatedProducts.map(p => (
+                      <ProductCard key={p.id} {...productToCard(p)} />
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-3">
+                    {paginatedProducts.map(p => (
+                      <Link
+                        key={p.id}
+                        href={`/product/${p.slug}`}
+                        className="group flex items-center gap-5 bg-[#fcfcfc] hover:bg-[#fdf6e3] border border-gray-100 hover:border-[#b8860b]/30 rounded-sm p-4 transition-all duration-200"
+                      >
+                        {/* Thumbnail */}
+                        <div className="relative w-28 h-28 shrink-0 rounded-sm overflow-hidden bg-white border border-gray-100">
+                          <Image
+                            src={p.primary_image ?? FALLBACK_IMG}
+                            alt={p.name}
+                            fill
+                            unoptimized
+                            className="object-contain p-3 mix-blend-multiply transition-transform duration-300 group-hover:scale-105"
+                          />
+                        </div>
+
+                        {/* Info */}
+                        <div className="flex-1 min-w-0 pr-4">
+                          <h3 className="font-serif text-lg font-bold text-gray-900 tracking-wide truncate">{p.name}</h3>
+                          <p className="text-xs text-gray-600 pb-2">{p.brand?.name}</p>
+                          
+                          <div className="border-t border-gray-100/80 w-full mb-2"></div>
+                          
+                          <p className="text-[11px] text-gray-500 pt-1 line-clamp-2 leading-relaxed">{p.subtitle}</p>
+                          
+                          {/* Stars */}
+                          <div className="flex items-center space-x-1 mt-2">
+                            <div className="flex">
+                              {[1,2,3,4,5].map(s => (
+                                <svg key={s} className={`h-3 w-3 fill-current ${ s <= Math.round(p.avg_rating ?? 0) ? 'text-aura-gold' : 'text-gray-300'}`} viewBox="0 0 20 20">
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                              ))}
+                            </div>
+                            <span className="text-[10px] text-gray-500 font-medium">
+                              <span className="text-gray-900 font-semibold pr-1">{(p.avg_rating ?? 0).toFixed(1)}</span>({p.review_count ?? 0})
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Price + badge */}
+                        <div className="shrink-0 text-right space-y-1.5 flex flex-col justify-between items-end h-full">
+                          {p.is_featured && (
+                            <span className="rounded border border-aura-gold bg-white px-2 py-1 text-[9px] font-semibold text-aura-gold tracking-wider uppercase mb-1">
+                              Best Seller
+                            </span>
+                          )}
+                          <div className="flex flex-col items-end gap-1 mt-auto">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-[13px] text-gray-900">{p.min_price ?? 0} DH</span>
+                              {(p.original_price != null) && p.original_price > (p.min_price ?? 0) && (
+                                <>
+                                  <span className="text-[13px] text-gray-900">-</span>
+                                  <span className="text-[13px] text-gray-400 line-through decoration-1">{p.original_price} DH</span>
+                                </>
+                              )}
+                            </div>
+                            <div className="text-[10px] text-gray-400 font-serif italic mt-1">{p.category?.name}</div>
+                          </div>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+
+                {/* ── Pagination ── */}
+                {totalPages > 1 && (
+                  <div className="flex items-center justify-center gap-1.5 mt-12 mb-4">
+                    {/* Prev */}
+                    <button
+                      onClick={() => { setCurrentPage(p => p - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                      disabled={currentPage === 1}
+                      className={`w-9 h-9 flex items-center justify-center rounded-sm border text-sm transition-all ${
+                        currentPage === 1
+                          ? 'border-gray-100 text-gray-300 cursor-not-allowed'
+                          : 'border-gray-200 text-gray-500 hover:border-[#4a403a] hover:text-[#4a403a]'
+                      }`}
+                      aria-label="Page précédente"
+                    >
+                      ‹
+                    </button>
+
+                    {/* Page numbers */}
+                    {buildPages(currentPage, totalPages).map((p, i) =>
+                      p === '…' ? (
+                        <span key={`ellipsis-${i}`} className="w-9 h-9 flex items-center justify-center text-xs text-gray-300 select-none">
+                          …
+                        </span>
+                      ) : (
+                        <button
+                          key={p}
+                          onClick={() => { setCurrentPage(p as number); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                          className={`w-9 h-9 flex items-center justify-center rounded-sm border text-xs font-medium transition-all ${
+                            currentPage === p
+                              ? 'bg-[#4a403a] border-[#4a403a] text-white shadow-sm'
+                              : 'border-gray-200 text-gray-500 hover:bg-[#fdf6e3] hover:border-[#b8860b] hover:text-[#b8860b]'
+                          }`}
+                        >
+                          {p}
+                        </button>
+                      )
+                    )}
+
+                    {/* Next */}
+                    <button
+                      onClick={() => { setCurrentPage(p => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                      disabled={currentPage === totalPages}
+                      className={`w-9 h-9 flex items-center justify-center rounded-sm border text-sm transition-all ${
+                        currentPage === totalPages
+                          ? 'border-gray-100 text-gray-300 cursor-not-allowed'
+                          : 'border-gray-200 text-gray-500 hover:border-[#4a403a] hover:text-[#4a403a]'
+                      }`}
+                      aria-label="Page suivante"
+                    >
+                      ›
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

@@ -8,6 +8,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { productService, Product } from '@/services/api';
 import { getWishlist, removeFromWishlist } from '@/lib/wishlist';
+import ProductCard from '@/components/ui/ProductCard';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
@@ -19,7 +20,7 @@ export default function WishlistPage() {
   useEffect(() => {
     const ids = getWishlist();
     if (ids.length === 0) { setLoading(false); return; }
-    productService.list({ 'ids[]': ids })
+    productService.list({ ids })
       .then(({ data }) => setProducts(data))
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -77,43 +78,32 @@ export default function WishlistPage() {
         {!loading && products.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-12">
             {products.map((product) => {
-              const price = product.min_price ?? 0;
-              const imageUrl = product.primary_image ?? FALLBACK_IMG;
               return (
-                <div key={product.id} className="group flex flex-col">
-                  {/* Image Container */}
-                  <div className="relative aspect-[4/5] w-full bg-[#f8f8f8] mb-4 overflow-hidden rounded-sm cursor-pointer">
-                    {/* Remove from Wishlist */}
-                    <div className="absolute top-3 left-3 z-10">
-                      <button onClick={() => handleRemove(product.id)} className="text-red-500 hover:scale-110 transition-transform active:scale-95">
-                        <Heart className="h-5 w-5 fill-current" />
-                      </button>
-                    </div>
-                    {/* Image */}
-                    <Image
-                      src={imageUrl}
-                      alt={product.name}
-                      fill
-                      className="object-contain p-4 mix-blend-multiply group-hover:scale-105 transition-transform duration-500"
+                <div key={product.id} className="relative flex flex-col h-full group">
+                  <div className="flex-grow">
+                    <ProductCard
+                      id={product.id}
+                      slug={product.slug}
+                      name={product.name}
+                      subtitle={product.brand?.name || ''}
+                      description={product.subtitle || ''}
+                      price={product.min_price ?? 0}
+                      originalPrice={product.original_price ?? 0}
+                      rating={product.avg_rating ?? 0}
+                      reviewCount={product.review_count ?? 0}
+                      imageUrl={product.primary_image ?? FALLBACK_IMG}
                     />
                   </div>
-
-                  {/* Details */}
-                  <div className="space-y-1 flex-grow">
-                    <h3 className="font-serif font-bold text-lg text-gray-900 leading-tight">{product.name}</h3>
-                    <p className="text-xs text-gray-400 font-serif">{product.brand?.name}</p>
-                    <div className="pt-2">
-                      <p className="text-xs text-gray-500 leading-relaxed max-w-[200px]">{product.subtitle}</p>
-                    </div>
-                    <div className="flex items-baseline gap-2 mt-2">
-                      <span className="font-bold text-gray-900">{price} DH</span>
-                    </div>
+                  {/* Remove from Wishlist specific to this page */}
+                  <div className="absolute top-3 left-3 z-20">
+                    <button onClick={() => handleRemove(product.id)} className="bg-white/80 p-1.5 rounded-full text-red-500 hover:text-red-700 hover:bg-white transition-all shadow-sm">
+                      <Heart className="h-4 w-4 fill-current" />
+                    </button>
                   </div>
-
                   {/* Add to Bag Button → goes to product page for size selection */}
                   <button
                     onClick={() => router.push(`/product/${product.slug}`)}
-                    className="w-full bg-[#3d342f] text-white py-3.5 rounded-sm font-serif italic text-sm hover:bg-[#2d2622] transition-colors mt-auto active:scale-[0.98] shadow-sm"
+                    className="w-full bg-[#3d342f] text-white py-3 rounded-sm font-serif italic text-sm hover:bg-[#2d2622] transition-colors mt-3 active:scale-[0.98] shadow-sm opacity-0 group-hover:opacity-100"
                   >
                     Add to Bag ›
                   </button>

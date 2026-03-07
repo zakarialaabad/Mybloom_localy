@@ -34,11 +34,18 @@ export function getWishlist(): number[] {
  * Adds a product ID to the wishlist cookie.
  * No-op if the ID is already present or the 50-item cap is reached.
  */
+function dispatchWishlistChanged(): void {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event('wishlist-changed'));
+  }
+}
+
 export function addToWishlist(productId: number): void {
   const current = getWishlist();
   if (current.includes(productId)) return;
   if (current.length >= MAX_ITEMS) return;
   Cookies.set(COOKIE_NAME, JSON.stringify([...current, productId]), COOKIE_OPTIONS);
+  dispatchWishlistChanged();
 }
 
 /**
@@ -49,9 +56,11 @@ export function removeFromWishlist(productId: number): void {
   const updated = getWishlist().filter(id => id !== productId);
   if (updated.length === 0) {
     Cookies.remove(COOKIE_NAME, { path: '/' });
+    dispatchWishlistChanged();
     return;
   }
   Cookies.set(COOKIE_NAME, JSON.stringify(updated), COOKIE_OPTIONS);
+  dispatchWishlistChanged();
 }
 
 /**
@@ -80,4 +89,5 @@ export function toggleWishlist(productId: number): boolean {
  */
 export function clearWishlist(): void {
   Cookies.remove(COOKIE_NAME, { path: '/' });
+  dispatchWishlistChanged();
 }
