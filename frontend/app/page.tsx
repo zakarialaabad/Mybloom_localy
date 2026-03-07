@@ -1,7 +1,6 @@
 import Header     from '@/components/layout/Header';
 import Footer     from '@/components/layout/Footer';
 import HeroSection  from '@/components/sections/HeroSection';
-import MobileActionBar from '@/components/sections/MobileActionBar';
 import BrandLogos   from '@/components/sections/BrandLogos';
 import BestSellers  from '@/components/sections/BestSellers';
 import CategoriesSection from '@/components/CategoriesSection';
@@ -20,7 +19,6 @@ export default function HomePage() {
 
       <main>
         <HeroSection />
-        <MobileActionBar />
         <BrandLogos />
         <BestSellers />
         <CategoriesSection />

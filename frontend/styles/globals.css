@@ -18,6 +18,11 @@
 
   body {
     @apply bg-white text-gray-900 antialiased;
+    overflow-x: hidden;
+  }
+
+  html {
+    overflow-x: hidden;
   }
 }
 

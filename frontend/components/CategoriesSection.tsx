@@ -24,7 +24,7 @@ export default function CategoriesSection() {
       {/* ── Why Shop with us ────────────────────────────────────────────────── */}
       <div className="relative py-10 md:py-24 overflow-hidden">
         {/* Background - rotated on mobile */}
-        <div className="absolute inset-0 z-0 pointer-events-none">
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           {/* Mobile version (Rotated) - Adjusted so it doesn't zoom in so much that it disappears */}
           <div 
             className="md:hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200vh] h-[100vw] min-w-[1200px] bg-cover bg-center bg-no-repeat rotate-90 opacity-90"
