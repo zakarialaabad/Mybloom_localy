@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             OrderStatusHistorySeeder::class, // 11 — order_status_histories (needs orders)
             ReviewSeeder::class,             // 12 — reviews (needs products + orders)
             ReviewImageSeeder::class,        // 13 — review_images (needs reviews)
+            IngredientSeeder::class,         // 14 — ingredients + pivot (needs products)
         ]);
     }
 }

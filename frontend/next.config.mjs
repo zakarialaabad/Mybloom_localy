@@ -17,9 +17,24 @@ const nextConfig = {
   // Image domains for remote optimization
   images: {
     remotePatterns: [
+      // Backend in production (https)
       {
         protocol: 'https',
         hostname: process.env.NEXT_PUBLIC_API_HOST ?? 'localhost',
+      },
+      // Backend in local dev (http://localhost)
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8000',
+        pathname: '/storage/**',
+      },
+      // Backend in network dev (http://<LAN IP>)
+      {
+        protocol: 'http',
+        hostname: process.env.NEXT_PUBLIC_API_HOST ?? 'localhost',
+        port: '8000',
+        pathname: '/storage/**',
       },
       {
         protocol: 'https',

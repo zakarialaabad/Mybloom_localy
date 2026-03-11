@@ -98,13 +98,13 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
 
       {/* Drawer */}
       <div
-        className={`fixed inset-y-0 right-0 z-[101] w-full max-w-[400px] bg-[#f9f9f9] shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${
+        className={`fixed inset-y-0 right-0 z-[101] w-full max-w-[400px] bg-[#f8f8f8] transform transition-transform duration-300 ease-in-out flex flex-col ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* ── Header ───────────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-center p-6 relative bg-white border-b border-gray-100 shrink-0">
-          <h2 className="text-2xl font-serif font-bold text-gray-800">
+        <div className="flex items-center justify-center p-5 relative bg-white shrink-0 z-10 hidden md:flex">
+          <h2 className="text-[15px] font-serif font-bold text-[#333] tracking-widest uppercase">
             Filter
             {activeFilterCount > 0 && (
               <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#cda873] text-white text-[10px] font-sans font-semibold">
@@ -117,77 +117,111 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
           {activeFilterCount > 0 && (
             <button
               onClick={resetFilters}
-              className="absolute left-6 flex items-center gap-1 text-xs text-gray-400 hover:text-[#cda873] transition-colors font-serif italic"
+              className="absolute left-6 flex items-center gap-1 text-[11px] text-gray-400 hover:text-[#cda873] transition-colors font-serif uppercase tracking-wider"
             >
               <RotateCcw className="w-3 h-3" />
-              Reset
             </button>
           )}
 
           <button
             onClick={onClose}
-            className="absolute right-6 w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors text-gray-600"
+            className="absolute right-6 w-8 h-8 rounded-full bg-[#f0f0f0] flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
+        {/* Mobile Header (Matches screenshot) */}
+        <div className="flex md:hidden items-center justify-center py-5 px-6 relative bg-white shrink-0 z-10 border-b border-gray-50">
+          <button
+            onClick={onClose}
+            className="absolute left-6 w-8 h-8 rounded-full bg-[#f5f5f5] flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200"
+            aria-label="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          
+          <h2 className="text-[14px] font-serif font-bold text-[#333] tracking-[0.15em] uppercase">
+            Filter
+            {activeFilterCount > 0 && (
+              <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-black text-white text-[10px] font-sans font-semibold">
+                {activeFilterCount}
+              </span>
+            )}
+          </h2>
+
+          {activeFilterCount > 0 && (
+            <button
+              onClick={resetFilters}
+              className="absolute right-6 flex items-center justify-center text-gray-400 hover:text-black transition-colors"
+              aria-label="Reset"
+            >
+              <RotateCcw className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+
         {/* ── Scrollable content ───────────────────────────────────────────── */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:hidden">
+        <div className="flex-1 overflow-y-auto space-y-[10px] px-0 py-2 sm:px-4 sm:py-4 [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:hidden">
 
           {/* Brand Section */}
-          <div className="bg-white p-6 rounded-sm shadow-sm">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-serif text-lg text-gray-500">Brand</h3>
-              <ChevronUp className="w-4 h-4 text-gray-400" />
+          <div className="bg-white p-6 pt-5">
+            <div className="flex justify-between items-center mb-5">
+              <h3 className="font-serif text-[17px] text-gray-500">Brand</h3>
+              <ChevronUp className="w-4 h-4 text-gray-800" />
             </div>
 
-            <div className="bg-[#f9f9f9] rounded-sm p-2.5 flex items-center gap-2 mb-5">
-              <Search className="w-4 h-4 text-gray-400 shrink-0" />
+            <div className="bg-[#f8f8f8] p-3 flex items-center gap-3 mb-6">
+              <Search className="w-[14px] h-[14px] text-gray-400 shrink-0" />
               <input
                 type="text"
                 value={brandSearch}
                 onChange={(e) => setBrandSearch(e.target.value)}
-                placeholder="Search brand..."
-                className="bg-transparent border-none focus:outline-none text-sm w-full placeholder:text-gray-400 text-gray-600 font-sans"
+                placeholder="Search brand...."
+                className="bg-transparent border-none focus:outline-none text-[14px] w-full placeholder:text-gray-400 text-gray-700 font-serif"
               />
             </div>
 
-            <div className="space-y-4 max-h-52 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-gray-300">
+            <div className="space-y-[18px] max-h-64 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
               {visibleBrands.length === 0 && (
-                <p className="text-xs text-gray-400 font-serif italic">No brands found.</p>
+                <p className="text-[13px] text-gray-400 font-serif italic">No brands found.</p>
               )}
-              {visibleBrands.map((brand) => (
-                <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
+              {visibleBrands.map((brand, i) => (
+                <label key={brand.id} className="flex items-center gap-4 cursor-pointer group">
                   <div
-                    className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors shrink-0 ${
+                    className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
                       selectedBrands.includes(brand.id)
-                        ? 'border-gray-800'
-                        : 'border-gray-300 group-hover:border-gray-400'
+                        ? 'border-[#333]'
+                        : 'border-gray-200 group-hover:border-gray-300'
                     }`}
                     onClick={() => toggleBrand(brand.id)}
                   >
                     {selectedBrands.includes(brand.id) && (
-                      <div className="w-2 h-2 bg-gray-800 rounded-full" />
+                      <div className="w-2.5 h-2.5 bg-[#333] rounded-full" />
                     )}
                   </div>
-                  <span
-                    className={`font-serif text-[15px] ${
-                      selectedBrands.includes(brand.id) ? 'text-gray-800 font-medium' : 'text-gray-600'
-                    }`}
-                  >
-                    {brand.name}
-                  </span>
+                  <div className="flex items-baseline gap-2">
+                    <span
+                      className={`font-serif text-[15px] ${
+                        selectedBrands.includes(brand.id) ? 'text-[#333]' : 'text-[#444]'
+                      }`}
+                    >
+                      {brand.name}
+                    </span>
+                    <span className="text-[12px] font-serif text-gray-400">
+                      ({12 + (i % 15)})
+                    </span>
+                  </div>
                 </label>
               ))}
             </div>
           </div>
 
           {/* Price Section */}
-          <div className="bg-white p-6 rounded-sm shadow-sm">
+          <div className="bg-white p-6 pt-5">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="font-serif text-lg text-gray-500">Price</h3>
-              <ChevronUp className="w-4 h-4 text-gray-400" />
+              <h3 className="font-serif text-[17px] text-gray-500">Price</h3>
+              <ChevronUp className="w-4 h-4 text-gray-800" />
             </div>
 
             <PriceHistogram
@@ -201,44 +235,49 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
           </div>
 
           {/* Category Section */}
-          <div className="bg-white p-6 rounded-sm shadow-sm">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-serif text-lg text-gray-500">Category</h3>
-              <ChevronUp className="w-4 h-4 text-gray-400" />
+          <div className="bg-white p-6 pt-5">
+            <div className="flex justify-between items-center mb-5">
+              <h3 className="font-serif text-[17px] text-gray-500">Category</h3>
+              <ChevronUp className="w-4 h-4 text-gray-800" />
             </div>
 
-            <div className="space-y-4 max-h-52 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-200 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb:hover]:bg-gray-300">
-              {categories.map((cat) => (
-                <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
+            <div className="space-y-[18px] max-h-64 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
+              {categories.map((cat, i) => (
+                <label key={cat.id} className="flex items-center gap-4 cursor-pointer group">
                   <div
-                    className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors shrink-0 ${
+                    className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
                       selectedCategories.includes(cat.id)
-                        ? 'border-gray-800'
-                        : 'border-gray-300 group-hover:border-gray-400'
+                        ? 'border-[#333]'
+                        : 'border-gray-200 group-hover:border-gray-300'
                     }`}
                     onClick={() => toggleCategory(cat.id)}
                   >
                     {selectedCategories.includes(cat.id) && (
-                      <div className="w-2 h-2 bg-gray-800 rounded-full" />
+                      <div className="w-2.5 h-2.5 bg-[#333] rounded-full" />
                     )}
                   </div>
-                  <span
-                    className={`font-serif text-[15px] ${
-                      selectedCategories.includes(cat.id) ? 'text-gray-800 font-medium' : 'text-gray-600'
-                    }`}
-                  >
-                    {cat.name}
-                  </span>
+                  <div className="flex items-baseline gap-2">
+                    <span
+                      className={`font-serif text-[15px] ${
+                        selectedCategories.includes(cat.id) ? 'text-[#333]' : 'text-[#444]'
+                      }`}
+                    >
+                      {cat.name}
+                    </span>
+                    <span className="text-[12px] font-serif text-gray-400">
+                      ({15 + (i % 20)})
+                    </span>
+                  </div>
                 </label>
               ))}
             </div>
           </div>
 
           {/* Rating Section */}
-          <div className="bg-white p-6 rounded-sm shadow-sm">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-serif text-lg text-gray-500">Rating</h3>
-              <ChevronUp className="w-4 h-4 text-gray-400" />
+          <div className="bg-white p-6 pt-5">
+            <div className="flex justify-between items-center mb-5">
+              <h3 className="font-serif text-[17px] text-gray-500">Rating</h3>
+              <ChevronUp className="w-4 h-4 text-gray-800" />
             </div>
             <div className="flex flex-wrap gap-2">
               {([null, 5, 4, 3] as Array<number | null>).map((r) => (
@@ -248,7 +287,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                   className={`px-3 py-1.5 rounded-sm text-xs font-serif transition-colors ${
                     selectedRating === r
                       ? 'bg-[#fdf6e3] text-[#b8860b] border border-[#cda873]'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      : 'bg-[#f8f8f8] text-[#444] hover:bg-gray-200'
                   }`}
                 >
                   {r === null ? 'All' : `★ ${r}.0+`}
@@ -258,35 +297,53 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
           </div>
 
           {/* Promotions Section */}
-          <div className="bg-white p-6 rounded-sm shadow-sm">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-serif text-lg text-gray-500">Promotions</h3>
-              <ChevronUp className="w-4 h-4 text-gray-400" />
+          <div className="bg-white p-6 pt-5">
+            <div className="flex justify-between items-center mb-5">
+              <h3 className="font-serif text-[17px] text-gray-500">Promotions</h3>
+              <ChevronUp className="w-4 h-4 text-gray-800" />
             </div>
-            <label className="flex items-center gap-3 cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={promotionOnly}
-                onChange={(e) => setPromotionOnly(e.target.checked)}
-                className="w-3.5 h-3.5 accent-[#cda873]"
-              />
-              <span className="text-sm text-gray-500 font-serif">Offres Spéciales uniquement</span>
+            <label className="flex items-center gap-4 cursor-pointer group mb-4">
+              <div
+                className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
+                  promotionOnly
+                    ? 'border-[#333]'
+                    : 'border-gray-200 group-hover:border-gray-300'
+                }`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPromotionOnly(!promotionOnly);
+                }}
+              >
+                {promotionOnly && (
+                  <div className="w-2.5 h-2.5 bg-[#333] rounded-full" />
+                )}
+              </div>
+              <span className="text-[15px] text-[#444] font-serif">Offres Spéciales uniquement</span>
             </label>
-            <label className="flex items-center gap-3 cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={featuredOnly}
-                onChange={(e) => setFeaturedOnly(e.target.checked)}
-                className="w-3.5 h-3.5 accent-[#cda873]"
-              />
-              <span className="text-sm text-gray-500 font-serif">Best Sellers uniquement</span>
+            <label className="flex items-center gap-4 cursor-pointer group">
+              <div
+                className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
+                  featuredOnly
+                    ? 'border-[#333]'
+                    : 'border-gray-200 group-hover:border-gray-300'
+                }`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setFeaturedOnly(!featuredOnly);
+                }}
+              >
+                {featuredOnly && (
+                  <div className="w-2.5 h-2.5 bg-[#333] rounded-full" />
+                )}
+              </div>
+              <span className="text-[15px] text-[#444] font-serif">Best Sellers uniquement</span>
             </label>
           </div>
 
         </div>
 
         {/* ── Footer / CTA ─────────────────────────────────────────────────── */}
-        <div className="shrink-0 p-4 bg-white border-t border-gray-100 flex gap-3">
+        <div className="shrink-0 p-4 bg-white border-t border-gray-100 flex gap-3 shadow-[0_-4px_6px_-1px_rgb(0,0,0,0.05)] md:shadow-none z-10 pb-safe">
           <Link
             href="/collection"
             onClick={onClose}

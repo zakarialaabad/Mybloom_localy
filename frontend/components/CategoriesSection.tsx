@@ -6,17 +6,36 @@ import Link from 'next/link';
 import SectionContainer from '@/components/SectionContainer';
 import useReferenceStore from '@/store/reference';
 
-const PER_PAGE = 6;
+/** Returns how many items to show per "page" based on viewport width */
+function usePerPage() {
+  const getPerPage = () => {
+    if (typeof window === 'undefined') return 6;
+    if (window.innerWidth < 640)  return 2;   // mobile  — 2 columns
+    if (window.innerWidth < 768)  return 4;   // sm      — 4 columns
+    return 6;                                  // md+     — 6 columns
+  };
+  const [perPage, setPerPage] = useState(getPerPage);
+  useEffect(() => {
+    const handler = () => setPerPage(getPerPage());
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
+  return perPage;
+}
 
 export default function CategoriesSection() {
   const categories       = useReferenceStore((s) => s.categories);
   const ensureCategories = useReferenceStore((s) => s.ensureCategories);
   const [page, setPage]  = useState(0);
+  const perPage          = usePerPage();
 
   useEffect(() => { ensureCategories(); }, [ensureCategories]);
 
-  const totalPages   = Math.ceil(categories.length / PER_PAGE);
-  const visible      = categories.slice(page * PER_PAGE, (page + 1) * PER_PAGE);
+  // Reset to page 0 whenever perPage changes so we never land on an out-of-range page
+  useEffect(() => { setPage(0); }, [perPage]);
+
+  const totalPages   = Math.ceil(categories.length / perPage);
+  const visible      = categories.slice(page * perPage, (page + 1) * perPage);
   const canPrev      = page > 0;
   const canNext      = page < totalPages - 1;
   return (
@@ -158,9 +177,9 @@ export default function CategoriesSection() {
             </div>
 
             {/* 6-per-page grid */}
-            <div className="flex gap-4 md:grid md:grid-cols-6 md:gap-x-8 md:gap-y-12 overflow-x-auto md:overflow-visible snap-x snap-mandatory pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 md:gap-x-8 md:gap-y-12">
             {visible.map((category) => (
-                <Link key={category.id} href={`/collection?category=${category.id}`} className="group block text-center flex-none w-[calc(50%-8px)] md:w-auto snap-start">
+                <Link key={category.id} href={`/collection?category=${category.id}`} className="group block text-center">
                     <div className="relative mx-auto h-32 w-32 md:h-40 md:w-40 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105">
                         <Image
                             src={category.image_url ?? 'https://images.unsplash.com/photo-1598007264887-acc47d519b88?auto=format&fit=crop&q=80&w=200'}

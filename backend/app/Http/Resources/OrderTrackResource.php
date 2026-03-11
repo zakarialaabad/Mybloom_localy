@@ -23,6 +23,9 @@ class OrderTrackResource extends JsonResource
             'shipping_method'  => $this->whenLoaded('shippingMethod', fn () => [
                 'name' => $this->shippingMethod?->name,
             ]),
+            'subtotal'         => (float) $this->subtotal,
+            'shipping_cost'    => (float) $this->shipping_cost,
+            'coupon_discount'  => (float) $this->discount_amount,
             'items'            => $this->whenLoaded('items', fn () =>
                 $this->items->map(fn ($item) => [
                     'product_id'        => $item->product_id,

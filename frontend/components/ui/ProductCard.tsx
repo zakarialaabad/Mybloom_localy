@@ -58,20 +58,29 @@ export default function ProductCard({
             />
           </div>
 
-          {/* Action buttons overlay bar */}
-          <div className="absolute bottom-0 left-0 w-full translate-y-full bg-white/95 py-3 transition-transform duration-300 ease-in-out group-hover:translate-y-0 flex justify-center items-center gap-7 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
+          {/* Action buttons overlay bar – hidden below image, slides up on hover/tap */}
+          <div className="
+            absolute bottom-0 left-0 w-full
+            bg-white/95
+            py-2 md:py-3
+            flex justify-center items-center
+            gap-4 sm:gap-5 md:gap-7
+            shadow-[0_-2px_10px_rgba(0,0,0,0.05)]
+            transition-transform duration-300 ease-in-out
+            translate-y-full group-hover:translate-y-0
+          ">
             <button className="text-gray-600 hover:text-black transition-colors" aria-label="Add to cart">
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg className="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
             </button>
             <button className="text-gray-600 hover:text-black transition-colors" aria-label="Quick view">
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg className="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
               </svg>
             </button>
             <button className="text-gray-600 hover:text-black transition-colors" aria-label="Compare">
-              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <svg className="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M7.5 21L3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" />
               </svg>
             </button>
@@ -86,7 +95,7 @@ export default function ProductCard({
               className="transition-colors"
             >
               <svg
-                className={`h-5 w-5 ${wished ? 'fill-red-500 text-red-500' : 'fill-none text-gray-600 hover:text-red-500'}`}
+                className={`h-4 w-4 md:h-5 md:w-5 ${wished ? 'fill-red-500 text-red-500' : 'fill-none text-gray-600 hover:text-red-500'}`}
                 stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"
               >
                 <path strokeLinecap="round" strokeLinejoin="round"

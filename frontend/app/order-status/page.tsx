@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, ChevronUp } from 'lucide-react';
 import { orderService, OrderTrackResult } from '@/services/api';
 
 export default function OrderStatusPage() {
@@ -17,6 +17,7 @@ export default function OrderStatusPage() {
   const [trackData, setTrackData] = useState<OrderTrackResult | null>(null);
   const [loading,   setLoading]   = useState(false);
   const [error,     setError]     = useState('');
+  const [isContentsOpen, setIsContentsOpen] = useState(true);
 
   useEffect(() => {
     if (!orderNumber) return;
@@ -28,18 +29,15 @@ export default function OrderStatusPage() {
   }, [orderNumber, phone]);
 
   const STATUS_LABELS: Record<string, string> = {
-    pending:    'Order Valid',
+    pending:    'Order Received',
     confirmed:  'Order Confirmed',
-    dispatched: 'Order Dispatched',
-    shipped:    'Shipped via Livreur',
-    delivered:  'Delivered',
+    dispatched: 'Out for Delivery',
+    shipped:    'Out for Delivery',
+    delivered:  'Package Delivered',
     cancelled:  'Cancelled',
   };
 
-  const histories = trackData?.status_histories ?? [];
   const currentStatus = trackData?.status ?? '';
-  const stepKeys = ['pending', 'confirmed', 'dispatched', 'delivered'];
-  const currentStep = stepKeys.indexOf(currentStatus);
 
   return (
     <>
@@ -47,7 +45,7 @@ export default function OrderStatusPage() {
       <main className="min-h-screen bg-white pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
           {/* Breadcrumb */}
-          <div className="text-sm text-gray-400 mb-8 font-serif">
+          <div className="text-sm text-gray-500 mb-8 font-serif">
             <Link href="/" className="hover:text-gray-800">Home</Link> / <Link href="/cart" className="hover:text-gray-800">Panier</Link> / <Link href="/checkout" className="hover:text-gray-800">Shipping</Link> / <span className="text-gray-800">Order</span>
           </div>
 
@@ -55,127 +53,185 @@ export default function OrderStatusPage() {
           {error   && <p className="font-serif text-red-500 text-sm py-12 text-center">{error}</p>}
 
           {!loading && !error && (
-          <div className="flex flex-col lg:flex-row gap-12">
+          <div className="flex flex-col-reverse lg:flex-row gap-12 lg:gap-16">
             {/* Left Column - Order Status */}
             <div className="flex-1 lg:w-[60%]">
               <div className="flex justify-between items-start mb-8">
                 <div>
-                  <p className="text-gray-500 font-serif text-sm mb-2 uppercase tracking-wider">ORDER #{orderNumber || 'LX-XXXX'}</p>
-                  <h1 className="text-4xl font-serif text-gray-800">{STATUS_LABELS[currentStatus] ?? 'Order Status'}</h1>
+                  <p className="text-gray-500 font-serif text-[13px] mb-2 uppercase tracking-wider">ORDER #{orderNumber || 'LX-8921-Q'}</p>
+                  <h1 className="text-[32px] md:text-[38px] font-serif text-gray-800 tracking-tight leading-none mb-1">
+                    {STATUS_LABELS[currentStatus] ?? 'Package Delivered'}
+                  </h1>
                 </div>
-                <div className="w-12 h-12 bg-[#fdf8f1] rounded-full flex items-center justify-center border border-[#f5eedf]">
-                  <svg className="w-6 h-6 text-[#e8c99b]" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM17 12V9.5h2.5l1.97 2.5H17z" />
+                <div className="w-[55px] h-[55px] md:w-[65px] md:h-[65px] relative flex items-center justify-center shrink-0">
+                  <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full text-[#fdefed] fill-current">
+                    <path d="M 100, 10 A 20,20 0 0,1 120,30 A 20,20 0 0,0 145,45 A 20,20 0 0,1 160,70 A 20,20 0 0,0 170,95 A 20,20 0 0,1 170,125 A 20,20 0 0,0 160,150 A 20,20 0 0,1 145,175 A 20,20 0 0,0 120,190 A 20,20 0 0,1 100,210 A 20,20 0 0,1 80,190 A 20,20 0 0,0 55,175 A 20,20 0 0,1 40,150 A 20,20 0 0,0 30,125 A 20,20 0 0,1 30,95 A 20,20 0 0,0 40,70 A 20,20 0 0,1 55,45 A 20,20 0 0,0 80,30 A 20,20 0 0,1 100,10 z" />
                   </svg>
+                  <div className="relative z-10 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <svg className="w-5 h-5 text-[#da2966]" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM17 12V9.5h2.5l1.97 2.5H17z" />
+                    </svg>
+                  </div>
                 </div>
               </div>
 
               {/* Success Banner */}
-              <div className="bg-[#fdfbf5] rounded-sm p-6 mb-12 border border-[#f5eedf] flex gap-4 items-start">
-                <CheckCircle2 className="w-6 h-6 text-[#cda873] shrink-0 mt-0.5" />
+              <div className="bg-[#fdf4f6] rounded-[8px] p-6 mb-10 flex gap-4 items-start shadow-sm border border-[#faeef1]">
+                <div className="w-6 h-6 shrink-0 mt-0.5 rounded-full bg-white flex items-center justify-center shadow-sm text-[#c72864]">
+                  <CheckCircle2 className="w-[18px] h-[18px]" fill="#c72864" stroke="white" strokeWidth={3} />
+                </div>
                 <div>
-                  <h3 className="text-[#cda873] font-serif font-bold text-lg mb-1">Successfully Delivered</h3>
-                  <p className="text-gray-500 text-sm font-serif leading-relaxed">
-                    Your order has been delivered safely by our courier and is now in your hands. We hope your new scent brings you joy and satisfaction. Thank you for trusting us with your order.
+                  <h3 className="text-[#c72864] font-serif font-bold text-[17px] mb-1.5">Order Confirmed</h3>
+                  <p className="text-[#888] text-[12.5px] font-serif leading-[1.6]">
+                    Your order has been successfully received and carefully verified by our team. We are now preparing your selected fragrances and beauty products with the highest attention to detail, ensuring authenticity, quality control, and secure processing before moving to the next stage.
                   </p>
                 </div>
               </div>
 
               {/* Timeline */}
-              <div className="relative pl-4 mb-12">
-                {histories.length > 0 ? histories.map((h, idx) => {
-                  const isLast = idx === histories.length - 1;
-                  return (
-                    <div key={idx} className="relative flex gap-6 mb-0">
-                      <div className="relative flex flex-col items-center">
-                        <div className="w-8 h-8 bg-[#4a403a] rounded-full flex items-center justify-center text-white text-xs font-serif z-10 shrink-0">{idx + 1}</div>
-                        {!isLast && <div className="w-[2px] h-12 bg-[#4a403a] mt-1 mb-1" />}
-                      </div>
-                      <div className={`pt-1 ${isLast ? '' : 'pb-8'}`}>
-                        <h4 className={`font-serif font-bold text-lg ${isLast ? 'text-[#b89b72]' : 'text-[#4a403a]'}`}>{STATUS_LABELS[h.status] ?? h.status}</h4>
-                        <p className="text-gray-400 font-serif text-sm mt-1">{new Date(h.changed_at).toLocaleString('fr-MA')}</p>
-                        {h.note && <p className="text-gray-500 font-serif text-xs mt-1 italic">{h.note}</p>}
-                      </div>
-                    </div>
-                  );
-                }) : (
-                  stepKeys.map((key, idx) => {
-                    const done   = idx <= currentStep;
-                    const isLast = idx === stepKeys.length - 1;
+              <div className="relative pl-3 md:pl-5 mb-14">
+                {(() => {
+                  const DISPLAY_STEPS = [
+                    { key: 'pending', label: 'Order Valid' },
+                    { key: 'confirmed', label: 'Preparing Your Package' },
+                    { key: 'dispatched', label: 'Out for Delivery' },
+                    { key: 'delivered', label: 'Delivered' }
+                  ];
+
+                  const historyDates: Record<string, string> = {};
+                  if (trackData) {
+                    trackData.status_histories.forEach(h => {
+                      historyDates[h.status] = h.changed_at;
+                      if (h.status === 'shipped') historyDates['dispatched'] = h.changed_at;
+                    });
+                  }
+
+                  const currentStepIndex = DISPLAY_STEPS.findIndex(s => s.key === currentStatus);
+                  const activeIndex = currentStatus === 'shipped' ? 2 : (currentStepIndex >= 0 ? currentStepIndex : 0);
+
+                  return DISPLAY_STEPS.map((step, idx) => {
+                    const isDone = idx <= activeIndex;
+                    const isActive = idx === activeIndex;
+                    const isLast = idx === DISPLAY_STEPS.length - 1;
+                    const dateRaw = historyDates[step.key];
+                    const dateFormatted = dateRaw 
+                      ? new Date(dateRaw).toLocaleString('en-US', { month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+                      : ''; 
+
                     return (
-                      <div key={key} className="relative flex gap-6 mb-0">
+                      <div key={step.key} className="relative flex gap-6">
                         <div className="relative flex flex-col items-center">
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-serif z-10 shrink-0 ${done ? 'bg-[#4a403a]' : 'bg-gray-300'}`}>{idx + 1}</div>
-                          {!isLast && <div className={`w-[2px] h-12 mt-1 mb-1 ${done ? 'bg-[#4a403a]' : 'bg-gray-200'}`} />}
+                          <div className={`w-[30px] h-[30px] rounded-full flex items-center justify-center text-[13px] font-serif z-10 shrink-0 border-[2px] transition-colors ${isDone ? 'bg-[#403531] border-[#403531] text-white' : 'bg-white border-[#403531] text-[#403531]'}`}>
+                            {idx + 1}
+                          </div>
+                          {!isLast && <div className="w-[2px] h-[70px] bg-[#403531]" />}
                         </div>
-                        <div className={`pt-1 ${isLast ? '' : 'pb-8'}`}>
-                          <h4 className={`font-serif font-bold text-lg ${isLast && done ? 'text-[#b89b72]' : done ? 'text-[#4a403a]' : 'text-gray-300'}`}>{STATUS_LABELS[key]}</h4>
+                        <div className={`pt-0.5 ${isLast ? '' : 'pb-[32px]'}`}>
+                          <h4 className={`font-serif font-bold text-[16px] md:text-[17px] transition-colors ${isActive ? 'text-[#c72864]' : 'text-[#403531]'}`}>
+                            {step.label}
+                          </h4>
+                          {dateFormatted ? (
+                            <p className="text-gray-400/80 font-serif text-[12px] mt-1">{dateFormatted}</p>
+                          ) : (
+                            <p className="h-[18px]"></p>
+                          )}
                         </div>
                       </div>
                     );
-                  })
-                )}
+                  });
+                })()}
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <Link
                   href={`/feedback?order=${encodeURIComponent(orderNumber)}&phone=${encodeURIComponent(phone)}`}
-                  className="flex-1 bg-[#4a403a] text-white py-4 rounded-sm font-serif italic text-base hover:bg-[#3a322d] transition-colors text-center"
+                  className="flex-1 bg-[#403531] text-white py-[14px] rounded-[5px] font-serif italic text-[14px] hover:bg-[#2d2522] transition-colors text-center shadow-sm"
                 >
                   Leave a Review ›
                 </Link>
-                <button className="flex-1 bg-white text-[#4a403a] border border-gray-200 py-4 rounded-sm font-serif italic text-base hover:bg-gray-50 transition-colors">
+                <button className="flex-1 bg-white text-[#333] border border-gray-200 py-[14px] rounded-[5px] font-serif italic text-[14px] hover:bg-gray-50 transition-colors shadow-sm">
                   Need Help ?
                 </button>
               </div>
             </div>
 
             {/* Right Column - Shipment Contents */}
-            <div className="lg:w-[40%] bg-[#fcfcfc] p-8 border border-gray-100 rounded-sm h-fit">
-              <h2 className="text-lg font-serif font-bold text-gray-800 mb-8">Shipment Contents</h2>
-
-              {/* Cart Items */}
-              <div className="space-y-6 mb-8">
-                {trackData?.items.map((item, idx) => (
-                  <div key={idx} className="flex gap-4 items-center">
-                    <div className="relative w-20 h-20 bg-gray-100 rounded-sm shrink-0 border border-gray-200">
-                      <Image src={item.image_url ?? 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=200'} alt={item.product_name} fill className="object-cover mix-blend-multiply p-2" />
-                      <span className="absolute -top-2 -right-2 w-5 h-5 bg-gray-600 text-white text-[10px] flex items-center justify-center rounded-full font-serif">{item.quantity}</span>
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="font-serif font-bold text-gray-900 text-sm">{item.product_name}</h4>
-                      <p className="font-serif italic text-xs text-gray-400 mt-0.5">{item.product_size_label}</p>
-                    </div>
-                    <div className="font-serif font-bold italic text-gray-900 text-sm">× {item.quantity}</div>
-                  </div>
-                ))}
-              </div>
-
-              {/* Summary */}
-              {trackData && (
-              <div className="space-y-4 pt-6 border-t border-gray-200">
-                <div className="flex justify-between items-center">
-                  <span className="font-serif font-bold text-gray-800 text-sm">Sous-total</span>
-                  <span className="font-serif font-bold italic text-gray-900">{trackData.subtotal} DH</span>
+            <div className="lg:w-[40%] bg-[#fffcf8] border border-[#f5eedf] rounded-sm h-fit overflow-hidden">
+              {/* Mobile Accordion Header & Desktop Header */}
+              <div 
+                className="flex justify-between items-center bg-[#f4f4f4] px-5 py-3.5 md:bg-transparent md:px-8 md:pt-8 md:pb-4 cursor-pointer md:cursor-default transition-colors"
+                onClick={() => window.innerWidth < 1024 && setIsContentsOpen(!isContentsOpen)}
+              >
+                <div className="flex items-center gap-2.5">
+                  <h2 className="text-[13px] md:text-lg font-serif text-[#4a4a4a] tracking-wide">
+                    Shipment Contents ( {trackData?.items.length || 0} items )
+                  </h2>
+                  <ChevronUp className={`w-3.5 h-3.5 text-[#4a4a4a] transition-transform lg:hidden ${isContentsOpen ? '' : 'rotate-180'}`} />
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="font-serif font-bold text-gray-800 text-sm">Expédition</span>
-                  <span className="font-serif font-bold italic text-gray-900">{trackData.shipping_cost === 0 ? 'Gratuit' : `${trackData.shipping_cost} DH`}</span>
-                </div>
-                {trackData.coupon_discount > 0 && (
-                  <div className="flex justify-between items-center">
-                    <span className="font-serif font-bold text-gray-800 text-sm">Coupon</span>
-                    <span className="font-serif font-bold italic text-[#2e7d32]">- {trackData.coupon_discount} DH</span>
-                  </div>
+                {trackData && (
+                  <span className="font-serif text-[#111] font-semibold text-[15px] lg:hidden">
+                    {trackData.total.toFixed(2)} DH
+                  </span>
                 )}
-                <hr className="border-gray-200 my-4" />
-                <div className="flex justify-between items-center">
-                  <span className="font-serif font-bold text-gray-800">Total</span>
-                  <span className="font-serif font-bold italic text-xl text-gray-900">{trackData.total} DH</span>
-                </div>
               </div>
-              )}
+
+              {/* Collapsible Content */}
+              <div className={`${isContentsOpen ? 'block' : 'hidden'} lg:block px-6 py-8 md:p-8 pt-6`}>
+                {/* Cart Items */}
+                <div className="space-y-6 mb-10">
+                  {trackData?.items.map((item, idx) => (
+                    <div key={idx} className="flex gap-5 items-center">
+                      <div className="relative w-[65px] h-[65px] bg-[#f2f2f2] rounded-md shrink-0 shadow-[0_2px_8px_rgba(0,0,0,0.06)] border border-gray-100">
+                        <Image src={item.image_url ?? 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=200'} alt={item.product_name} fill className="object-cover mix-blend-multiply p-1.5 rounded-md" />
+                        <span className="absolute -top-[7px] -right-[7px] w-[20px] h-[20px] bg-[#4a4846] text-white text-[10px] flex items-center justify-center rounded-full font-serif">{item.quantity}</span>
+                      </div>
+                      <div className="flex-1 flex justify-between items-center">
+                        <div className="flex flex-col">
+                          <h4 className="font-serif font-bold text-[#4a4846] text-[14px] uppercase tracking-wide leading-tight">{item.product_name}</h4>
+                          <p className="font-serif italic text-[11.5px] text-[#888] mt-[2px]">
+                            {item.product_name.toLowerCase().includes('pop') || item.product_name.toLowerCase().includes('butter') ? 'Body Butter' : 'Bold Body Mist'} / Size {item.product_size_label}
+                          </p>
+                        </div>
+                        <div className="font-serif italic text-[#7a7a7a] text-[13px] whitespace-nowrap pl-2">
+                          {(item.unit_price * item.quantity).toFixed(2)} DH
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Summary */}
+                {trackData && (
+                <div className="space-y-4 pt-1">
+                  <div className="flex justify-between items-center text-[13px]">
+                    <span className="font-serif text-[#4a4846]">Your Price</span>
+                    <span className="font-serif italic text-[#7a7a7a]">{trackData.subtotal.toFixed(2)} DH</span>
+                  </div>
+                  <div className="flex justify-between items-center text-[13px]">
+                    <span className="font-serif text-[#4a4846]">Expédition</span>
+                    <span className="font-serif font-bold italic text-[#111]">{trackData.shipping_cost === 0 ? 'Free' : `${trackData.shipping_cost.toFixed(2)} DH`}</span>
+                  </div>
+                  {trackData.coupon_discount > 0 ? (
+                    <div className="flex justify-between items-center text-[13px]">
+                      <span className="font-serif text-[#4a4846]">Coupon</span>
+                      <span className="font-serif italic text-[#7a7a7a]">{trackData.coupon_discount.toFixed(2)} DH</span>
+                    </div>
+                  ) : (
+                    <div className="flex justify-between items-center text-[13px]">
+                      <span className="font-serif text-[#4a4846]">Coupon</span>
+                      <span className="font-serif italic text-[#7a7a7a]">0.00 DH</span>
+                    </div>
+                  )}
+                  <div className="border-t border-[#e5e5df] my-2 pt-4">
+                    <div className="flex justify-between items-center">
+                      <span className="font-serif font-bold text-[#333] text-[15px]">Total</span>
+                      <span className="font-serif font-bold text-[#111] text-[16px]">{trackData.total.toFixed(2)} DH</span>
+                    </div>
+                  </div>
+                </div>
+                )}
+              </div>
             </div>
           </div>
           )}

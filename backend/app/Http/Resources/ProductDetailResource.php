@@ -65,6 +65,13 @@ class ProductDetailResource extends JsonResource
                     'sku'            => null,
                 ])
             ),
+            'ingredients'    => $this->whenLoaded('ingredientItems', fn () =>
+                $this->ingredientItems->map(fn ($ing) => [
+                    'id'        => $ing->id,
+                    'name'      => $ing->name,
+                    'image_url' => $ing->image_url,
+                ])
+            ),
             'reviews'        => $this->whenLoaded('reviews', fn () => ReviewResource::collection($this->reviews)),
             'created_at'     => $this->created_at?->toISOString(),
         ];

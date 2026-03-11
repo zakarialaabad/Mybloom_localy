@@ -115,7 +115,7 @@ export default function CheckoutPage() {
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="flex flex-col lg:flex-row gap-12">
+            <div className="flex flex-col-reverse lg:flex-row gap-8 lg:gap-12">
               {/* ── Left: Shipping Form ─────────────────────────────── */}
               <div className="flex-1 lg:w-[60%]">
                 <h1 className="text-2xl font-serif font-bold text-gray-800 mb-8">Shipping Address</h1>
@@ -205,8 +205,8 @@ export default function CheckoutPage() {
               </div>
 
               {/* ── Right: Order Summary ─────────────────────────────── */}
-              <div className="lg:w-[40%] bg-[#fcfcfc] p-8 border border-gray-100 rounded-sm h-fit">
-                <h2 className="text-lg font-serif font-bold text-gray-800 mb-8">Your Cart</h2>
+              <div className="lg:w-[40%] bg-[#fcfcfc] p-4 md:p-8 border border-gray-100 rounded-sm h-fit">
+                <h2 className="text-lg font-serif font-bold text-gray-800 mb-6 md:mb-8">Your Cart</h2>
 
                 {/* Items */}
                 <div className="space-y-6 mb-8">
@@ -228,15 +228,15 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* Coupon */}
-                <div className="mb-8">
+                <div className="mb-6 md:mb-8">
                   <p className="text-sm text-gray-600 font-serif mb-3">If you have a coupon code, please apply it below</p>
-                  <div className="flex gap-3">
+                  <div className="flex gap-2.5">
                     <input
                       type="text"
                       value={couponCode}
                       onChange={(e) => { setCouponCode(e.target.value); setCouponResult(null); setCouponError(''); }}
-                      placeholder="Coupon code"
-                      className={`flex-1 border-2 border-dashed rounded-sm px-4 py-3 text-sm focus:outline-none font-serif ${
+                      placeholder="Coupon"
+                      className={`min-w-0 flex-1 border-2 border-dashed rounded-sm px-3 md:px-4 py-3 text-sm focus:outline-none font-serif ${
                         couponResult ? 'border-[#2e7d32] text-[#2e7d32] bg-[#f4fbf5]' : 'border-gray-200 bg-white'
                       }`}
                     />
@@ -244,7 +244,7 @@ export default function CheckoutPage() {
                       type="button"
                       onClick={handleCoupon}
                       disabled={couponLoading}
-                      className={`px-6 py-3 rounded-sm font-serif italic text-sm whitespace-nowrap transition-colors ${
+                      className={`px-4 md:px-6 py-3 rounded-sm font-serif italic text-sm whitespace-nowrap transition-colors ${
                         couponResult ? 'bg-[#005c2b] text-white cursor-default' : 'bg-[#4a403a] text-white hover:bg-[#3a322d]'
                       }`}
                     >

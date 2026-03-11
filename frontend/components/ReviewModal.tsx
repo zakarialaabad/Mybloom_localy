@@ -13,6 +13,9 @@ interface ReviewModalProps {
   onSubmit?: (rating: number, body: string, images: File[]) => Promise<void>;
   isSubmitting?: boolean;
   errorMsg?: string;
+  initialRating?: number;
+  initialReviewText?: string;
+  initialImages?: File[];
 }
 
 export default function ReviewModal({
@@ -24,6 +27,9 @@ export default function ReviewModal({
   onSubmit,
   isSubmitting,
   errorMsg,
+  initialRating = 0,
+  initialReviewText = '',
+  initialImages = [],
 }: ReviewModalProps) {
   const [isMounted, setIsMounted]         = useState(false);
   const [rating, setRating]               = useState(0);
@@ -35,17 +41,27 @@ export default function ReviewModal({
 
   useEffect(() => { setIsMounted(true); }, []);
 
-  // Reset all state every time the modal closes
+  // Update state when modal opens with new initial data
   useEffect(() => {
-    if (!isOpen) {
-      setRating(0);
-      setHoveredRating(0);
-      setReviewText('');
+    if (isOpen) {
+      setRating(initialRating);
+      setReviewText(initialReviewText);
+      // Clean up old previews
       previews.forEach((url) => URL.revokeObjectURL(url));
+      
+      setImages(initialImages);
+      // Generate previews for existing files
+      const newPreviews = initialImages.map(file => URL.createObjectURL(file));
+      setPreviews(newPreviews);
+      setHoveredRating(0);
+    } else {
+      // Optional: Clear state on close, though the next open will overwrite it
+      setRating(0);
+      setReviewText('');
       setImages([]);
       setPreviews([]);
     }
-  }, [isOpen]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [isOpen, initialRating, initialReviewText, initialImages]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files ?? []);
@@ -88,44 +104,47 @@ export default function ReviewModal({
         onClick={onClose}
       />
 
-      {/* Modal */}
-      <div className="fixed inset-0 z-[101] flex items-center justify-center p-4 pointer-events-none">
+      {/* Modal - Always Centered Card Style per Reference */}
+      <div className={`fixed inset-0 z-[101] flex items-center justify-center p-4 ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
+        
         <div
-          className={`bg-white w-full max-w-[480px] shadow-2xl flex flex-col transform transition-all duration-300 pointer-events-auto max-h-[90vh] overflow-y-auto ${
-            isOpen ? 'scale-100 opacity-100 translate-y-0' : 'scale-95 opacity-0 translate-y-4'
+          className={`bg-white w-full max-w-[340px] md:max-w-[420px] shadow-xl flex flex-col transform transition-all duration-300 relative max-h-[90vh] ${
+            isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-95 translate-y-4 pointer-events-none'
           }`}
         >
-          {/* Header */}
-          <div className="p-8 pb-6 relative border-b border-gray-200 shrink-0">
-            <button
-              onClick={onClose}
-              className="absolute right-6 top-6 p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition-colors text-gray-600"
-            >
-              <X className="h-4 w-4" />
-            </button>
-            <p className="text-[10px] font-bold text-gray-400 tracking-[0.2em] font-serif uppercase mb-2">SHARE YOUR THOUGHTS</p>
-            <h2 className="text-2xl font-serif font-bold text-gray-800">{productName}</h2>
-            <p className="font-serif italic text-sm text-gray-400 mt-1">{productDesc}</p>
-          </div>
+          {/* Close Button - Top Right Circular */}
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 z-10 w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors"
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
 
-          {/* Content */}
-          <div className="p-8 space-y-10">
+          {/* Scrollable Content */}
+          <div className="overflow-y-auto p-6 md:p-8 space-y-6 md:space-y-7">
+            
+            {/* Header Section (Left aligned) */}
+            <div className="text-left border-b border-gray-200 pb-5">
+              <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-500 mb-1.5">SHARE YOUR THOUGHTS</p>
+              <h2 className="text-2xl font-serif font-bold text-gray-900 mb-1 leading-tight">{productName}</h2>
+              <p className="font-serif italic text-[11px] text-gray-500">{productDesc}</p>
+            </div>
 
-            {/* Rate Experience */}
-            <div className="flex gap-6 items-center">
+            {/* Rating Section (Row: Image Left, Stars Right) */}
+            <div className="flex gap-5 items-start">
               {productImage && (
-                <div className="relative w-20 h-20 bg-gray-50 rounded-sm border border-gray-100 shrink-0">
+                <div className="relative w-20 h-20 bg-gray-50 shrink-0">
                   <Image src={productImage} alt={productName} fill className="object-cover mix-blend-multiply p-2" />
                 </div>
               )}
-              <div>
-                <h3 className="text-[10px] font-bold text-gray-800 tracking-[0.2em] font-serif uppercase mb-3">RATE THE EXPERIENCE</h3>
-                <div className="flex gap-2 mb-2">
+              <div className="pt-0.5">
+                <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-800 mb-2.5">RATE THE EXPERIENCE</p>
+                <div className="flex gap-1.5 mb-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
                       key={star}
-                      className={`w-6 h-6 cursor-pointer transition-colors ${
-                        star <= (hoveredRating || rating) ? 'fill-[#e8c99b] text-[#e8c99b]' : 'fill-gray-100 text-gray-200'
+                      className={`w-5 h-5 cursor-pointer transition-colors ${
+                        star <= (hoveredRating || rating) ? 'fill-[#e8c99b] text-[#e8c99b]' : 'fill-[#f3f4f6] text-[#e5e7eb]'
                       }`}
                       onMouseEnter={() => setHoveredRating(star)}
                       onMouseLeave={() => setHoveredRating(0)}
@@ -133,29 +152,30 @@ export default function ReviewModal({
                     />
                   ))}
                 </div>
-                <p className="font-serif italic text-xs text-gray-400">
-                  {rating > 0 ? `${rating} star${rating > 1 ? 's' : ''} selected` : 'Tap a star to rate'}
+                <p className="font-serif italic text-[10px] text-gray-400">
+                  {rating > 0 ? 'Thanks for rating!' : 'Tap a star to rate'}
                 </p>
               </div>
             </div>
 
-            {/* Details Input */}
-            <div>
-              <h3 className="text-[10px] font-bold text-gray-800 tracking-[0.2em] font-serif uppercase mb-4">THE DETAILS</h3>
+            {/* Details Section (Separator below) */}
+            <div className="border-b border-gray-100 pb-6">
+              <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-800 mb-3">THE DETAILS</p>
               <textarea
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
-                placeholder="Describe the notes, the longevity, the feeling…"
-                className="w-full border border-gray-200 focus:border-gray-400 focus:outline-none resize-none font-serif italic text-sm text-gray-700 placeholder:text-gray-300 min-h-[100px] p-3 rounded-sm transition-colors"
+                placeholder="Describe the notes, the longevity, the feeling …"
+                className="w-full font-serif italic text-[13px] text-gray-700 placeholder:text-gray-300 resize-none outline-none min-h-[40px] bg-transparent"
+                rows={2}
               />
             </div>
 
-            {/* Photography */}
+            {/* Photography Section */}
             <div>
-              <h3 className="text-[10px] font-bold text-gray-800 tracking-[0.2em] font-serif uppercase mb-4">PHOTOGRAPHY</h3>
+              <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-800 mb-4">PHOTOGRAPHY</p>
 
-              {/* Hidden real file input */}
-              <input
+              {/* Hidden File Input */}
+               <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
@@ -165,63 +185,44 @@ export default function ReviewModal({
               />
 
               <div className="flex flex-wrap items-center gap-3">
-                {/* Image previews */}
-                {previews.map((src, idx) => (
-                  <div key={idx} className="relative w-16 h-16 rounded-sm border border-gray-200 overflow-hidden group">
+                 {/* Previews */}
+                 {previews.map((src, idx) => (
+                  <div key={idx} className="relative w-12 h-12 border border-gray-200 overflow-hidden group">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt={`preview ${idx + 1}`} className="w-full h-full object-cover" />
-                    <button
-                      type="button"
-                      onClick={() => removeImage(idx)}
-                      className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
-                    >
-                      <Trash2 className="w-4 h-4 text-white" />
-                    </button>
+                    <img src={src} alt="preview" className="w-full h-full object-cover" />
+                    <button onClick={() => removeImage(idx)} className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100"><X className="w-3 h-3 text-white"/></button>
                   </div>
                 ))}
 
-                {/* Add button — hidden once 4 images selected */}
-                {images.length < 4 && (
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-16 h-16 border border-dashed border-gray-300 flex flex-col items-center justify-center text-gray-400 hover:border-[#cda873] hover:text-[#cda873] transition-colors rounded-sm"
-                  >
-                    <Plus className="w-5 h-5" />
-                    <span className="text-[9px] font-serif mt-0.5">Add</span>
-                  </button>
-                )}
+                 {/* Upload Trigger - Square Box style */}
+                 {images.length < 4 && (
+                   <div className="flex items-center gap-3 cursor-pointer group" onClick={() => fileInputRef.current?.click()}>
+                      <div className="w-10 h-10 border border-gray-200 flex items-center justify-center text-gray-300 group-hover:border-gray-300 group-hover:text-gray-400 transition-colors">
+                        <Plus className="w-5 h-5 stroke-[1px]" />
+                      </div>
+                      <span className="font-serif italic text-[13px] text-gray-500 group-hover:text-gray-700">Upload Image</span>
+                   </div>
+                 )}
               </div>
-
-              {images.length > 0 && (
-                <p className="text-[10px] text-gray-400 font-serif italic mt-2">
-                  {images.length}/4 photo{images.length > 1 ? 's' : ''} selected
-                </p>
-              )}
             </div>
 
-            {/* Error message */}
+            {/* Error Message */}
             {errorMsg && (
-              <p className="text-sm text-red-500 font-serif italic text-center bg-red-50 border border-red-200 rounded-sm py-2 px-3">
-                {errorMsg}
-              </p>
+              <p className="text-xs text-red-500 font-serif italic text-center">{errorMsg}</p>
             )}
 
-            {/* Submit Button */}
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={rating === 0 || isSubmitting}
-              className="w-full bg-[#4a403a] text-white py-4 rounded-sm font-serif italic text-sm hover:bg-[#3a322d] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSubmitting ? 'Publication…' : 'Publish review ›'}
-            </button>
+            {/* Submit Button - Dark Brown Pill/Rect */}
+            <div>
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={rating === 0 || isSubmitting}
+                className="w-full bg-[#4a403a] text-white py-3.5 rounded-[4px] font-serif italic text-[13px] hover:bg-[#3a322d] transition-colors flex justify-center items-center gap-1 disabled:opacity-70"
+              >
+                {isSubmitting ? 'Publication…' : 'Publish review ›'}
+              </button>
+            </div>
 
-            {rating === 0 && (
-              <p className="text-center text-[10px] text-gray-400 font-serif italic -mt-6">
-                Select a star rating to continue
-              </p>
-            )}
           </div>
         </div>
       </div>

@@ -143,6 +143,7 @@ export interface Product {
   slug: string;
   subtitle: string;
   description: string;
+  ingredients?: { id: number; name: string; image_url: string | null }[];
   gender: 'men' | 'women' | 'unisex';
   is_featured: boolean;
   brand: { id: number; name: string; slug: string };
@@ -206,7 +207,7 @@ export interface OrderTrackResult {
   customer_name: string;
   status: string;
   status_histories: { status: string; note: string | null; changed_at: string }[];
-  items: { product_name: string; product_size_label: string; quantity: number; image_url?: string; product_id: number }[];
+  items: { product_name: string; product_size_label: string; quantity: number; image_url?: string; product_id: number; unit_price: number }[];
   shipping_address: { city: string };
   subtotal: number;
   shipping_cost: number;

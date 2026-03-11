@@ -137,6 +137,7 @@ class ProductController extends Controller
             'category',
             'images',
             'sizes',
+            'ingredientItems',
             'reviews.images',
         ])
         ->withAvg('reviews as avg_rating', 'rating')

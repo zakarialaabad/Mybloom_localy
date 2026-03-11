@@ -43,13 +43,23 @@ class OrderService
 
             // Resolve each item: look up size for label + compute unit price
             $resolvedItems = collect($data['items'])->map(function ($item) {
-                $product   = Product::findOrFail($item['product_id']);
-                $size      = ProductSize::findOrFail($item['size_id']);
-                $unitPrice = round((float) $product->price + (float) $size->price_modifier, 2);
+                $product    = Product::findOrFail($item['product_id']);
+                $sizeId     = $item['size_id'] ?? 0;
+                
+                $priceModifier = 0.00;
+                $sizeLabel     = null;
+
+                if ($sizeId > 0) {
+                    $size          = ProductSize::findOrFail($sizeId);
+                    $priceModifier = (float) $size->price_modifier;
+                    $sizeLabel     = $size->label;
+                }
+
+                $unitPrice = round((float) $product->price + $priceModifier, 2);
 
                 return [
                     'product_id' => $item['product_id'],
-                    'size_label' => $size->label,
+                    'size_label' => $sizeLabel,
                     'quantity'   => (int) $item['quantity'],
                     'unit_price' => $unitPrice,
                 ];

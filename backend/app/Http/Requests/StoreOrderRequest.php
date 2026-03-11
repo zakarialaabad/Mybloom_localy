@@ -35,7 +35,17 @@ class StoreOrderRequest extends FormRequest
             // Items — frontend sends size_id; price is resolved server-side
             'items'                            => ['required', 'array', 'min:1'],
             'items.*.product_id'               => ['required', 'exists:products,id'],
-            'items.*.size_id'                  => ['required', 'exists:product_sizes,id'],
+            // Allow size_id to be nullable or 0 (for products without variants)
+            // If provided (>0), must exist in product_sizes
+            'items.*.size_id'                  => [
+                'nullable', 
+                'integer', 
+                function ($attribute, $value, $fail) {
+                    if ($value && $value > 0 && !\App\Models\ProductSize::where('id', $value)->exists()) {
+                        $fail('The selected size is invalid.');
+                    }
+                }
+            ],
             'items.*.quantity'                 => ['required', 'integer', 'min:1'],
         ];
     }
