@@ -18,6 +18,7 @@ class Product extends Model
     protected $fillable = [
         'brand_id',
         'category_id',
+        'product_type_id',
         'name',
         'slug',
         'subtitle',
@@ -29,6 +30,9 @@ class Product extends Model
         'stock',
         'is_active',
         'is_featured',
+        'is_best_seller',
+        'is_gift',
+        'is_recommended',
     ];
 
     protected function casts(): array
@@ -39,6 +43,9 @@ class Product extends Model
             'stock'          => 'integer',
             'is_active'      => 'boolean',
             'is_featured'    => 'boolean',
+            'is_best_seller' => 'boolean',
+            'is_gift'        => 'boolean',
+            'is_recommended' => 'boolean',
         ];
     }
 
@@ -65,6 +72,11 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function productType(): BelongsTo
+    {
+        return $this->belongsTo(ProductType::class);
+    }
+
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class)->orderBy('sort_order');
@@ -88,5 +100,10 @@ class Product extends Model
     public function allReviews(): HasMany
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function faqs(): HasMany
+    {
+        return $this->hasMany(ProductFaq::class);
     }
 }

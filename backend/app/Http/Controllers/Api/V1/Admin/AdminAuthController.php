@@ -35,7 +35,11 @@ class AdminAuthController extends Controller
         $token = $admin->createToken('admin-session', ['*'], now()->addMinutes(config('sanctum.expiration', 1440)));
 
         return response()
-            ->json(['message' => 'Authenticated.', 'admin' => ['id' => $admin->id, 'email' => $admin->email]])
+            ->json([
+                'message' => 'Authenticated.',
+                'token'   => $token->plainTextToken,
+                'admin'   => ['id' => $admin->id, 'email' => $admin->email],
+            ])
             ->cookie(
                 'admin_token',
                 $token->plainTextToken,
@@ -43,7 +47,7 @@ class AdminAuthController extends Controller
                 '/',
                 null,
                 config('app.env') === 'production',  // Secure
-                true,                                  // HttpOnly
+                false,                                 // NOT HttpOnly — JS reads it to set Authorization header
                 false,
                 'Lax'
             );

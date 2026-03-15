@@ -13,7 +13,9 @@ use App\Http\Controllers\Api\V1\Admin\CategoryController as AdminCategoryControl
 use App\Http\Controllers\Api\V1\Admin\CouponController as AdminCouponController;
 use App\Http\Controllers\Api\V1\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Api\V1\Admin\ProductTypeController as AdminProductTypeController;
 use App\Http\Controllers\Api\V1\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\Api\V1\Admin\DashboardController as AdminDashboardController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +33,7 @@ Route::prefix('api')->group(function () {
     // ── Health check ────────────────────────────────────────────────────────
     Route::get('/health', fn () => response()->json(['status' => 'ok']));
 
+
     // ── v1 ──────────────────────────────────────────────────────────────────
     Route::prefix('v1')->name('v1.')->group(function () {
 
@@ -43,6 +46,7 @@ Route::prefix('api')->group(function () {
             Route::get('/products/{slug}',             [ProductController::class, 'show']);
             Route::get('/brands',                      [BrandController::class, 'index']);
             Route::get('/categories',                  [CategoryController::class, 'index']);
+            Route::get('/product-types',               [AdminProductTypeController::class, 'index']);
             Route::get('/shipping-methods',            [ShippingMethodController::class, 'index']);
 
             // Coupon validation
@@ -66,13 +70,19 @@ Route::prefix('api')->group(function () {
 
         // ── Admin — protected routes ─────────────────────────────────────────
         Route::prefix('admin')->name('admin.')
-            ->middleware(['auth:sanctum', 'ensure.admin', 'throttle:300,1'])
+            ->middleware(['auth:admins', 'ensure.admin', 'throttle:300,1'])
             ->group(function () {
+
+                // Dashboard analytics
+                Route::get('dashboard', [AdminDashboardController::class, 'index']);
 
                 // Products
                 Route::apiResource('products', AdminProductController::class);
                 Route::post('products/{product}/images',        [AdminProductController::class, 'storeImage']);
                 Route::delete('products/{product}/images/{id}', [AdminProductController::class, 'destroyImage']);
+
+                // Product Types
+                Route::get('product-types', [AdminProductTypeController::class, 'index']);
 
                 // Brands
                 Route::apiResource('brands',     AdminBrandController::class);

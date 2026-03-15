@@ -12,11 +12,17 @@ export function middleware(request: NextRequest) {
   const isAdminRoute = pathname.startsWith('/admin');
   const isLoginRoute = pathname === '/admin/login';
 
-  if (isAdminRoute && !isLoginRoute) {
-    const hasAdminCookie = request.cookies.has('admin_token');
+  // If already on login page, never redirect (stop the loop)
+  if (isLoginRoute) {
+    return NextResponse.next();
+  }
 
-    if (!hasAdminCookie) {
-      return NextResponse.redirect(new URL('/admin/login', request.url));
+  if (isAdminRoute) {
+    const token = request.cookies.get('admin_token')?.value;
+
+    if (!token) {
+      const loginUrl = new URL('/admin/login', request.url);
+      return NextResponse.redirect(loginUrl);
     }
   }
 

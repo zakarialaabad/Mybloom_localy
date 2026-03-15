@@ -22,6 +22,9 @@ class ProductDetailResource extends JsonResource
             'stock'          => $this->stock,
             'is_active'      => $this->is_active,
             'is_featured'    => $this->is_featured,
+            'is_best_seller' => (bool) $this->is_best_seller,
+            'is_gift'        => (bool) $this->is_gift,
+            'is_recommended' => (bool) $this->is_recommended,
             // price aliases expected by the frontend
             'min_price'      => (float) $this->price,
             'max_price'      => $this->original_price ? (float) $this->original_price : (float) $this->price,
@@ -40,6 +43,10 @@ class ProductDetailResource extends JsonResource
                 'name' => $this->category?->name,
                 'slug' => $this->category?->slug,
             ]),
+            'product_type'   => $this->whenLoaded('productType', fn () => $this->productType ? [
+                'id'   => $this->productType->id,
+                'name' => $this->productType->name,
+            ] : null),
             // String URL for components that use primary_image directly
             'primary_image'  => $this->whenLoaded('images', function () {
                 $primary = $this->images->firstWhere('is_primary', true) ?? $this->images->first();
@@ -59,6 +66,7 @@ class ProductDetailResource extends JsonResource
                     'id'             => $s->id,
                     'volume_ml'      => (int) $s->label,
                     'label'          => $s->label,
+                    'price_modifier' => (float) $s->price_modifier,
                     'price'          => round((float) $this->price + (float) $s->price_modifier, 2),
                     'original_price' => null,
                     'stock_quantity' => (int) $s->stock,
@@ -73,6 +81,23 @@ class ProductDetailResource extends JsonResource
                 ])
             ),
             'reviews'        => $this->whenLoaded('reviews', fn () => ReviewResource::collection($this->reviews)),
+            'all_reviews'    => $this->whenLoaded('allReviews', fn () =>
+                $this->allReviews->map(fn ($r) => [
+                    'id'            => $r->id,
+                    'reviewer_name' => $r->reviewer_name,
+                    'rating'        => (int) $r->rating,
+                    'comment'       => $r->body,
+                    'date'          => $r->created_at?->toDateString(),
+                    'photo_url'     => $r->images->first()?->image_url ?? null,
+                ])
+            ),
+            'faqs'           => $this->whenLoaded('faqs', fn () =>
+                $this->faqs->map(fn ($f) => [
+                    'id'       => $f->id,
+                    'question' => $f->question,
+                    'answer'   => $f->answer,
+                ])
+            ),
             'created_at'     => $this->created_at?->toISOString(),
         ];
     }

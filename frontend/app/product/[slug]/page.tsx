@@ -149,12 +149,14 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     ? product.images.map((i) => i.image_url)
     : [product.primary_image];
 
-  const FAQ = [
-    { q: 'Is this product suitable for all skin types?',   a: 'Yes, suitable for all skin types including sensitive skin.' },
-    { q: 'How do I apply this fragrance?',                  a: 'Apply to pulse points: wrists, neck, and behind the ears.' },
-    { q: 'How long does the scent last?',                   a: 'Typically 6–12 hours depending on skin type and conditions.' },
-    { q: 'Does it leave a greasy feeling?',                 a: 'No, our formula absorbs cleanly without residue.' },
-  ];
+  const FAQ = (product.faqs && product.faqs.length > 0)
+    ? product.faqs.map((f) => ({ q: f.question, a: f.answer }))
+    : [
+        { q: 'Is this product suitable for all skin types?',   a: 'Yes, suitable for all skin types including sensitive skin.' },
+        { q: 'How do I apply this fragrance?',                  a: 'Apply to pulse points: wrists, neck, and behind the ears.' },
+        { q: 'How long does the scent last?',                   a: 'Typically 6–12 hours depending on skin type and conditions.' },
+        { q: 'Does it leave a greasy feeling?',                 a: 'No, our formula absorbs cleanly without residue.' },
+      ];
 
   return (
     <div className="min-h-screen flex flex-col bg-white">

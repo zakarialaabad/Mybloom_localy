@@ -38,6 +38,11 @@ class ProductResource extends JsonResource
                 'name' => $this->category?->name,
                 'slug' => $this->category?->slug,
             ]),
+            'product_type'   => $this->whenLoaded('productType', fn () => $this->productType ? [
+                'id'   => $this->productType->id,
+                'name' => $this->productType->name,
+                'slug' => $this->productType->slug,
+            ] : null),
             // Returns the URL string directly — frontend expects primary_image as string
             'primary_image'  => $this->whenLoaded('images', function () {
                 $primary = $this->images->firstWhere('is_primary', true) ?? $this->images->first();

@@ -17,13 +17,34 @@ class ProductController extends Controller
 {
     /**
      * GET /api/v1/admin/products
+     *
+     * Query params:
+     *   search      string   filter by name / subtitle / category name
+     *   category_id int      filter by category
+     *   per_page    int      default 100, max 200
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $products = Product::with(['brand', 'category'])
+        $query = Product::with(['brand', 'category', 'productType', 'images'])
             ->withTrashed()
-            ->orderBy('created_at', 'desc')
-            ->paginate(20);
+            ->orderBy('created_at', 'desc');
+
+        // Full-text search across name, subtitle and category name
+        if ($search = trim((string) $request->get('search', ''))) {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('subtitle', 'like', "%{$search}%")
+                  ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$search}%"));
+            });
+        }
+
+        // Filter by category
+        if ($categoryId = $request->get('category_id')) {
+            $query->where('category_id', (int) $categoryId);
+        }
+
+        $perPage = min((int) $request->get('per_page', 100), 200);
+        $products = $query->paginate($perPage);
 
         return ProductResource::collection($products);
     }
@@ -33,9 +54,98 @@ class ProductController extends Controller
      */
     public function store(StoreProductRequest $request): JsonResponse
     {
-        $product = Product::create($request->validated());
+        $validated = $request->validated();
+        
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            $product = Product::create($validated);
 
-        return response()->json(['data' => new ProductDetailResource($product->load(['brand', 'category', 'images', 'sizes']))], 201);
+            // Variants
+            if (!empty($validated['variants'])) {
+                $variants = json_decode($validated['variants'], true);
+                if (is_array($variants)) {
+                    foreach ($variants as $variant) {
+                        $product->sizes()->create([
+                            'label' => ($variant['size'] ?? '') . ' ' . ($variant['unit'] ?? ''),
+                            'price_modifier' => isset($variant['price']) ? (float)$variant['price'] : 0,
+                            'stock' => isset($variant['stock']) ? (int)$variant['stock'] : 0,
+                        ]);
+                        if ($product->price == 0 && isset($variant['price'])) {
+                            $product->update(['price' => $variant['price'], 'stock' => $variant['stock']]);
+                        }
+                    }
+                }
+            }
+
+            // FAQs
+            if (!empty($validated['faqs'])) {
+                $faqs = json_decode($validated['faqs'], true);
+                if (is_array($faqs)) {
+                    foreach ($faqs as $faq) {
+                        $product->faqs()->create([
+                            'question' => $faq['question'] ?? 'Q',
+                            'answer' => $faq['answer'] ?? 'A',
+                        ]);
+                    }
+                }
+            }
+
+            // Reviews
+            if (!empty($validated['reviews_array'])) {
+                $reviews = json_decode($validated['reviews_array'], true);
+                if (is_array($reviews)) {
+                    foreach ($reviews as $review) {
+                        $product->allReviews()->create([
+                            'reviewer_name' => $review['reviewer_name'] ?? 'Guest',
+                            'rating' => isset($review['rating']) ? (int)$review['rating'] : 5,
+                            'body' => $review['comment'] ?? '',
+                            'created_at' => $review['date'] ?? now(),
+                            'is_approved' => true,
+                            'approved_at' => now(),
+                        ]);
+                    }
+                }
+            }
+
+            // Images
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $i => $file) {
+                    $path = $file->store('products', 'public');
+                    $product->images()->create([
+                        'url' => '/storage/' . $path,
+                        'alt' => $product->name,
+                        'sort_order' => $i,
+                        'is_primary' => $i === 0
+                    ]);
+                }
+            }
+            
+            // Ingredients
+            if (!empty($validated['manual_ingredients'])) {
+                $manualIngredients = json_decode($validated['manual_ingredients'], true);
+                if (is_array($manualIngredients)) {
+                    foreach ($manualIngredients as $i => $ing) {
+                        $imageUrl = null;
+                        if ($request->hasFile("ingredient_images_{$i}")) {
+                            $path = $request->file("ingredient_images_{$i}")->store('ingredients', 'public');
+                            $imageUrl = '/storage/' . $path;
+                        }
+                        $ingredient = \App\Models\Ingredient::firstOrCreate(
+                            ['name' => $ing['name']],
+                            ['image_url' => $imageUrl]
+                        );
+                        $product->ingredientItems()->attach($ingredient->id);
+                    }
+                }
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+
+            return response()->json(['data' => new ProductDetailResource($product->load(['brand', 'category', 'images', 'sizes']))], 201);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return response()->json(['message' => 'Failed to create product.', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -43,7 +153,8 @@ class ProductController extends Controller
      */
     public function show(Product $product): JsonResponse
     {
-        return response()->json(['data' => new ProductDetailResource($product->load(['brand', 'category', 'images', 'sizes', 'allReviews']))]);
+        $product->load(['brand', 'category', 'images', 'sizes', 'allReviews', 'ingredientItems', 'faqs', 'productType']);
+        return response()->json(['data' => new ProductDetailResource($product)]);
     }
 
     /**
@@ -51,9 +162,158 @@ class ProductController extends Controller
      */
     public function update(UpdateProductRequest $request, Product $product): JsonResponse
     {
-        $product->update($request->validated());
+        \Illuminate\Support\Facades\DB::beginTransaction();
+        try {
+            $validated = $request->validated();
 
-        return response()->json(['data' => new ProductDetailResource($product->fresh(['brand', 'category', 'images', 'sizes']))]);
+            // Update basic product fields (removes relationship keys from validated first)
+            $basicFields = array_diff_key($validated, array_flip([
+                'variants', 'faqs', 'reviews_array', 'deleted_review_ids',
+                'manual_ingredients', 'deleted_image_ids',
+            ]));
+            $product->update($basicFields);
+
+            // ── Sync Variants ──────────────────────────────────────────────────
+            if (array_key_exists('variants', $validated)) {
+                $variants = json_decode($validated['variants'], true);
+                if (is_array($variants)) {
+                    $product->sizes()->delete();
+                    foreach ($variants as $variant) {
+                        $product->sizes()->create([
+                            'label'          => ($variant['size'] ?? '') . ' ' . ($variant['unit'] ?? ''),
+                            'price_modifier' => isset($variant['price']) ? (float) $variant['price'] : 0,
+                            'stock'          => isset($variant['stock']) ? (int) $variant['stock'] : 0,
+                        ]);
+                    }
+                    // Sync product base price/stock from first variant
+                    if (!empty($variants) && isset($variants[0]['price'])) {
+                        $product->update([
+                            'price' => $variants[0]['price'],
+                            'stock' => $variants[0]['stock'] ?? 0,
+                        ]);
+                    }
+                }
+            }
+
+            // ── Sync FAQs ──────────────────────────────────────────────────────
+            if (array_key_exists('faqs', $validated)) {
+                $faqs = json_decode($validated['faqs'], true);
+                if (is_array($faqs)) {
+                    $incomingIds = array_filter(array_column($faqs, 'id'));
+                    // Delete FAQs not present in incoming list
+                    $product->faqs()->whereNotIn('id', $incomingIds ?: [0])->delete();
+                    foreach ($faqs as $faq) {
+                        if (!empty($faq['id'])) {
+                            $product->faqs()->where('id', (int) $faq['id'])->update([
+                                'question' => $faq['question'] ?? 'Q',
+                                'answer'   => $faq['answer'] ?? 'A',
+                            ]);
+                        } else {
+                            $product->faqs()->create([
+                                'question' => $faq['question'] ?? 'Q',
+                                'answer'   => $faq['answer'] ?? 'A',
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            // ── Delete Reviews ────────────────────────────────────────────────
+            if (!empty($validated['deleted_review_ids'])) {
+                $deletedIds = json_decode($validated['deleted_review_ids'], true);
+                if (is_array($deletedIds)) {
+                    $product->allReviews()->whereIn('id', array_map('intval', $deletedIds))->delete();
+                }
+            }
+
+            // ── Add new Reviews ───────────────────────────────────────────────
+            if (!empty($validated['reviews_array'])) {
+                $reviewsData = json_decode($validated['reviews_array'], true);
+                if (is_array($reviewsData)) {
+                    foreach ($reviewsData as $review) {
+                        if (empty($review['id'])) {
+                            $product->allReviews()->create([
+                                'reviewer_name' => $review['reviewer_name'] ?? 'Guest',
+                                'rating'        => isset($review['rating']) ? (int) $review['rating'] : 5,
+                                'body'          => $review['comment'] ?? '',
+                                'created_at'    => $review['date'] ?? now(),
+                                'is_approved'   => true,
+                                'approved_at'   => now(),
+                            ]);
+                        }
+                    }
+                }
+            }
+
+            // ── Delete specified images ───────────────────────────────────────
+            if (!empty($validated['deleted_image_ids'])) {
+                $deletedIds = json_decode($validated['deleted_image_ids'], true);
+                if (is_array($deletedIds)) {
+                    ProductImage::where('product_id', $product->id)
+                        ->whereIn('id', array_map('intval', $deletedIds))
+                        ->each(function ($img) {
+                            \Illuminate\Support\Facades\Storage::disk('public')
+                                ->delete(ltrim(str_replace('/storage/', '', $img->url), '/'));
+                            $img->delete();
+                        });
+                }
+            }
+
+            // ── Upload new images ─────────────────────────────────────────────
+            if ($request->hasFile('images')) {
+                $maxSort = (int) $product->images()->max('sort_order');
+                foreach ($request->file('images') as $i => $file) {
+                    $path     = $file->store('products', 'public');
+                    $noPrimary = $product->images()->count() === 0 && $i === 0;
+                    $product->images()->create([
+                        'url'        => '/storage/' . $path,
+                        'alt'        => $product->name,
+                        'sort_order' => $maxSort + $i + 1,
+                        'is_primary'  => $noPrimary,
+                    ]);
+                }
+            }
+
+            // Ensure at least one primary image
+            if ($product->images()->where('is_primary', true)->count() === 0) {
+                $first = $product->images()->orderBy('sort_order')->first();
+                if ($first) {
+                    $first->update(['is_primary' => true]);
+                }
+            }
+
+            // ── Sync Ingredients ──────────────────────────────────────────────
+            if (array_key_exists('manual_ingredients', $validated)) {
+                $manualIngredients = json_decode($validated['manual_ingredients'], true);
+                if (is_array($manualIngredients)) {
+                    $product->ingredientItems()->detach();
+                    foreach ($manualIngredients as $i => $ing) {
+                        $imageUrl = null;
+                        if ($request->hasFile("ingredient_images_{$i}")) {
+                            $path     = $request->file("ingredient_images_{$i}")->store('ingredients', 'public');
+                            $imageUrl = '/storage/' . $path;
+                        }
+                        $ingredient = \App\Models\Ingredient::firstOrCreate(
+                            ['name' => $ing['name']],
+                            ['image_url' => $imageUrl]
+                        );
+                        if ($imageUrl && !$ingredient->wasRecentlyCreated) {
+                            $ingredient->update(['image_url' => $imageUrl]);
+                        }
+                        $product->ingredientItems()->attach($ingredient->id);
+                    }
+                }
+            }
+
+            \Illuminate\Support\Facades\DB::commit();
+
+            $product->load(['brand', 'category', 'images', 'sizes', 'allReviews', 'ingredientItems', 'faqs', 'productType']);
+            return response()->json(['data' => new ProductDetailResource($product)]);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\DB::rollBack();
+            return response()->json(['message' => 'Failed to update product.', 'error' => $e->getMessage()], 500);
+        }
     }
 
     /**

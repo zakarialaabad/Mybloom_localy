@@ -15,6 +15,7 @@ export interface AdminLoginPayload {
 
 export interface AdminLoginResponse {
   message: string;
+  token: string;
   admin: { id: number; email: string };
 }
 
@@ -38,6 +39,22 @@ const apiClient = axios.create({
   timeout: 15_000,
 });
 
+// ─── Request interceptor ──────────────────────────────────────────────────────
+// Reads the admin_token cookie (non-HttpOnly, so JS can access it) and injects
+// it as Authorization: Bearer on every request. This replaces the fragile
+// server-side InjectAdminTokenFromCookie middleware that crashed PHP on Windows.
+
+apiClient.interceptors.request.use((config) => {
+  if (typeof document !== 'undefined') {
+    const match = document.cookie.match(/(?:^|;\s*)admin_token=([^;]+)/);
+    if (match) {
+      const token = decodeURIComponent(match[1]);
+      config.headers['Authorization'] = `Bearer ${token}`;
+    }
+  }
+  return config;
+});
+
 // ─── Response interceptor ─────────────────────────────────────────────────────
 // 401 → redirect to /admin/login. No retry. No token refresh.
 
@@ -46,6 +63,8 @@ apiClient.interceptors.response.use(
   (error: AxiosError<ApiValidationError>) => {
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
+        // Clear the frontend-domain cookie before redirecting
+        document.cookie = 'admin_token=; path=/; max-age=0; SameSite=Lax';
         window.location.href = '/admin/login';
       }
     }
@@ -58,11 +77,21 @@ apiClient.interceptors.response.use(
 export const adminAuthService = {
   login: async (payload: AdminLoginPayload): Promise<AdminLoginResponse> => {
     const { data } = await apiClient.post<AdminLoginResponse>('/v1/admin/auth/login', payload);
+    // Set the token as a cookie on the frontend domain (localhost) so
+    // Next.js Edge middleware can read it for route protection.
+    if (typeof document !== 'undefined' && data.token) {
+      const maxAge = 60 * 60 * 24; // 24 h
+      document.cookie = `admin_token=${encodeURIComponent(data.token)}; path=/; max-age=${maxAge}; SameSite=Lax`;
+    }
     return data;
   },
 
   logout: async (): Promise<void> => {
     await apiClient.post('/v1/admin/auth/logout');
+    // Remove the frontend-domain cookie too
+    if (typeof document !== 'undefined') {
+      document.cookie = 'admin_token=; path=/; max-age=0; SameSite=Lax';
+    }
   },
 
   me: async (): Promise<{ id: number; email: string }> => {
@@ -152,6 +181,7 @@ export interface Product {
   images?: ProductImage[];
   sizes?: ProductSize[];
   reviews?: ReviewItem[];
+  faqs?: { id: number; question: string; answer: string }[];
   avg_rating: number;
   review_count: number;
   min_price: number;
@@ -323,6 +353,134 @@ export const reviewService = {
       console.error('[reviewService.submit] Request failed — error:', err);
       throw err;
     }
+  },
+};
+
+// ─── Dashboard service ───────────────────────────────────────────────────────
+
+export interface DashboardSummary {
+  total_revenue: number;
+  revenue_trend: number;
+  total_orders: number;
+  orders_trend: number;
+  top_product: { name: string; subtitle: string; units_sold: number };
+}
+
+export interface DashboardChartData {
+  labels: string[];
+  values: number[];
+}
+
+export interface DashboardCustomer {
+  phone: string;
+  name: string;
+  orders: number;
+  total_spent: string;
+}
+
+export interface DashboardOrder {
+  id: number;
+  order_number: string;
+  product: string;
+  date: string;
+  customer: string;
+  phone: string;
+  status: string;
+  amount: string;
+}
+
+export interface DashboardData {
+  summary: DashboardSummary;
+  sales_chart: DashboardChartData;
+  top_customers: DashboardCustomer[];
+  recent_orders: DashboardOrder[];
+}
+
+export const dashboardService = {
+  get: async (): Promise<DashboardData> => {
+    const { data } = await apiClient.get<DashboardData>('/v1/admin/dashboard');
+    return data;
+  },
+};
+
+// ─── Admin product types ──────────────────────────────────────────────────────
+
+export interface AdminProduct {
+  id: number;
+  name: string;
+  slug: string;
+  subtitle: string | null;
+  price: number;
+  stock: number;
+  is_active: boolean;
+  is_featured: boolean;
+  deleted_at: string | null;
+  primary_image: string | null;
+  category: { id: number; name: string; slug: string } | null;
+  brand: { id: number; name: string; slug: string } | null;
+  product_type: { id: number; name: string; slug: string } | null;
+  created_at: string;
+}
+
+export interface AdminProductDetail {
+  id: number;
+  name: string;
+  subtitle: string | null;
+  description: string | null;
+  gender: string;
+  price: number;
+  stock: number;
+  is_active: boolean;
+  is_featured: boolean;
+  is_best_seller: boolean;
+  is_gift: boolean;
+  is_recommended: boolean;
+  brand: { id: number; name: string } | null;
+  category: { id: number; name: string } | null;
+  product_type: { id: number; name: string } | null;
+  images: { id: number; image_url: string; is_primary: boolean; sort_order: number }[];
+  sizes: { id: number; label: string; price_modifier: number; stock_quantity: number }[];
+  ingredients: { id: number; name: string; image_url: string | null }[];
+  faqs: { id: number; question: string; answer: string }[];
+  all_reviews: { id: number; reviewer_name: string; rating: number; comment: string; date: string | null; photo_url: string | null }[];
+}
+
+export interface AdminProductMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
+export const adminProductService = {
+  list: async (params?: Record<string, unknown>): Promise<{ data: AdminProduct[]; meta: AdminProductMeta }> => {
+    const { data } = await apiClient.get<{ data: AdminProduct[]; meta: AdminProductMeta }>('/v1/admin/products', { params });
+    return data;
+  },
+
+  get: async (id: number): Promise<AdminProductDetail> => {
+    const { data } = await apiClient.get<{ data: AdminProductDetail }>(`/v1/admin/products/${id}`);
+    return data.data;
+  },
+
+  destroy: async (id: number): Promise<void> => {
+    await apiClient.delete(`/v1/admin/products/${id}`);
+  },
+};
+
+// ─── Admin category service ───────────────────────────────────────────────────
+
+export const adminCategoryService = {
+  list: async (): Promise<{ id: number; name: string; slug: string }[]> => {
+    const { data } = await apiClient.get<{ data: { id: number; name: string; slug: string }[] }>('/v1/admin/categories');
+    return data.data;
+  },
+};
+
+export const adminProductTypeService = {
+  list: async (): Promise<{ id: number; name: string; slug: string }[]> => {
+    const { data } = await apiClient.get<{ data: { id: number; name: string; slug: string }[] }>('/v1/admin/product-types');
+    return data.data;
   },
 };
 

@@ -1,11 +1,9 @@
 'use client';
 
 import { useState, FormEvent } from 'react';
-import { useRouter } from 'next/navigation';
 import { adminAuthService } from '@/services/api';
 
 export default function AdminLoginPage() {
-  const router = useRouter();
   const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
   const [error,    setError]    = useState<string | null>(null);
@@ -18,12 +16,19 @@ export default function AdminLoginPage() {
 
     try {
       await adminAuthService.login({ email, password });
-      router.push('/admin/dashboard');
+      // Use a hard redirect so the browser sends the freshly-set cookie
+      // with the real HTTP request to /admin/dashboard — Next.js middleware
+      // can then see it. router.push does a soft navigation that sometimes
+      // races against the cookie being available server-side.
+      // Add a tiny delay to ensure the cookie write is committed to the browser's
+      // cookie store before the navigation happens.
+      setTimeout(() => {
+        window.location.href = '/admin/dashboard';
+      }, 150);
     } catch (err: unknown) {
       const msg =
         (err as { message?: string })?.message ?? 'Invalid credentials.';
       setError(msg);
-    } finally {
       setLoading(false);
     }
   }

@@ -139,6 +139,7 @@ class ProductController extends Controller
             'sizes',
             'ingredientItems',
             'reviews.images',
+            'faqs',
         ])
         ->withAvg('reviews as avg_rating', 'rating')
         ->withCount('reviews as review_count')
