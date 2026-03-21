@@ -49,13 +49,17 @@ export default function ProductCard({
 
           {/* Product image */}
           <div className="relative h-full w-full">
-            <Image
-              src={imageUrl}
-              alt={name}
-              fill
-              unoptimized
-              className="object-cover transition-transform duration-700 group-hover:scale-105"
-            />
+            {imageUrl ? (
+              <Image
+                src={imageUrl}
+                alt={name}
+                fill
+                unoptimized
+                className="object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+            ) : (
+              <div className="w-full h-full bg-[#f0ebe6]" />
+            )}
           </div>
 
           {/* Action buttons overlay bar – hidden below image, slides up on hover/tap */}

@@ -9,7 +9,17 @@ class StoreProductRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Route already protected by ensure.admin middleware
+        return true;
+    }
+
+    public function prepareForValidation()
+    {
+        if ($this->has('variants') && is_string($this->variants)) {
+            $decoded = json_decode($this->variants, true);
+            if (is_array($decoded)) {
+                $this->merge(['variants_array' => $decoded]);
+            }
+        }
     }
 
     public function rules(): array
@@ -33,6 +43,12 @@ class StoreProductRequest extends FormRequest
             'is_gift'           => ['nullable', 'boolean'],
             'is_recommended'    => ['nullable', 'boolean'],
             'variants'          => ['nullable', 'string'],
+            'variants_array'                       => ['nullable', 'array', 'max:3'],
+            'variants_array.*.size'                => ['required', 'numeric', 'min:1', 'distinct'],
+            'variants_array.*.price'               => ['required', 'numeric', 'min:0'],
+            'variants_array.*.promotion_percent'   => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'variants_array.*.promotion'           => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'variants_array.*.stock'               => ['nullable', 'integer', 'min:0'],
             'faqs'              => ['nullable', 'string'],
             'reviews_array'     => ['nullable', 'string'],
             'images'            => ['nullable', 'array'],

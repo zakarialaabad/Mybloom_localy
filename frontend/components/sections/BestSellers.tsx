@@ -7,6 +7,8 @@ import SectionContainer from '@/components/SectionContainer';
 import { productService, Product } from '@/services/api';
 import { type ProductCardProps } from '@/components/ui/ProductCard';
 
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
+
 function productToCard(p: Product): ProductCardProps {
   return {
     id:            p.id,
@@ -18,7 +20,7 @@ function productToCard(p: Product): ProductCardProps {
     originalPrice: p.max_price ?? p.min_price,
     rating:        p.avg_rating,
     reviewCount:   p.review_count,
-    imageUrl:      p.primary_image,
+    imageUrl:      p.primary_image ?? FALLBACK_IMG,
     isBestSeller:  p.is_featured,
     badge:         p.badges?.[0],
   };

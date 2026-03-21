@@ -48,6 +48,23 @@ class ProductResource extends JsonResource
                 $primary = $this->images->firstWhere('is_primary', true) ?? $this->images->first();
                 return $primary?->url;
             }),
+            'variants'       => $this->whenLoaded('variants', fn () =>
+                $this->variants->map(function ($v) {
+                    $base  = (float) $v->price;
+                    $promo = (float) ($v->promotion_percent ?? 0);
+                    $final = $promo > 0 ? round($base * (1 - $promo / 100), 2) : $base;
+                    return [
+                        'id'                => $v->id,
+                        'size'              => (int) $v->size,
+                        'price'             => $base,
+                        'promotion_percent' => $promo,
+                        'final_price'       => $final,
+                        'original_price'    => $promo > 0 ? $base : null,
+                        'is_default'        => (bool) $v->is_default,
+                        'stock_quantity'    => (int) ($v->stock_quantity ?? 0),
+                    ];
+                })
+            ),
             'created_at'     => $this->created_at?->toISOString(),
         ];
     }

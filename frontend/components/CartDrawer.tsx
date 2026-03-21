@@ -60,7 +60,11 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               ) : items.map((item, idx) => (
                 <div key={`${item.productId}-${item.sizeLabel}-${idx}`} className={`p-4 flex gap-4 ${idx < items.length - 1 ? 'border-b border-gray-100' : ''}`}>
                   <div className="relative w-24 h-24 bg-[#f8f8f8] shrink-0 border border-gray-100/50">
-                    <Image src={item.imageUrl} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
+                    {item.imageUrl ? (
+                      <Image src={item.imageUrl} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
+                    ) : (
+                      <div className="w-full h-full bg-gray-100" />
+                    )}
                   </div>
                   <div className="flex-1 flex flex-col justify-between">
                     <div className="flex justify-between items-start">

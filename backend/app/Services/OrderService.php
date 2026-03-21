@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderStatusHistory;
 use App\Models\Product;
 use App\Models\ProductSize;
+use App\Models\ProductVariant;
 use App\Models\ShippingMethod;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +20,7 @@ class OrderService
      *  - shipping_method_id, coupon_code (optional)
      *  - customer_name, customer_phone, customer_email (optional)
      *  - shipping_address, shipping_city, shipping_province, shipping_postal_code
-     *  - items: [ { product_id, size_label, quantity, unit_price } ]
+     *  - items: [ { product_id, size_id, quantity } ]
      *  - notes (optional)
      */
     public function createOrder(array $data): Order
@@ -41,27 +42,54 @@ class OrderService
                 }
             }
 
-            // Resolve each item: look up size for label + compute unit price
+            // Resolve each item: validate stock at variant level, not product level
             $resolvedItems = collect($data['items'])->map(function ($item) {
                 $product    = Product::findOrFail($item['product_id']);
                 $sizeId     = $item['size_id'] ?? 0;
                 
-                $priceModifier = 0.00;
-                $sizeLabel     = null;
+                // ── Stock Validation Strategy ──
+                // Priority: Check variant stock first → fall back to product stock
+                $availableStock = $product->stock; // Default to product-level stock
+                $sizeLabel      = null;
+                $unitPrice      = (float) $product->price;
 
                 if ($sizeId > 0) {
-                    $size          = ProductSize::findOrFail($sizeId);
-                    $priceModifier = (float) $size->price_modifier;
-                    $sizeLabel     = $size->label;
+                    // Try new ProductVariant system first
+                    $variant = ProductVariant::find($sizeId);
+                    
+                    if ($variant && $variant->product_id === $product->id) {
+                        // ✅ Use variant-level stock & price (both now correctly map to database columns)
+                        $availableStock = (int) ($variant->stock_quantity ?? 0);
+                        $sizeLabel      = "{$variant->size}ml";
+                        $unitPrice      = (float) $variant->price;  // ✅ FIX: price (not final_price)
+                    } else {
+                        // Fall back to legacy ProductSize system
+                        $size = ProductSize::find($sizeId);
+                        
+                        if ($size && $size->product_id === $product->id) {
+                            $availableStock = (int) ($size->stock ?? 0);  // ✅ FIX: stock (not stock_quantity)
+                            $sizeLabel      = $size->label;  // ✅ FIX: label (not volume_ml)
+                            $unitPrice      = (float) ($product->price + ($size->price_modifier ?? 0));  // ✅ FIX: calculate from product price + modifier
+                        } else {
+                            throw new \InvalidArgumentException("Size {$sizeId} not found for product {$product->id}.");
+                        }
+                    }
                 }
 
-                $unitPrice = round((float) $product->price + $priceModifier, 2);
+                // ✅ Check stock at the correct level (variant or product)
+                if ($availableStock < $item['quantity']) {
+                    $detail = $sizeLabel ? " ({$sizeLabel})" : '';
+                    throw new \InvalidArgumentException(
+                        "Product \"{$product->name}\"{$detail} only has {$availableStock} unit(s) in stock, but you requested {$item['quantity']}."
+                    );
+                }
 
                 return [
-                    'product_id' => $item['product_id'],
-                    'size_label' => $sizeLabel,
-                    'quantity'   => (int) $item['quantity'],
-                    'unit_price' => $unitPrice,
+                    'product_id'  => $item['product_id'],
+                    'size_id'     => $sizeId,
+                    'size_label'  => $sizeLabel,
+                    'quantity'    => (int) $item['quantity'],
+                    'unit_price'  => $unitPrice,
                 ];
             });
 
@@ -115,7 +143,7 @@ class OrderService
                 'notes'               => $data['notes'] ?? null,
             ]);
 
-            // Create order items + decrement stock
+            // Create order items + decrement stock at the correct level
             foreach ($resolvedItems as $item) {
                 $order->items()->create([
                     'product_id' => $item['product_id'],
@@ -124,8 +152,22 @@ class OrderService
                     'unit_price' => $item['unit_price'],
                 ]);
 
-                Product::where('id', $item['product_id'])
-                    ->decrement('stock', $item['quantity']);
+                // ✅ Decrement stock at variant level if size_id provided
+                if ($item['size_id'] > 0) {
+                    // Try new ProductVariant system
+                    $variant = ProductVariant::find($item['size_id']);
+                    if ($variant) {
+                        $variant->decrement('stock_quantity', $item['quantity']);
+                    } else {
+                        // Fall back to legacy ProductSize (uses 'stock' column, not 'stock_quantity')
+                        ProductSize::where('id', $item['size_id'])
+                            ->decrement('stock', $item['quantity']);  // ✅ FIX: stock (not stock_quantity)
+                    }
+                } else {
+                    // No variant → decrement product-level stock
+                    Product::where('id', $item['product_id'])
+                        ->decrement('stock', $item['quantity']);
+                }
             }
 
             // Initial status history

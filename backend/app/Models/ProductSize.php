@@ -13,14 +13,16 @@ class ProductSize extends Model
         'product_id',
         'label',
         'price_modifier',
+        'promotion_percent',
         'stock',
     ];
 
     protected function casts(): array
     {
         return [
-            'price_modifier' => 'decimal:2',
-            'stock'          => 'integer',
+            'price_modifier'   => 'decimal:2',
+            'promotion_percent' => 'decimal:2',
+            'stock'            => 'integer',
         ];
     }
 

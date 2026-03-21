@@ -503,8 +503,17 @@ export default function ProductsPage() {
                       </td>
 
                       {/* Price */}
-                      <td className="px-6 py-4 text-[14px] text-[#333] font-medium whitespace-nowrap">
-                        {Number(product.price).toFixed(2)} DH
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-[14px] text-[#333] font-bold">
+                            {Number(product.price).toFixed(2)} DH
+                          </span>
+                          {product.original_price && product.original_price > product.price && (
+                            <span className="text-[11px] text-gray-400 line-through">
+                              {Number(product.original_price).toFixed(2)} DH
+                            </span>
+                          )}
+                        </div>
                       </td>
 
                       {/* Stock */}

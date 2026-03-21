@@ -18,7 +18,7 @@ const SORT_OPTIONS = [
 ];
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { productService, Product } from '@/services/api';
+import { productService, Product, bannerService, Banner } from '@/services/api';
 import ProductCard from '@/components/ui/ProductCard';
 import useReferenceStore from '@/store/reference';
 import useFilterStore from '@/store/filters';
@@ -50,6 +50,7 @@ export default function CollectionPage() {
 
   const PER_PAGE = 10;
   const [products, setProducts] = useState<Product[]>([]);
+  const [heroBanner, setHeroBanner] = useState<Banner | null>(null);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
@@ -106,6 +107,15 @@ export default function CollectionPage() {
     setSelectedCategories(categoryId ? [Number(categoryId)] : []);
     setFeaturedOnly(featured === '1');
   }, [searchParams, setSelectedCategories, setFeaturedOnly]);
+
+  // Fetch hero banner for the active collection (category) or global
+  useEffect(() => {
+    const categoryId = searchParams.get('category');
+    bannerService
+        .getCollectionHero(categoryId ? Number(categoryId) : null)
+        .then(setHeroBanner)
+        .catch(() => setHeroBanner(null));
+  }, [searchParams]);
 
   // Fetch products when filters change.
   // Debounced (400 ms) so rapid slider drags don't flood the API.
@@ -179,9 +189,29 @@ export default function CollectionPage() {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
-      {/* Banner */}
+      {/* Collection Hero Banner — dynamic from API, falls back to a solid color block */}
       <div className="w-full relative h-[200px] md:h-[300px] bg-[#5a1818]">
-        <Image src="/Valentines-image.png" alt="Special Valentines Offer" fill className="object-cover" priority />
+        {heroBanner ? (
+          heroBanner.link ? (
+            <a href={heroBanner.link} className="absolute inset-0">
+              <Image
+                src={heroBanner.image_path}
+                alt={heroBanner.title ?? 'Collection banner'}
+                fill
+                className="object-cover"
+                priority
+              />
+            </a>
+          ) : (
+            <Image
+              src={heroBanner.image_path}
+              alt={heroBanner.title ?? 'Collection banner'}
+              fill
+              className="object-cover"
+              priority
+            />
+          )
+        ) : null}
       </div>
 
       <main className="flex-grow container mx-auto px-4 py-8 max-w-7xl">

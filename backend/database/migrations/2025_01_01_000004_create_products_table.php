@@ -20,7 +20,7 @@ return new class extends Migration
             $table->enum('gender', ['men', 'women', 'unisex'])->default('unisex');
             $table->decimal('price', 12, 2);
             $table->decimal('original_price', 12, 2)->nullable();
-            $table->unsignedInteger('stock')->default(0);
+            $table->integer('stock')->default(0);
             $table->boolean('is_active')->default(true);
             $table->boolean('is_featured')->default(false);
             $table->timestamps();

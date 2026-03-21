@@ -16,6 +16,8 @@ use App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductControlle
 use App\Http\Controllers\Api\V1\Admin\ProductTypeController as AdminProductTypeController;
 use App\Http\Controllers\Api\V1\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Api\V1\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Api\V1\BannerController;
+use App\Http\Controllers\Api\V1\Admin\BannerController as AdminBannerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -59,6 +61,10 @@ Route::prefix('api')->group(function () {
             // Reviews — GET (approved, optional product_id scope) | POST (submit, no auth)
             Route::get('/reviews',                     [ReviewController::class, 'index']);
             Route::post('/reviews',                    [ReviewController::class, 'store']);
+
+            // Banners — public read-only
+            Route::get('/banners/homepage',            [BannerController::class, 'homepage']);
+            Route::get('/banners/collection/{id?}',    [BannerController::class, 'collectionHero']);
         });
 
         // ── Admin — auth endpoint (no sanctum guard, only throttle) ─────────
@@ -104,6 +110,12 @@ Route::prefix('api')->group(function () {
                 Route::patch('reviews/{review}/approve',   [AdminReviewController::class, 'approve']);
                 Route::patch('reviews/{review}/reject',    [AdminReviewController::class, 'reject']);
                 Route::delete('reviews/{review}',          [AdminReviewController::class, 'destroy']);
+
+                // Banners
+                Route::get('banners',                      [AdminBannerController::class, 'index']);
+                Route::post('banners',                     [AdminBannerController::class, 'store']);
+                Route::put('banners/{banner}',             [AdminBannerController::class, 'update']);
+                Route::delete('banners/{banner}',          [AdminBannerController::class, 'destroy']);
             });
     });
 });

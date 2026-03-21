@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { createPortal } from 'react-dom';
-import { adminProductService } from '@/services/api';
+import { adminProductService, adminCategoryService, adminProductTypeService, brandService } from '@/services/api';
 
 // === Icons ===
 const ArrowLeft = () => (
@@ -154,10 +154,11 @@ export default function EditProductPage() {
   const [deletedImageIds, setDeletedImageIds] = useState<number[]>([]);
 
   // --- Variant State ---
-  const [currentVariant, setCurrentVariant] = useState({
-    size: '', unit: 'ml', price: '', promotion: '0', stock: ''
-  });
-  const [variantState, setVariantState] = useState<'editing' | 'validated'>('editing');
+  type Variant = { size: string; unit: string; price: string; promotion: string; stock: string };
+  const emptyVariant = (): Variant => ({ size: '', unit: 'ml', price: '', promotion: '0', stock: '' });
+  const [variants, setVariants] = useState<Variant[]>([]);
+  const [editingVariantIndex, setEditingVariantIndex] = useState<number | null>(null);
+  const [draftVariant, setDraftVariant] = useState<Variant | null>(null);
   const [entryRowHighlight, setEntryRowHighlight] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
   const [toastVisible, setToastVisible] = useState(false);
@@ -172,19 +173,11 @@ export default function EditProductPage() {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [catRes, brandRes, typeRes] = await Promise.all([
-          fetch('http://localhost:8000/api/v1/categories'),
-          fetch('http://localhost:8000/api/v1/brands'),
-          fetch('http://localhost:8000/api/v1/product-types'),
+        const [cats, brnds, types] = await Promise.all([
+          adminCategoryService.list(),
+          brandService.list(),
+          adminProductTypeService.list(),
         ]);
-
-        let cats: any[] = [];
-        let brnds: any[] = [];
-        let types: any[] = [];
-
-        if (catRes.ok) cats = (await catRes.json()).data || [];
-        if (brandRes.ok) brnds = (await brandRes.json()).data || [];
-        if (typeRes.ok) types = (await typeRes.json()).data || [];
 
         setCategories(cats);
         setBrands(brnds);
@@ -214,7 +207,7 @@ export default function EditProductPage() {
         }
 
         // Status
-        if (product.is_best_seller) setActiveStatus('best_seller');
+        if (product.is_featured) setActiveStatus('best_seller');
         else if (product.is_gift) setActiveStatus('gift');
         else if (product.is_recommended) setActiveStatus('recommended');
         else setActiveStatus('none');
@@ -226,18 +219,15 @@ export default function EditProductPage() {
             .map(img => ({ type: 'existing', id: img.id, url: img.image_url }))
         );
 
-        // Variants (prefill from first size)
-        if (product.sizes && product.sizes.length > 0) {
-          const s = product.sizes[0];
-          const parts = (s.label ?? '').split(' ');
-          setCurrentVariant({
-            size: parts[0] ?? '',
-            unit: parts[1] ?? 'ml',
-            price: String(s.price_modifier ?? ''),
-            promotion: '0',
-            stock: String(s.stock_quantity ?? ''),
-          });
-          setVariantState('validated');
+        // Variants — prefill from product.variants (new system)
+        if (product.variants && product.variants.length > 0) {
+          setVariants(product.variants.map(v => ({
+            size: String(v.size),
+            unit: 'ml',
+            price: String(v.price),
+            promotion: String(v.promotion_percent ?? 0),
+            stock: String(v.stock_quantity ?? ''),
+          })));
         }
 
         // Ingredients
@@ -324,30 +314,41 @@ export default function EditProductPage() {
   };
 
   // ── Variant handlers ──────────────────────────────────────────────────────
-  const validateVariant = () => {
-    if (!currentVariant.size || !currentVariant.price) {
-      showToast('Please fill in at least the Size and Price before validating.');
+  const handleAddVariantClick = () => {
+    if (variants.length >= 3) {
+      showToast('Maximum 3 size variants allowed.');
       return;
     }
-    setVariantState('validated');
-  };
-
-  const editVariant = () => setVariantState('editing');
-
-  const deleteVariant = () => {
-    setCurrentVariant({ size: '', unit: 'ml', price: '', promotion: '0', stock: '' });
-    setVariantState('editing');
-  };
-
-  const handleAddVariantClick = () => {
-    if (variantState === 'editing') {
-      showToast('A variant row is already open — please validate the current row first.');
+    if (draftVariant !== null) {
+      showToast('Please validate the open row before adding another.');
       setEntryRowHighlight(true);
       setTimeout(() => setEntryRowHighlight(false), 2000);
-    } else {
-      setCurrentVariant({ size: '', unit: 'ml', price: '', promotion: '0', stock: '' });
-      setVariantState('editing');
+      return;
     }
+    setDraftVariant(emptyVariant());
+    setEditingVariantIndex(null);
+  };
+
+  const handleValidateDraft = () => {
+    if (!draftVariant || !draftVariant.size || !draftVariant.price) {
+      showToast('Please fill in at least Size and Price.');
+      return;
+    }
+    setVariants([...variants, draftVariant]);
+    setDraftVariant(null);
+  };
+
+  const handleEditVariant = (index: number) => {
+    setEditingVariantIndex(index);
+  };
+
+  const handleSaveEditVariant = (index: number) => {
+    setEditingVariantIndex(null);
+  };
+
+  const handleDeleteVariant = (index: number) => {
+    setVariants(variants.filter((_, i) => i !== index));
+    if (editingVariantIndex === index) setEditingVariantIndex(null);
   };
 
   // ── Ingredient handlers ───────────────────────────────────────────────────
@@ -441,30 +442,40 @@ export default function EditProductPage() {
       data.append('category_id', formData.category_id);
       data.append('brand_id', formData.brand_id);
       data.append('gender', gender.toLowerCase());
-      data.append('is_best_seller', activeStatus === 'best_seller' ? '1' : '0');
+      data.append('is_featured', activeStatus === 'best_seller' ? '1' : '0');
       data.append('is_gift', activeStatus === 'gift' ? '1' : '0');
       data.append('is_recommended', activeStatus === 'recommended' ? '1' : '0');
 
       const selectedType = productTypes.find((t: any) => t.name === productType);
       if (selectedType) data.append('product_type_id', String(selectedType.id));
 
-      const variantList = variantState === 'validated' ? [currentVariant] : [];
-      data.append('variants', JSON.stringify(variantList));
-      if (variantState === 'validated') {
-        data.append('price', currentVariant.price);
-        data.append('stock', currentVariant.stock);
+      const validVariants = variants.filter(v => v.size && v.price);
+      data.append('variants', JSON.stringify(validVariants));
+      if (validVariants.length > 0) {
+        // Mirror backend rule: 1 variant → index 0; 2 variants → largest (index 1); 3 variants → middle (index 1)
+        const sorted = [...validVariants].sort((a, b) => Number(a.size) - Number(b.size));
+        const defaultV = sorted.length === 1 ? sorted[0] : sorted[1];
+        data.append('price', defaultV.price);
+        data.append('stock', defaultV.stock);
       }
 
       data.append('faqs', JSON.stringify(faqs));
 
       // Only send new reviews (without id)
       const newReviews = reviews.filter(r => !r.id);
-      data.append('reviews_array', JSON.stringify(newReviews.map(r => ({
+      const sanitizedNewReviews = newReviews.map(r => ({
         reviewer_name: r.reviewer_name,
         rating: r.rating,
         comment: r.comment,
         date: r.date,
-      }))));
+      }));
+      data.append('reviews_array', JSON.stringify(sanitizedNewReviews));
+      // Send review photo files for new reviews
+      newReviews.forEach((review, i) => {
+        if (review.photoFile) {
+          data.append(`review_photos_${i}`, review.photoFile);
+        }
+      });
       data.append('deleted_review_ids', JSON.stringify(deletedReviewIds));
 
       // Ingredients
@@ -486,8 +497,9 @@ export default function EditProductPage() {
 
       const tokenMatch = document.cookie.match(/(?:^|;\s*)admin_token=([^;]+)/);
       const adminToken = tokenMatch ? decodeURIComponent(tokenMatch[1]) : '';
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
 
-      const res = await fetch(`http://localhost:8000/api/v1/admin/products/${productId}`, {
+      const res = await fetch(`${apiBase}/v1/admin/products/${productId}`, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -746,63 +758,97 @@ export default function EditProductPage() {
       >
         <div className="w-full text-left">
           <div className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 text-[13px] font-bold text-[#da2966] capitalize opacity-90 items-center border-b border-gray-50 mb-3">
-            <div>Size</div><div>Unit</div><div>Base Price (DH)</div><div>Promotion (%)</div><div>Final Price</div><div>Stock</div><div>Actions</div>
+            <div>Size</div>
+            <div>Unit</div>
+            <div>Base Price (DH)</div>
+            <div>Promotion (%)</div>
+            <div>Final Price</div>
+            <div>Stock</div>
+            <div>Actions</div>
           </div>
 
-          {variantState === 'editing' ? (
+          {/* Saved variants rows */}
+          {variants.map((v, index) => (
+            <div key={index} className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 items-center rounded-[20px] bg-[#f8f8f8] mb-2">
+              <input type="text" value={v.size}
+                readOnly={editingVariantIndex !== index}
+                onChange={e => { const u = [...variants]; u[index] = { ...u[index], size: e.target.value }; setVariants(u); }}
+                className={`w-full h-12 text-center rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
+              <div className="relative">
+                <select value={v.unit} disabled={editingVariantIndex !== index}
+                  onChange={e => { const u = [...variants]; u[index] = { ...u[index], unit: e.target.value }; setVariants(u); }}
+                  className={`w-full appearance-none h-12 px-6 rounded-xl text-[14px] font-bold text-[#333] focus:outline-none pb-1 ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`}>
+                  <option value="ml">ml</option>
+                  <option value="g">g</option>
+                </select>
+                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><ChevronUp /></div>
+              </div>
+              <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
+                <input type="text" value={v.price}
+                  readOnly={editingVariantIndex !== index}
+                  onChange={e => { const u = [...variants]; u[index] = { ...u[index], price: e.target.value }; setVariants(u); }}
+                  placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                <div className="h-6 w-px bg-gray-200" /><span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
+              </div>
+              <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
+                <input type="text" value={v.promotion}
+                  readOnly={editingVariantIndex !== index}
+                  onChange={e => { const u = [...variants]; u[index] = { ...u[index], promotion: e.target.value }; setVariants(u); }}
+                  placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                <div className="h-6 w-px bg-gray-200" /><span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
+              </div>
+              <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold">
+                {(Number(v.price || 0) * (1 - Number(v.promotion || 0) / 100)).toFixed(2)} DH
+              </div>
+              <input type="text" value={v.stock}
+                readOnly={editingVariantIndex !== index}
+                onChange={e => { const u = [...variants]; u[index] = { ...u[index], stock: e.target.value }; setVariants(u); }}
+                className={`w-full text-center h-12 rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
+              <div className="flex items-center gap-2">
+                {editingVariantIndex === index
+                  ? <button onClick={() => handleSaveEditVariant(index)} className="h-10 px-3 bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[12px] font-bold rounded-xl flex items-center gap-1"><CheckIcon /> Save</button>
+                  : <button onClick={() => handleEditVariant(index)} className="flex items-center justify-center text-gray-500 hover:text-[#da2966] w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><EditIcon /></button>
+                }
+                <button onClick={() => handleDeleteVariant(index)} className="flex items-center justify-center text-gray-500 hover:text-red-500 w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><TrashIcon /></button>
+              </div>
+            </div>
+          ))}
+
+          {/* Draft (new) row */}
+          {draftVariant !== null && (
             <div
               className={`grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-5 items-center rounded-[20px] transition-colors duration-300 ${entryRowHighlight ? 'bg-[#fff0f3]' : 'bg-[#ffffe9]'}`}
               style={entryRowHighlight ? { animation: 'rowPulse 2s ease-out forwards' } : {}}
             >
-              <input type="text" value={currentVariant.size} onChange={e => setCurrentVariant({ ...currentVariant, size: e.target.value })} placeholder="20" className="w-full h-12 text-center rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm" />
+              <input type="text" value={draftVariant.size} onChange={e => setDraftVariant({ ...draftVariant, size: e.target.value })} placeholder="20" className="w-full h-12 text-center rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm" />
               <div className="relative">
-                <select value={currentVariant.unit} onChange={e => setCurrentVariant({ ...currentVariant, unit: e.target.value })} className="w-full appearance-none h-12 px-6 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm pb-1">
+                <select value={draftVariant.unit} onChange={e => setDraftVariant({ ...draftVariant, unit: e.target.value })} className="w-full appearance-none h-12 px-6 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm pb-1">
                   <option value="ml">ml</option>
                   <option value="g">g</option>
                 </select>
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><ChevronUp /></div>
               </div>
               <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
-                <input type="text" value={currentVariant.price} onChange={e => setCurrentVariant({ ...currentVariant, price: e.target.value })} placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                <input type="text" value={draftVariant.price} onChange={e => setDraftVariant({ ...draftVariant, price: e.target.value })} placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
                 <div className="h-6 w-px bg-gray-200" /><span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
               </div>
               <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
-                <input type="text" value={currentVariant.promotion} onChange={e => setCurrentVariant({ ...currentVariant, promotion: e.target.value })} placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                <input type="text" value={draftVariant.promotion} onChange={e => setDraftVariant({ ...draftVariant, promotion: e.target.value })} placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
                 <div className="h-6 w-px bg-gray-200" /><span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
               </div>
               <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold shadow-sm">
-                {(Number(currentVariant.price || 0) * (1 - Number(currentVariant.promotion || 0) / 100)).toFixed(2)} DH
+                {(Number(draftVariant.price || 0) * (1 - Number(draftVariant.promotion || 0) / 100)).toFixed(2)} DH
               </div>
-              <input type="text" value={currentVariant.stock} onChange={e => setCurrentVariant({ ...currentVariant, stock: e.target.value })} placeholder="33" className="w-full text-center h-12 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] shadow-sm focus:outline-none" />
-              <button onClick={validateVariant} className="h-12 w-full max-w-[100px] bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors">
+              <input type="text" value={draftVariant.stock} onChange={e => setDraftVariant({ ...draftVariant, stock: e.target.value })} placeholder="33" className="w-full text-center h-12 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] shadow-sm focus:outline-none" />
+              <button onClick={handleValidateDraft} className="h-12 w-full max-w-[100px] bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors">
                 <CheckIcon /> Validate
               </button>
             </div>
-          ) : (
-            <div className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 items-center">
-              <input type="text" readOnly value={currentVariant.size} className="w-full text-center h-12 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-bold text-[#333] focus:outline-none" />
-              <div className="relative">
-                <select disabled value={currentVariant.unit} className="w-full appearance-none h-12 px-6 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-bold text-[#333] focus:outline-none pb-1">
-                  <option value="ml">ml</option><option value="g">g</option>
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><ChevronUp /></div>
-              </div>
-              <div className="flex bg-[#f8f8f8] rounded-xl h-12 items-center overflow-hidden">
-                <input type="text" readOnly value={currentVariant.price} className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                <div className="h-6 w-px bg-gray-200" /><span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
-              </div>
-              <div className="flex bg-[#f8f8f8] rounded-xl h-12 items-center overflow-hidden">
-                <input type="text" readOnly value={currentVariant.promotion} className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                <div className="h-6 w-px bg-gray-200" /><span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
-              </div>
-              <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold">
-                {(Number(currentVariant.price || 0) * (1 - Number(currentVariant.promotion || 0) / 100)).toFixed(2)} DH
-              </div>
-              <input type="text" readOnly value={currentVariant.stock} className="w-full text-center h-12 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-bold text-[#333] focus:outline-none" />
-              <div className="flex items-center gap-3 px-2">
-                <button onClick={editVariant} className="flex items-center justify-center text-gray-500 hover:text-[#da2966] w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><EditIcon /></button>
-                <button onClick={deleteVariant} className="flex items-center justify-center text-gray-500 hover:text-red-500 w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><TrashIcon /></button>
-              </div>
+          )}
+
+          {variants.length === 0 && draftVariant === null && (
+            <div className="py-8 text-center text-[14px] text-gray-400 font-medium">
+              No variants yet — click &ldquo;+ Add Size Variant&rdquo; to add one.
             </div>
           )}
         </div>

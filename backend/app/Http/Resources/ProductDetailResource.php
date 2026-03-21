@@ -7,6 +7,46 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductDetailResource extends JsonResource
 {
+    /**
+     * Normalise any image URL to an absolute URL using the current APP_URL.
+     * Handles three cases:
+     *  - https://... (CDN / Unsplash) — returned as-is
+     *  - http://...  (possibly old IP/host) — host replaced with APP_URL
+     *  - /storage/...  (relative path) — prefixed with APP_URL
+     */
+    private function resolveUrl(?string $url): ?string
+    {
+        if (!$url) return null;
+        if (str_starts_with($url, 'https://')) return $url;
+        if (str_starts_with($url, 'http://')) {
+            $path = parse_url($url, PHP_URL_PATH) ?? '';
+            return rtrim(config('app.url'), '/') . $path;
+        }
+        return rtrim(config('app.url'), '/') . $url;
+    }
+
+    /**
+     * price_modifier stores the absolute base price the admin typed (e.g. 600 DH).
+     * product.price is the computed final selling price (stored by the controller).
+     * We use price_modifier directly — NOT product.price + price_modifier.
+     */
+    private function calculateFinalPrice($size): float
+    {
+        $base      = round((float) $size->price_modifier, 2);
+        $promotion = (float) ($size->promotion_percent ?? 0);
+        return $promotion > 0 ? round($base * (1 - $promotion / 100), 2) : $base;
+    }
+
+    private function calculateOriginalPrice($size): ?float
+    {
+        $promotion = (float) ($size->promotion_percent ?? 0);
+        if ($promotion <= 0) {
+            return null;
+        }
+        // The base price the admin typed is the original (pre-discount) price
+        return round((float) $size->price_modifier, 2);
+    }
+
     public function toArray(Request $request): array
     {
         return [
@@ -50,34 +90,39 @@ class ProductDetailResource extends JsonResource
             // String URL for components that use primary_image directly
             'primary_image'  => $this->whenLoaded('images', function () {
                 $primary = $this->images->firstWhere('is_primary', true) ?? $this->images->first();
-                return $primary?->url;
+                return $this->resolveUrl($primary?->url);
             }),
             'images'         => $this->whenLoaded('images', fn () =>
                 $this->images->map(fn ($img) => [
                     'id'         => $img->id,
-                    'image_url'  => $img->url,
+                    'image_url'  => $this->resolveUrl($img->url),
                     'alt'        => $img->alt,
                     'sort_order' => $img->sort_order,
                     'is_primary' => $img->is_primary,
                 ])
             ),
-            'sizes'          => $this->whenLoaded('sizes', fn () =>
-                $this->sizes->map(fn ($s) => [
-                    'id'             => $s->id,
-                    'volume_ml'      => (int) $s->label,
-                    'label'          => $s->label,
-                    'price_modifier' => (float) $s->price_modifier,
-                    'price'          => round((float) $this->price + (float) $s->price_modifier, 2),
-                    'original_price' => null,
-                    'stock_quantity' => (int) $s->stock,
-                    'sku'            => null,
-                ])
+            'variants'       => $this->whenLoaded('variants', fn () =>
+                $this->variants->map(function ($v) {
+                    $base  = (float) $v->price;
+                    $promo = (float) ($v->promotion_percent ?? 0);
+                    $final = $promo > 0 ? round($base * (1 - $promo / 100), 2) : $base;
+                    return [
+                        'id'                => $v->id,
+                        'size'              => (int) $v->size,
+                        'price'             => $base,
+                        'promotion_percent' => $promo,
+                        'final_price'       => $final,
+                        'original_price'    => $promo > 0 ? $base : null,
+                        'is_default'        => (bool) $v->is_default,
+                        'stock_quantity'    => (int) ($v->stock_quantity ?? 0),
+                    ];
+                })
             ),
             'ingredients'    => $this->whenLoaded('ingredientItems', fn () =>
                 $this->ingredientItems->map(fn ($ing) => [
                     'id'        => $ing->id,
                     'name'      => $ing->name,
-                    'image_url' => $ing->image_url,
+                    'image_url' => $this->resolveUrl($ing->image_url),
                 ])
             ),
             'reviews'        => $this->whenLoaded('reviews', fn () => ReviewResource::collection($this->reviews)),
@@ -88,7 +133,7 @@ class ProductDetailResource extends JsonResource
                     'rating'        => (int) $r->rating,
                     'comment'       => $r->body,
                     'date'          => $r->created_at?->toDateString(),
-                    'photo_url'     => $r->images->first()?->image_url ?? null,
+                    'photo_url'     => $this->resolveUrl($r->images->first()?->url ?? null),
                 ])
             ),
             'faqs'           => $this->whenLoaded('faqs', fn () =>

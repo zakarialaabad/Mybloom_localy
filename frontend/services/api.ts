@@ -139,6 +139,17 @@ export interface ProductSize {
   sku: string;
 }
 
+export interface ProductVariant {
+  id: number;
+  size: number;           // in ml
+  price: number;          // base price before promotion
+  final_price: number;    // price after promotion
+  original_price: number | null; // base price shown crossed-out (null if no promo)
+  promotion_percent: number;
+  is_default: boolean;
+  stock_quantity: number; // quantity in stock
+}
+
 export interface ProductImage {
   id: number;
   image_url: string;
@@ -177,13 +188,15 @@ export interface Product {
   is_featured: boolean;
   brand: { id: number; name: string; slug: string };
   category: { id: number; name: string; slug: string };
-  primary_image: string;
+  primary_image: string | null;
   images?: ProductImage[];
   sizes?: ProductSize[];
+  variants?: ProductVariant[];
   reviews?: ReviewItem[];
   faqs?: { id: number; question: string; answer: string }[];
   avg_rating: number;
   review_count: number;
+  stock: number;
   min_price: number;
   max_price: number;
   original_price?: number;
@@ -411,6 +424,7 @@ export interface AdminProduct {
   slug: string;
   subtitle: string | null;
   price: number;
+  original_price: number | null;
   stock: number;
   is_active: boolean;
   is_featured: boolean;
@@ -429,6 +443,7 @@ export interface AdminProductDetail {
   description: string | null;
   gender: string;
   price: number;
+  original_price?: number | null;
   stock: number;
   is_active: boolean;
   is_featured: boolean;
@@ -439,7 +454,8 @@ export interface AdminProductDetail {
   category: { id: number; name: string } | null;
   product_type: { id: number; name: string } | null;
   images: { id: number; image_url: string; is_primary: boolean; sort_order: number }[];
-  sizes: { id: number; label: string; price_modifier: number; stock_quantity: number }[];
+  variants: { id: number; size: number; price: number; final_price: number; original_price: number | null; promotion_percent: number; is_default: boolean; stock_quantity: number }[];
+  sizes: { id: number; label: string; price_modifier: number; promotion_percent: number; stock_quantity: number }[];
   ingredients: { id: number; name: string; image_url: string | null }[];
   faqs: { id: number; question: string; answer: string }[];
   all_reviews: { id: number; reviewer_name: string; rating: number; comment: string; date: string | null; photo_url: string | null }[];
@@ -481,6 +497,68 @@ export const adminProductTypeService = {
   list: async (): Promise<{ id: number; name: string; slug: string }[]> => {
     const { data } = await apiClient.get<{ data: { id: number; name: string; slug: string }[] }>('/v1/admin/product-types');
     return data.data;
+  },
+};
+
+// ─── Banner types ─────────────────────────────────────────────────────────────
+
+export interface Banner {
+  id: number;
+  title: string | null;
+  image_path: string;
+  link: string | null;
+  position?: number;
+  type?: 'homepage_slot' | 'collection_hero';
+  collection_id?: number | null;
+  is_active?: boolean;
+}
+
+// ─── Banner service (public) ──────────────────────────────────────────────────
+
+export const bannerService = {
+  /**
+   * Returns up to 4 active homepage slot banners ordered by position.
+   */
+  getHomepage: async (): Promise<Banner[]> => {
+    const { data } = await apiClient.get<{ data: Banner[] }>('/v1/banners/homepage');
+    return data.data;
+  },
+
+  /**
+   * Returns the hero banner for a given collection (category) id, or null.
+   */
+  getCollectionHero: async (collectionId?: number | null): Promise<Banner | null> => {
+    // If no collectionId provided, call /v1/banners/collection/ to get the global hero
+    const url = collectionId ? `/v1/banners/collection/${collectionId}` : `/v1/banners/collection`;
+    const { data } = await apiClient.get<{ data: Banner | null }>(url);
+    return data.data;
+  },
+};
+
+// ─── Admin banner service ─────────────────────────────────────────────────────
+
+export const adminBannerService = {
+  list: async (): Promise<Banner[]> => {
+    const { data } = await apiClient.get<{ data: Banner[] }>('/v1/admin/banners');
+    return data.data;
+  },
+
+  store: async (formData: FormData): Promise<Banner> => {
+    const { data } = await apiClient.post<{ data: Banner }>('/v1/admin/banners', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data.data;
+  },
+
+  update: async (id: number, formData: FormData): Promise<Banner> => {
+    const { data } = await apiClient.put<{ data: Banner }>(`/v1/admin/banners/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data.data;
+  },
+
+  destroy: async (id: number): Promise<void> => {
+    await apiClient.delete(`/v1/admin/banners/${id}`);
   },
 };
 

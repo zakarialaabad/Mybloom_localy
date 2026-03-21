@@ -29,10 +29,25 @@ const nextConfig = {
         port: '8000',
         pathname: '/storage/**',
       },
-      // Backend in network dev (http://<LAN IP>)
+      // Backend in local dev (http://127.0.0.1) — loopback IP
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+        port: '8000',
+        pathname: '/storage/**',
+      },
+      // Backend in network dev (http://<LAN IP>) — env-driven
       {
         protocol: 'http',
         hostname: process.env.NEXT_PUBLIC_API_HOST ?? 'localhost',
+        port: '8000',
+        pathname: '/storage/**',
+      },
+      // LAN IP hardcoded in .env.network (192.168.11.105) — covers DB rows
+      // that were stored with the old host before resolveUrl() normalisation.
+      {
+        protocol: 'http',
+        hostname: '192.168.11.105',
         port: '8000',
         pathname: '/storage/**',
       },

@@ -25,7 +25,7 @@ class ProductController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Product::with(['brand', 'category', 'productType', 'images'])
+        $query = Product::with(['brand', 'category', 'productType', 'images', 'variants'])
             ->withTrashed()
             ->orderBy('created_at', 'desc');
 
@@ -60,21 +60,10 @@ class ProductController extends Controller
         try {
             $product = Product::create($validated);
 
-            // Variants
-            if (!empty($validated['variants'])) {
-                $variants = json_decode($validated['variants'], true);
-                if (is_array($variants)) {
-                    foreach ($variants as $variant) {
-                        $product->sizes()->create([
-                            'label' => ($variant['size'] ?? '') . ' ' . ($variant['unit'] ?? ''),
-                            'price_modifier' => isset($variant['price']) ? (float)$variant['price'] : 0,
-                            'stock' => isset($variant['stock']) ? (int)$variant['stock'] : 0,
-                        ]);
-                        if ($product->price == 0 && isset($variant['price'])) {
-                            $product->update(['price' => $variant['price'], 'stock' => $variant['stock']]);
-                        }
-                    }
-                }
+            // Variants — syncVariants() also updates products.price / original_price
+            if (!empty($validated['variants_array'])) {
+                $variantService = new \App\Services\VariantService();
+                $variantService->syncVariants($product, $validated['variants_array']);
             }
 
             // FAQs
@@ -94,8 +83,8 @@ class ProductController extends Controller
             if (!empty($validated['reviews_array'])) {
                 $reviews = json_decode($validated['reviews_array'], true);
                 if (is_array($reviews)) {
-                    foreach ($reviews as $review) {
-                        $product->allReviews()->create([
+                    foreach ($reviews as $i => $review) {
+                        $createdReview = $product->allReviews()->create([
                             'reviewer_name' => $review['reviewer_name'] ?? 'Guest',
                             'rating' => isset($review['rating']) ? (int)$review['rating'] : 5,
                             'body' => $review['comment'] ?? '',
@@ -103,6 +92,15 @@ class ProductController extends Controller
                             'is_approved' => true,
                             'approved_at' => now(),
                         ]);
+                        // Handle review photo upload
+                        $fileKey = "review_photos_{$i}";
+                        if ($request->hasFile($fileKey)) {
+                            $file = $request->file($fileKey);
+                            $path = $file->store('reviews', 'public');
+                            $createdReview->images()->create([
+                                'url' => '/storage/' . $path,
+                            ]);
+                        }
                     }
                 }
             }
@@ -141,7 +139,7 @@ class ProductController extends Controller
 
             \Illuminate\Support\Facades\DB::commit();
 
-            return response()->json(['data' => new ProductDetailResource($product->load(['brand', 'category', 'images', 'sizes']))], 201);
+            return response()->json(['data' => new ProductDetailResource($product->load(['brand', 'category', 'images', 'sizes', 'variants']))], 201);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
             return response()->json(['message' => 'Failed to create product.', 'error' => $e->getMessage()], 500);
@@ -153,7 +151,7 @@ class ProductController extends Controller
      */
     public function show(Product $product): JsonResponse
     {
-        $product->load(['brand', 'category', 'images', 'sizes', 'allReviews', 'ingredientItems', 'faqs', 'productType']);
+        $product->load(['brand', 'category', 'images', 'sizes', 'variants', 'allReviews.images', 'ingredientItems', 'faqs', 'productType']);
         return response()->json(['data' => new ProductDetailResource($product)]);
     }
 
@@ -168,31 +166,15 @@ class ProductController extends Controller
 
             // Update basic product fields (removes relationship keys from validated first)
             $basicFields = array_diff_key($validated, array_flip([
-                'variants', 'faqs', 'reviews_array', 'deleted_review_ids',
+                'variants', 'variants_array', 'faqs', 'reviews_array', 'deleted_review_ids',
                 'manual_ingredients', 'deleted_image_ids',
             ]));
             $product->update($basicFields);
 
-            // ── Sync Variants ──────────────────────────────────────────────────
-            if (array_key_exists('variants', $validated)) {
-                $variants = json_decode($validated['variants'], true);
-                if (is_array($variants)) {
-                    $product->sizes()->delete();
-                    foreach ($variants as $variant) {
-                        $product->sizes()->create([
-                            'label'          => ($variant['size'] ?? '') . ' ' . ($variant['unit'] ?? ''),
-                            'price_modifier' => isset($variant['price']) ? (float) $variant['price'] : 0,
-                            'stock'          => isset($variant['stock']) ? (int) $variant['stock'] : 0,
-                        ]);
-                    }
-                    // Sync product base price/stock from first variant
-                    if (!empty($variants) && isset($variants[0]['price'])) {
-                        $product->update([
-                            'price' => $variants[0]['price'],
-                            'stock' => $variants[0]['stock'] ?? 0,
-                        ]);
-                    }
-                }
+            // ── Sync Variants — syncVariants() also updates products.price / original_price ──
+            if (array_key_exists('variants_array', $validated) && is_array($validated['variants_array'])) {
+                $variantService = new \App\Services\VariantService();
+                $variantService->syncVariants($product, $validated['variants_array']);
             }
 
             // ── Sync FAQs ──────────────────────────────────────────────────────
@@ -230,9 +212,9 @@ class ProductController extends Controller
             if (!empty($validated['reviews_array'])) {
                 $reviewsData = json_decode($validated['reviews_array'], true);
                 if (is_array($reviewsData)) {
-                    foreach ($reviewsData as $review) {
+                    foreach ($reviewsData as $i => $review) {
                         if (empty($review['id'])) {
-                            $product->allReviews()->create([
+                            $createdReview = $product->allReviews()->create([
                                 'reviewer_name' => $review['reviewer_name'] ?? 'Guest',
                                 'rating'        => isset($review['rating']) ? (int) $review['rating'] : 5,
                                 'body'          => $review['comment'] ?? '',
@@ -240,6 +222,15 @@ class ProductController extends Controller
                                 'is_approved'   => true,
                                 'approved_at'   => now(),
                             ]);
+                            // Handle review photo upload
+                            $fileKey = "review_photos_{$i}";
+                            if ($request->hasFile($fileKey)) {
+                                $file = $request->file($fileKey);
+                                $path = $file->store('reviews', 'public');
+                                $createdReview->images()->create([
+                                    'url' => '/storage/' . $path,
+                                ]);
+                            }
                         }
                     }
                 }
@@ -307,7 +298,7 @@ class ProductController extends Controller
 
             \Illuminate\Support\Facades\DB::commit();
 
-            $product->load(['brand', 'category', 'images', 'sizes', 'allReviews', 'ingredientItems', 'faqs', 'productType']);
+            $product->load(['brand', 'category', 'images', 'sizes', 'variants', 'allReviews.images', 'ingredientItems', 'faqs', 'productType']);
             return response()->json(['data' => new ProductDetailResource($product)]);
 
         } catch (\Exception $e) {

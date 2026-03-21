@@ -20,7 +20,7 @@ class ProductController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Product::with(['brand', 'category', 'images' => fn ($q) => $q->where('is_primary', true)])
+        $query = Product::with(['brand', 'category', 'sizes', 'variants', 'images' => fn ($q) => $q->where('is_primary', true)])
             ->withAvg('reviews as avg_rating', 'rating')
             ->withCount('reviews as review_count')
             ->where('is_active', true);
@@ -137,6 +137,7 @@ class ProductController extends Controller
             'category',
             'images',
             'sizes',
+            'variants',
             'ingredientItems',
             'reviews.images',
             'faqs',

@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { productService, Product, ProductSize } from '@/services/api';
+import { productService, Product, ProductVariant } from '@/services/api';
 import useCartStore from '@/store/cart';
 import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
 
@@ -25,7 +25,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const [loading, setLoading]           = useState(true);
   const [fetchError, setFetchError]     = useState(false);
   const [mainImage, setMainImage]       = useState('');
-  const [selectedSize, setSelectedSize] = useState<ProductSize | null>(null);
+  const [selectedSize, setSelectedSize] = useState<ProductVariant | null>(null);
   const [wished, setWished]             = useState(false);
   const [quantity, setQuantity]         = useState(1);
 
@@ -51,20 +51,42 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       .then((data) => {
         if (!mounted) return;
         setProduct(data);
-        const primary = data.images?.find((i) => i.is_primary)?.image_url ?? data.images?.[0]?.image_url ?? data.primary_image;
+        const primary = data.images?.find((i) => i.is_primary)?.image_url ?? data.images?.[0]?.image_url ?? data.primary_image ?? 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800';
         setMainImage(primary);
-        if (data.sizes && data.sizes.length > 0) {
-          const inStock = data.sizes.find((s) => s.stock_quantity > 0) ?? data.sizes[0];
-          setSelectedSize(inStock);
-        } else {
-          // No size variants — create a virtual default so buttons are never disabled
+        
+        // ── Variant Selection Strategy ──
+        // Priority: First available variant → First in-stock variant → First variant → Virtual default
+        if (data.variants && data.variants.length > 0) {
+          // Strategy: Select first available (in-stock) variant; fallback to first variant if all out-of-stock
+          const firstAvailable = data.variants.find((v) => v.stock_quantity && v.stock_quantity > 0);
+          const selected = firstAvailable ?? data.variants[0];
+          setSelectedSize(selected);
+        } else if (data.sizes && data.sizes.length > 0) {
+          // Backward-compat: old product_sizes table
+          // Strategy: Select first available (in-stock) size; fallback to first size if all out-of-stock
+          const firstAvailable = data.sizes.find((s) => s.stock_quantity && s.stock_quantity > 0);
+          const inStock = firstAvailable ?? data.sizes[0];
           setSelectedSize({
-            id: 0,
-            volume_ml: 0,
-            price: data.min_price ?? 0,
-            original_price: data.original_price ?? null,
-            stock_quantity: 99,
-            sku: '',
+            id:                inStock.id,
+            size:              inStock.volume_ml,
+            price:             inStock.original_price ?? inStock.price,
+            final_price:       inStock.price,
+            original_price:    inStock.original_price,
+            promotion_percent: 0,
+            is_default:        true,
+            stock_quantity:    inStock.stock_quantity ?? 0,
+          });
+        } else {
+          // No variants at all — virtual default so buttons are never disabled
+          setSelectedSize({
+            id:                0,
+            size:              0,
+            price:             data.min_price ?? 0,
+            final_price:       data.min_price ?? 0,
+            original_price:    data.original_price ?? null,
+            promotion_percent: 0,
+            is_default:        true,
+            stock_quantity:    data.stock ?? 0,
           });
         }
         setWished(isInWishlist(data.id));
@@ -85,9 +107,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   // ─── Add to cart ────────────────────────────────────────────────────────────
   const handleAddToCart = () => {
     if (!product || !selectedSize) return;
-    // volume_ml === 0 means it's a virtual size (no real size variants)
-    const sizeLabel = selectedSize.volume_ml > 0
-      ? `${selectedSize.volume_ml}ml`
+    // size === 0 means it's a virtual placeholder (no real variant)
+    const sizeLabel = selectedSize.size > 0
+      ? `${selectedSize.size}ml`
       : null;
     addItem({
       productId:   product.id,
@@ -96,15 +118,15 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       sizeId:      selectedSize.id,
       sizeLabel,
       quantity,
-      unitPrice:   selectedSize.price,
+      unitPrice:   selectedSize.final_price,
       imageUrl:    mainImage,
     });
   };
 
   const handleBuyNow = () => {
     if (!product || !selectedSize) return;
-    const sizeLabel = selectedSize.volume_ml > 0
-      ? `${selectedSize.volume_ml}ml`
+    const sizeLabel = selectedSize.size > 0
+      ? `${selectedSize.size}ml`
       : null;
     addItem({
       productId:   product.id,
@@ -113,7 +135,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       sizeId:      selectedSize.id,
       sizeLabel,
       quantity,
-      unitPrice:   selectedSize.price,
+      unitPrice:   selectedSize.final_price,
       imageUrl:    mainImage,
     });
     router.push('/checkout');
@@ -145,9 +167,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     );
   }
 
-  const images = product.images?.length
-    ? product.images.map((i) => i.image_url)
-    : [product.primary_image];
+  const images: string[] = product.images?.length
+    ? product.images.map((i) => i.image_url).filter((u): u is string => !!u)
+    : product.primary_image
+      ? [product.primary_image]
+      : [];
 
   const FAQ = (product.faqs && product.faqs.length > 0)
     ? product.faqs.map((f) => ({ q: f.question, a: f.answer }))
@@ -200,9 +224,14 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               {product.brand && (
                 <p className="font-serif italic text-gray-600 text-xl leading-none">{product.brand.name}</p>
               )}
-              <div className="shrink-0 ml-4">
+              <div className="shrink-0 ml-4 flex items-baseline gap-2">
+                {selectedSize?.original_price && (
+                  <span className="font-serif text-base text-gray-400 line-through italic whitespace-nowrap leading-none">
+                    {selectedSize.original_price} DH
+                  </span>
+                )}
                 <span className="font-serif text-2xl font-bold italic text-gray-900 whitespace-nowrap leading-none">
-                  {selectedSize?.price ?? product.min_price} DH
+                  {selectedSize?.final_price ?? product.min_price} DH
                 </span>
               </div>
             </div>
@@ -216,9 +245,23 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           </div>
 
           {/* ── Images Column ──────────────────────────────────────────────────────── */}
-          <div className="flex flex-col w-full md:w-1/2 gap-4 sticky top-24">
+          <div className="flex flex-col md:flex-row w-full md:w-1/2 gap-4 sticky top-24 h-max">
+            
+            {/* Desktop Thumbnails (Left side, Hidden on mobile) */}
+            <div className="hidden md:flex flex-col gap-4 w-16 lg:w-24 shrink-0">
+              {images.filter(img => img !== mainImage).slice(0, 3).map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setMainImage(img)}
+                  className="relative flex-1 w-full overflow-hidden rounded-sm border-2 transition-all border-transparent hover:border-gray-300"
+                >
+                  {img && <Image src={img} alt={`${product.name} thumbnail ${idx + 1}`} fill className="object-cover" />}
+                </button>
+              ))}
+            </div>
+
             {/* Main Image & Carousel */}
-            <div className="group relative w-full aspect-square md:aspect-[4/5] rounded-sm overflow-hidden bg-[#f8f8f8]">
+            <div className="group relative w-full flex-1 aspect-square md:aspect-[4/5] rounded-sm overflow-hidden bg-[#f8f8f8]">
               {/* Badges & Actions */}
               <div className="absolute top-4 left-4 z-10 flex gap-2">
                 <button
@@ -290,21 +333,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 </div>
               )}
             </div>
-
-            {/* Desktop Thumbnails (Hidden on mobile) */}
-            <div className="hidden md:flex gap-4 overflow-x-auto pb-2">
-              {images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setMainImage(img)}
-                  className={`relative aspect-square w-20 shrink-0 overflow-hidden rounded-sm border-2 transition-all ${
-                    mainImage === img ? 'border-gray-800' : 'border-transparent hover:border-gray-300'
-                  }`}
-                >
-                  <Image src={img} alt={`${product.name} ${idx + 1}`} fill className="object-cover" />
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* ── Details Column ─────────────────────────────────────────────────────── */}
@@ -334,14 +362,14 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 </div>
                 <div className="text-right">
                   <div className="flex items-baseline gap-2 justify-end">
-                    <span className="font-serif text-2xl sm:text-3xl font-bold italic text-gray-900 whitespace-nowrap">
-                      {selectedSize?.price ?? product.min_price} DH
-                    </span>
-                    {(selectedSize?.original_price ?? null) && (
+                    {selectedSize?.original_price && (
                       <span className="font-serif text-lg sm:text-xl text-gray-400 line-through italic whitespace-nowrap">
-                        {selectedSize!.original_price} DH
+                        {selectedSize.original_price} DH
                       </span>
                     )}
+                    <span className="font-serif text-2xl sm:text-3xl font-bold italic text-gray-900 whitespace-nowrap">
+                      {selectedSize?.final_price ?? product.min_price} DH
+                    </span>
                   </div>
                   {product.review_count > 0 && (
                     <div className="mt-2 flex items-center justify-end gap-1">
@@ -378,7 +406,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 <span className="font-serif text-sm font-medium">{quantity}</span>
                 <button
                   onClick={() => {
-                    const max = selectedSize?.stock_quantity ?? 99;
+                    const max = selectedSize?.stock_quantity ?? product?.stock ?? 99;
                     setQuantity((q) => Math.min(max, q + 1));
                   }}
                   className="text-gray-400 hover:text-gray-900 text-lg font-light w-5 flex justify-center"
@@ -412,9 +440,51 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               </button>
             </div>
 
-            {/* Size Variants */}
-            {product.sizes && product.sizes.length > 0 && (
-              <div className="mb-12 grid grid-cols-3 gap-4">
+            {/* ── Size Variant Cards ─────────────────────────────────────────────── */}
+            {/* Priority: new product_variants system → fall back to old product_sizes */}
+            {product.variants && product.variants.length > 0 ? (
+              <div className={`mb-12 grid gap-4 ${
+                product.variants.length === 1 ? 'grid-cols-1' :
+                product.variants.length === 2 ? 'grid-cols-2' :
+                'grid-cols-3'
+              }`}>
+                {product.variants.map((variant) => {
+                  const outOfStock = !variant.stock_quantity || variant.stock_quantity === 0;
+                  const isSelected = selectedSize?.id === variant.id;
+                  return (
+                    <button
+                      key={variant.id}
+                      disabled={outOfStock}
+                      onClick={() => !outOfStock && setSelectedSize(variant)}
+                      className={`relative flex flex-col items-center justify-center rounded-sm border-2 py-4 transition-colors ${
+                        outOfStock
+                          ? 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200'
+                          : isSelected
+                          ? 'border-[#4a403a] bg-white'
+                          : 'border-gray-200 hover:border-gray-300 bg-white'
+                      }`}
+                    >
+                      {outOfStock && (
+                        <div className="absolute -top-3 bg-gray-200 px-3 py-0.5 text-[10px] font-bold tracking-wider text-gray-600 rounded-sm">
+                          ÉPUISÉ
+                        </div>
+                      )}
+                      <span className={`font-serif text-xl font-bold italic ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
+                        {variant.size}ml
+                      </span>
+                      <span className={`font-serif text-base italic ${isSelected ? 'text-gray-600' : 'text-gray-400'}`}>
+                        {variant.final_price} DH
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : product.sizes && product.sizes.length > 0 ? (
+              <div className={`mb-12 grid gap-4 ${
+                product.sizes.length === 1 ? 'grid-cols-1' :
+                product.sizes.length === 2 ? 'grid-cols-2' :
+                'grid-cols-3'
+              }`}>
                 {product.sizes.map((size) => {
                   const outOfStock = size.stock_quantity === 0;
                   const isSelected = selectedSize?.id === size.id;
@@ -422,7 +492,16 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                     <button
                       key={size.id}
                       disabled={outOfStock}
-                      onClick={() => !outOfStock && setSelectedSize(size)}
+                      onClick={() => !outOfStock && setSelectedSize({
+                        id:                size.id,
+                        size:              size.volume_ml,
+                        price:             size.original_price ?? size.price,
+                        final_price:       size.price,
+                        original_price:    size.original_price,
+                        promotion_percent: 0,
+                        is_default:        true,
+                        stock_quantity:    size.stock_quantity ?? 0,
+                      })}
                       className={`relative flex flex-col items-center justify-center rounded-sm border-2 py-4 transition-colors ${
                         outOfStock
                           ? 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200'
@@ -446,7 +525,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                   );
                 })}
               </div>
-            )}
+            ) : null}
 
             {/* Accordion: Description */}
             <div className="border-t border-gray-200 pt-6 mt-12">
