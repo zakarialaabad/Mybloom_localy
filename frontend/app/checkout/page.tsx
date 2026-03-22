@@ -28,7 +28,7 @@ export default function CheckoutPage() {
 
   const selectedMethod = shippingMethods.find((m) => m.id === selectedMethodId) ?? null;
   const shippingCost   = selectedMethod
-    ? (selectedMethod.free_above !== null && subtotal >= selectedMethod.free_above ? 0 : selectedMethod.price)
+    ? (selectedMethod.free_over !== null && subtotal >= selectedMethod.free_over ? 0 : selectedMethod.price)
     : 0;
 
   /* ── Form state ───────────────────────────────────────────────── */
@@ -172,7 +172,7 @@ export default function CheckoutPage() {
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         {shippingMethods.map((method) => {
-                          const isFree       = method.free_above !== null && subtotal >= method.free_above;
+                          const isFree       = method.free_over !== null && subtotal >= method.free_over;
                           const displayPrice = isFree ? 0 : method.price;
                           const isActive     = selectedMethodId === method.id;
                           return (
@@ -192,7 +192,7 @@ export default function CheckoutPage() {
                                 </div>
                                 <span className="font-serif font-bold text-gray-900 text-sm">{displayPrice} Dh</span>
                               </div>
-                              <span className="text-xs text-gray-500 font-serif ml-6">{method.label}</span>
+                              <span className="text-xs text-gray-500 font-serif ml-6">{method.description}</span>
                             </label>
                           );
                         })}

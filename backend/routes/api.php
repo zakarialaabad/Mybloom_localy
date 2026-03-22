@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductControlle
 use App\Http\Controllers\Api\V1\Admin\ProductTypeController as AdminProductTypeController;
 use App\Http\Controllers\Api\V1\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Api\V1\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Api\V1\Admin\AdminProfileController;
 use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\Admin\BannerController as AdminBannerController;
 use Illuminate\Support\Facades\Route;
@@ -82,6 +83,11 @@ Route::prefix('api')->group(function () {
                 // Dashboard analytics
                 Route::get('dashboard', [AdminDashboardController::class, 'index']);
 
+                // Profile Settings
+                Route::get('profile', [AdminProfileController::class, 'show']);
+                Route::post('profile', [AdminProfileController::class, 'update']);
+                Route::put('profile/password', [AdminProfileController::class, 'changePassword']);
+
                 // Products
                 Route::apiResource('products', AdminProductController::class);
                 Route::post('products/{product}/images',        [AdminProductController::class, 'storeImage']);
@@ -97,16 +103,20 @@ Route::prefix('api')->group(function () {
                 Route::apiResource('categories', AdminCategoryController::class);
 
                 // Coupons
-                Route::apiResource('coupons',    AdminCouponController::class);
+                Route::get('coupons/stats',  [AdminCouponController::class, 'stats']);
+                Route::apiResource('coupons', AdminCouponController::class);
 
                 // Orders
+                Route::get('orders/stats',                 [AdminOrderController::class, 'stats']);
                 Route::get('orders',                       [AdminOrderController::class, 'index']);
                 Route::get('orders/{order}',               [AdminOrderController::class, 'show']);
                 Route::patch('orders/{order}/status',      [AdminOrderController::class, 'updateStatus']);
                 Route::post('orders/{order}/status-history', [AdminOrderController::class, 'addStatusHistory']);
 
                 // Reviews
+                Route::get('reviews/stats',                [AdminReviewController::class, 'stats']);
                 Route::get('reviews',                      [AdminReviewController::class, 'index']);
+                Route::patch('reviews/{review}',           [AdminReviewController::class, 'update']);
                 Route::patch('reviews/{review}/approve',   [AdminReviewController::class, 'approve']);
                 Route::patch('reviews/{review}/reject',    [AdminReviewController::class, 'reject']);
                 Route::delete('reviews/{review}',          [AdminReviewController::class, 'destroy']);

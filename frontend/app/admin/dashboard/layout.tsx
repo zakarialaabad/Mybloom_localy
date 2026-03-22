@@ -43,6 +43,16 @@ export default function AdminDashboardLayout({
     { name: 'Review', href: '/admin/dashboard/reviews', icon: MessageSquare },
   ];
 
+  const isFullScreenPage = pathname.endsWith('/create') || pathname.includes('/edit');
+
+  if (isFullScreenPage) {
+    return (
+      <div className="min-h-screen bg-[#f8f9fa] font-sans text-[#4a4a4a]">
+        {children}
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-white flex font-sans text-[#4a4a4a]">
       {/* ─── Sidebar ────────────────────────────────────────────────────────────── */}

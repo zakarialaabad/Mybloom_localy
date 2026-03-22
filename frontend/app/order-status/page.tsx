@@ -101,8 +101,8 @@ export default function OrderStatusPage() {
                   const historyDates: Record<string, string> = {};
                   if (trackData) {
                     trackData.status_histories.forEach(h => {
-                      historyDates[h.status] = h.changed_at;
-                      if (h.status === 'shipped') historyDates['dispatched'] = h.changed_at;
+                      historyDates[h.status] = h.created_at;
+                      if (h.status === 'shipped') historyDates['dispatched'] = h.created_at;
                     });
                   }
 

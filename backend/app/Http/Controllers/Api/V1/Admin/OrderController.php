@@ -5,20 +5,24 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Models\Order;
-use App\Models\OrderStatusHistory;
+use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OrderController extends Controller
 {
+    public function __construct(private readonly OrderService $orderService)
+    {
+    }
+
     /**
      * GET /api/v1/admin/orders
-     * Supports: ?status=, ?search= (customer name/phone/order_number)
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Order::with(['items', 'shippingMethod'])
+        $query = Order::with(['shippingMethod'])
+            ->withCount('items')
             ->orderBy('created_at', 'desc');
 
         if ($status = $request->query('status')) {
@@ -48,22 +52,43 @@ class OrderController extends Controller
 
     /**
      * PATCH /api/v1/admin/orders/{order}/status
-     * Body: { status: string }
+     *
+     * Updates order status and records a status history entry so the
+     * customer tracking timeline stays in sync with admin actions.
      */
     public function updateStatus(Request $request, Order $order): JsonResponse
     {
         $request->validate([
-            'status' => ['required', 'string', 'max:50'],
+            'status' => ['required', 'string', 'in:pending,confirmed,shipped,delivered,cancelled'],
         ]);
 
-        $order->update(['status' => $request->status]);
+        $newStatus = $request->status;
 
-        return response()->json(['message' => 'Order status updated.', 'status' => $order->status]);
+        $statusLabels = [
+            'pending'   => 'Order received and awaiting confirmation.',
+            'confirmed' => 'Order confirmed and being processed.',
+            'shipped'   => 'Order has been shipped and is on the way.',
+            'delivered' => 'Order delivered successfully.',
+            'cancelled' => 'Order has been cancelled.',
+        ];
+
+        $this->orderService->recordStatusChange(
+            $order,
+            $newStatus,
+            $statusLabels[$newStatus] ?? ucfirst($newStatus),
+        );
+
+        return response()->json([
+            'message' => 'Order status updated.',
+            'status'  => $order->fresh()->status,
+        ]);
     }
 
     /**
      * POST /api/v1/admin/orders/{order}/status-history
-     * Body: { status: string, label: string, location?: string }
+     *
+     * Manually appends a custom history entry (e.g. with location details)
+     * without changing the order's main status field.
      */
     public function addStatusHistory(Request $request, Order $order): JsonResponse
     {
@@ -75,9 +100,51 @@ class OrderController extends Controller
 
         $history = $order->statusHistories()->create($data);
 
-        // Also sync top-level status
-        $order->update(['status' => $data['status']]);
+        return response()->json(['data' => $history], 201);
+    }
 
-        return response()->json(['message' => 'Status history added.', 'data' => $history], 201);
+    /**
+     * GET /api/v1/admin/orders/stats
+     *
+     * Returns aggregated counts with month-over-month trend %.
+     */
+    public function stats(): JsonResponse
+    {
+        $now                 = now();
+        $startOfCurrentMonth = $now->copy()->startOfMonth();
+        $startOfLastMonth    = $now->copy()->subMonth()->startOfMonth();
+        $endOfLastMonth      = $now->copy()->subMonth()->endOfMonth();
+
+        $calculateTrend = function ($current, $previous) {
+            if ($previous == 0) return $current > 0 ? 100 : 0;
+            return round((($current - $previous) / $previous) * 100, 1);
+        };
+
+        $totalAllTime  = Order::count();
+        $currentTotal  = Order::where('created_at', '>=', $startOfCurrentMonth)->count();
+        $previousTotal = Order::whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count();
+
+        $confirmedAllTime  = Order::where('status', 'confirmed')->count();
+        $currentConfirmed  = Order::where('status', 'confirmed')->where('created_at', '>=', $startOfCurrentMonth)->count();
+        $previousConfirmed = Order::where('status', 'confirmed')->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count();
+
+        $deliveredAllTime  = Order::where('status', 'delivered')->count();
+        $currentDelivered  = Order::where('status', 'delivered')->where('created_at', '>=', $startOfCurrentMonth)->count();
+        $previousDelivered = Order::where('status', 'delivered')->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count();
+
+        return response()->json([
+            'total' => [
+                'count' => $totalAllTime,
+                'trend' => $calculateTrend($currentTotal, $previousTotal),
+            ],
+            'confirmed' => [
+                'count' => $confirmedAllTime,
+                'trend' => $calculateTrend($currentConfirmed, $previousConfirmed),
+            ],
+            'delivered' => [
+                'count' => $deliveredAllTime,
+                'trend' => $calculateTrend($currentDelivered, $previousDelivered),
+            ],
+        ]);
     }
 }

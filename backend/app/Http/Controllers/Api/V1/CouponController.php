@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CouponValidationResource;
 use App\Models\Coupon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -44,10 +43,16 @@ class CouponController extends Controller
 
         $discount = min($discount, (float) $request->order_subtotal);
 
+        $message = $coupon->type === 'percent'
+            ? "Coupon {$coupon->code} applied — {$coupon->value}% off!"
+            : "Coupon {$coupon->code} applied — {$coupon->value} DH off!";
+
         return response()->json([
-            'valid'    => true,
-            'coupon'   => new CouponValidationResource($coupon),
-            'discount' => $discount,
+            'valid'          => true,
+            'message'        => $message,
+            'discount_type'  => $coupon->type,
+            'discount_value' => (float) $coupon->value,
+            'savings_amount' => $discount,
         ]);
     }
 }

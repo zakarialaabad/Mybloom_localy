@@ -185,4 +185,23 @@ class OrderService
             return $order;
         });
     }
+
+    /**
+     * Record a status change on an existing order and create a status history entry.
+     * This method does NOT enforce lifecycle transitions — the caller is responsible
+     * for validating the transition is allowed (admin bypasses this for corrections).
+     */
+    public function recordStatusChange(Order $order, string $newStatus, string $label, ?string $location = null): void
+    {
+        DB::transaction(function () use ($order, $newStatus, $label, $location) {
+            $order->update(['status' => $newStatus]);
+
+            OrderStatusHistory::create([
+                'order_id' => $order->id,
+                'status'   => $newStatus,
+                'label'    => $label,
+                'location' => $location,
+            ]);
+        });
+    }
 }

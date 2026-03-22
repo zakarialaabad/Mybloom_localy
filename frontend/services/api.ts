@@ -1,6 +1,6 @@
-import axios, { AxiosError, AxiosResponse } from 'axios';
+﻿import axios, { AxiosError, AxiosResponse } from 'axios';
 
-// ─── Types ───────────────────────────────────────────────────────────────────
+// â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface ApiValidationError {
   message: string;
@@ -25,7 +25,7 @@ export interface PaginatedResponse<T> {
   links: { first: string | null; last: string | null; prev: string | null; next: string | null };
 }
 
-// ─── Axios instance ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Axios instance â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // No Bearer token. No js-cookie reads.
 // Sanctum admin_token cookie is sent automatically by the browser (withCredentials).
 
@@ -39,7 +39,7 @@ const apiClient = axios.create({
   timeout: 15_000,
 });
 
-// ─── Request interceptor ──────────────────────────────────────────────────────
+// â”€â”€â”€ Request interceptor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Reads the admin_token cookie (non-HttpOnly, so JS can access it) and injects
 // it as Authorization: Bearer on every request. This replaces the fragile
 // server-side InjectAdminTokenFromCookie middleware that crashed PHP on Windows.
@@ -55,8 +55,8 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
-// ─── Response interceptor ─────────────────────────────────────────────────────
-// 401 → redirect to /admin/login. No retry. No token refresh.
+// â”€â”€â”€ Response interceptor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// 401 â†’ redirect to /admin/login. No retry. No token refresh.
 
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
@@ -72,7 +72,7 @@ apiClient.interceptors.response.use(
   },
 );
 
-// ─── Admin auth service ───────────────────────────────────────────────────────
+// â”€â”€â”€ Admin auth service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const adminAuthService = {
   login: async (payload: AdminLoginPayload): Promise<AdminLoginResponse> => {
@@ -100,7 +100,7 @@ export const adminAuthService = {
   },
 };
 
-// ─── Generic resource helpers ─────────────────────────────────────────────────
+// â”€â”€â”€ Generic resource helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const resourceService = {
   list: async <T>(resource: string, params?: Record<string, unknown>) => {
@@ -128,7 +128,7 @@ export const resourceService = {
   },
 };
 
-// ─── Domain types ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Domain types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface ProductSize {
   id: number;
@@ -223,17 +223,40 @@ export interface Category {
 export interface ShippingMethod {
   id: number;
   name: string;
-  label: string;
+  description: string | null;
   price: number;
-  free_above: number | null;
+  free_over: number | null;
 }
 
 export interface CouponValidateResult {
   valid: boolean;
-  discount_type: 'flat' | 'percent';
+  discount_type: 'percent' | 'fixed';
   discount_value: number;
   savings_amount: number;
   message: string;
+}
+
+export interface AdminCoupon {
+  id: number;
+  code: string;
+  type: 'percent' | 'fixed';
+  value: number;
+  min_order_amount: number;
+  usage_limit: number | null;
+  used_count: number;
+  expires_at: string | null;
+  is_active: boolean;
+  is_expired: boolean;
+  is_exhausted: boolean;
+  is_usable: boolean;
+  created_at: string;
+}
+
+export interface AdminCouponStats {
+  total: number;
+  active: number;
+  expiring_soon: number;
+  total_redemptions: number;
 }
 
 export interface PlaceOrderPayload {
@@ -249,7 +272,7 @@ export interface OrderTrackResult {
   order_number: string;
   customer_name: string;
   status: string;
-  status_histories: { status: string; note: string | null; changed_at: string }[];
+  status_histories: { status: string; label: string; location: string | null; created_at: string }[];
   items: { product_name: string; product_size_label: string; quantity: number; image_url?: string; product_id: number; unit_price: number }[];
   shipping_address: { city: string };
   subtotal: number;
@@ -258,7 +281,7 @@ export interface OrderTrackResult {
   total: number;
 }
 
-// ─── Product service ──────────────────────────────────────────────────────────
+// â”€â”€â”€ Product service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const productService = {
   list: async (params?: Record<string, unknown>, signal?: AbortSignal) => {
@@ -277,7 +300,7 @@ export const productService = {
   },
 };
 
-// ─── Brand service ────────────────────────────────────────────────────────────
+// â”€â”€â”€ Brand service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const brandService = {
   list: async () => {
@@ -286,7 +309,7 @@ export const brandService = {
   },
 };
 
-// ─── Category service ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Category service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const categoryService = {
   list: async () => {
@@ -295,7 +318,7 @@ export const categoryService = {
   },
 };
 
-// ─── Shipping service ─────────────────────────────────────────────────────────
+// â”€â”€â”€ Shipping service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const shippingService = {
   list: async () => {
@@ -304,16 +327,47 @@ export const shippingService = {
   },
 };
 
-// ─── Coupon service ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Coupon service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const couponService = {
-  validate: async (code: string, order_total: number): Promise<CouponValidateResult> => {
-    const { data } = await apiClient.post<{ data: CouponValidateResult }>('/v1/coupons/validate', { code, order_total });
-    return data.data;
+  validate: async (code: string, subtotal: number): Promise<CouponValidateResult> => {
+    const { data } = await apiClient.post<CouponValidateResult>('/v1/coupons/validate', {
+      code,
+      order_subtotal: subtotal,
+    });
+    return data;
   },
 };
 
-// ─── Order service ────────────────────────────────────────────────────────────
+// ─── Admin coupon service ─────────────────────────────────────────────────────────
+
+export const adminCouponService = {
+  get: async (id: number): Promise<AdminCoupon> => {
+    const { data } = await apiClient.get<{ data: AdminCoupon }>(`/v1/admin/coupons/${id}`);
+    return data.data;
+  },
+  list: async (params?: Record<string, unknown>): Promise<{ data: AdminCoupon[]; meta: AdminProductMeta }> => {
+    const { data } = await apiClient.get<{ data: AdminCoupon[]; meta: AdminProductMeta }>('/v1/admin/coupons', { params });
+    return data;
+  },
+  stats: async (): Promise<AdminCouponStats> => {
+    const { data } = await apiClient.get<AdminCouponStats>('/v1/admin/coupons/stats');
+    return data;
+  },
+  create: async (payload: Partial<AdminCoupon>): Promise<AdminCoupon> => {
+    const { data } = await apiClient.post<{ data: AdminCoupon }>('/v1/admin/coupons', payload);
+    return data.data;
+  },
+  update: async (id: number, payload: Partial<AdminCoupon>): Promise<AdminCoupon> => {
+    const { data } = await apiClient.put<{ data: AdminCoupon }>(`/v1/admin/coupons/${id}`, payload);
+    return data.data;
+  },
+  destroy: async (id: number): Promise<void> => {
+    await apiClient.delete(`/v1/admin/coupons/${id}`);
+  },
+};
+
+// â”€â”€â”€ Order service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const orderService = {
   place: async (payload: PlaceOrderPayload) => {
@@ -327,7 +381,7 @@ export const orderService = {
   },
 };
 
-// ─── Review service ───────────────────────────────────────────────────────────
+// â”€â”€â”€ Review service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const reviewService = {
   list: async (params?: Record<string, unknown>): Promise<{ data: ReviewItem[]; rating_summary: RatingSummary }> => {
@@ -354,22 +408,22 @@ export const reviewService = {
     if (payload.order_number) form.append('order_number', payload.order_number);
     images.forEach((file) => form.append('images[]', file));
 
-    console.log('[reviewService.submit] POST /v1/reviews — product_id:', payload.product_id, 'rating:', payload.rating, 'images:', images.length);
+    console.log('[reviewService.submit] POST /v1/reviews â€” product_id:', payload.product_id, 'rating:', payload.rating, 'images:', images.length);
 
     try {
       const { data } = await apiClient.post<{ data: ReviewItem }>('/v1/reviews', form, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
-      console.log('[reviewService.submit] Success — response:', data);
+      console.log('[reviewService.submit] Success â€” response:', data);
       return data.data;
     } catch (err) {
-      console.error('[reviewService.submit] Request failed — error:', err);
+      console.error('[reviewService.submit] Request failed â€” error:', err);
       throw err;
     }
   },
 };
 
-// ─── Dashboard service ───────────────────────────────────────────────────────
+// â”€â”€â”€ Dashboard service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface DashboardSummary {
   total_revenue: number;
@@ -416,7 +470,7 @@ export const dashboardService = {
   },
 };
 
-// ─── Admin product types ──────────────────────────────────────────────────────
+// â”€â”€â”€ Admin product types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface AdminProduct {
   id: number;
@@ -484,7 +538,7 @@ export const adminProductService = {
   },
 };
 
-// ─── Admin category service ───────────────────────────────────────────────────
+// â”€â”€â”€ Admin category service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const adminCategoryService = {
   list: async (): Promise<{ id: number; name: string; slug: string }[]> => {
@@ -500,7 +554,7 @@ export const adminProductTypeService = {
   },
 };
 
-// ─── Banner types ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Banner types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export interface Banner {
   id: number;
@@ -513,7 +567,7 @@ export interface Banner {
   is_active?: boolean;
 }
 
-// ─── Banner service (public) ──────────────────────────────────────────────────
+// â”€â”€â”€ Banner service (public) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const bannerService = {
   /**
@@ -535,7 +589,7 @@ export const bannerService = {
   },
 };
 
-// ─── Admin banner service ─────────────────────────────────────────────────────
+// â”€â”€â”€ Admin banner service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
 export const adminBannerService = {
   list: async (): Promise<Banner[]> => {
@@ -562,4 +616,116 @@ export const adminBannerService = {
   },
 };
 
+// â”€â”€â”€ Admin Profile Settings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+
+export const adminProfileService = {
+  getProfile: async (): Promise<any> => {
+    const { data } = await apiClient.get('/v1/admin/profile');
+    return data.data;
+  },
+  updateProfile: async (formData: FormData): Promise<any> => {
+    // Note: Use POST method for FormData (Laravel supports method spoofing or just POST)
+    const { data } = await apiClient.post('/v1/admin/profile', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return data;
+  },
+  changePassword: async (payload: any): Promise<any> => {
+    const { data } = await apiClient.put('/v1/admin/profile/password', payload);
+    return data;
+  }
+};
+
 export default apiClient;
+
+export interface AdminOrderMeta {
+  current_page: number;
+  last_page: number;
+  per_page: number;
+  total: number;
+}
+
+export interface AdminOrder {
+  id: number;
+  order_number: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  total: number;
+  status: string;
+  items_count: number;
+  created_at: string;
+}
+
+export interface AdminOrderStats {
+  total: { count: number; trend: number; };
+  confirmed: { count: number; trend: number; };
+  delivered: { count: number; trend: number; };
+}
+
+export const adminOrderService = {
+  list: async (params?: Record<string, unknown>): Promise<{ data: AdminOrder[]; meta: AdminOrderMeta }> => {
+    const { data } = await apiClient.get<{ data: AdminOrder[]; meta: AdminOrderMeta }>('/v1/admin/orders', { params });
+    return data;
+  },
+  stats: async (): Promise<AdminOrderStats> => {
+    const { data } = await apiClient.get<AdminOrderStats>('/v1/admin/orders/stats');
+    return data;
+  },
+  updateStatus: async (orderId: number, status: string): Promise<void> => {
+    await apiClient.patch(`/v1/admin/orders/${orderId}/status`, { status });
+  }
+};
+
+// ─── Admin Review types ───────────────────────────────────────────────────────
+
+export interface AdminReview {
+  id: number;
+  reviewer_name: string;
+  rating: number;
+  body: string | null;
+  is_approved: boolean;
+  approved_at: string | null;
+  order_number: string | null;
+  product: { id: number; name: string; slug: string } | null;
+  images: { image_url: string }[];
+  created_at: string;
+}
+
+export interface AdminReviewStats {
+  average_rating: number;
+  total: number;
+  pending: number;
+  distribution: Record<number, { count: number; percentage: number }>;
+  most_reviewed: { product_name: string; count: number } | null;
+}
+
+// ─── Admin Review service ─────────────────────────────────────────────────────
+
+export const adminReviewService = {
+  list: async (params?: Record<string, unknown>): Promise<{ data: AdminReview[]; meta: AdminProductMeta }> => {
+    const { data } = await apiClient.get<{ data: AdminReview[]; meta: AdminProductMeta }>('/v1/admin/reviews', { params });
+    return data;
+  },
+  stats: async (): Promise<AdminReviewStats> => {
+    const { data } = await apiClient.get<AdminReviewStats>('/v1/admin/reviews/stats');
+    return data;
+  },
+  update: async (id: number, payload: { reviewer_name?: string; rating?: number; body?: string | null }): Promise<AdminReview> => {
+    const { data } = await apiClient.patch<{ data: AdminReview }>(`/v1/admin/reviews/${id}`, payload);
+    return data.data;
+  },
+  approve: async (id: number): Promise<void> => {
+    await apiClient.patch(`/v1/admin/reviews/${id}/approve`);
+  },
+  reject: async (id: number): Promise<void> => {
+    await apiClient.patch(`/v1/admin/reviews/${id}/reject`);
+  },
+  destroy: async (id: number): Promise<void> => {
+    await apiClient.delete(`/v1/admin/reviews/${id}`);
+  },
+};
+
+

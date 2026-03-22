@@ -56,6 +56,7 @@ class OrderResource extends JsonResource
                     'created_at' => $h->created_at?->toISOString(),
                 ])
             ),
+            'items_count'          => $this->whenHas('items_count'),
             'created_at'           => $this->created_at?->toISOString(),
         ];
     }

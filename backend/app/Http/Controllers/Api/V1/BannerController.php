@@ -28,7 +28,6 @@ class BannerController extends Controller
             ]),
         ]);
     }
-
     /**
      * GET /api/v1/banners/collection
      * GET /api/v1/banners/collection/{id}
