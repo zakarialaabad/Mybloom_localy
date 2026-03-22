@@ -65,7 +65,7 @@ export default function CreateCouponPage() {
     <div className="min-h-screen bg-[#f8f9fa] pb-20">
       {/* Header Container */}
       <div className="bg-white border-b border-gray-100">
-        <div className="w-full px-6 py-6 md:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="w-full px-[144px] py-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <div>
             <Link
               href="/admin/dashboard/coupons"
@@ -101,7 +101,7 @@ export default function CreateCouponPage() {
       </div>
 
       {/* Main Content */}
-      <div className="w-full px-6 py-8 md:px-8">
+      <div className="w-full px-[144px] py-8">
         {error && (
           <div className="mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-600 rounded-[12px] text-[14px]">
             {error}
