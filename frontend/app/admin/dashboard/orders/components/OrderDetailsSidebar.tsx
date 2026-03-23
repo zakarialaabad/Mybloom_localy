@@ -201,27 +201,6 @@ export default function OrderDetailsSidebar({
               })}
             </div>
 
-            {/* Status notice */}
-            {order.status === 'pending' && (
-              <p className="text-[12px] text-amber-600 font-semibold mt-4 bg-amber-50 border border-amber-200 rounded-[8px] px-3 py-2">
-                ⏳ Awaiting admin confirmation — click &ldquo;Validate Confirmation&rdquo; below to confirm this order.
-              </p>
-            )}
-            {order.status === 'confirmed' && (
-              <p className="text-[12px] text-blue-600 font-semibold mt-4 bg-blue-50 border border-blue-200 rounded-[8px] px-3 py-2">
-                🕐 Order confirmed. &ldquo;Preparing Your Package&rdquo; will activate automatically after 6 hours.
-              </p>
-            )}
-            {order.status === 'preparing' && (
-              <p className="text-[12px] text-purple-600 font-semibold mt-4 bg-purple-50 border border-purple-200 rounded-[8px] px-3 py-2">
-                📦 Package is being prepared. &ldquo;Out for Delivery&rdquo; will activate automatically after 3 hours.
-              </p>
-            )}
-            {order.status === 'shipped' && (
-              <p className="text-[12px] text-green-600 font-semibold mt-4 bg-green-50 border border-green-200 rounded-[8px] px-3 py-2">
-                🚚 Order is out for delivery — click &ldquo;Mark as Delivered&rdquo; below once the customer receives it.
-              </p>
-            )}
           </div>
 
           <hr className="border-[#e1ced3] mb-8" />
