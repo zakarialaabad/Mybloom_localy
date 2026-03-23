@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { adminOrderService, AdminOrder, AdminOrderStats } from '@/services/api';
+import OrderDetailsSidebar from './components/OrderDetailsSidebar';
 import {
   Search,
   Eye,
@@ -19,12 +20,13 @@ import {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-const VALID_STATUSES = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
+const VALID_STATUSES = ['pending', 'confirmed', 'preparing', 'shipped', 'delivered', 'cancelled'];
 
 const getStatusBadgeClass = (status: string) => {
   switch (status.toLowerCase()) {
     case 'pending':   return 'bg-yellow-50 text-yellow-700 border border-yellow-200';
     case 'confirmed': return 'bg-blue-50 text-blue-700 border border-blue-200';
+    case 'preparing': return 'bg-orange-50 text-orange-700 border border-orange-200';
     case 'delivered': return 'bg-green-50 text-green-700 border border-green-200';
     case 'shipped':   return 'bg-purple-50 text-purple-700 border border-purple-200';
     case 'cancelled': return 'bg-red-50 text-red-700 border border-red-200';
@@ -36,6 +38,7 @@ const getStatusDotClass = (status: string) => {
   switch (status.toLowerCase()) {
     case 'pending':   return 'bg-yellow-500';
     case 'confirmed': return 'bg-blue-500';
+    case 'preparing': return 'bg-orange-500';
     case 'delivered': return 'bg-green-500';
     case 'shipped':   return 'bg-purple-500';
     case 'cancelled': return 'bg-red-500';
@@ -76,6 +79,7 @@ export default function OrdersPage() {
 
   // ── Status-update modal state ───────────────────────────────────────────────
   const [editingOrder, setEditingOrder] = useState<AdminOrder | null>(null);
+  const [viewingOrder, setViewingOrder] = useState<AdminOrder | null>(null);
   const [newStatus, setNewStatus]       = useState('');
   const [isUpdating, setIsUpdating]     = useState(false);
 
@@ -175,6 +179,15 @@ export default function OrdersPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 backdrop-blur-[2px] pointer-events-none">
           <div className="w-10 h-10 border-4 border-[#da2966] border-t-transparent rounded-full animate-spin" />
         </div>
+      )}
+
+      {/* ── View order sidebar ──────────────────────────────────────────────── */}
+      {viewingOrder && (
+        <OrderDetailsSidebar
+          orderId={viewingOrder.id}
+          onClose={() => setViewingOrder(null)}
+          onStatusUpdated={() => { fetchOrders(currentPage); fetchStats(); }}
+        />
       )}
 
       {/* ── Status-update modal ──────────────────────────────────────────────── */}
@@ -452,8 +465,7 @@ export default function OrdersPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
                         <button
-                          title="View order details"
-                          className="w-8 h-8 rounded-full bg-[#fdf2f4] flex items-center justify-center text-[#da2966] hover:bg-[#faeef1] transition-colors"
+                          title="View order details"                            onClick={() => setViewingOrder(order)}                          className="w-8 h-8 rounded-full bg-[#fdf2f4] flex items-center justify-center text-[#da2966] hover:bg-[#faeef1] transition-colors"
                         >
                           <Eye size={16} strokeWidth={2.5} />
                         </button>

@@ -31,6 +31,7 @@ export default function OrderStatusPage() {
   const STATUS_LABELS: Record<string, string> = {
     pending:    'Order Received',
     confirmed:  'Order Confirmed',
+    preparing:  'Preparing Your Package',
     dispatched: 'Out for Delivery',
     shipped:    'Out for Delivery',
     delivered:  'Package Delivered',
@@ -92,26 +93,40 @@ export default function OrderStatusPage() {
               <div className="relative pl-3 md:pl-5 mb-14">
                 {(() => {
                   const DISPLAY_STEPS = [
-                    { key: 'pending', label: 'Order Valid' },
-                    { key: 'confirmed', label: 'Preparing Your Package' },
-                    { key: 'dispatched', label: 'Out for Delivery' },
-                    { key: 'delivered', label: 'Delivered' }
+                    { key: 'confirmed',  label: 'Order Valid' },
+                    { key: 'preparing',  label: 'Preparing Your Package' },
+                    { key: 'shipped',    label: 'Out for Delivery' },
+                    { key: 'delivered',  label: 'Delivered' },
                   ];
 
                   const historyDates: Record<string, string> = {};
                   if (trackData) {
                     trackData.status_histories.forEach(h => {
                       historyDates[h.status] = h.created_at;
-                      if (h.status === 'shipped') historyDates['dispatched'] = h.created_at;
+                      if (h.status === 'dispatched') historyDates['shipped'] = h.created_at;
                     });
                   }
 
-                  const currentStepIndex = DISPLAY_STEPS.findIndex(s => s.key === currentStatus);
-                  const activeIndex = currentStatus === 'shipped' ? 2 : (currentStepIndex >= 0 ? currentStepIndex : 0);
+                  // Map each order status to the LAST active step index (0-based).
+                  // 'pending'   → -1  : NO steps highlighted (not yet confirmed by admin).
+                  // 'confirmed' →  0  : Only step 1 (Order Valid) lit.
+                  // 'preparing' →  1  : Steps 1-2 lit (auto after 6 h).
+                  // 'shipped'   →  2  : Steps 1-3 lit (auto after 3 h more).
+                  // 'delivered' →  3  : All steps lit (manual by admin).
+                  const STATUS_ACTIVE_INDEX: Record<string, number> = {
+                    pending:    -1,
+                    confirmed:   0,
+                    preparing:   1,
+                    shipped:     2,
+                    dispatched:  2,
+                    delivered:   3,
+                    cancelled:  -1,
+                  };
+                  const activeIndex = STATUS_ACTIVE_INDEX[currentStatus] ?? -1;
 
                   return DISPLAY_STEPS.map((step, idx) => {
-                    const isDone = idx <= activeIndex;
-                    const isActive = idx === activeIndex;
+                    const isDone = activeIndex >= 0 && idx <= activeIndex;
+                    const isActive = activeIndex >= 0 && idx === activeIndex;
                     const isLast = idx === DISPLAY_STEPS.length - 1;
                     const dateRaw = historyDates[step.key];
                     const dateFormatted = dateRaw 
@@ -119,7 +134,7 @@ export default function OrderStatusPage() {
                       : ''; 
 
                     return (
-                      <div key={step.key} className="relative flex gap-6">
+                      <div key={idx} className="relative flex gap-6">
                         <div className="relative flex flex-col items-center">
                           <div className={`w-[30px] h-[30px] rounded-full flex items-center justify-center text-[13px] font-serif z-10 shrink-0 border-[2px] transition-colors ${isDone ? 'bg-[#403531] border-[#403531] text-white' : 'bg-white border-[#403531] text-[#403531]'}`}>
                             {idx + 1}

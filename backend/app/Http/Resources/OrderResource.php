@@ -39,8 +39,24 @@ class OrderResource extends JsonResource
                     'id'         => $item->id,
                     'product_id' => $item->product_id,
                     'product'    => $item->relationLoaded('product') && $item->product ? [
-                        'name' => $item->product->name,
-                        'slug' => $item->product->slug,
+                        'id'        => $item->product->id,
+                        'name'      => $item->product->name,
+                        'slug'      => $item->product->slug,
+                        // Primary image URL (prioritized)
+                        'image_url' => $item->product->relationLoaded('images')
+                            ? ($item->product->images?->firstWhere('is_primary', true)?->url 
+                               ?? $item->product->images?->first()?->url 
+                               ?? null)
+                            : null,
+                        // All images array for fallback
+                        'images'    => $item->product->relationLoaded('images')
+                            ? $item->product->images?->map(fn ($img) => [
+                                'url'        => $img->url,
+                                'alt'        => $img->alt,
+                                'is_primary' => (bool) $img->is_primary,
+                                'sort_order' => $img->sort_order,
+                            ])
+                            : [],
                     ] : null,
                     'size_label' => $item->size_label,
                     'quantity'   => $item->quantity,

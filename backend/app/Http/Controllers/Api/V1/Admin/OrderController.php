@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
+use App\Jobs\AdvanceOrderStatus;
 use App\Models\Order;
 use App\Services\OrderService;
 use Illuminate\Http\JsonResponse;
@@ -42,10 +43,18 @@ class OrderController extends Controller
 
     /**
      * GET /api/v1/admin/orders/{order}
+     * 
+     * Loads full order details including items with product images
      */
     public function show(Order $order): JsonResponse
     {
-        $order->load(['items.product', 'statusHistories', 'shippingMethod', 'coupon']);
+        // Load relationships: items with product and its images, status histories, shipping, coupon
+        $order->load([
+            'items.product.images',  // ← Now includes product images for each item
+            'statusHistories', 
+            'shippingMethod', 
+            'coupon'
+        ]);
 
         return response()->json(['data' => new OrderResource($order)]);
     }
@@ -59,15 +68,23 @@ class OrderController extends Controller
     public function updateStatus(Request $request, Order $order): JsonResponse
     {
         $request->validate([
-            'status' => ['required', 'string', 'in:pending,confirmed,shipped,delivered,cancelled'],
+            'status' => ['required', 'string', 'in:pending,confirmed,preparing,shipped,delivered,cancelled'],
         ]);
 
         $newStatus = $request->status;
 
+        // Guard: "delivered" can only be set once the order has reached "shipped"
+        if ($newStatus === 'delivered' && $order->status !== 'shipped') {
+            return response()->json([
+                'message' => 'Order must be in "shipped" (Out for Delivery) status before it can be marked as delivered.',
+            ], 422);
+        }
+
         $statusLabels = [
             'pending'   => 'Order received and awaiting confirmation.',
             'confirmed' => 'Order confirmed and being processed.',
-            'shipped'   => 'Order has been shipped and is on the way.',
+            'preparing' => 'Your order is being carefully prepared and packed.',
+            'shipped'   => 'Your order is out for delivery and on the way to you.',
             'delivered' => 'Order delivered successfully.',
             'cancelled' => 'Order has been cancelled.',
         ];
@@ -77,6 +94,14 @@ class OrderController extends Controller
             $newStatus,
             $statusLabels[$newStatus] ?? ucfirst($newStatus),
         );
+
+        // Schedule automatic status advances:
+        //   confirmed  --[6h]--> preparing  --[3h]--> shipped
+        // (The shipped→delivered transition is always manual.)
+        if ($newStatus === 'confirmed') {
+            AdvanceOrderStatus::dispatch($order->id, 'confirmed', 'preparing')
+                ->delay(now()->addHours(6));
+        }
 
         return response()->json([
             'message' => 'Order status updated.',

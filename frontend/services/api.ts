@@ -647,6 +647,51 @@ export interface AdminOrderMeta {
   total: number;
 }
 
+/**
+ * Product item in order - includes product details and primary image
+ */
+export interface AdminOrderItem {
+  id: number;
+  product_id: number;
+  quantity: number;
+  unit_price: number;
+  line_total: number;  // Calculated: unit_price * quantity (NOT total_price)
+  size_label?: string;
+  product: {
+    id: number;
+    name: string;
+    slug: string;
+    image_url?: string;  // Primary image URL from backend
+    images?: Array<{
+      url: string;
+      alt?: string;
+      is_primary: boolean;
+      sort_order: number;
+    }>;
+  };
+}
+
+/**
+ * Full order with complete details including items and images
+ */
+export interface AdminOrderFull {
+  id: number;
+  order_number: string;
+  customer_name: string;
+  customer_email: string;
+  customer_phone: string;
+  total: number;
+  status: string;
+  items_count: number;
+  created_at: string;
+  items: AdminOrderItem[];
+  shipping_method?: { id: number; name: string };
+  coupon?: { id: number; code: string } | null;
+}
+
+/**
+ * Minimal order for list views (backward compatible)
+ */
 export interface AdminOrder {
   id: number;
   order_number: string;
@@ -657,6 +702,7 @@ export interface AdminOrder {
   status: string;
   items_count: number;
   created_at: string;
+  items?: AdminOrderItem[]; // Optional for backward compatibility
 }
 
 export interface AdminOrderStats {
@@ -669,6 +715,14 @@ export const adminOrderService = {
   list: async (params?: Record<string, unknown>): Promise<{ data: AdminOrder[]; meta: AdminOrderMeta }> => {
     const { data } = await apiClient.get<{ data: AdminOrder[]; meta: AdminOrderMeta }>('/v1/admin/orders', { params });
     return data;
+  },
+  /**
+   * Fetch full order details including items, shipping, coupon, and status history
+   * Backend loads: items.product, statusHistories, shippingMethod, coupon
+   */
+  get: async (orderId: number): Promise<AdminOrderFull> => {
+    const { data } = await apiClient.get<{ data: AdminOrderFull }>(`/v1/admin/orders/${orderId}`);
+    return data.data;
   },
   stats: async (): Promise<AdminOrderStats> => {
     const { data } = await apiClient.get<AdminOrderStats>('/v1/admin/orders/stats');
