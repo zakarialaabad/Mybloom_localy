@@ -17,7 +17,7 @@ import {
   Menu,
   X
 } from 'lucide-react';
-import { adminAuthService } from '@/services/api';
+import { adminAuthService, adminProfileService } from '@/services/api';
 
 export default function AdminDashboardLayout({
   children,
@@ -26,6 +26,23 @@ export default function AdminDashboardLayout({
 }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [adminProfile, setAdminProfile] = useState<{
+    username: string;
+    email: string;
+    profile_image: string | null;
+    last_login_at: string | null;
+  } | null>(null);
+
+  useEffect(() => {
+    adminProfileService.getProfile().then(setAdminProfile).catch(() => {});
+  }, []);
+
+  const formatLastLogin = (iso: string | null | undefined): string => {
+    if (!iso) return '';
+    const d = new Date(iso);
+    return 'Last visit ' + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
+      + ' at ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  };
 
   useEffect(() => {
     if (sidebarOpen) {
@@ -79,9 +96,7 @@ export default function AdminDashboardLayout({
         >
           <Menu size={24} className="text-[#333]" />
         </button>
-        <h1 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-medium text-[#222] tracking-wide">
-          My<span className="text-[#da2966] italic">Bloom</span>
-        </h1>
+        <Image src="/logo.png" alt="MyBloom" width={110} height={32} className="object-contain h-[28px] w-auto" />
         <div className="w-10" /> {/* Spacer */}
       </div>
 
@@ -97,9 +112,7 @@ export default function AdminDashboardLayout({
             >
               <X size={16} strokeWidth={2.5} className="text-[#666]" />
             </button>
-            <h1 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-medium text-[#222] tracking-wide absolute left-1/2 -translate-x-1/2">
-              My<span className="text-[#da2966] italic">Bloom</span>
-            </h1>
+            <Image src="/logo.png" alt="MyBloom" width={110} height={32} className="object-contain h-[28px] w-auto absolute left-1/2 -translate-x-1/2" />
           </div>
 
           {/* Mobile Menu Content */}
@@ -152,15 +165,20 @@ export default function AdminDashboardLayout({
           {/* User Profile */}
           <div className="shrink-0 px-8 py-10 pb-12 mt-auto">
             <div className="flex items-center gap-4">
-              <div className="w-[50px] h-[50px] rounded-full bg-gradient-to-br from-[#fde2e7] to-[#ffd1dc] flex items-center justify-center border border-[#f8c5d1] shrink-0">
-                <User size={24} className="text-[#d72864]" strokeWidth={1.5} />
+              <div className="w-[50px] h-[50px] rounded-full overflow-hidden bg-gradient-to-br from-[#fde2e7] to-[#ffd1dc] flex items-center justify-center border border-[#f8c5d1] shrink-0">
+                {adminProfile?.profile_image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={adminProfile.profile_image} alt="Admin" className="w-full h-full object-cover" />
+                ) : (
+                  <User size={24} className="text-[#d72864]" strokeWidth={1.5} />
+                )}
               </div>
               <div className="flex flex-col">
                 <span className="text-[15px] font-serif font-bold text-[#222]">
-                  Madame Loubna
+                  {adminProfile?.username ?? 'Admin'}
                 </span>
                 <span className="text-[12px] font-serif text-[#666] mt-0.5 tracking-wide">
-                  Last visit October 2026 at 12:30 PM
+                  {formatLastLogin(adminProfile?.last_login_at)}
                 </span>
               </div>
             </div>
@@ -172,11 +190,8 @@ export default function AdminDashboardLayout({
       <aside className="hidden lg:flex left-0 top-0 bottom-0 w-[280px] bg-white z-40 fixed flex-col border-r border-gray-100">
         {/* Logo Area */}
         <div className="pt-10 pb-8 px-8 shrink-0">
-          <h1 className="text-[26px] font-serif font-bold text-[#222] tracking-tight leading-none">
-            My<span className="text-[#da2966] italic">Bloom</span>
-            <span className="text-base ml-1">🌿</span>
-          </h1>
-          <p className="text-[13px] text-[#da2966] font-bold mt-1 tracking-wide">
+          <Image src="/logo.png" alt="MyBloom" width={130} height={38} className="object-contain h-[34px] w-auto" />
+          <p className="text-[13px] text-[#da2966] font-bold mt-2 tracking-wide">
             Admin Panel
           </p>
         </div>
@@ -237,17 +252,22 @@ export default function AdminDashboardLayout({
         <div className="shrink-0 px-6 py-6 border-t border-gray-100">
           <div className="flex items-center gap-3">
             <div className="relative shrink-0">
-              <div className="w-11 h-11 rounded-full bg-gradient-to-br from-[#fde2e7] to-[#ffd1dc] flex items-center justify-center border-2 border-white shadow">
-                <User size={20} className="text-[#da2966]" />
+              <div className="w-11 h-11 rounded-full overflow-hidden bg-gradient-to-br from-[#fde2e7] to-[#ffd1dc] flex items-center justify-center border-2 border-white shadow">
+                {adminProfile?.profile_image ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={adminProfile.profile_image} alt="Admin" className="w-full h-full object-cover" />
+                ) : (
+                  <User size={20} className="text-[#da2966]" />
+                )}
               </div>
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
             </div>
             <div className="flex flex-col min-w-0">
               <span className="text-[14px] font-bold text-[#1a1a1a] leading-tight truncate">
-                Madame Loubna
+                {adminProfile?.username ?? 'Admin'}
               </span>
               <span className="text-[12px] text-gray-400 font-medium truncate">
-                Super admin
+                {formatLastLogin(adminProfile?.last_login_at)}
               </span>
             </div>
           </div>
@@ -255,8 +275,45 @@ export default function AdminDashboardLayout({
       </aside>
 
       {/* ─── Main Content ───────────────────────────────────────────────────────── */}
-      <div className="w-full lg:flex-1 lg:ml-[280px] min-h-[calc(100vh-64px)] lg:min-h-screen bg-[#fefbfb] pt-[64px] lg:pt-0">
+      <div className="w-full lg:flex-1 lg:ml-[280px] min-h-[calc(100vh-64px)] lg:min-h-screen bg-[#fefbfb] pt-[64px] pb-[64px] lg:pt-0 lg:pb-0">
         {children}
+      </div>
+
+      {/* ─── Mobile Bottom Tab Bar ───────────────────────────────────────────────── */}
+      <div
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-100 shadow-[0_-4px_10px_rgba(0,0,0,0.05)]"
+        style={{ height: '64px' }}
+      >
+        <div className="flex items-center h-full">
+          {navItems.map((item) => {
+            const isActive =
+              item.href === '/admin/dashboard'
+                ? pathname === item.href
+                : pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={`relative flex flex-col items-center justify-center gap-[3px] flex-1 h-full transition-colors ${
+                  isActive ? 'text-[#da2966]' : 'text-gray-400'
+                }`}
+              >
+                <item.icon
+                  size={21}
+                  strokeWidth={isActive ? 2.5 : 1.8}
+                />
+                <span className={`text-[9px] tracking-wide leading-none ${
+                  isActive ? 'font-bold text-[#da2966]' : 'font-medium'
+                }`}>
+                  {item.name}
+                </span>
+                {isActive && (
+                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-7 h-0.5 bg-[#da2966] rounded-full" />
+                )}
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </div>
   );

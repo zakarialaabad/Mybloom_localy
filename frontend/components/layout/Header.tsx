@@ -64,8 +64,8 @@ export default function Header() {
         <div className="flex w-2/4 justify-center md:w-1/4 md:justify-start">
           <Link href="/" className="inline-block">
             <Image
-              src="/logo.jpeg"
-              alt="Bloom Parfums"
+              src="/logo.png"
+              alt="MyBloom"
               width={220}
               height={64}
               className="object-contain h-6 md:h-12 w-auto"
@@ -204,8 +204,8 @@ export default function Header() {
               </svg>
             </button>
             <Image
-              src="/logo.jpeg"
-              alt="Bloom Parfums"
+              src="/logo.png"
+              alt="MyBloom"
               width={160}
               height={40}
               className="object-contain h-6"

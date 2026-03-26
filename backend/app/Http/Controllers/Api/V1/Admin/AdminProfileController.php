@@ -28,6 +28,7 @@ class AdminProfileController extends Controller
                 'email' => $admin->email,
                 'phone' => $admin->phone,
                 'profile_image' => $admin->profile_image ? Storage::url($admin->profile_image) : null,
+                'last_login_at' => $admin->last_login_at,
                 'created_at' => $admin->created_at,
             ]
         ]);

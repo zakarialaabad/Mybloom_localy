@@ -459,20 +459,20 @@ export default function AddProductPage() {
       )}
 
       {/* HEADER */}
-      <div className="flex items-start justify-between pb-4">
-        <div>
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-4">
+        <div className="min-w-0">
           <Link href="/admin/dashboard/products" className="inline-flex items-center gap-2 text-[#da2966] text-[14px] font-semibold hover:underline mb-3">
             <ArrowLeft /> Back to Products
           </Link>
-          <h1 className="text-[32px] font-bold text-[#333] leading-tight font-serif tracking-tight">Add New Product</h1>
-          <p className="text-[15px] text-gray-400 mt-1">Create a new listing for your luxury collection</p>
+          <h1 className="text-[22px] sm:text-[28px] lg:text-[32px] font-bold text-[#333] leading-tight font-serif tracking-tight">Add New Product</h1>
+          <p className="text-[13px] sm:text-[15px] text-gray-400 mt-1">Create a new listing for your luxury collection</p>
         </div>
-        <div className="flex items-center gap-4 mt-8">
-          <button className="px-6 py-3 rounded-xl border border-gray-200 bg-white text-[14px] font-semibold text-[#333] hover:bg-gray-50 shadow-sm transition-colors">
+        <div className="flex items-center gap-3 sm:mt-8 shrink-0">
+          <button className="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl border border-gray-200 bg-white text-[13px] sm:text-[14px] font-semibold text-[#333] hover:bg-gray-50 shadow-sm transition-colors">
             Discard
           </button>
-            <button onClick={handleSubmit} disabled={isSubmitting} className={`px-6 py-3 rounded-xl bg-[#da2966] text-white text-[14px] font-semibold flex items-center gap-2 shadow-[0_4px_12px_rgba(218,41,102,0.25)] transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#c22158]'}`}>
-              <SaveIcon /> {isSubmitting ? 'Saving...' : 'Save Product'}
+          <button onClick={handleSubmit} disabled={isSubmitting} className={`flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#da2966] text-white text-[13px] sm:text-[14px] font-semibold flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(218,41,102,0.25)] transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#c22158]'}`}>
+            <SaveIcon /> {isSubmitting ? 'Saving...' : 'Save Product'}
           </button>
         </div>
       </div>
@@ -650,11 +650,11 @@ export default function AddProductPage() {
             multiple 
             accept="image/jpeg, image/png"
           />
-          <div onClick={() => fileInputRef.current?.click()} className="w-full h-[120px] rounded-2xl border-2 border-dashed border-[#da2966] bg-[#fcfcfc] flex flex-col items-center justify-center hover:bg-[#fff0f3] transition-colors cursor-pointer">
+          <div onClick={() => fileInputRef.current?.click()} className="w-full min-h-[120px] rounded-2xl border-2 border-dashed border-[#da2966] bg-[#fcfcfc] flex flex-col items-center justify-center py-4 px-4 hover:bg-[#fff0f3] transition-colors cursor-pointer overflow-hidden">
             <CloudUploadIcon />
-            <p className="text-[14px] font-bold text-[#333] mt-2 mb-1">Glissez-déposez des photos ici</p>
-            <p className="text-[11px] font-medium text-gray-400">Maximum 4 photos autorisées</p>
-            <p className="text-[10px] text-gray-400 mt-1">Format JPG ou PNG - taille maximale : 10 Mo par photo</p>
+            <p className="text-[13px] sm:text-[14px] font-bold text-[#333] mt-2 mb-1 text-center leading-snug">Glissez-déposez des photos ici</p>
+            <p className="text-[11px] font-medium text-gray-400 text-center">Maximum 4 photos autorisées</p>
+            <p className="text-[10px] text-gray-400 mt-1 text-center">JPG ou PNG · 10 Mo max</p>
           </div>
         </Card>
       </div>

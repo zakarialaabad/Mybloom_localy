@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { User, Lock, Eye, EyeOff, ChevronRight } from 'lucide-react';
 
 export default function AdminLoginPage() {
-  const [email,         setEmail]         = useState('');
+  const [username,       setUsername]      = useState('');
   const [password,      setPassword]      = useState('');
   const [error,         setError]         = useState<string | null>(null);
   const [loading,       setLoading]       = useState(false);
@@ -18,7 +18,7 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      await adminAuthService.login({ email, password });
+      await adminAuthService.login({ username, password });
       setTimeout(() => {
         window.location.href = '/admin/dashboard';
       }, 150);
@@ -80,12 +80,12 @@ export default function AdminLoginPage() {
                 <User className="w-4 h-4 text-[#da2966] shrink-0" strokeWidth={2.5} />
                 <div className="w-px h-[18px] bg-gray-200" />
                 <input
-                  type="email"
+                  type="text"
                   placeholder=""
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   required
-                  autoComplete="email"
+                  autoComplete="username"
                   className="flex-1 bg-transparent border-none focus:outline-none text-[14px] font-serif text-gray-800 placeholder:text-gray-400"
                 />
               </div>

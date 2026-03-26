@@ -45,7 +45,7 @@ function UploadArea({
 
   return (
     <div
-      className="flex-1 w-full h-full min-h-[160px] border-2 border-dashed border-[#da2966] bg-white flex flex-col items-center justify-center p-4 sm:p-6 text-center group cursor-pointer hover:bg-gray-50 transition-colors"
+      className="flex-1 w-full h-full min-h-[160px] border-2 border-dashed border-[#da2966] bg-white flex flex-col items-center justify-center p-3 text-center group cursor-pointer hover:bg-gray-50 transition-colors overflow-hidden"
       onClick={() => inputRef.current?.click()}
       onDragOver={(e) => e.preventDefault()}
       onDrop={onDrop}
@@ -61,17 +61,17 @@ function UploadArea({
         onChange={(e) => { const f = e.target.files?.[0]; if (f) handleFile(f); }}
       />
       {uploading ? (
-        <Loader2 size={28} className="text-[#da2966] animate-spin mb-2" />
+        <Loader2 size={24} className="text-[#da2966] animate-spin mb-2" />
       ) : (
-        <div className="w-12 h-12 rounded-full bg-[#da2966] flex items-center justify-center text-white mb-3 shadow-[0_4px_10px_rgba(218,41,102,0.3)] group-hover:scale-110 transition-transform">
-          <UploadCloud size={24} strokeWidth={2} />
+        <div className="w-10 h-10 rounded-full bg-[#da2966] flex items-center justify-center text-white mb-2 shadow-[0_4px_10px_rgba(218,41,102,0.3)] group-hover:scale-110 transition-transform shrink-0">
+          <UploadCloud size={20} strokeWidth={2} />
         </div>
       )}
-      <p className="text-[14px] font-bold text-[#111] mb-1">
-        {uploading ? 'Téléchargement...' : 'Glissez-déposez des photos ici'}
+      <p className="text-[12px] sm:text-[13px] font-bold text-[#111] mb-1 leading-snug">
+        {uploading ? 'Téléchargement...' : 'Déposer une photo'}
       </p>
-      <p className="text-[11px] text-gray-400 font-medium">
-        Format JPG ou PNG - taille maximale : 10 Mo par photo
+      <p className="text-[10px] text-gray-400 font-medium leading-snug">
+        JPG · PNG · 10 Mo max
       </p>
     </div>
   );
@@ -199,7 +199,7 @@ export default function BannersPage() {
     <div className="p-5 sm:p-8 max-w-[1240px] mx-auto w-full">
       {/* ─── Header ─────────────────────────────────────────────────────── */}
       <div className="mb-10 pb-6 border-b border-gray-100">
-        <h1 className="text-[32px] font-serif font-bold text-[#111] tracking-tight mb-2">
+        <h1 className="text-[22px] sm:text-[28px] lg:text-[32px] font-serif font-bold text-[#111] tracking-tight mb-2">
           Promo Image Management
         </h1>
         <p className="text-[15px] text-gray-500 font-medium">
@@ -218,7 +218,7 @@ export default function BannersPage() {
           </div>
 
           {/* Grid identical to frontend ValentinesSection component */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-4 sm:p-6 items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-stretch">
             {/* Slot 1 — large banner */}
             <div className="relative w-full aspect-square lg:aspect-[1.12/1] overflow-hidden border border-gray-100 bg-gray-50">
               {loading ? (
@@ -231,7 +231,7 @@ export default function BannersPage() {
             </div>
 
             {/* Slots 2, 3, 4 */}
-            <div className="flex flex-col lg:grid lg:grid-rows-[1fr_1fr] gap-4 lg:gap-4 sm:p-6">
+            <div className="flex flex-col lg:grid lg:grid-rows-[1fr_1fr] gap-4">
               
               {/* Slot 2 (Top Row) */}
               <div className="relative overflow-hidden w-full h-[250px] lg:h-full lg:min-h-0 border border-gray-100 bg-gray-50">
@@ -245,10 +245,10 @@ export default function BannersPage() {
               </div>
 
               {/* Slots 3 & 4 (Bottom Row) */}
-              <div className="grid grid-cols-5 gap-4 lg:gap-4 sm:p-6 w-full h-[200px] lg:h-full lg:min-h-0">
+              <div className="flex flex-col sm:grid sm:grid-cols-5 gap-4 w-full lg:h-full lg:min-h-0">
                 
                 {/* Slot 3 */}
-                <div className="col-span-3 relative overflow-hidden border border-gray-100 bg-gray-50 h-full w-full">
+                <div className="sm:col-span-3 relative overflow-hidden border border-gray-100 bg-gray-50 h-[160px] sm:h-[200px] lg:h-full w-full">
                   {loading ? (
                     <div className="absolute inset-0 bg-gray-100 animate-pulse" />
                   ) : slotBanner(3) ? (
@@ -259,7 +259,7 @@ export default function BannersPage() {
                 </div>
 
                 {/* Slot 4 */}
-                <div className="col-span-2 relative overflow-hidden border border-gray-100 bg-gray-50 h-full w-full">
+                <div className="sm:col-span-2 relative overflow-hidden border border-gray-100 bg-gray-50 h-[160px] sm:h-[200px] lg:h-full w-full">
                   {loading ? (
                     <div className="absolute inset-0 bg-gray-100 animate-pulse" />
                   ) : slotBanner(4) ? (
@@ -289,7 +289,7 @@ export default function BannersPage() {
           </div>
 
           <div
-            className="relative w-full aspect-[4/1] overflow-hidden border border-gray-100 bg-gray-50 group cursor-pointer"
+            className="relative w-full aspect-[2/1] sm:aspect-[3/1] lg:aspect-[4/1] overflow-hidden border border-gray-100 bg-gray-50 group cursor-pointer"
             onClick={() => !heroBanner && heroInputRef.current?.click()}
           >
             <input
@@ -335,8 +335,8 @@ export default function BannersPage() {
                     <div className="w-12 h-12 rounded-full bg-[#da2966] flex items-center justify-center text-white mb-3 shadow-[0_4px_10px_rgba(218,41,102,0.3)] group-hover:scale-110 transition-transform">
                       <UploadCloud size={24} strokeWidth={2} />
                     </div>
-                    <p className="text-[14px] font-bold text-[#111] mb-1">Téléchargement Collection Hero Banner</p>
-                    <p className="text-[11px] text-gray-400 font-medium">Format JPG ou PNG - taille maximale : 10 Mo par photo</p>
+                    <p className="text-[13px] sm:text-[14px] font-bold text-[#111] mb-1 leading-snug text-center">Collection Hero Banner</p>
+                    <p className="text-[10px] sm:text-[11px] text-gray-400 font-medium text-center">JPG · PNG · 10 Mo max</p>
                   </>
                 )}
               </div>

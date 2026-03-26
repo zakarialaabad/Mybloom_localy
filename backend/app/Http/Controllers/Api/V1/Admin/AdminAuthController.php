@@ -17,20 +17,24 @@ class AdminAuthController extends Controller
     public function login(Request $request): JsonResponse
     {
         $request->validate([
-            'email'    => ['required', 'email'],
+            'username' => ['required', 'string'],
             'password' => ['required', 'string'],
         ]);
 
-        $admin = Admin::where('email', $request->email)->first();
+        $admin = Admin::where('username', $request->username)->first();
 
         if (! $admin || ! Hash::check($request->password, $admin->password)) {
             throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
+                'username' => ['The provided credentials are incorrect.'],
             ]);
         }
 
         // Revoke previous tokens for this admin
         $admin->tokens()->delete();
+
+        // Record last login timestamp
+        $admin->last_login_at = now();
+        $admin->save();
 
         $token = $admin->createToken('admin-session', ['*'], now()->addMinutes(config('sanctum.expiration', 1440)));
 
@@ -38,7 +42,7 @@ class AdminAuthController extends Controller
             ->json([
                 'message' => 'Authenticated.',
                 'token'   => $token->plainTextToken,
-                'admin'   => ['id' => $admin->id, 'email' => $admin->email],
+                'admin'   => ['id' => $admin->id, 'username' => $admin->username, 'email' => $admin->email],
             ])
             ->cookie(
                 'admin_token',
@@ -80,6 +84,6 @@ class AdminAuthController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        return response()->json(['admin' => ['id' => $admin->id, 'email' => $admin->email]]);
+        return response()->json(['admin' => ['id' => $admin->id, 'username' => $admin->username, 'email' => $admin->email]]);
     }
 }

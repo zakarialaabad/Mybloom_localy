@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { ChevronDown, ChevronUp, Search, Grid, List } from 'lucide-react';
+import { ChevronDown, ChevronUp, Search, Grid, List, SlidersHorizontal, X } from 'lucide-react';
 
 const SORT_OPTIONS = [
   { value: 'newest',      label: 'Relevance (Default)' },
@@ -56,6 +56,7 @@ export default function CollectionPage() {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('newest');
   const [showSortMenu, setShowSortMenu] = useState(false);
+  const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
 
   // ── Filter state — shared with FilterModal via useFilterStore ─────────────
@@ -220,9 +221,49 @@ export default function CollectionPage() {
           <Link href="/">Home</Link> / <span className="text-gray-900">Collection</span>
         </div>
 
+        {/* ─── Mobile Toolbar ─────────────────────────────────────────────── */}
+        <div className="md:hidden sticky top-16 z-30 bg-white -mx-4 px-4 py-3 mb-5 border-b border-gray-100 flex items-center gap-2">
+          <span className="text-xs text-gray-400 font-serif italic flex-1 min-w-0 truncate">
+            {loadingProducts ? '…' : `${products.length} Produit${products.length !== 1 ? 's' : ''}`}
+          </span>
+          <button
+            onClick={() => setMobileFilterOpen(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 rounded-full text-xs text-gray-600 shrink-0 transition-colors active:bg-gray-50"
+          >
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+            Filtres
+          </button>
+          <div className="relative shrink-0">
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="appearance-none text-xs border border-gray-300 rounded-full pl-3 pr-6 py-1.5 text-gray-600 bg-white cursor-pointer focus:outline-none"
+            >
+              {SORT_OPTIONS.map((opt) => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
+          </div>
+          <div className="flex items-center border border-gray-200 rounded-full overflow-hidden shrink-0">
+            <button
+              onClick={() => setViewMode('grid')}
+              className={`p-1.5 transition-all ${viewMode === 'grid' ? 'bg-[#4a403a] text-white' : 'text-gray-400'}`}
+            >
+              <Grid className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={() => setViewMode('list')}
+              className={`p-1.5 border-l border-gray-200 transition-all ${viewMode === 'list' ? 'bg-[#4a403a] text-white' : 'text-gray-400'}`}
+            >
+              <List className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        </div>
+
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar */}
-          <aside className="w-full md:w-64 shrink-0">
+          <aside className="hidden md:block w-64 shrink-0">
             <div className="bg-[#fcfcfc] p-6 rounded-sm">
               <h2 className="font-serif text-gray-500 mb-6">Filter</h2>
 
@@ -321,7 +362,7 @@ export default function CollectionPage() {
           {/* Main Content */}
           <div className="flex-1">
             {/* Top Bar */}
-            <div className="flex justify-between items-center mb-6">
+            <div className="hidden md:flex justify-between items-center mb-6">
               <div className="text-xs text-gray-400 font-serif italic">
                 {products.length} Produit{products.length !== 1 ? 's' : ''}
                 {totalPages > 1 && <span className="ml-1 text-gray-300">— page {currentPage}/{totalPages}</span>}
@@ -391,7 +432,7 @@ export default function CollectionPage() {
             {/* Product Grid / List */}
             {loadingProducts ? (
               viewMode === 'grid' ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-6">
                   {Array.from({ length: 8 }).map((_, i) => (
                     <div key={i} className="aspect-[4/5] bg-gray-100 rounded-sm animate-pulse" />
                   ))}
@@ -419,7 +460,7 @@ export default function CollectionPage() {
             ) : (
               <>
                 {viewMode === 'grid' ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-4 gap-y-8">
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-6">
                     {paginatedProducts.map(p => (
                       <ProductCard key={p.id} {...productToCard(p)} />
                     ))}
@@ -550,6 +591,106 @@ export default function CollectionPage() {
           </div>
         </div>
       </main>
+
+      {/* ─── Mobile Filter Drawer ─────────────────────────────────────────── */}
+      {mobileFilterOpen && (
+        <div className="fixed inset-0 z-[60] md:hidden">
+          {/* Backdrop */}
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setMobileFilterOpen(false)}
+          />
+          {/* Bottom sheet */}
+          <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[88vh] flex flex-col">
+            {/* Drag handle */}
+            <div className="flex justify-center pt-3 pb-1 shrink-0">
+              <div className="w-10 h-1 bg-gray-200 rounded-full" />
+            </div>
+            {/* Header */}
+            <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 shrink-0">
+              <span className="text-[16px] font-serif font-bold text-gray-900">Filtres</span>
+              <button
+                onClick={() => setMobileFilterOpen(false)}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              >
+                <X className="w-4 h-4 text-gray-500" />
+              </button>
+            </div>
+            {/* Scrollable filter content */}
+            <div className="overflow-y-auto flex-1 px-5 py-5">
+              {/* Brand */}
+              <div className="mb-6">
+                <h3 className="font-serif text-gray-700 mb-4">Brand</h3>
+                <div className="relative mb-4">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
+                  <input type="text" placeholder="Search brand..." className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none" />
+                </div>
+                <div className="space-y-3">
+                  {brands.map(brand => (
+                    <label key={brand.id} className="flex items-center gap-3 cursor-pointer">
+                      <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleBrand(brand.id)}>
+                        {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
+                      </div>
+                      <span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {/* Price */}
+              <div className="mb-6 border-t border-gray-100 pt-6">
+                <h3 className="font-serif text-gray-700 mb-4">Price</h3>
+                <PriceHistogram globalMin={globalMin} globalMax={globalMax} selectedMin={selectedMin} selectedMax={selectedMax} onMinChange={setSelectedMin} onMaxChange={setSelectedMax} />
+              </div>
+              {/* Category */}
+              <div className="mb-6 border-t border-gray-100 pt-6">
+                <h3 className="font-serif text-gray-700 mb-4">Category</h3>
+                <div className="space-y-3">
+                  {categories.map(cat => (
+                    <label key={cat.id} className="flex items-center gap-3 cursor-pointer">
+                      <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedCategories.includes(cat.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleCategory(cat.id)}>
+                        {selectedCategories.includes(cat.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
+                      </div>
+                      <span className={`text-xs ${selectedCategories.includes(cat.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{cat.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+              {/* Notes */}
+              <div className="mb-6 border-t border-gray-100 pt-6">
+                <h3 className="font-serif text-gray-700 mb-4">Notes</h3>
+                <div className="flex flex-wrap gap-2">
+                  <button onClick={() => setSelectedRating(null)} className={`px-3 py-1 rounded-sm text-xs font-medium ${selectedRating === null ? 'bg-[#fdf6e3] text-[#b8860b]' : 'bg-gray-100 text-gray-600'}`}>Tout</button>
+                  <button onClick={() => setSelectedRating(5)} className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 5 ? 'bg-[#fdf6e3] text-[#b8860b]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 5.0</button>
+                  <button onClick={() => setSelectedRating(4)} className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 4 ? 'bg-[#fdf6e3] text-[#b8860b]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 4.0</button>
+                </div>
+              </div>
+              {/* Promotions */}
+              <div className="border-t border-gray-100 pt-6 pb-2">
+                <h3 className="font-serif text-gray-700 mb-4">Promotions</h3>
+                <div className="space-y-3">
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" checked={promotionOnly} onChange={(e) => setPromotionOnly(e.target.checked)} className="w-3.5 h-3.5" />
+                    <span className="text-xs text-gray-500">Offre Speciales</span>
+                  </label>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" checked={featuredOnly} onChange={(e) => setFeaturedOnly(e.target.checked)} className="w-3.5 h-3.5" />
+                    <span className="text-xs text-gray-500">Best Sellers</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            {/* Apply button */}
+            <div className="shrink-0 px-5 py-4 border-t border-gray-100">
+              <button
+                onClick={() => setMobileFilterOpen(false)}
+                className="w-full py-3 bg-[#4a403a] text-white text-sm font-serif rounded-sm hover:bg-[#3a3028] transition-colors"
+              >
+                {loadingProducts ? 'Chargement…' : `Voir ${products.length} produit${products.length !== 1 ? 's' : ''}`}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <Footer />
     </div>

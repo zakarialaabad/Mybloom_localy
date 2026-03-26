@@ -9,14 +9,14 @@ export interface ApiValidationError {
 }
 
 export interface AdminLoginPayload {
-  email: string;
+  username: string;
   password: string;
 }
 
 export interface AdminLoginResponse {
   message: string;
   token: string;
-  admin: { id: number; email: string };
+  admin: { id: number; username: string; email: string };
 }
 
 export interface PaginatedResponse<T> {
@@ -639,6 +639,14 @@ export const adminProfileService = {
 };
 
 export default apiClient;
+
+// ─── Public Store Info ──────────────────────────────────────────────────────
+export const storeService = {
+  getContact: async (): Promise<{ email: string | null; phone: string | null }> => {
+    const { data } = await apiClient.get<{ data: { email: string | null; phone: string | null } }>('/v1/store/contact');
+    return data.data;
+  },
+};
 
 export interface AdminOrderMeta {
   current_page: number;

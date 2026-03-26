@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\ShippingMethodController;
+use App\Http\Controllers\Api\V1\StoreController;
 use App\Http\Controllers\Api\V1\Admin\AdminAuthController;
 use App\Http\Controllers\Api\V1\Admin\BrandController as AdminBrandController;
 use App\Http\Controllers\Api\V1\Admin\CategoryController as AdminCategoryController;
@@ -66,6 +67,9 @@ Route::prefix('api')->group(function () {
             // Banners — public read-only
             Route::get('/banners/homepage',            [BannerController::class, 'homepage']);
             Route::get('/banners/collection/{id?}',    [BannerController::class, 'collectionHero']);
+
+            // Store — public contact info
+            Route::get('/store/contact',               [StoreController::class, 'contact']);
         });
 
         // ── Admin — auth endpoint (no sanctum guard, only throttle) ─────────

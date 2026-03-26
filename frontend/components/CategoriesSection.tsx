@@ -60,8 +60,10 @@ export default function CategoriesSection() {
           <SectionContainer>
             <div className="flex flex-col items-center text-center mb-10 md:mb-20">
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#3a3a3a] font-serif">
-                Why Shop with 
-                <span className="block md:inline-block md:ml-4 mt-2 md:mt-0 text-[#e63a6c] text-4xl md:text-5xl font-light" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>My Bloom</span>
+                Why Shop with&nbsp;
+                <span className="inline-block align-middle">
+                  <Image src="/logo.png" alt="MyBloom" width={140} height={40} className="object-contain h-9 md:h-11 w-auto inline" />
+                </span>
               </h2>
             </div>
 

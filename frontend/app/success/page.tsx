@@ -27,9 +27,7 @@ export default function OrderSuccessPage() {
         <button onClick={() => router.back()} className="absolute left-4 w-10 h-10 bg-[#f3f3f3] rounded-full flex items-center justify-center text-gray-800 hover:bg-gray-200 transition-colors">
           <ArrowLeft className="w-5 h-5" />
         </button>
-        <span className="font-serif italic text-2xl font-bold tracking-wide text-gray-800">
-          My<span style={{ color: '#da2966' }}>B</span>loom
-        </span>
+        <Image src="/logo.png" alt="MyBloom" width={110} height={32} className="object-contain h-[28px] w-auto" />
       </div>
 
       <main className="min-h-screen bg-[#fff9f9] md:bg-[#f9f9f9] font-serif">

@@ -201,7 +201,7 @@ export default function OrdersPage() {
       </div>
 
       {/* ── Stat cards ───────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:p-6 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:p-6 mb-10">
 
         {/* Card — Total orders */}
         <div className="bg-white rounded-[16px] border border-[#faeef1] p-4 sm:p-6 shadow-[0_2px_10px_rgba(0,0,0,0.01)] hover:shadow-sm transition-shadow">

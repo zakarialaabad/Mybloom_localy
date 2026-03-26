@@ -195,9 +195,9 @@ export default function GeneralSettingsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-5 sm:p-8">
+      <div className="grid grid-cols-12 gap-5">
         {/* ─── Profile Information Section ───────────────────────────────────── */}
-        <div className="col-span-12 lg:col-span-8">
+        <div className="col-span-12 lg:col-span-8 order-2 lg:order-1">
           <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] h-full">
             <div className="flex justify-between items-center mb-8">
               <div className="flex items-center gap-2 text-[#da2966]">
@@ -259,7 +259,7 @@ export default function GeneralSettingsPage() {
         </div>
 
         {/* ─── Photo de profil Section ────────────────────────────────────────── */}
-        <div className="col-span-12 lg:col-span-4">
+        <div className="col-span-12 lg:col-span-4 order-1 lg:order-2">
           <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] flex flex-col items-center h-full">
             <div className="w-full flex items-center gap-2 mb-10 text-[#da2966]">
               <User size={22} strokeWidth={2.5} />

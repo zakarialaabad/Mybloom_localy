@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Bell } from 'lucide-react';
+import Link from 'next/link';
+import { Search } from 'lucide-react';
 import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
 import {
   DashboardSummary,
@@ -170,29 +171,25 @@ export default function AdminDashboardPage() {
     <div className="flex flex-col min-h-screen">
 
       {/* ── HEADER ────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-40 bg-[#fefbfb]/90 backdrop-blur-md px-8 py-6 flex items-center justify-between border-b border-gray-100">
-        <div>
-          <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-bold text-[#111]">Dashboard Overview</h2>
-          <p className="text-[13px] text-gray-400 mt-0.5">Welcome back, here&apos;s what&apos;s happening today.</p>
+      <header className="sticky top-[64px] lg:top-0 z-30 bg-[#fefbfb]/90 backdrop-blur-md px-4 sm:px-8 py-3 sm:py-5 flex items-center justify-between border-b border-gray-100 gap-3">
+        <div className="min-w-0">
+          <h2 className="text-[17px] sm:text-[20px] lg:text-[24px] font-bold text-[#111] leading-tight">Dashboard Overview</h2>
+          <p className="text-[12px] sm:text-[13px] text-gray-400 mt-0.5 hidden sm:block">Welcome back, here&apos;s what&apos;s happening today.</p>
         </div>
-        <div className="flex items-center gap-5">
-          <div className="relative w-72">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <div className="flex items-center gap-2 sm:gap-4 shrink-0 flex-1 justify-end">
+          <div className="relative w-full max-w-[160px] sm:max-w-[220px] lg:max-w-[288px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search orders, products…"
-              className="w-full h-11 pl-10 pr-4 rounded-full bg-white border border-gray-200 text-[13px] focus:outline-none focus:border-[#da2966]/30 shadow-sm placeholder:text-gray-400"
+              placeholder="Search…"
+              className="w-full h-9 sm:h-10 pl-8 sm:pl-10 pr-3 sm:pr-4 rounded-full bg-white border border-gray-200 text-[12px] sm:text-[13px] focus:outline-none focus:border-[#da2966]/30 shadow-sm placeholder:text-gray-400"
             />
           </div>
-          <button className="relative w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center text-gray-500 hover:bg-gray-50 shadow-sm">
-            <Bell className="w-[18px] h-[18px]" />
-            <span className="absolute top-2 right-2.5 w-2 h-2 rounded-full bg-red-500 border border-white"></span>
-          </button>
         </div>
       </header>
 
       {/* ── CONTENT ───────────────────────────────────────────────────────── */}
-      <div className="flex-1 px-8 py-6 pb-12 space-y-6">
+      <div className="flex-1 px-4 sm:px-8 py-4 sm:py-6 pb-12 space-y-4 sm:space-y-6">
 
         {/* Error */}
         {isError && error && (
@@ -298,11 +295,7 @@ export default function AdminDashboardPage() {
                     <p className="text-[13px] text-gray-400">No customers yet.</p>
                   )}
                 </div>
-                <div className="mt-5 text-right">
-                  <button className="text-[13px] font-bold text-[#da2966] hover:underline">
-                    View all customers
-                  </button>
-                </div>
+
               </div>
             </div>
 
@@ -310,9 +303,9 @@ export default function AdminDashboardPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="flex items-center justify-between px-6 py-5">
                 <h3 className="text-[16px] font-bold text-[#1a1a1a]">Recent Orders</h3>
-                <button className="text-[13px] font-bold text-[#da2966] hover:underline">
+                <Link href="/admin/dashboard/orders" className="text-[13px] font-bold text-[#da2966] hover:underline">
                   See all orders
-                </button>
+                </Link>
               </div>
 
               {/* ── DESKTOP TABLE ── */}

@@ -55,8 +55,8 @@ export default function TrackOrderPage() {
           <ArrowLeft className="w-5 h-5 text-[#3a3a3a]" />
         </button>
         <Image
-          src="/logo.jpeg"
-          alt="Bloom Parfums"
+          src="/logo.png"
+          alt="MyBloom"
           width={130}
           height={32}
           className="object-contain h-[26px]"

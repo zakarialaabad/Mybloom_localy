@@ -12,8 +12,12 @@ class Admin extends Authenticatable
     use HasFactory;
 
     protected $fillable = [
+        'username',
         'email',
         'password',
+        'phone',
+        'profile_image',
+        'last_login_at',
     ];
 
     protected $hidden = [
@@ -24,7 +28,8 @@ class Admin extends Authenticatable
     protected function casts(): array
     {
         return [
-            'password' => 'hashed',
+            'password'      => 'hashed',
+            'last_login_at' => 'datetime',
         ];
     }
 }
