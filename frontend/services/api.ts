@@ -767,7 +767,7 @@ export const adminReviewService = {
     const { data } = await apiClient.get<AdminReviewStats>('/v1/admin/reviews/stats');
     return data;
   },
-  create: async (payload: FormData | { reviewer_name: string; rating: number; body?: string | null; product_id?: number | null }): Promise<AdminReview> => {
+  create: async (payload: FormData | { reviewer_name: string; rating: number; body?: string | null; product_id?: number | null; date?: string }): Promise<AdminReview> => {
     const isFormData = payload instanceof FormData;
     const { data } = await apiClient.post<{ data: AdminReview }>(
       '/v1/admin/reviews',

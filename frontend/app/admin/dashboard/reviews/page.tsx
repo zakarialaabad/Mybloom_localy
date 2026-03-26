@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
+import type { ReviewFormSaveData } from '@/components/admin/ReviewFormModal';
 import {
   adminReviewService,
   AdminReview,
@@ -27,10 +28,11 @@ import {
 } from 'lucide-react';
 
 // ── Lazy load the modal to reduce initial bundle ────────────────────────────
-const ReviewEditorModal = dynamic(
-  () => import('@/components/admin/ReviewEditorModal'),
+const ReviewFormModal = dynamic(
+  () => import('@/components/admin/ReviewFormModal'),
   { ssr: false }
 );
+
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -184,6 +186,32 @@ export default function ReviewsPage() {
     }
   };
 
+  // ── Modal save handler ───────────────────────────────────────────────────
+  const handleModalSave = async (data: ReviewFormSaveData) => {
+    if (selectedReviewId) {
+      await adminReviewService.update(selectedReviewId, {
+        reviewer_name: data.reviewer_name,
+        rating: data.rating,
+      });
+    } else {
+      if (data.photoFile) {
+        const fd = new FormData();
+        fd.append('reviewer_name', data.reviewer_name);
+        fd.append('rating', String(data.rating));
+        if (data.date) fd.append('date', data.date);
+        fd.append('images[]', data.photoFile);
+        await adminReviewService.create(fd);
+      } else {
+        await adminReviewService.create({
+          reviewer_name: data.reviewer_name,
+          rating: data.rating,
+          date: data.date,
+        });
+      }
+    }
+    handleModalSuccess();
+  };
+
   // ── Modal handlers ──────────────────────────────────────────────────────────
   const openEditModal = (review: AdminReview) => {
     setSelectedReviewId(review.id);
@@ -215,15 +243,22 @@ export default function ReviewsPage() {
         </div>
       )}
 
-      {/* ── ReviewEditorModal (lazy-loaded) ── */}
-      <ReviewEditorModal
+      {/* ── ReviewFormModal (lazy-loaded) ── */}
+      <ReviewFormModal
         isOpen={isModalOpen}
-        review={reviews.find(r => r.id === selectedReviewId)}
         onClose={() => {
           setIsModalOpen(false);
           setSelectedReviewId(null);
         }}
-        onSuccess={handleModalSuccess}
+        onSave={handleModalSave}
+        initialData={selectedReviewId ? (() => {
+          const r = reviews.find(rv => rv.id === selectedReviewId);
+          return r ? {
+            reviewer_name: r.reviewer_name,
+            rating: r.rating,
+            date: r.created_at ? r.created_at.split('T')[0] : '',
+          } : null;
+        })() : null}
       />
 
       {/* ── Delete confirmation modal ─────────────────────────────────────────── */}

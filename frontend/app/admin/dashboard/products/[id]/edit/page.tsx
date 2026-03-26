@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { createPortal } from 'react-dom';
+import ReviewFormModal, { ReviewFormSaveData } from '@/components/admin/ReviewFormModal';
 import { adminProductService, adminCategoryService, adminProductTypeService, brandService } from '@/services/api';
 
 // === Icons ===
@@ -78,7 +79,6 @@ interface ReviewEntry {
   id?: number;
   reviewer_name: string;
   rating: number;
-  comment: string;
   date: string;
   photoUrl: string;
   photoFile?: File;
@@ -137,10 +137,7 @@ export default function EditProductPage() {
   const [reviews, setReviews] = useState<ReviewEntry[]>([]);
   const [deletedReviewIds, setDeletedReviewIds] = useState<number[]>([]);
   const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
-  const [newReview, setNewReview] = useState({ reviewer_name: '', rating: 0, comment: '', date: '' });
-  const [newReviewPhotoFile, setNewReviewPhotoFile] = useState<File | null>(null);
-  const [newReviewPhotoUrl, setNewReviewPhotoUrl] = useState<string>('');
-  const reviewPhotoInputRef = useRef<HTMLInputElement>(null);
+
   const [reviewPage, setReviewPage] = useState(0);
 
   // --- FAQs State ---
@@ -247,8 +244,7 @@ export default function EditProductPage() {
             id: r.id,
             reviewer_name: r.reviewer_name,
             rating: r.rating,
-            comment: r.comment ?? '',
-            date: r.date ?? '',
+                  date: r.date ?? '',
             photoUrl: r.photo_url ?? '',
           }))
         );
@@ -378,25 +374,16 @@ export default function EditProductPage() {
   };
 
   // ── Review handlers ───────────────────────────────────────────────────────
-  const handleAddReview = () => {
-    if (!newReview.reviewer_name) {
-      showToast("Please enter the reviewer's full name.");
-      return;
-    }
-    const photoUrl = newReviewPhotoFile ? URL.createObjectURL(newReviewPhotoFile) : '';
-    setReviews([...reviews, {
-      reviewer_name: newReview.reviewer_name,
-      rating: newReview.rating,
-      comment: newReview.comment,
-      date: newReview.date || new Date().toISOString().split('T')[0],
+  const handleAddReview = (data: ReviewFormSaveData) => {
+    const photoUrl = data.photoFile ? URL.createObjectURL(data.photoFile) : '';
+    setReviews(prev => [...prev, {
+      reviewer_name: data.reviewer_name,
+      rating: data.rating,
+      date: data.date,
       photoUrl,
-      photoFile: newReviewPhotoFile ?? undefined,
+      photoFile: data.photoFile ?? undefined,
     }]);
     setReviewPage(Math.floor((reviews.length + 1) / 4));
-    setNewReview({ reviewer_name: '', rating: 0, comment: '', date: '' });
-    setNewReviewPhotoFile(null);
-    setNewReviewPhotoUrl('');
-    setIsReviewFormOpen(false);
   };
 
   const handleDeleteReview = (idx: number) => {
@@ -471,7 +458,6 @@ export default function EditProductPage() {
       const sanitizedNewReviews = newReviews.map(r => ({
         reviewer_name: r.reviewer_name,
         rating: r.rating,
-        comment: r.comment,
         date: r.date,
       }));
       data.append('reviews_array', JSON.stringify(sanitizedNewReviews));
@@ -943,9 +929,6 @@ export default function EditProductPage() {
                       </div>
                     </div>
                     <div className="space-y-[4px] text-center w-full flex flex-col items-center">
-                      <span className="text-[11px] bg-[#fdfdfd] text-[#444] border border-gray-100 font-medium px-3 py-1.5 rounded-[10px] inline-block shadow-sm">
-                        {rev.comment}
-                      </span>
                     </div>
                   </div>
                   <div className="mt-4 text-center px-2">
@@ -1098,45 +1081,11 @@ export default function EditProductPage() {
       , document.body)}
 
       {/* 2. Add Review Modal */}
-      {isReviewFormOpen && createPortal(
-        <div className="fixed inset-0 bg-black/40 z-[9999] flex items-end sm:items-center justify-center sm:p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-md p-5 sm:p-8 shadow-2xl relative">
-            <button
-              onClick={() => { setIsReviewFormOpen(false); setNewReviewPhotoFile(null); setNewReviewPhotoUrl(''); setNewReview({ reviewer_name: '', rating: 0, comment: '', date: '' }); }}
-              className="absolute top-4 sm:p-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
-            >✕</button>
-            <h3 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
-              <StarIcon /> Curated Reviews
-            </h3>
-            <div className="mb-6">
-              <label className="text-[14px] font-bold text-[#333] block mb-3">Customer Photo</label>
-              <input type="file" ref={reviewPhotoInputRef} accept="image/*" onChange={(e) => { const file = e.target.files?.[0] || null; setNewReviewPhotoFile(file); setNewReviewPhotoUrl(file ? URL.createObjectURL(file) : ''); }} className="hidden" />
-              <div onClick={() => reviewPhotoInputRef.current?.click()} className="w-full py-10 border-2 border-dashed border-[#da2966] rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-[#fff0f3] transition-colors gap-3">
-                {newReviewPhotoUrl ? (
-                  <img src={newReviewPhotoUrl} alt="preview" className="h-20 w-20 object-cover rounded-xl" />
-                ) : (
-                  <><CloudUploadIcon /><p className="text-[14px] text-[#333] font-medium">Drag & drop or click to upload</p></>
-                )}
-              </div>
-            </div>
-            <div className="mb-6">
-              <label className="text-[14px] font-bold text-[#333] block mb-3">Full Name</label>
-              <input type="text" value={newReview.reviewer_name} onChange={e => setNewReview({ ...newReview, reviewer_name: e.target.value })} placeholder="e.g Ayoub laghzal" className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#da2966]/40" />
-            </div>
-            <div className="mb-8">
-              <p className="text-[11px] font-extrabold text-[#888] uppercase tracking-[0.18em] text-center mb-4">Rate the experience</p>
-              <div className="flex items-center justify-center gap-2">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button key={star} onClick={() => setNewReview({ ...newReview, rating: star })} className="text-[32px] leading-none transition-colors" style={{ color: star <= newReview.rating ? '#facc15' : '#d1d5db' }}>★</button>
-                ))}
-              </div>
-            </div>
-            <button onClick={handleAddReview} className="w-full h-12 rounded-xl bg-[#da2966] text-white font-bold text-[14px] hover:bg-[#c22158] transition-colors flex items-center justify-center gap-2">
-              + Add Review
-            </button>
-          </div>
-        </div>
-      , document.body)}
+      <ReviewFormModal
+        isOpen={isReviewFormOpen}
+        onClose={() => setIsReviewFormOpen(false)}
+        onSave={handleAddReview}
+      />
 
     </div>
   );
