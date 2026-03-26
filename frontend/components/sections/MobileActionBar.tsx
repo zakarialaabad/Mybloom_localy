@@ -6,6 +6,10 @@ import { usePathname } from 'next/navigation';
 export default function MobileActionBar() {
   const pathname = usePathname();
 
+  if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
   const navItem = (href: string, label: string, isActive: boolean, children: React.ReactNode) => (
     <Link
       href={href}

@@ -46,7 +46,7 @@ const Card = ({ title, icon, action, children, className = '' }: any) => (
     <div className="flex items-center justify-between mb-8">
       <div className="flex items-center gap-3">
          {icon}
-         <h2 className="text-[18px] font-bold text-[#da2966]">{title}</h2>
+         <h2 className="text-[16px] sm:text-[18px] font-bold text-[#da2966]">{title}</h2>
       </div>
       {action && <div>{action}</div>}
     </div>
@@ -73,7 +73,7 @@ const IngredientCircle = ({ thumb, add }: { thumb?: string, add?: boolean }) => 
     return (
       <div className="flex flex-col items-center gap-4">
         <button className="w-[150px] h-[150px] rounded-full border-[2.5px] border-dashed border-[#da2966] bg-white flex flex-col items-center justify-center gap-1.5 hover:bg-[#fff0f3] transition-colors shrink-0">
-          <span className="text-[#da2966] font-bold text-[24px] leading-none mb-1">+</span>
+          <span className="text-[#da2966] font-bold text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] leading-none mb-1">+</span>
           <span className="text-[#da2966] text-[13px] font-bold">ADD</span>
         </button>
         {/* Invisible spacer to perfectly align the circles with the text row */}
@@ -103,6 +103,7 @@ export default function AddProductPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // --- Phase 2: Product Data State ---
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     category_id: '',
     brand_id: '',
@@ -187,6 +188,10 @@ export default function AddProductPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    const errorKey = e.target.name === 'short_description' ? 'subtitle' : 
+                     e.target.name === 'full_description' ? 'description' : 
+                     e.target.name;
+    setErrors(prev => ({ ...prev, [errorKey]: '' }));
   };
 
   // --- Phase 3: Product Media State ---
@@ -411,8 +416,16 @@ export default function AddProductPage() {
       });
       const jsonData = await res.json();
       if (!res.ok) {
-        console.error('Validation Errors:', jsonData);
-        showToast('Failed to save product. ' + (jsonData.message || 'Please check the fields.'));
+        if (jsonData.errors) {
+          const formattedErrors: Record<string, string> = {};
+          Object.keys(jsonData.errors).forEach(key => {
+            formattedErrors[key] = jsonData.errors[key][0];
+          });
+          setErrors(formattedErrors);
+          showToast('Please fix the validation errors.');
+        } else {
+          showToast('Failed to save product. ' + (jsonData.message || 'Please check the fields.'));
+        }
         return;
       }
       showToast('Product created successfully!');
@@ -426,7 +439,7 @@ export default function AddProductPage() {
   };
 
   return (
-    <div className="px-8 py-8 space-y-6 min-h-screen bg-[#fcfcfc] max-w-7xl mx-auto">
+    <div className="px-4 sm:px-8 py-6 sm:py-8 space-y-6 min-h-screen bg-[#fcfcfc] max-w-7xl mx-auto">
       <style>{`
         @keyframes toastIn {
           from { opacity: 0; transform: translateX(-50%) translateY(-16px); }
@@ -442,7 +455,7 @@ export default function AddProductPage() {
       {toastVisible && (
         <div
           style={{ position: 'fixed', top: '24px', left: '50%', transform: 'translateX(-50%)', zIndex: 200, animation: 'toastIn 0.3s ease-out' }}
-          className="flex items-center gap-3 bg-white border border-[#da2966] text-[#da2966] px-5 py-3.5 rounded-2xl shadow-[0_8px_32px_rgba(218,41,102,0.2)] text-[14px] font-bold whitespace-nowrap pointer-events-none"
+          className="flex items-center gap-3 bg-white border border-[#da2966] text-[#da2966] px-5 py-3.5 rounded-t-[24px] sm:rounded-t-[24px] sm:rounded-[24px] rounded-b-none sm:rounded-b-[24px] w-full sm:w-auto rounded-b-none sm:rounded-b-[24px] w-full sm:w-auto shadow-[0_8px_32px_rgba(218,41,102,0.2)] text-[14px] font-bold whitespace-nowrap pointer-events-none"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
           {toastMsg}
@@ -469,9 +482,9 @@ export default function AddProductPage() {
       </div>
 
       {/* SEC 1: Details & Media */}
-      <div className="grid grid-cols-[1.4fr_1fr] gap-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-[1.4fr_1fr] gap-4 sm:p-6">
         <Card title="Product Details" icon={<DetailsIcon />}>
-          <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4 sm:p-6 mb-6">
             <div className="flex flex-col gap-2">
               <label className="text-[13px] font-bold text-[#333]">Category</label>
               <div className="relative">
@@ -486,6 +499,7 @@ export default function AddProductPage() {
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
+              {errors.category_id && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.category_id}</span>}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                   <ChevronDown />
                 </div>
@@ -506,6 +520,7 @@ export default function AddProductPage() {
                     <option key={brand.id} value={brand.id}>{brand.name}</option>
                   ))}
                 </select>
+              {errors.brand_id && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.brand_id}</span>}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
                   <ChevronDown />
                 </div>
@@ -523,6 +538,7 @@ export default function AddProductPage() {
               placeholder="e.g Rose Damascena Elixir" 
               className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40" 
             />
+              {errors.name && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.name}</span>}
           </div>
 
           <div className="flex flex-col gap-2 mb-6">
@@ -576,6 +592,7 @@ export default function AddProductPage() {
               placeholder="One sentence summary ..." 
               className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40" 
             />
+              {errors.subtitle && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.subtitle}</span>}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -587,6 +604,7 @@ export default function AddProductPage() {
               placeholder="Describe the fragrance notes , key ingredients, and benefits..." 
               className="w-full h-32 px-4 py-3 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40 resize-none resize-y"
             ></textarea>
+              {errors.description && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.description}</span>}
             <div className="flex justify-end pr-1"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M9 1L1 9" stroke="#888" strokeWidth="1.5" strokeLinecap="round"/><path d="M5 9H9V5" stroke="#888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
           </div>
         </Card>
@@ -651,110 +669,112 @@ export default function AddProductPage() {
         icon={<TagIcon />} 
         action={<button onClick={handleAddVariantClick} className="text-[#da2966] text-[13px] font-bold hover:underline">+ Add Size Variant</button>}
       >
-        <div className="w-full text-left">
-          <div className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 text-[13px] font-bold text-[#da2966] capitalize opacity-90 items-center border-b border-gray-50 mb-3">
-            <div>Size</div>
-            <div>Unit</div>
-            <div>Base Price (DH)</div>
-            <div>Promotion (%)</div>
-            <div>Final Price</div>
-            <div>Stock</div>
-            <div>Actions</div>
+        <div className="w-full text-left overflow-x-auto no-scrollbar pb-2">
+          <div className="min-w-[900px]">
+            <div className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 text-[13px] font-bold text-[#da2966] capitalize opacity-90 items-center border-b border-gray-50 mb-3">
+              <div>Size</div>
+              <div>Unit</div>
+              <div>Base Price (DH)</div>
+              <div>Promotion (%)</div>
+              <div>Final Price</div>
+              <div>Stock</div>
+              <div>Actions</div>
+            </div>
+            
+            {/* Saved variants rows */}
+            {variants.map((v, index) => (
+              <div key={index} className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 items-center rounded-[20px] bg-[#f8f8f8] mb-2">
+                <input type="text" value={v.size}
+                  readOnly={editingVariantIndex !== index}
+                  onChange={e => { const u = [...variants]; u[index] = {...u[index], size: e.target.value}; setVariants(u); }}
+                  className={`w-full h-12 text-center rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
+                <div className="relative">
+                  <select value={v.unit} disabled={editingVariantIndex !== index}
+                    onChange={e => { const u = [...variants]; u[index] = {...u[index], unit: e.target.value}; setVariants(u); }}
+                    className={`w-full appearance-none h-12 px-6 rounded-xl text-[14px] font-bold text-[#333] focus:outline-none pb-1 ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`}>
+                    <option value="ml">ml</option>
+                    <option value="g">g</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><ChevronUp /></div>
+                </div>
+                <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
+                  <input type="text" value={v.price}
+                    readOnly={editingVariantIndex !== index}
+                    onChange={e => { const u = [...variants]; u[index] = {...u[index], price: e.target.value}; setVariants(u); }}
+                    placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                  <div className="h-6 w-px bg-gray-200"></div>
+                  <span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
+                </div>
+                <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
+                  <input type="text" value={v.promotion}
+                    readOnly={editingVariantIndex !== index}
+                    onChange={e => { const u = [...variants]; u[index] = {...u[index], promotion: e.target.value}; setVariants(u); }}
+                    placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                  <div className="h-6 w-px bg-gray-200"></div>
+                  <span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
+                </div>
+                <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold">
+                  {(Number(v.price || 0) * (1 - Number(v.promotion || 0) / 100)).toFixed(2)} DH
+                </div>
+                <input type="text" value={v.stock}
+                  readOnly={editingVariantIndex !== index}
+                  onChange={e => { const u = [...variants]; u[index] = {...u[index], stock: e.target.value}; setVariants(u); }}
+                  className={`w-full text-center h-12 rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
+                <div className="flex items-center gap-2">
+                  {editingVariantIndex === index
+                    ? <button onClick={() => handleSaveEditVariant(index)} className="h-10 px-3 bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[12px] font-bold rounded-xl flex items-center gap-1"><CheckIcon /> Save</button>
+                    : <button onClick={() => handleEditVariant(index)} className="flex items-center justify-center text-gray-500 hover:text-[#da2966] w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><EditIcon/></button>
+                  }
+                  <button onClick={() => handleDeleteVariant(index)} className="flex items-center justify-center text-gray-500 hover:text-red-500 w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><TrashIcon/></button>
+                </div>
+              </div>
+            ))}
+
+            {/* Draft (new) row */}
+            {draftVariant !== null && (
+              <div
+                className={`grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-5 items-center rounded-[20px] transition-colors duration-300 ${entryRowHighlight ? 'bg-[#fff0f3]' : 'bg-[#ffffe9]'}`}
+                style={entryRowHighlight ? { animation: 'rowPulse 2s ease-out forwards' } : {}}
+              >
+                <input type="text" value={draftVariant.size} onChange={e => setDraftVariant({...draftVariant, size: e.target.value})} placeholder="20" className="w-full h-12 text-center rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm" />
+                <div className="relative">
+                  <select value={draftVariant.unit} onChange={e => setDraftVariant({...draftVariant, unit: e.target.value})} className="w-full appearance-none h-12 px-6 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm pb-1">
+                    <option value="ml">ml</option>
+                    <option value="g">g</option>
+                  </select>
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><ChevronUp /></div>
+                </div>
+                <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
+                  <input type="text" value={draftVariant.price} onChange={e => setDraftVariant({...draftVariant, price: e.target.value})} placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                  <div className="h-6 w-px bg-gray-200"></div>
+                  <span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
+                </div>
+                <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
+                  <input type="text" value={draftVariant.promotion} onChange={e => setDraftVariant({...draftVariant, promotion: e.target.value})} placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                  <div className="h-6 w-px bg-gray-200"></div>
+                  <span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
+                </div>
+                <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold shadow-sm">
+                  {(Number(draftVariant.price || 0) * (1 - Number(draftVariant.promotion || 0) / 100)).toFixed(2)} DH
+                </div>
+                <input type="text" value={draftVariant.stock} onChange={e => setDraftVariant({...draftVariant, stock: e.target.value})} placeholder="33" className="w-full text-center h-12 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] shadow-sm focus:outline-none" />
+                <button onClick={handleValidateDraft} className="h-12 w-full max-w-[100px] bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors">
+                  <CheckIcon /> Validate
+                </button>
+              </div>
+            )}
+
+            {variants.length === 0 && draftVariant === null && (
+              <div className="py-8 text-center text-[14px] text-gray-400 font-medium">
+                No variants yet — click &ldquo;+ Add Size Variant&rdquo; to add one.
+              </div>
+            )}
           </div>
-          
-          {/* Saved variants rows */}
-          {variants.map((v, index) => (
-            <div key={index} className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 items-center rounded-[20px] bg-[#f8f8f8] mb-2">
-              <input type="text" value={v.size}
-                readOnly={editingVariantIndex !== index}
-                onChange={e => { const u = [...variants]; u[index] = {...u[index], size: e.target.value}; setVariants(u); }}
-                className={`w-full h-12 text-center rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
-              <div className="relative">
-                <select value={v.unit} disabled={editingVariantIndex !== index}
-                  onChange={e => { const u = [...variants]; u[index] = {...u[index], unit: e.target.value}; setVariants(u); }}
-                  className={`w-full appearance-none h-12 px-6 rounded-xl text-[14px] font-bold text-[#333] focus:outline-none pb-1 ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`}>
-                  <option value="ml">ml</option>
-                  <option value="g">g</option>
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><ChevronUp /></div>
-              </div>
-              <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
-                <input type="text" value={v.price}
-                  readOnly={editingVariantIndex !== index}
-                  onChange={e => { const u = [...variants]; u[index] = {...u[index], price: e.target.value}; setVariants(u); }}
-                  placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                <div className="h-6 w-px bg-gray-200"></div>
-                <span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
-              </div>
-              <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
-                <input type="text" value={v.promotion}
-                  readOnly={editingVariantIndex !== index}
-                  onChange={e => { const u = [...variants]; u[index] = {...u[index], promotion: e.target.value}; setVariants(u); }}
-                  placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                <div className="h-6 w-px bg-gray-200"></div>
-                <span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
-              </div>
-              <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold">
-                {(Number(v.price || 0) * (1 - Number(v.promotion || 0) / 100)).toFixed(2)} DH
-              </div>
-              <input type="text" value={v.stock}
-                readOnly={editingVariantIndex !== index}
-                onChange={e => { const u = [...variants]; u[index] = {...u[index], stock: e.target.value}; setVariants(u); }}
-                className={`w-full text-center h-12 rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
-              <div className="flex items-center gap-2">
-                {editingVariantIndex === index
-                  ? <button onClick={() => handleSaveEditVariant(index)} className="h-10 px-3 bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[12px] font-bold rounded-xl flex items-center gap-1"><CheckIcon /> Save</button>
-                  : <button onClick={() => handleEditVariant(index)} className="flex items-center justify-center text-gray-500 hover:text-[#da2966] w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><EditIcon/></button>
-                }
-                <button onClick={() => handleDeleteVariant(index)} className="flex items-center justify-center text-gray-500 hover:text-red-500 w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><TrashIcon/></button>
-              </div>
-            </div>
-          ))}
-
-          {/* Draft (new) row */}
-          {draftVariant !== null && (
-            <div
-              className={`grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-5 items-center rounded-[20px] transition-colors duration-300 ${entryRowHighlight ? 'bg-[#fff0f3]' : 'bg-[#ffffe9]'}`}
-              style={entryRowHighlight ? { animation: 'rowPulse 2s ease-out forwards' } : {}}
-            >
-              <input type="text" value={draftVariant.size} onChange={e => setDraftVariant({...draftVariant, size: e.target.value})} placeholder="20" className="w-full h-12 text-center rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm" />
-              <div className="relative">
-                <select value={draftVariant.unit} onChange={e => setDraftVariant({...draftVariant, unit: e.target.value})} className="w-full appearance-none h-12 px-6 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm pb-1">
-                  <option value="ml">ml</option>
-                  <option value="g">g</option>
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><ChevronUp /></div>
-              </div>
-              <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
-                <input type="text" value={draftVariant.price} onChange={e => setDraftVariant({...draftVariant, price: e.target.value})} placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                <div className="h-6 w-px bg-gray-200"></div>
-                <span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
-              </div>
-              <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
-                <input type="text" value={draftVariant.promotion} onChange={e => setDraftVariant({...draftVariant, promotion: e.target.value})} placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                <div className="h-6 w-px bg-gray-200"></div>
-                <span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
-              </div>
-              <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold shadow-sm">
-                {(Number(draftVariant.price || 0) * (1 - Number(draftVariant.promotion || 0) / 100)).toFixed(2)} DH
-              </div>
-              <input type="text" value={draftVariant.stock} onChange={e => setDraftVariant({...draftVariant, stock: e.target.value})} placeholder="33" className="w-full text-center h-12 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] shadow-sm focus:outline-none" />
-              <button onClick={handleValidateDraft} className="h-12 w-full max-w-[100px] bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors">
-                <CheckIcon /> Validate
-              </button>
-            </div>
-          )}
-
-          {variants.length === 0 && draftVariant === null && (
-            <div className="py-8 text-center text-[14px] text-gray-400 font-medium">
-              No variants yet — click &ldquo;+ Add Size Variant&rdquo; to add one.
-            </div>
-          )}
         </div>
       </Card>
 
       {/* SEC 3: Stats & Ingredients */}
-      <div className="grid grid-cols-[1fr_1.5fr] gap-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-[1fr_1.5fr] gap-4 sm:p-6">
         <Card title="Status Settings" icon={<SettingsIcon />}>
           <div className="space-y-4">
             <ToggleRow label="Make as Best Seller" active={activeStatus === 'best_seller'} onClick={() => setActiveStatus(activeStatus === 'best_seller' ? 'none' : 'best_seller')} />
@@ -764,7 +784,7 @@ export default function AddProductPage() {
         </Card>
         
         <Card title="Ingredients" icon={<LeafIcon />}>
-          <div className="grid grid-cols-3 gap-6 mt-2 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:p-6 mt-2 w-full">
             {[0, 1, 2].map((slot) => {
               const ing = ingredients[slot];
               return (
@@ -776,7 +796,7 @@ export default function AddProductPage() {
                       onClick={() => !ing && openIngredientModal()}
                       className="absolute inset-0 rounded-full bg-white flex flex-col items-center justify-center hover:bg-[#fff0f3] transition-colors"
                     >
-                      <span className="text-[#da2966] font-bold text-[24px] leading-none mb-1">+</span>
+                      <span className="text-[#da2966] font-bold text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] leading-none mb-1">+</span>
                       <span className="text-[#da2966] text-[12px] font-bold">ADD</span>
                     </button>
                     {/* Image layer — sits on top and covers +ADD completely */}
@@ -817,7 +837,7 @@ export default function AddProductPage() {
         icon={<StarIcon />}
         action={<button onClick={() => setIsReviewFormOpen(true)} className="text-[#da2966] text-[13px] font-bold hover:underline">+ Add Manual Review</button>}
       >
-        <div className="flex items-center gap-6 py-6 overflow-x-auto w-full px-4 scrollbar-hide">
+        <div className="flex items-center gap-4 sm:p-6 py-6 overflow-x-auto w-full px-4 scrollbar-hide">
           {reviews.map((rev, idx) => (
             <div key={idx} className="relative group shrink-0 w-[240px] flex flex-col">
               <div className="border-[2.5px] border-[#da2966] p-4 pb-5 bg-white flex flex-col items-center relative" style={{ borderRadius: '0px 64px 0px 64px' }}>
@@ -858,7 +878,7 @@ export default function AddProductPage() {
 
       {/* SEC 5: FAQ */}
       <Card title="Product FAQ" icon={<ChatIcon />}>
-        <div className="grid grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:p-6 md:gap-10">
           
           <div className="space-y-4">
             {faqs.map((faq, idx) => (
@@ -918,18 +938,18 @@ export default function AddProductPage() {
       
       {/* 1. Add Ingredient Modal */}
       {isIngredientModalOpen && createPortal(
-        <div className="fixed inset-0 bg-black/40 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative">
+        <div className="fixed inset-0 bg-black/40 z-[9999] flex items-end sm:items-center justify-center sm:p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl w-full max-w-md p-5 sm:p-8 shadow-2xl relative">
             {/* Close button */}
             <button 
               onClick={() => { setIsIngredientModalOpen(false); setEditingIngredientSlot(null); setNewIngredientName(''); setNewIngredientFile(null); }}
-              className="absolute top-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute top-4 sm:p-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
             >
               ✕
             </button>
             
             {/* Title with leaf icon */}
-            <h3 className="text-[24px] font-serialize font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
+            <h3 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-serialize font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
               <LeafIcon />
               Ingredients
             </h3>
@@ -989,18 +1009,18 @@ export default function AddProductPage() {
 
       {/* 2. Add Review Modal */}
       {isReviewFormOpen && createPortal(
-        <div className="fixed inset-0 bg-black/40 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative">
+        <div className="fixed inset-0 bg-black/40 z-[9999] flex items-end sm:items-center justify-center sm:p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl w-full max-w-md p-5 sm:p-8 shadow-2xl relative">
             {/* Close button */}
             <button
               onClick={() => { setIsReviewFormOpen(false); setNewReviewPhotoFile(null); setNewReviewPhotoUrl(''); setNewReview({ reviewer_name: '', rating: 0, comment: '', date: '' }); }}
-              className="absolute top-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute top-4 sm:p-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
             >
               ✕
             </button>
 
             {/* Title */}
-            <h3 className="text-[24px] font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
+            <h3 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
               <StarIcon /> Curated Reviews
             </h3>
 

@@ -96,10 +96,10 @@ export default function OrderDetailsSidebar({
     return (
       <>
         <div
-          className="fixed inset-0 z-50 bg-black/10 backdrop-blur-[1px]"
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity"
           onClick={onClose}
         />
-        <div className="fixed top-0 right-0 z-50 w-full md:w-[600px] h-full bg-[#fcf9f9] flex items-center justify-center border-l border-gray-100">
+        <div className="fixed bottom-0 md:top-0 right-0 z-[60] w-full md:w-[600px] h-[85vh] md:h-full bg-[#fcf9f9] flex items-center justify-center border-l border-gray-100 rounded-t-[20px] md:rounded-none">
           <div className="w-10 h-10 border-4 border-[#da2966] border-t-transparent rounded-full animate-spin" />
         </div>
       </>
@@ -110,10 +110,10 @@ export default function OrderDetailsSidebar({
     return (
       <>
         <div
-          className="fixed inset-0 z-50 bg-black/10 backdrop-blur-[1px]"
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity"
           onClick={onClose}
         />
-        <div className="fixed top-0 right-0 z-50 w-full md:w-[600px] h-full bg-[#fcf9f9] flex items-center justify-center border-l border-gray-100">
+        <div className="fixed bottom-0 md:top-0 right-0 z-[60] w-full md:w-[600px] h-[85vh] md:h-full bg-[#fcf9f9] flex items-center justify-center border-l border-gray-100 rounded-t-[20px] md:rounded-none">
           <p className="text-gray-500">Failed to load order</p>
         </div>
       </>
@@ -124,19 +124,30 @@ export default function OrderDetailsSidebar({
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 z-50 bg-black/10 backdrop-blur-[1px] transition-opacity"
+        className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity"
         onClick={onClose}
         role="button"
         tabIndex={0}
+        aria-label="Close order details sidebar"
       />
 
-      {/* Sidebar */}
-      <div className="fixed top-0 right-0 z-50 w-full md:w-[600px] h-full bg-[#fcf9f9] shadow-2xl flex flex-col transform transition-transform duration-300 translate-x-0 border-l border-gray-100">
+      {/* Sidebar - acts as bottom drawer on mobile */}
+      <div 
+        className="fixed bottom-0 md:top-0 right-0 z-[60] w-full md:w-[600px] h-[85vh] md:h-full bg-[#fcf9f9] shadow-2xl flex flex-col transform transition-transform duration-300 translate-y-0 md:translate-y-0 md:translate-x-0 border-l border-gray-100 rounded-t-[24px] md:rounded-none overflow-hidden"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="order-details-title"
+      >
+        {/* Mobile handle indicator */}
+        <div className="w-full flex justify-center pt-3 pb-1 md:hidden bg-white rounded-t-[24px]">
+          <div className="w-12 h-1.5 bg-gray-300 rounded-full" />
+        </div>
+
         {/* Header */}
-        <div className="flex items-start justify-between p-8 border-b border-[#e1ced3]">
+        <div className="flex items-start justify-between p-4 sm:p-6 md:p-5 sm:p-8 border-b border-[#e1ced3] bg-[#fcf9f9]">
           <div>
-            <div className="flex items-center gap-3">
-              <h2 className="text-[24px] font-serif font-bold text-[#444] tracking-tight">
+            <div className="flex flex-wrap items-center gap-3">
+              <h2 id="order-details-title" className="text-[16px] sm:text-[18px] sm:text-[20px] md:text-[20px] sm:text-[24px] font-serif font-bold text-[#444] tracking-tight">
                 ORDER #{order.order_number}
               </h2>
               <span className="px-3 py-1 bg-pink-50 text-[#da2966] text-[12px] font-bold rounded-full capitalize">
@@ -168,7 +179,7 @@ export default function OrderDetailsSidebar({
         <div className="flex-1 overflow-y-auto px-8 py-6 pb-[120px] [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {/* Status Timeline — reflects actual order.status */}
           <div className="mb-10">
-            <h3 className="text-[18px] font-serif font-bold text-[#444] tracking-wide mb-6">
+            <h3 className="text-[16px] sm:text-[18px] font-serif font-bold text-[#444] tracking-wide mb-6">
               Status Timeline
             </h3>
 
@@ -207,30 +218,30 @@ export default function OrderDetailsSidebar({
 
           {/* Customer Details */}
           <div className="mb-10">
-            <h3 className="text-[18px] font-serif font-bold text-[#444] tracking-wide mb-6">
+            <h3 className="text-[16px] sm:text-[18px] font-serif font-bold text-[#444] tracking-wide mb-6">
               Customer Details
             </h3>
 
-            <div className="bg-white rounded-[20px] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#f5ebed]">
-              <div className="flex items-center justify-between mb-6">
+            <div className="bg-white rounded-[20px] p-4 sm:p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#f5ebed]">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-[#fdf2f4] text-[#da2966] flex items-center justify-center text-[20px] font-serif font-bold uppercase">
+                  <div className="w-14 h-14 rounded-full bg-[#fdf2f4] text-[#da2966] flex items-center justify-center text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold uppercase shrink-0">
                     {order.customer_name
                       ? order.customer_name.substring(0, 2)
                       : '??'}
                   </div>
                   <div>
-                    <h4 className="text-[16px] font-serif font-bold text-[#444]">
+                    <h4 className="text-[16px] font-serif font-bold text-[#444] break-all">
                       {order.customer_name}
                     </h4>
-                    <p className="text-[14px] text-gray-500 mt-0.5">
+                    <p className="text-[14px] text-gray-500 mt-0.5 break-all">
                       {order.customer_phone}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3">
-                  <div className="bg-[#fcf9f9] rounded-[12px] px-4 py-2 text-center shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#f5ebed]">
+                <div className="flex items-center gap-3 w-full sm:w-auto">
+                  <div className="flex-1 sm:flex-none bg-[#fcf9f9] rounded-[12px] px-4 py-2 text-center shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#f5ebed]">
                     <div className="flex items-center gap-2 mb-1 justify-center">
                       <ListTodo size={14} className="text-[#da2966]" />
                       <span className="text-[16px] font-serif font-bold text-[#da2966]">
@@ -242,7 +253,7 @@ export default function OrderDetailsSidebar({
                     </span>
                   </div>
 
-                  <div className="bg-[#fcf9f9] rounded-[12px] px-4 py-2 text-center shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#f5ebed]">
+                  <div className="flex-1 sm:flex-none bg-[#fcf9f9] rounded-[12px] px-4 py-2 text-center shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#f5ebed]">
                     <div className="flex items-center gap-2 mb-1 justify-center">
                       <PackageCheck size={14} className="text-[#da2966]" />
                       <span className="text-[16px] font-serif font-bold text-[#da2966]">
@@ -271,7 +282,7 @@ export default function OrderDetailsSidebar({
 
           {/* Items Ordered */}
           <div className="mb-12">
-            <h3 className="text-[18px] font-serif font-bold text-[#444] tracking-wide mb-6">
+            <h3 className="text-[16px] sm:text-[18px] font-serif font-bold text-[#444] tracking-wide mb-6">
               Items Ordered
             </h3>
 
@@ -373,7 +384,7 @@ export default function OrderDetailsSidebar({
                 <span className="text-[16px] font-serif font-bold text-[#444]">
                   Total
                 </span>
-                <span className="text-[18px] font-serif font-bold text-[#222] italic">
+                <span className="text-[16px] sm:text-[18px] font-serif font-bold text-[#222] italic">
                   {order.total} DH
                 </span>
               </div>
@@ -382,7 +393,7 @@ export default function OrderDetailsSidebar({
         </div>
 
         {/* Action Buttons */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-8 flex gap-4 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-10">
+        <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-100 p-5 sm:p-8 flex gap-4 shadow-[0_-4px_20px_rgba(0,0,0,0.03)] z-10">
           {/* Step 1: Validate (pending → confirmed) */}
           {order.status === 'pending' && (
             <button
@@ -398,7 +409,7 @@ export default function OrderDetailsSidebar({
               ) : (
                 <>
                   Validate Confirmation
-                  <span className="text-[18px] ml-1">›</span>
+                  <span className="text-[16px] sm:text-[18px] ml-1">›</span>
                 </>
               )}
             </button>
@@ -427,7 +438,7 @@ export default function OrderDetailsSidebar({
               ) : (
                 <>
                   Mark as Delivered
-                  <span className="text-[18px] ml-1">›</span>
+                  <span className="text-[16px] sm:text-[18px] ml-1">›</span>
                 </>
               )}
             </button>

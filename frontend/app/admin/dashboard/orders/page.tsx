@@ -1,12 +1,14 @@
 ﻿'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { adminOrderService, AdminOrder, AdminOrderStats } from '@/services/api';
+import { useOrderList } from '@/hooks/useOrderList';
 import OrderDetailsSidebar from './components/OrderDetailsSidebar';
+import OrderTable from '@/components/OrderTable';
+import { getStatusBadge } from '@/lib/config/statuses';
+import { capitalize, formatTrend } from '@/lib/utils';
 import {
   Search,
-  Eye,
-  MoreVertical,
   ArrowLeft,
   ArrowRight,
   TrendingUp,
@@ -22,110 +24,55 @@ import {
 
 const VALID_STATUSES = ['pending', 'confirmed', 'preparing', 'shipped', 'delivered', 'cancelled'];
 
-const getStatusBadgeClass = (status: string) => {
-  switch (status.toLowerCase()) {
-    case 'pending':   return 'bg-yellow-50 text-yellow-700 border border-yellow-200';
-    case 'confirmed': return 'bg-blue-50 text-blue-700 border border-blue-200';
-    case 'preparing': return 'bg-orange-50 text-orange-700 border border-orange-200';
-    case 'delivered': return 'bg-green-50 text-green-700 border border-green-200';
-    case 'shipped':   return 'bg-purple-50 text-purple-700 border border-purple-200';
-    case 'cancelled': return 'bg-red-50 text-red-700 border border-red-200';
-    default:          return 'bg-gray-50 text-gray-600 border border-gray-200';
-  }
-};
-
-const getStatusDotClass = (status: string) => {
-  switch (status.toLowerCase()) {
-    case 'pending':   return 'bg-yellow-500';
-    case 'confirmed': return 'bg-blue-500';
-    case 'preparing': return 'bg-orange-500';
-    case 'delivered': return 'bg-green-500';
-    case 'shipped':   return 'bg-purple-500';
-    case 'cancelled': return 'bg-red-500';
-    default:          return 'bg-gray-400';
-  }
-};
-
-const getInitials = (name: string) => {
-  if (!name) return '??';
-  return name.split(' ').map((n) => n[0]).join('').toUpperCase().slice(0, 2);
-};
-
-const formatTrend = (trend: number) => {
-  if (trend > 0) return `+${trend}%`;
-  if (trend < 0) return `${trend}%`;
-  return '0%';
-};
-
-const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
 export default function OrdersPage() {
-  // ── Data state ──────────────────────────────────────────────────────────────
-  const [orders, setOrders]       = useState<AdminOrder[]>([]);
-  const [stats, setStats]         = useState<AdminOrderStats | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
   // ── Filter / search state ───────────────────────────────────────────────────
   const [search, setSearch]             = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [currentPage, setCurrentPage]   = useState(1);
 
-  // ── Pagination state ────────────────────────────────────────────────────────
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages]   = useState(1);
-  const [totalCount, setTotalCount]   = useState(0);
-  const [perPage, setPerPage]         = useState(25);
-
-  // ── Status-update modal state ───────────────────────────────────────────────
+  // ── Modal and stats state ───────────────────────────────────────────────────
+  const [stats, setStats]         = useState<AdminOrderStats | null>(null);
   const [editingOrder, setEditingOrder] = useState<AdminOrder | null>(null);
   const [viewingOrder, setViewingOrder] = useState<AdminOrder | null>(null);
   const [newStatus, setNewStatus]       = useState('');
   const [isUpdating, setIsUpdating]     = useState(false);
 
-  // ── Fetch orders ────────────────────────────────────────────────────────────
-  const fetchOrders = useCallback(async (page = 1) => {
-    setIsLoading(true);
-    try {
-      const params: Record<string, unknown> = { page };
-      if (search)       params['search'] = search;
-      if (statusFilter) params['status'] = statusFilter;
+  // ── Fetch orders with React Query ───────────────────────────────────────────
+  const { orders, meta, isLoading, refetch } = useOrderList({
+    page: currentPage,
+    limit: 25,
+    ...(search && { search }),
+    ...(statusFilter && { status: statusFilter }),
+  });
 
-      const res = await adminOrderService.list(params);
-      setOrders(res.data);
-      setCurrentPage(res.meta.current_page);
-      setTotalPages(res.meta.last_page);
-      setTotalCount(res.meta.total);
-      setPerPage(res.meta.per_page);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [search, statusFilter]);
+  const totalPages = meta?.last_page ?? 1;
+  const totalCount = meta?.total ?? 0;
+  const perPage = meta?.per_page ?? 25;
 
   // ── Fetch stats ─────────────────────────────────────────────────────────────
-  const fetchStats = useCallback(async () => {
-    try {
-      const res = await adminOrderService.stats();
-      setStats(res);
-    } catch (e) {
-      console.error(e);
-    }
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await adminOrderService.stats();
+        setStats(res);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchStats();
   }, []);
 
-  useEffect(() => { fetchStats(); }, [fetchStats]);
-
-  // Debounce search & filter; always reset to page 1
+  // ── Reset to page 1 on search/filter change ─────────────────────────────────
   useEffect(() => {
-    const timer = setTimeout(() => { fetchOrders(1); }, 400);
-    return () => clearTimeout(timer);
-  }, [search, statusFilter]); // eslint-disable-line react-hooks/exhaustive-deps
+    setCurrentPage(1);
+  }, [search, statusFilter]);
 
   // ── Pagination helpers ──────────────────────────────────────────────────────
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
-    fetchOrders(page);
+    setCurrentPage(page);
   };
 
   const pageNumbers = (): (number | '...')[] => {
@@ -160,8 +107,10 @@ export default function OrdersPage() {
       await adminOrderService.updateStatus(editingOrder.id, newStatus);
       setEditingOrder(null);
       setNewStatus('');
-      fetchOrders(currentPage);
-      fetchStats();
+      refetch();
+      // Refresh stats
+      const res = await adminOrderService.stats();
+      setStats(res);
     } catch (e) {
       console.error(e);
     } finally {
@@ -172,11 +121,11 @@ export default function OrdersPage() {
   // ─────────────────────────────────────────────────────────────────────────────
 
   return (
-    <div className="p-8 max-w-[1200px] mx-auto w-full">
+    <div className="p-5 sm:p-8 max-w-[1200px] mx-auto w-full">
 
       {/* ── Loading overlay ──────────────────────────────────────────────────── */}
       {isLoading && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 backdrop-blur-[2px] pointer-events-none">
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-white/40 backdrop-blur-[2px] pointer-events-none">
           <div className="w-10 h-10 border-4 border-[#da2966] border-t-transparent rounded-full animate-spin" />
         </div>
       )}
@@ -186,14 +135,17 @@ export default function OrdersPage() {
         <OrderDetailsSidebar
           orderId={viewingOrder.id}
           onClose={() => setViewingOrder(null)}
-          onStatusUpdated={() => { fetchOrders(currentPage); fetchStats(); }}
+          onStatusUpdated={() => { 
+            refetch(); 
+            adminOrderService.stats().then(setStats).catch(console.error);
+          }}
         />
       )}
 
       {/* ── Status-update modal ──────────────────────────────────────────────── */}
       {editingOrder && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-          <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-6 w-[380px] mx-4">
+        <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-4 sm:p-6 w-[380px] mx-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-[16px] font-bold text-[#111]">Update Order Status</h3>
               <button onClick={() => setEditingOrder(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
@@ -249,10 +201,10 @@ export default function OrdersPage() {
       </div>
 
       {/* ── Stat cards ───────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:p-6 mb-10">
 
         {/* Card — Total orders */}
-        <div className="bg-white rounded-[16px] border border-[#faeef1] p-6 shadow-[0_2px_10px_rgba(0,0,0,0.01)] hover:shadow-sm transition-shadow">
+        <div className="bg-white rounded-[16px] border border-[#faeef1] p-4 sm:p-6 shadow-[0_2px_10px_rgba(0,0,0,0.01)] hover:shadow-sm transition-shadow">
           <div className="flex justify-between items-start mb-6">
             <div className="w-[52px] h-[52px] rounded-full bg-[#faeef1] flex items-center justify-center text-[#da2966]">
               <ListTodo size={24} strokeWidth={2.5} />
@@ -268,13 +220,13 @@ export default function OrdersPage() {
           </div>
           <p className="text-[14px] text-gray-500 font-medium mb-1">All Orders</p>
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
-            {stats ? stats.total.count.toLocaleString() : '—'}
+            {stats ? stats.total.count.toLocaleString() : <div className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
           <p className="text-[12px] text-gray-400 mt-2">vs. last month</p>
         </div>
 
         {/* Card — Confirmed */}
-        <div className="bg-white rounded-[16px] border border-[#faeef1] p-6 shadow-[0_2px_10px_rgba(0,0,0,0.01)] hover:shadow-sm transition-shadow">
+        <div className="bg-white rounded-[16px] border border-[#faeef1] p-4 sm:p-6 shadow-[0_2px_10px_rgba(0,0,0,0.01)] hover:shadow-sm transition-shadow">
           <div className="flex justify-between items-start mb-6">
             <div className="w-[52px] h-[52px] rounded-full bg-[#faeef1] flex items-center justify-center text-[#da2966]">
               <ClipboardCheck size={24} strokeWidth={2.5} />
@@ -290,13 +242,13 @@ export default function OrdersPage() {
           </div>
           <p className="text-[14px] text-gray-500 font-medium mb-1">Confirmed</p>
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
-            {stats ? stats.confirmed.count.toLocaleString() : '—'}
+            {stats ? stats.confirmed.count.toLocaleString() : <div className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
           <p className="text-[12px] text-gray-400 mt-2">vs. last month</p>
         </div>
 
         {/* Card — Delivered */}
-        <div className="bg-white rounded-[16px] border border-[#faeef1] p-6 shadow-[0_2px_10px_rgba(0,0,0,0.01)] hover:shadow-sm transition-shadow">
+        <div className="bg-white rounded-[16px] border border-[#faeef1] p-4 sm:p-6 shadow-[0_2px_10px_rgba(0,0,0,0.01)] hover:shadow-sm transition-shadow">
           <div className="flex justify-between items-start mb-6">
             <div className="w-[52px] h-[52px] rounded-full bg-[#faeef1] flex items-center justify-center text-[#da2966]">
               <PackageCheck size={24} strokeWidth={2.5} />
@@ -312,7 +264,7 @@ export default function OrdersPage() {
           </div>
           <p className="text-[14px] text-gray-500 font-medium mb-1">Delivered</p>
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
-            {stats ? stats.delivered.count.toLocaleString() : '—'}
+            {stats ? stats.delivered.count.toLocaleString() : <div className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
           <p className="text-[12px] text-gray-400 mt-2">vs. last month</p>
         </div>
@@ -323,26 +275,26 @@ export default function OrdersPage() {
       <div className="bg-white rounded-[16px] border border-[#f2e6ea] shadow-[0_2px_15px_rgba(0,0,0,0.02)] overflow-hidden">
 
         {/* Toolbar */}
-        <div className="p-5 flex flex-col md:flex-row items-center justify-between gap-4 border-b border-gray-100">
-          <div className="flex items-center gap-3 w-full md:w-auto flex-wrap">
+        <div className="p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-gray-100">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
 
             {/* Status filter */}
-            <div className="relative">
+            <div className="relative w-full sm:w-auto">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="appearance-none pl-4 pr-8 py-2 border border-gray-200 rounded-[8px] text-[13px] font-bold text-[#444] hover:bg-gray-50 focus:outline-none focus:border-[#da2966] transition-colors cursor-pointer"
+                className="w-full sm:w-auto appearance-none pl-4 pr-10 py-2 border border-gray-200 rounded-[8px] text-[13px] font-bold text-[#444] hover:bg-gray-50 focus:outline-none focus:border-[#da2966] transition-colors cursor-pointer"
               >
                 <option value="">All Statuses</option>
                 {VALID_STATUSES.map((s) => (
                   <option key={s} value={s}>{capitalize(s)}</option>
                 ))}
               </select>
-              <ChevronDown size={14} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
+              <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             </div>
 
             {/* Search */}
-            <div className="relative flex-1 min-w-[220px] md:w-[280px]">
+            <div className="relative w-full sm:w-[280px]">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search size={16} className="text-gray-400" />
               </div>
@@ -365,9 +317,9 @@ export default function OrdersPage() {
           </div>
 
           {/* Result count */}
-          <div className="text-[13px] text-gray-500 font-medium whitespace-nowrap">
+          <div className="text-[13px] text-gray-500 font-medium whitespace-nowrap self-end sm:self-auto">
             {isLoading
-              ? 'Loading…'
+              ? <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
               : totalCount > 0
                 ? `Showing ${paginationFrom}–${paginationTo} of ${totalCount.toLocaleString()}`
                 : 'No results'}
@@ -375,116 +327,12 @@ export default function OrdersPage() {
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-gray-100 bg-[#fffcfd]">
-                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#da2966]">Order ID</th>
-                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#da2966]">Customer</th>
-                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#da2966]">Date</th>
-                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#da2966]">Items</th>
-                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#da2966]">Total</th>
-                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#da2966]">Status</th>
-                <th className="px-6 py-4 text-[11px] font-bold uppercase tracking-wider text-[#da2966]">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {!isLoading && orders.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-16 text-center">
-                    <div className="flex flex-col items-center gap-3 text-gray-400">
-                      <div className="w-14 h-14 rounded-full bg-[#fdf2f4] flex items-center justify-center">
-                        <ClipboardCheck size={24} className="text-[#da2966] opacity-40" />
-                      </div>
-                      <p className="text-[14px] font-medium">No orders found</p>
-                      {(search || statusFilter) && (
-                        <button
-                          onClick={() => { setSearch(''); setStatusFilter(''); }}
-                          className="text-[13px] text-[#da2966] font-bold hover:underline"
-                        >
-                          Clear filters
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                orders.map((order) => (
-                  <tr key={order.id} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
-
-                    {/* Order ID */}
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-[14px] font-bold text-[#222]">{order.order_number}</span>
-                    </td>
-
-                    {/* Customer */}
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-3">
-                        <div className="w-[38px] h-[38px] rounded-full bg-[#fdf2f4] text-[#da2966] flex items-center justify-center font-bold text-[13px] flex-shrink-0">
-                          {getInitials(order.customer_name)}
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="text-[14px] font-bold text-[#333]">{order.customer_name}</span>
-                          <span className="text-[12px] text-gray-400 mt-0.5">{order.customer_phone}</span>
-                        </div>
-                      </div>
-                    </td>
-
-                    {/* Date */}
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-[12px] text-gray-500 font-medium uppercase">
-                        {new Date(order.created_at).toLocaleDateString('en-US', {
-                          year: 'numeric', month: 'short', day: 'numeric',
-                        })}
-                      </span>
-                    </td>
-
-                    {/* Items */}
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-[14px] text-gray-500">
-                        {order.items_count} item{order.items_count !== 1 ? 's' : ''}
-                      </span>
-                    </td>
-
-                    {/* Total */}
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="text-[14px] font-semibold text-[#222]">
-                        {Number(order.total).toFixed(2)} Dhs
-                      </span>
-                    </td>
-
-                    {/* Status */}
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-bold ${getStatusBadgeClass(order.status)}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${getStatusDotClass(order.status)}`} />
-                        {capitalize(order.status)}
-                      </div>
-                    </td>
-
-                    {/* Actions */}
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        <button
-                          title="View order details"                            onClick={() => setViewingOrder(order)}                          className="w-8 h-8 rounded-full bg-[#fdf2f4] flex items-center justify-center text-[#da2966] hover:bg-[#faeef1] transition-colors"
-                        >
-                          <Eye size={16} strokeWidth={2.5} />
-                        </button>
-                        <button
-                          title="Change status"
-                          onClick={() => openEditModal(order)}
-                          className="w-8 h-8 rounded-full text-gray-400 hover:bg-[#fdf2f4] hover:text-[#da2966] flex items-center justify-center transition-colors"
-                        >
-                          <MoreVertical size={16} strokeWidth={2.5} />
-                        </button>
-                      </div>
-                    </td>
-
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        <OrderTable
+          orders={orders}
+          isLoading={isLoading}
+          onViewOrder={(order) => setViewingOrder(order)}
+          onEditStatus={(order) => openEditModal(order)}
+        />
 
         {/* ── Pagination ─────────────────────────────────────────────────────── */}
         {totalPages > 1 && (

@@ -157,11 +157,11 @@ export default function GeneralSettingsPage() {
   const strengthScore = Object.values(strength).filter(Boolean).length;
 
   if (isLoading) {
-    return <div className="p-8 max-w-[1240px] flex justify-center items-center h-[50vh]">Loading profile...</div>;
+    return <div className="p-5 sm:p-8 max-w-[1240px] flex justify-center items-center h-[50vh]">Loading profile...</div>;
   }
 
   return (
-    <div className="p-8 max-w-[1240px] mx-auto w-full">
+    <div className="p-5 sm:p-8 max-w-[1240px] mx-auto w-full">
       <style>{`
         @keyframes toastIn {
           from { opacity: 0; transform: translateX(-50%) translateY(-16px); }
@@ -195,14 +195,14 @@ export default function GeneralSettingsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-8">
+      <div className="grid grid-cols-12 gap-5 sm:p-8">
         {/* ─── Profile Information Section ───────────────────────────────────── */}
         <div className="col-span-12 lg:col-span-8">
-          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] h-full">
+          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] h-full">
             <div className="flex justify-between items-center mb-8">
               <div className="flex items-center gap-2 text-[#da2966]">
                 <Info size={22} strokeWidth={2.5} />
-                <h2 className="text-[20px] font-serif font-bold">Profile Information</h2>
+                <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold">Profile Information</h2>
               </div>
               <button 
                 onClick={saveProfile}
@@ -231,7 +231,7 @@ export default function GeneralSettingsPage() {
               </div>
 
               {/* Email & Phone Row */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:p-6">
                 <div>
                   <label className="block text-[13px] font-bold text-[#444] mb-3">Email Address</label>
                   <input 
@@ -260,10 +260,10 @@ export default function GeneralSettingsPage() {
 
         {/* ─── Photo de profil Section ────────────────────────────────────────── */}
         <div className="col-span-12 lg:col-span-4">
-          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] flex flex-col items-center h-full">
+          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] flex flex-col items-center h-full">
             <div className="w-full flex items-center gap-2 mb-10 text-[#da2966]">
               <User size={22} strokeWidth={2.5} />
-              <h2 className="text-[20px] font-serif font-bold">Photo de profil</h2>
+              <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold">Photo de profil</h2>
             </div>
 
             <div className="relative group">
@@ -312,11 +312,11 @@ export default function GeneralSettingsPage() {
 
         {/* ─── Security Section ───────────────────────────────────────────────── */}
         <div className="col-span-12 mt-4">
-          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)]">
+          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)]">
             <div className="flex justify-between items-center mb-8">
               <div className="flex items-center gap-2 text-[#da2966]">
                 <ShieldCheck size={22} strokeWidth={2.5} />
-                <h2 className="text-[20px] font-serif font-bold">Security</h2>
+                <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold">Security</h2>
               </div>
               <button 
                 onClick={savePassword}
@@ -351,7 +351,7 @@ export default function GeneralSettingsPage() {
               </div>
 
               {/* New Password & Confirm Row */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start pt-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:p-8 items-start pt-2">
                 <div>
                   <label className="block text-[13px] font-bold text-[#444] mb-3">New Password</label>
                   <div className="relative">

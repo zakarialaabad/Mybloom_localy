@@ -1,11 +1,14 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
+import dynamic from 'next/dynamic';
 import {
   adminReviewService,
   AdminReview,
   AdminReviewStats,
 } from '@/services/api';
+import { useReviewList } from '@/hooks/useReviewList';
+import ReviewTable from '@/components/ReviewTable';
 import {
   Star,
   TrendingUp,
@@ -15,10 +18,19 @@ import {
   Sparkles,
   Search,
   Check,
+  Eye,
   X,
   MessageSquare,
   Edit3,
+  Users,
+  LayoutList,
 } from 'lucide-react';
+
+// ── Lazy load the modal to reduce initial bundle ────────────────────────────
+const ReviewEditorModal = dynamic(
+  () => import('@/components/admin/ReviewEditorModal'),
+  { ssr: false }
+);
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
@@ -35,82 +47,61 @@ const formatDate = (iso: string) =>
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function ReviewsPage() {
-  // ── Data state ──────────────────────────────────────────────────────────────
-  const [reviews, setReviews]     = useState<AdminReview[]>([]);
-  const [stats, setStats]         = useState<AdminReviewStats | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // ── View toggle ─────────────────────────────────────────────────────────────
+  const [activeView, setActiveView] = useState<'reviews' | 'feedback'>('reviews');
 
   // ── Filter / search state ───────────────────────────────────────────────────
   const [search, setSearch]           = useState('');
-  const [statusFilter, setStatusFilter] = useState('all');
+  const [sortBy, setSortBy]           = useState<'newest' | 'oldest'>('newest');
   const [ratingFilter, setRatingFilter] = useState<number | null>(null);
 
   // ── Pagination state ────────────────────────────────────────────────────────
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages]   = useState(1);
-  const [totalCount, setTotalCount]   = useState(0);
-  const [perPage, setPerPage]         = useState(25);
 
   // ── Delete confirmation state ───────────────────────────────────────────────
   const [deletingId, setDeletingId]     = useState<number | null>(null);
   const [isDeleting, setIsDeleting]     = useState(false);
 
-  // ── Edit modal state ────────────────────────────────────────────────────────
-  const [editingReview, setEditingReview]   = useState<AdminReview | null>(null);
-  const [editName, setEditName]             = useState('');
-  const [editRating, setEditRating]         = useState(0);
-  const [editHoverRating, setEditHoverRating] = useState(0);
-  const [editBody, setEditBody]             = useState('');
-  const [isSaving, setIsSaving]             = useState(false);
-
-  // ── Action loading state ────────────────────────────────────────────────────
+  // ── Simplified modal state (extracted to ReviewEditorModal component) ────────
+  const [isModalOpen, setIsModalOpen]       = useState(false);
+  const [selectedReviewId, setSelectedReviewId] = useState<number | null>(null);
   const [actionLoading, setActionLoading] = useState<number | null>(null);
 
-  // ── Fetch reviews ───────────────────────────────────────────────────────────
-  const fetchReviews = useCallback(async (page = 1) => {
-    setIsLoading(true);
-    try {
-      const params: Record<string, unknown> = { page };
-      if (statusFilter && statusFilter !== 'all') params['status'] = statusFilter;
-      if (ratingFilter)  params['rating'] = ratingFilter;
-      if (search.trim()) params['search'] = search.trim();
+  // ── Fetch stats ─────────────────────────────────────────────────────────────
+  const [stats, setStats]         = useState<AdminReviewStats | null>(null);
 
-      const res = await adminReviewService.list(params);
-      setReviews(res.data);
-      setCurrentPage(res.meta.current_page);
-      setTotalPages(res.meta.last_page);
-      setTotalCount(res.meta.total);
-      setPerPage(res.meta.per_page);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [search, statusFilter, ratingFilter]);
+  // ── Fetch reviews with React Query ──────────────────────────────────────────
+  const { reviews, meta, isLoading, refetch } = useReviewList({
+    page: currentPage,
+    limit: 25,
+    ...(ratingFilter && { rating: ratingFilter }),
+    ...(search.trim() && { search: search.trim() }),
+    sort: sortBy,
+    source: activeView === 'feedback' ? 'client' : 'admin',
+    ...(activeView === 'reviews' && { status: 'approved' }),
+  });
+
+  const totalPages = meta?.last_page ?? 1;
+  const totalCount = meta?.total ?? 0;
+  const perPage = meta?.per_page ?? 25;
 
   // ── Fetch stats ─────────────────────────────────────────────────────────────
-  const fetchStats = useCallback(async () => {
-    try {
-      const res = await adminReviewService.stats();
-      setStats(res);
-    } catch (e) {
-      console.error(e);
-    }
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await adminReviewService.stats();
+        setStats(res);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchStats();
   }, []);
 
-  useEffect(() => { fetchStats(); }, [fetchStats]);
-
-  // Debounce search / filter changes; always reset to page 1
+  // Reset to page 1 when view/search/sort/filter changes
   useEffect(() => {
-    const timer = setTimeout(() => { fetchReviews(1); }, 400);
-    return () => clearTimeout(timer);
-  }, [search, statusFilter, ratingFilter]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  // ── Pagination ──────────────────────────────────────────────────────────────
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    fetchReviews(page);
-  };
+    setCurrentPage(1);
+  }, [search, sortBy, ratingFilter, activeView]);
 
   const pageNumbers = (): (number | '...')[] => {
     const pages: (number | '...')[] = [];
@@ -131,13 +122,20 @@ export default function ReviewsPage() {
   const paginationFrom = totalCount === 0 ? 0 : (currentPage - 1) * perPage + 1;
   const paginationTo   = Math.min(currentPage * perPage, totalCount);
 
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
   // ── Moderation actions ──────────────────────────────────────────────────────
   const handleApprove = async (id: number) => {
     setActionLoading(id);
     try {
       await adminReviewService.approve(id);
-      fetchReviews(currentPage);
-      fetchStats();
+      refetch();
+      // Refresh stats
+      const res = await adminReviewService.stats();
+      setStats(res);
     } catch (e) {
       console.error(e);
     } finally {
@@ -149,12 +147,23 @@ export default function ReviewsPage() {
     setActionLoading(id);
     try {
       await adminReviewService.reject(id);
-      fetchReviews(currentPage);
-      fetchStats();
+      refetch();
+      // Refresh stats
+      const res = await adminReviewService.stats();
+      setStats(res);
     } catch (e) {
       console.error(e);
     } finally {
       setActionLoading(null);
+    }
+  };
+
+  // ── Toggle approve/reject based on current state ────────────────────────────
+  const handleApproveToggle = async (review: AdminReview) => {
+    if (review.is_approved) {
+      await handleReject(review.id);
+    } else {
+      await handleApprove(review.id);
     }
   };
 
@@ -164,8 +173,10 @@ export default function ReviewsPage() {
     try {
       await adminReviewService.destroy(deletingId);
       setDeletingId(null);
-      fetchReviews(currentPage);
-      fetchStats();
+      refetch();
+      // Refresh stats
+      const res = await adminReviewService.stats();
+      setStats(res);
     } catch (e) {
       console.error(e);
     } finally {
@@ -173,40 +184,29 @@ export default function ReviewsPage() {
     }
   };
 
+  // ── Modal handlers ──────────────────────────────────────────────────────────
   const openEditModal = (review: AdminReview) => {
-    setEditingReview(review);
-    setEditName(review.reviewer_name);
-    setEditRating(review.rating);
-    setEditHoverRating(0);
-    setEditBody(review.body ?? '');
+    setSelectedReviewId(review.id);
+    setIsModalOpen(true);
   };
 
-  const closeEditModal = () => {
-    setEditingReview(null);
+  const openAddModal = () => {
+    setSelectedReviewId(null);
+    setIsModalOpen(true);
   };
 
-  const handleSaveEdit = async () => {
-    if (!editingReview) return;
-    setIsSaving(true);
-    try {
-      await adminReviewService.update(editingReview.id, {
-        reviewer_name: editName.trim(),
-        rating: editRating,
-        body: editBody.trim() || null,
-      });
-      closeEditModal();
-      fetchReviews(currentPage);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsSaving(false);
-    }
+  const handleModalSuccess = () => {
+    setIsModalOpen(false);
+    setSelectedReviewId(null);
+    refetch();
+    // Refresh stats
+    adminReviewService.stats().then(setStats).catch(console.error);
   };
 
   // ── render ────────────────────────────────────────────────────────────────
 
   return (
-    <div className="p-8 max-w-[1240px] mx-auto w-full">
+    <div className="p-5 sm:p-8 max-w-[1240px] mx-auto w-full">
 
       {/* ── Loading overlay ──────────────────────────────────────────────────── */}
       {isLoading && (
@@ -215,119 +215,33 @@ export default function ReviewsPage() {
         </div>
       )}
 
-      {/* ── Edit modal ───────────────────────────────────────────────────────── */}
-      {editingReview && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-          <div className="bg-white rounded-[20px] shadow-2xl border border-gray-100 w-[480px] mx-4 overflow-hidden">
-
-            {/* Header */}
-            <div className="relative flex items-center justify-center py-5 border-b border-gray-100">
-              <div className="flex items-center gap-2">
-                <Star size={18} className="text-[#da2966] fill-[#da2966]" />
-                <h3 className="text-[17px] font-bold text-[#da2966]">Curated Reviews</h3>
-              </div>
-              <button
-                onClick={closeEditModal}
-                className="absolute right-5 top-1/2 -translate-y-1/2 w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors"
-              >
-                <X size={14} strokeWidth={2.5} />
-              </button>
-            </div>
-
-            {/* Body */}
-            <div className="p-6 space-y-5">
-
-              {/* Full Name */}
-              <div>
-                <label className="block text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-2">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={(e) => setEditName(e.target.value)}
-                  placeholder="e.g Ayoub laghzal"
-                  className="w-full px-4 py-3 border border-gray-200 rounded-[10px] text-[14px] text-[#333] placeholder-gray-300 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-colors"
-                />
-              </div>
-
-              {/* Comment */}
-              <div>
-                <label className="block text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-2">
-                  Comment
-                </label>
-                <textarea
-                  value={editBody}
-                  onChange={(e) => setEditBody(e.target.value)}
-                  placeholder="Customer's review text…"
-                  rows={3}
-                  className="w-full px-4 py-3 border border-gray-200 rounded-[10px] text-[14px] text-[#333] placeholder-gray-300 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-colors resize-none"
-                />
-              </div>
-
-              {/* Date (read-only display) */}
-              <div>
-                <label className="block text-[12px] font-bold text-gray-500 uppercase tracking-wider mb-2">
-                  Date Review
-                </label>
-                <div className="flex items-center gap-3 px-4 py-3 border border-gray-200 rounded-[10px] bg-gray-50">
-                  <span className="text-[14px] text-gray-500">
-                    {formatDate(editingReview.created_at)}
-                  </span>
-                </div>
-              </div>
-
-              {/* Star rating */}
-              <div>
-                <label className="block text-[12px] font-bold text-gray-500 uppercase tracking-widest mb-3 text-center">
-                  Rate the Experience
-                </label>
-                <div className="flex items-center justify-center gap-2">
-                  {[1, 2, 3, 4, 5].map((star) => {
-                    const filled = star <= (editHoverRating || editRating);
-                    return (
-                      <button
-                        key={star}
-                        type="button"
-                        onMouseEnter={() => setEditHoverRating(star)}
-                        onMouseLeave={() => setEditHoverRating(0)}
-                        onClick={() => setEditRating(star)}
-                        className="transition-transform hover:scale-110"
-                      >
-                        <Star
-                          size={32}
-                          className={filled ? 'text-[#b09d6d] fill-[#b09d6d]' : 'text-gray-200 fill-gray-200'}
-                        />
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-            </div>
-
-            {/* Footer */}
-            <div className="px-6 pb-6">
-              <button
-                onClick={handleSaveEdit}
-                disabled={isSaving || !editName.trim() || editRating === 0}
-                className="w-full py-3.5 rounded-[10px] bg-[#1a1310] text-white text-[14px] font-bold tracking-wide hover:bg-[#2d2624] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSaving ? 'Saving…' : '+ Save Changes'}
-              </button>
-            </div>
-
-          </div>
-        </div>
-      )}
+      {/* ── ReviewEditorModal (lazy-loaded) ── */}
+      <ReviewEditorModal
+        isOpen={isModalOpen}
+        review={reviews.find(r => r.id === selectedReviewId)}
+        onClose={() => {
+          setIsModalOpen(false);
+          setSelectedReviewId(null);
+        }}
+        onSuccess={handleModalSuccess}
+      />
 
       {/* ── Delete confirmation modal ─────────────────────────────────────────── */}
       {deletingId !== null && (
-        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-          <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-6 w-[360px] mx-4">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm p-4"
+          role="dialog" 
+          aria-modal="true" 
+          aria-labelledby="delete-dialog-title"
+        >
+          <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-4 sm:p-6 w-full max-w-[360px]">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[16px] font-bold text-[#111]">Delete Review</h3>
-              <button onClick={() => setDeletingId(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <h3 id="delete-dialog-title" className="text-[16px] font-bold text-[#111]">Delete Review</h3>
+              <button 
+                onClick={() => setDeletingId(null)} 
+                className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-[#da2966] rounded-full p-1"
+                aria-label="Close"
+              >
                 <X size={18} />
               </button>
             </div>
@@ -336,6 +250,7 @@ export default function ReviewsPage() {
             </p>
             <div className="flex items-center gap-3">
               <button
+                autoFocus
                 onClick={() => setDeletingId(null)}
                 className="flex-1 py-2.5 rounded-[8px] border border-gray-200 text-[14px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
               >
@@ -354,7 +269,7 @@ export default function ReviewsPage() {
       )}
 
       {/* ─── Header ───────────────────────────────────────────────────────────── */}
-      <div className="flex flex-col md:flex-row md:items-start justify-between mb-10 pb-6 border-b border-gray-100">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 pb-6 border-b border-gray-100 gap-4">
         <div>
           <h1 className="text-[32px] font-serif font-bold text-[#111] tracking-tight mb-2">
             Review Management
@@ -363,10 +278,55 @@ export default function ReviewsPage() {
             Analyze performance and curate your brand&apos;s best feedback
           </p>
         </div>
+
+        {/* Header action buttons */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0 w-full sm:w-auto">
+          {/* Ajouter un avis — only in reviews tab */}
+          {activeView === 'reviews' && (
+            <button
+              onClick={openAddModal}
+              className="flex items-center gap-2 px-5 py-2.5 bg-[#1a1310] text-white text-[13px] font-bold rounded-[8px] hover:bg-[#2d2624] transition-colors shadow-sm whitespace-nowrap"
+            >
+              <span className="text-[16px] leading-none">+</span>
+              Ajouter un avis
+            </button>
+          )}
+
+          {/* View toggle buttons */}
+          <div className="flex items-center bg-gray-100 rounded-[10px] p-1 gap-1 w-full sm:w-auto">
+            <button
+              onClick={() => setActiveView('reviews')}
+              className={`flex-1 justify-center sm:flex-none flex items-center gap-2 px-4 py-2 rounded-[8px] text-[13px] font-bold transition-all ${
+                activeView === 'reviews'
+                  ? 'bg-white text-[#1a1310] shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <LayoutList size={14} />
+              Avis publiés
+            </button>
+            <button
+              onClick={() => setActiveView('feedback')}
+              className={`flex-1 justify-center sm:flex-none flex items-center gap-2 px-4 py-2 rounded-[8px] text-[13px] font-bold transition-all ${
+                activeView === 'feedback'
+                  ? 'bg-[#da2966] text-white shadow-sm'
+                  : 'text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <Users size={14} />
+              Feedback clients
+              {stats && stats.pending > 0 && activeView !== 'feedback' && (
+                <span className="ml-1 bg-[#da2966] text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {stats.pending}
+                </span>
+              )}
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* ─── Stat Cards ───────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:p-6 mb-10">
 
         {/* Card 1: Global Average */}
         <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-7 shadow-[0_2px_15px_rgba(0,0,0,0.01)]">
@@ -382,12 +342,12 @@ export default function ReviewsPage() {
           <p className="text-[14px] text-gray-400 font-bold mb-2">Global Average</p>
           <div className="flex items-baseline gap-1">
             <h2 className="text-[38px] font-serif font-bold text-[#111] tracking-tighter">
-              {stats ? stats.average_rating.toFixed(1) : '—'}
+              {stats ? stats.average_rating.toFixed(1) : <div className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
             </h2>
-            <span className="text-[20px] font-serif text-[#da2966] font-bold">/5.0</span>
+            <span className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif text-[#da2966] font-bold">/5.0</span>
           </div>
-          <p className="text-[12px] text-gray-400 mt-2 font-medium">
-            {stats ? `${stats.total.toLocaleString()} total reviews` : 'Loading…'}
+          <p className="text-[12px] text-gray-400 mt-2 font-medium flex items-center h-4">
+            {stats ? `${stats.total.toLocaleString()} total reviews` : <div className="h-3 w-20 bg-gray-200 rounded animate-pulse inline-block" />}
           </p>
         </div>
 
@@ -405,12 +365,12 @@ export default function ReviewsPage() {
           </div>
           <p className="text-[14px] text-gray-400 font-bold mb-2">Pending Moderation</p>
           <h2 className="text-[38px] font-serif font-bold text-[#111] tracking-tighter">
-            {stats ? stats.pending.toLocaleString() : '—'}
+            {stats ? stats.pending.toLocaleString() : <div className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
-          <p className="text-[12px] text-gray-400 mt-2 font-medium">
+          <p className="text-[12px] text-gray-400 mt-2 font-medium flex items-center h-4">
             {stats
               ? `${(stats.total - stats.pending).toLocaleString()} approved`
-              : 'Loading…'}
+              : <div className="h-3 w-20 bg-gray-200 rounded animate-pulse inline-block" />}
           </p>
         </div>
 
@@ -422,25 +382,28 @@ export default function ReviewsPage() {
             </div>
           </div>
           <p className="text-[14px] text-gray-400 font-bold mb-2">Most Reviewed</p>
-          <h2 className="text-[24px] font-serif font-bold text-[#111] tracking-tight line-clamp-1">
-            {stats?.most_reviewed?.product_name ?? '—'}
+          <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-serif font-bold text-[#111] tracking-tight line-clamp-1 h-8 flex items-center">
+            {stats
+              ? (stats.most_reviewed?.product_name ?? '—')
+              : <div className="h-6 w-32 bg-gray-200 rounded animate-pulse inline-block" />}
           </h2>
-          <p className="text-[12px] text-gray-400 mt-2 font-medium">
+          <p className="text-[12px] text-gray-400 mt-2 font-medium flex items-center h-4">
             {stats?.most_reviewed
               ? `${stats.most_reviewed.count} reviews`
-              : stats ? 'No data yet' : 'Loading…'}
+              : stats ? 'No data yet' : <div className="h-3 w-20 bg-gray-200 rounded animate-pulse inline-block" />}
           </p>
         </div>
 
       </div>
 
-      {/* ─── Table Section ────────────────────────────────────────────────────── */}
+      {/* ─── Table Section (reviews view) ─────────────────────────────────── */}
+      {activeView === 'reviews' && (
       <div className="bg-white rounded-[20px] border border-[#f2e6ea] shadow-[0_2px_20px_rgba(0,0,0,0.02)] overflow-hidden">
 
         {/* ── Toolbar ──────────────────────────────────────────────────────────── */}
-        <div className="p-6 border-b border-gray-100 bg-white space-y-4">
+        <div className="p-4 sm:p-6 border-b border-gray-100 bg-white space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <h3 className="text-[16px] font-bold text-[#111]">All Reviews</h3>
+            <h3 className="text-[16px] font-bold text-[#111]">Avis Publiés en accueil</h3>
             <span className="text-[13px] text-gray-400 font-medium">
               {totalCount === 0
                 ? 'No reviews'
@@ -448,212 +411,79 @@ export default function ReviewsPage() {
             </span>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3">
-            {/* Search */}
-            <div className="relative flex-1 max-w-sm">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+          {/* ── 3 Filters row ─────────────────────────────────────────────── */}
+          <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+
+            {/* 1 — Search */}
+            <div className="relative flex-1">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
               <input
                 type="text"
                 placeholder="Search reviewer or comment…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-[8px] text-[14px] text-[#333] placeholder-gray-400 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966]"
+                className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-[8px] text-[13px] text-[#333] placeholder-gray-400 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966]"
               />
-            </div>
-
-            {/* Status tabs */}
-            <div className="flex items-center gap-1 bg-gray-100 rounded-[8px] p-1">
-              {(['all', 'approved', 'pending'] as const).map((s) => (
+              {search && (
                 <button
-                  key={s}
-                  onClick={() => setStatusFilter(s)}
-                  className={`px-4 py-1.5 rounded-[6px] text-[13px] font-semibold capitalize transition-colors ${
-                    statusFilter === s
-                      ? 'bg-white text-[#da2966] shadow-sm'
-                      : 'text-gray-500 hover:text-gray-700'
-                  }`}
+                  onClick={() => setSearch('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  {s}
+                  <X size={13} />
                 </button>
-              ))}
+              )}
             </div>
 
-            {/* Star filter */}
-            <div className="flex items-center gap-1">
-              {[5, 4, 3, 2, 1].map((star) => (
+            {/* 2 — Sort by date */}
+            <div className="relative">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest')}
+                className="appearance-none pl-4 pr-8 py-2.5 border border-gray-200 rounded-[8px] text-[13px] font-semibold text-[#444] bg-white focus:outline-none focus:border-[#da2966] cursor-pointer hover:bg-gray-50 transition-colors"
+              >
+                <option value="newest">Date: Newest first</option>
+                <option value="oldest">Date: Oldest first</option>
+              </select>
+              <svg className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9" /></svg>
+            </div>
+
+            {/* 3 — Star filter (5★ 4★ 3★ only) */}
+            <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-[8px] px-2 py-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto">
+              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mr-1 whitespace-nowrap">Stars</span>
+              {[5, 4, 3].map((star) => (
                 <button
                   key={star}
                   onClick={() => setRatingFilter(ratingFilter === star ? null : star)}
-                  className={`flex items-center gap-1 px-3 py-2 rounded-[8px] text-[13px] font-semibold border transition-colors ${
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-[6px] text-[13px] font-bold border transition-colors whitespace-nowrap whitespace-nowrap ${
                     ratingFilter === star
                       ? 'bg-[#da2966] text-white border-[#da2966]'
-                      : 'bg-white text-gray-500 border-gray-200 hover:border-[#da2966]'
+                      : 'bg-white text-gray-500 border-gray-200 hover:border-[#da2966] hover:text-[#da2966]'
                   }`}
                 >
-                  <Star size={12} fill="currentColor" />
+                  <Star size={11} fill="currentColor" />
                   {star}
                 </button>
               ))}
             </div>
+
           </div>
         </div>
 
         {/* ── Table ────────────────────────────────────────────────────────────── */}
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-gray-100 bg-[#fffcfd]">
-                <th className="px-6 py-4 text-[11px] font-extrabold uppercase tracking-widest text-[#da2966]">Reviewer</th>
-                <th className="px-6 py-4 text-[11px] font-extrabold uppercase tracking-widest text-[#da2966]">Rating</th>
-                <th className="px-6 py-4 text-[11px] font-extrabold uppercase tracking-widest text-[#da2966]">Comment</th>
-                <th className="px-6 py-4 text-[11px] font-extrabold uppercase tracking-widest text-[#da2966]">Product</th>
-                <th className="px-6 py-4 text-[11px] font-extrabold uppercase tracking-widest text-[#da2966]">Status</th>
-                <th className="px-6 py-4 text-[11px] font-extrabold uppercase tracking-widest text-[#da2966]">Date</th>
-                <th className="px-6 py-4 text-[11px] font-extrabold uppercase tracking-widest text-[#da2966]">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reviews.length === 0 && !isLoading ? (
-                <tr>
-                  <td colSpan={7} className="px-6 py-16 text-center">
-                    <div className="flex flex-col items-center gap-3 text-gray-400">
-                      <MessageSquare size={36} strokeWidth={1.5} />
-                      <p className="text-[15px] font-medium">No reviews found</p>
-                      {(search || statusFilter !== 'all' || ratingFilter) && (
-                        <button
-                          onClick={() => { setSearch(''); setStatusFilter('all'); setRatingFilter(null); }}
-                          className="text-[13px] text-[#da2966] font-semibold hover:underline"
-                        >
-                          Clear filters
-                        </button>
-                      )}
-                    </div>
-                  </td>
-                </tr>
-              ) : (
-                reviews.map((review) => {
-                  const isActing = actionLoading === review.id;
-                  return (
-                    <tr key={review.id} className="border-b border-gray-100 hover:bg-gray-50/50 transition-colors">
-
-                      {/* Reviewer */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-[#fdf2f4] text-[#da2966] flex items-center justify-center text-[12px] font-bold flex-shrink-0">
-                            {getInitials(review.reviewer_name)}
-                          </div>
-                          <div>
-                            <p className="text-[14px] font-semibold text-[#111]">{review.reviewer_name}</p>
-                            {review.order_number && (
-                              <p className="text-[11px] text-gray-400 font-mono">{review.order_number}</p>
-                            )}
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Rating */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex gap-0.5">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              size={14}
-                              className={i < review.rating ? 'text-[#b09d6d] fill-[#b09d6d]' : 'text-gray-200 fill-gray-200'}
-                            />
-                          ))}
-                        </div>
-                      </td>
-
-                      {/* Comment */}
-                      <td className="px-6 py-4 max-w-[260px]">
-                        {review.body ? (
-                          <p className="text-[13px] text-gray-600 line-clamp-2">{review.body}</p>
-                        ) : (
-                          <span className="text-[12px] text-gray-300 italic">No comment</span>
-                        )}
-                      </td>
-
-                      {/* Product */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {review.product ? (
-                          <span className="text-[13px] font-medium text-[#423835]">{review.product.name}</span>
-                        ) : (
-                          <span className="text-[12px] text-gray-300">—</span>
-                        )}
-                      </td>
-
-                      {/* Status badge */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {review.is_approved ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[6px] text-[11px] font-bold bg-green-50 text-green-700 border border-green-200">
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                            Approved
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-[6px] text-[11px] font-bold bg-yellow-50 text-yellow-700 border border-yellow-200">
-                            <span className="w-1.5 h-1.5 rounded-full bg-yellow-500" />
-                            Pending
-                          </span>
-                        )}
-                      </td>
-
-                      {/* Date */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="text-[13px] text-gray-500">{formatDate(review.created_at)}</span>
-                      </td>
-
-                      {/* Actions */}
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center gap-2">
-                          {!review.is_approved ? (
-                            <button
-                              onClick={() => handleApprove(review.id)}
-                              disabled={isActing}
-                              title="Approve"
-                              className="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-green-600 hover:bg-green-100 transition-all disabled:opacity-50"
-                            >
-                              <Check size={15} strokeWidth={2.5} />
-                            </button>
-                          ) : (
-                            <button
-                              onClick={() => handleReject(review.id)}
-                              disabled={isActing}
-                              title="Reject"
-                              className="w-8 h-8 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-600 hover:bg-yellow-100 transition-all disabled:opacity-50"
-                            >
-                              <X size={15} strokeWidth={2.5} />
-                            </button>
-                          )}
-                          <button
-                            onClick={() => openEditModal(review)}
-                            disabled={isActing}
-                            title="Edit"
-                            className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-[#fdf2f4] hover:text-[#da2966] transition-all disabled:opacity-50"
-                          >
-                            <Edit3 size={15} strokeWidth={2.5} />
-                          </button>
-                          <button
-                            onClick={() => setDeletingId(review.id)}
-                            disabled={isActing}
-                            title="Delete"
-                            className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all disabled:opacity-50"
-                          >
-                            <Trash2 size={15} strokeWidth={2.5} />
-                          </button>
-                        </div>
-                      </td>
-
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
+          <ReviewTable
+            reviews={reviews}
+            isLoading={isLoading}
+            onApproveToggle={handleApproveToggle}
+            onEdit={openEditModal}
+            onDelete={(review) => setDeletingId(review.id)}
+            actionLoading={actionLoading}
+          />
         </div>
 
         {/* ── Pagination ────────────────────────────────────────────────────────── */}
         {totalPages > 1 && (
-          <div className="p-6 border-t border-gray-100 flex items-center justify-between bg-white">
+          <div className="p-4 sm:p-6 border-t border-gray-100 flex items-center justify-between bg-white">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
@@ -697,6 +527,223 @@ export default function ReviewsPage() {
         )}
 
       </div>
+      )} {/* end reviews view */}
+
+      {/* ─── Feedback Clients View ───────────────────────────────────────────── */}
+      {activeView === 'feedback' && (
+        <div>
+          {/* Toolbar */}
+          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 mb-6 shadow-sm">
+            <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
+              {/* Search */}
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={15} />
+                <input
+                  type="text"
+                  placeholder="Search client name or comment…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-[8px] text-[13px] text-[#333] placeholder-gray-400 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966]"
+                />
+                {search && (
+                  <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+              {/* Sort */}
+              <div className="relative">
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value as 'newest' | 'oldest')}
+                  className="appearance-none pl-4 pr-8 py-2.5 border border-gray-200 rounded-[8px] text-[13px] font-semibold text-[#444] bg-white focus:outline-none focus:border-[#da2966] cursor-pointer"
+                >
+                  <option value="newest">Date: Newest first</option>
+                  <option value="oldest">Date: Oldest first</option>
+                </select>
+                <svg className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9" /></svg>
+              </div>
+              {/* Stars */}
+              <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-[8px] px-2 py-1.5 overflow-x-auto no-scrollbar w-full sm:w-auto">
+                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider mr-1 whitespace-nowrap">Stars</span>
+                {[5, 4, 3].map((star) => (
+                  <button
+                    key={star}
+                    onClick={() => setRatingFilter(ratingFilter === star ? null : star)}
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-[6px] text-[13px] font-bold border transition-colors whitespace-nowrap ${
+                      ratingFilter === star
+                        ? 'bg-[#da2966] text-white border-[#da2966]'
+                        : 'bg-white text-gray-500 border-gray-200 hover:border-[#da2966] hover:text-[#da2966]'
+                    }`}
+                  >
+                    <Star size={11} fill="currentColor" />
+                    {star}
+                  </button>
+                ))}
+              </div>
+              <span className="text-[13px] text-gray-400 font-medium whitespace-nowrap self-center">
+                {totalCount === 0 ? 'No feedback' : `${totalCount.toLocaleString()} reviews`}
+              </span>
+            </div>
+          </div>
+
+          {/* Cards */}
+          {reviews.length === 0 && !isLoading ? (
+            <div className="bg-white rounded-[20px] border border-[#f2e6ea] py-20 flex flex-col items-center gap-3 text-gray-400">
+              <Users size={40} strokeWidth={1.5} />
+              <p className="text-[15px] font-medium">No client feedback found</p>
+              {(search || ratingFilter) && (
+                <button
+                  onClick={() => { setSearch(''); setRatingFilter(null); }}
+                  className="text-[13px] text-[#da2966] font-semibold hover:underline"
+                >
+                  Clear filters
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {reviews.map((review) => {
+                const isActing = actionLoading === review.id;
+                return (
+                  <div key={review.id} className="bg-white rounded-[16px] border border-[#f2e6ea] p-4 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-sm transition-shadow">
+                    <div className="flex items-start gap-4">
+                      {/* Avatar */}
+                      <div className="w-12 h-12 rounded-full bg-[#fdf2f4] text-[#da2966] flex items-center justify-center text-[14px] font-bold shrink-0 border-2 border-white shadow-sm">
+                        {getInitials(review.reviewer_name)}
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        {/* Top row */}
+                        <div className="flex items-start justify-between gap-3 flex-wrap">
+                          <div>
+                            <p className="font-bold text-[#111] text-[15px]">{review.reviewer_name}</p>
+                            {review.order_number && (
+                              <p className="text-[11px] text-gray-400 font-mono mt-0.5">Commande #{review.order_number}</p>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2 shrink-0">
+                            <span className="text-[12px] text-gray-400">{formatDate(review.created_at)}</span>
+                            {review.is_approved ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[5px] text-[11px] font-bold bg-green-50 text-green-700 border border-green-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Approuvé
+                              </span>
+                            ) : (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[5px] text-[11px] font-bold bg-yellow-50 text-yellow-700 border border-yellow-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-yellow-400" /> En attente
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Stars + product */}
+                        <div className="flex items-center gap-3 mt-2.5">
+                          <div className="flex gap-0.5">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} size={14} className={i < review.rating ? 'text-[#b09d6d] fill-[#b09d6d]' : 'text-gray-200 fill-gray-200'} />
+                            ))}
+                          </div>
+                          {review.product && (
+                            <span className="text-[12px] font-semibold text-[#423835] bg-[#fdf8f4] border border-[#ede0d4] px-2.5 py-0.5 rounded-[5px]">
+                              {review.product.name}
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Message */}
+                        {review.body && (
+                          <div className="mt-3 bg-gray-50 rounded-[10px] px-4 py-3 border-l-[3px] border-[#da2966]">
+                            <p className="text-[13px] text-gray-700 leading-relaxed">{review.body}</p>
+                          </div>
+                        )}
+
+                        {/* Images */}
+                        {review.images && review.images.length > 0 && (
+                          <div className="flex gap-2 mt-3 flex-wrap">
+                            {review.images.map((img, i) => (
+                              <div key={i} className="w-20 h-20 rounded-[8px] overflow-hidden border border-gray-100 shadow-sm">
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img src={img.image_url} alt="" className="w-full h-full object-cover" />
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
+                          {!review.is_approved ? (
+                            <button
+                              onClick={() => handleApprove(review.id)}
+                              disabled={isActing}
+                              className="flex items-center gap-1.5 px-4 py-1.5 rounded-[7px] bg-green-50 text-green-700 border border-green-200 text-[12px] font-bold hover:bg-green-100 transition-colors disabled:opacity-50"
+                            >
+                              <Check size={13} strokeWidth={2.5} /> Approuver
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleReject(review.id)}
+                              disabled={isActing}
+                              className="flex items-center gap-1.5 px-4 py-1.5 rounded-[7px] bg-yellow-50 text-yellow-700 border border-yellow-200 text-[12px] font-bold hover:bg-yellow-100 transition-colors disabled:opacity-50"
+                            >
+                              <X size={13} strokeWidth={2.5} /> Rejeter
+                            </button>
+                          )}
+                          <button
+                            onClick={() => setDeletingId(review.id)}
+                            disabled={isActing}
+                            className="flex items-center gap-1.5 px-4 py-1.5 rounded-[7px] bg-red-50 text-red-500 border border-red-100 text-[12px] font-bold hover:bg-red-100 transition-colors disabled:opacity-50"
+                          >
+                            <Trash2 size={13} strokeWidth={2.5} /> Supprimer
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="mt-6 flex items-center justify-between">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="flex items-center gap-1.5 text-[14px] font-bold text-[#da2966] hover:text-[#b11b4e] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                <ArrowLeft size={16} strokeWidth={2.5} /> Previous
+              </button>
+              <div className="flex items-center gap-2">
+                {pageNumbers().map((p, idx) =>
+                  p === '...' ? (
+                    <span key={`e-${idx}`} className="w-9 h-9 flex items-center justify-center text-gray-400 text-[14px]">…</span>
+                  ) : (
+                    <button
+                      key={p}
+                      onClick={() => handlePageChange(p as number)}
+                      className={`w-9 h-9 rounded-full flex items-center justify-center text-[14px] font-medium transition-colors ${
+                        p === currentPage ? 'bg-[#da2966] text-white shadow-md font-bold' : 'text-gray-500 hover:bg-gray-100'
+                      }`}
+                    >
+                      {p}
+                    </button>
+                  )
+                )}
+              </div>
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="flex items-center gap-1.5 text-[14px] font-bold text-[#da2966] hover:text-[#b11b4e] transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                Next <ArrowRight size={16} strokeWidth={2.5} />
+              </button>
+            </div>
+          )}
+        </div>
+      )} {/* end feedback view */}
+
     </div>
   );
 }

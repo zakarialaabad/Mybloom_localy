@@ -1,39 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Search, Bell } from 'lucide-react';
+import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
 import {
-  dashboardService,
-  DashboardData,
   DashboardSummary,
   DashboardChartData,
   DashboardCustomer,
   DashboardOrder,
 } from '@/services/api';
-
-/* ═══════════════════════════════════════════════════════════════════════════
- * STATUS HELPERS
- * ═══════════════════════════════════════════════════════════════════════════ */
-
-const getStatusStyle = (status: string) => {
-  switch (status.toLowerCase()) {
-    case 'shipped':   return 'bg-green-100 text-green-600';
-    case 'pending':   return 'bg-yellow-100 text-yellow-700';
-    case 'delivered': return 'bg-blue-100 text-blue-600';
-    case 'cancelled': return 'bg-red-100 text-red-600';
-    default:          return 'bg-gray-100 text-gray-500';
-  }
-};
-
-const getStatusDot = (status: string) => {
-  switch (status.toLowerCase()) {
-    case 'shipped':   return 'bg-green-500';
-    case 'pending':   return 'bg-yellow-400';
-    case 'delivered': return 'bg-blue-500';
-    case 'cancelled': return 'bg-red-400';
-    default:          return 'bg-gray-400';
-  }
-};
+import { getStatusBadge, getStatusDot } from '@/lib/config/statuses';
 
 /* ═══════════════════════════════════════════════════════════════════════════
  * INLINE SVG ICONS
@@ -115,7 +91,7 @@ function DashboardSkeleton() {
     <div className="space-y-6">
       <div className="grid grid-cols-3 gap-5">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="bg-white rounded-2xl p-6 border border-gray-100 space-y-3">
+          <div key={i} className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 space-y-3">
             <Skeleton className="w-11 h-11" />
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-8 w-36" />
@@ -123,10 +99,10 @@ function DashboardSkeleton() {
         ))}
       </div>
       <div className="grid grid-cols-3 gap-5">
-        <div className="col-span-2 bg-white rounded-2xl p-6 border border-gray-100">
+        <div className="col-span-2 bg-white rounded-2xl p-4 sm:p-6 border border-gray-100">
           <Skeleton className="h-[200px] w-full" />
         </div>
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 space-y-4">
+        <div className="bg-white rounded-2xl p-4 sm:p-6 border border-gray-100 space-y-4">
           {[1, 2, 3, 4, 5].map((i) => <Skeleton key={i} className="h-10 w-full" />)}
         </div>
       </div>
@@ -186,37 +162,7 @@ function SalesChart({ chart }: { chart: DashboardChartData }) {
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 export default function AdminDashboardPage() {
-  const [data, setData]       = useState<DashboardData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState<string | null>(null);
-
-  const loadData = () => {
-    let cancelled = false;
-    setLoading(true);
-    setError(null);
-    dashboardService.get()
-      .then((res) => { if (!cancelled) { setData(res); } })
-      .catch((err) => {
-        if (!cancelled) {
-          console.error('[Dashboard] API error:', err);
-          const status = err?.status ?? err?.response?.status;
-          if (status === 401) {
-            setError('Session expired. Please log in again.');
-          } else if (status === 403) {
-            setError('Access denied. Admin privileges required.');
-          } else {
-            setError(`Failed to load dashboard data. ${status ? `(${status})` : '(network error)'}`);
-          }
-        }
-      })
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  };
-
-  useEffect(() => {
-    return loadData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const { data, isLoading, error, isError, refetch } = useDashboardMetrics();
 
   const s = data?.summary;
 
@@ -226,7 +172,7 @@ export default function AdminDashboardPage() {
       {/* ── HEADER ────────────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-40 bg-[#fefbfb]/90 backdrop-blur-md px-8 py-6 flex items-center justify-between border-b border-gray-100">
         <div>
-          <h2 className="text-[24px] font-bold text-[#111]">Dashboard Overview</h2>
+          <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-bold text-[#111]">Dashboard Overview</h2>
           <p className="text-[13px] text-gray-400 mt-0.5">Welcome back, here&apos;s what&apos;s happening today.</p>
         </div>
         <div className="flex items-center gap-5">
@@ -249,11 +195,11 @@ export default function AdminDashboardPage() {
       <div className="flex-1 px-8 py-6 pb-12 space-y-6">
 
         {/* Error */}
-        {error && (
+        {isError && error && (
           <div className="bg-red-50 border border-red-200 text-red-600 text-[13px] px-5 py-4 rounded-xl flex items-center justify-between gap-4">
-            <span>{error}</span>
+            <span>Failed to load dashboard data. {error}</span>
             <button
-              onClick={loadData}
+              onClick={() => refetch()}
               className="shrink-0 px-4 py-1.5 rounded-lg bg-red-600 text-white text-[12px] font-semibold hover:bg-red-700 transition-colors"
             >
               Retry
@@ -262,16 +208,16 @@ export default function AdminDashboardPage() {
         )}
 
         {/* Loading skeleton */}
-        {loading && <DashboardSkeleton />}
+        {isLoading && <DashboardSkeleton />}
 
         {/* Live data */}
-        {!loading && data && (
+        {!isLoading && data && (
           <>
             {/* ── STAT CARDS ──────────────────────────────────────────────── */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
               {/* Total Revenue */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                 <div className="flex items-start justify-between mb-5">
                   <RevenueIcon />
                   <span className="flex items-center gap-1 text-[13px] font-bold text-green-500">
@@ -286,7 +232,7 @@ export default function AdminDashboardPage() {
               </div>
 
               {/* Total Orders */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                 <div className="flex items-start justify-between mb-5">
                   <OrdersIcon />
                   <span className="flex items-center gap-1 text-[13px] font-bold text-green-500">
@@ -301,7 +247,7 @@ export default function AdminDashboardPage() {
               </div>
 
               {/* Top-Selling Product */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                 <div className="flex items-start justify-between mb-5">
                   <StarIcon />
                   <span className="flex items-center gap-1 text-[13px] font-bold text-green-500">
@@ -320,7 +266,7 @@ export default function AdminDashboardPage() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
               {/* Sales Analytics */}
-              <div className="lg:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <div className="lg:col-span-2 bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <h3 className="text-[16px] font-bold text-[#1a1a1a]">Sales Analytics</h3>
@@ -335,7 +281,7 @@ export default function AdminDashboardPage() {
               </div>
 
               {/* Top Customers */}
-              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col">
+              <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 flex flex-col">
                 <h3 className="text-[16px] font-bold text-[#1a1a1a] mb-5">Top Customers</h3>
                 <div className="space-y-4 flex-1">
                   {data.top_customers.map((c, i) => (
@@ -360,7 +306,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* ── RECENT ORDERS TABLE ─────────────────────────────────────── */}
+            {/* ── RECENT ORDERS ─────────────────────────────────────── */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="flex items-center justify-between px-6 py-5">
                 <h3 className="text-[16px] font-bold text-[#1a1a1a]">Recent Orders</h3>
@@ -368,7 +314,9 @@ export default function AdminDashboardPage() {
                   See all orders
                 </button>
               </div>
-              <div className="overflow-x-auto">
+
+              {/* ── DESKTOP TABLE ── */}
+              <div className="hidden md:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr className="border-t border-b border-gray-100 bg-white">
@@ -406,8 +354,8 @@ export default function AdminDashboardPage() {
                           <td className="px-6 py-4 text-[13px] text-[#666]">{order.date}</td>
                           <td className="px-6 py-4 text-[13px] text-[#444] font-medium">{order.customer}</td>
                           <td className="px-6 py-4">
-                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold ${getStatusStyle(order.status)}`}>
-                              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${getStatusDot(order.status)}`}></span>
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-bold ${getStatusBadge(order.status, 'order')}`}>
+                              <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${getStatusDot(order.status, 'order')}`}></span>
                               {order.status}
                             </span>
                           </td>
@@ -419,6 +367,40 @@ export default function AdminDashboardPage() {
                     )}
                   </tbody>
                 </table>
+              </div>
+
+              {/* ── MOBILE CARDS ── */}
+              <div className="md:hidden flex flex-col divide-y divide-gray-50 border-t border-gray-100">
+                {data.recent_orders.length === 0 ? (
+                  <div className="px-6 py-16 text-center text-[14px] text-gray-400">
+                    No orders yet.
+                  </div>
+                ) : (
+                  data.recent_orders.map((order) => (
+                    <div key={order.id} className="p-4 flex flex-col gap-3 hover:bg-gray-50/50 active:bg-gray-50 transition-colors cursor-pointer">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[14px] font-bold text-[#111]">{order.order_number}</span>
+                        <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold ${getStatusBadge(order.status, 'order')}`}>
+                          <span className={`w-1 h-1 rounded-full shrink-0 ${getStatusDot(order.status, 'order')}`}></span>
+                          {order.status}
+                        </span>
+                      </div>
+                      
+                      <div className="flex items-center gap-3">
+                        <ProductThumb />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[13px] font-bold text-[#333] truncate">{order.product}</p>
+                          <p className="text-[12px] text-gray-500 mt-0.5 truncate">{order.customer}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-gray-50 mt-1">
+                        <span className="text-[12px] font-medium text-gray-400">{order.date}</span>
+                        <span className="text-[14px] font-bold text-[#da2966]">{order.amount}</span>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </>

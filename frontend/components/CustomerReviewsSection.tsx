@@ -45,7 +45,9 @@ export default function CustomerReviewsSection() {
   };
 
   useEffect(() => {
-    reviewService.list({ approved: true, featured: true })
+    // Fetch admin-curated reviews (Avis publiés) controlled by the dashboard
+    // No featured filter — show all approved admin testimonials to match dashboard total
+    reviewService.list({ approved: true, source: 'admin' })
       .then(({ data, rating_summary }) => {
         setReviews(data);
         if (rating_summary) setSummary(rating_summary);

@@ -45,7 +45,7 @@ function UploadArea({
 
   return (
     <div
-      className="flex-1 w-full h-full min-h-[160px] border-2 border-dashed border-[#da2966] bg-white flex flex-col items-center justify-center p-6 text-center group cursor-pointer hover:bg-gray-50 transition-colors"
+      className="flex-1 w-full h-full min-h-[160px] border-2 border-dashed border-[#da2966] bg-white flex flex-col items-center justify-center p-4 sm:p-6 text-center group cursor-pointer hover:bg-gray-50 transition-colors"
       onClick={() => inputRef.current?.click()}
       onDragOver={(e) => e.preventDefault()}
       onDrop={onDrop}
@@ -196,7 +196,7 @@ export default function BannersPage() {
   const activeCount = homepageBanners.length;
 
   return (
-    <div className="p-8 max-w-[1240px] mx-auto w-full">
+    <div className="p-5 sm:p-8 max-w-[1240px] mx-auto w-full">
       {/* ─── Header ─────────────────────────────────────────────────────── */}
       <div className="mb-10 pb-6 border-b border-gray-100">
         <h1 className="text-[32px] font-serif font-bold text-[#111] tracking-tight mb-2">
@@ -209,7 +209,7 @@ export default function BannersPage() {
 
       <div className="space-y-8">
         {/* ─── Homepage Slots ──────────────────────────────────────────── */}
-        <div className="bg-white rounded-[10px] border border-[#f2e6ea] p-6 lg:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.02)]">
+        <div className="bg-white rounded-[10px] border border-[#f2e6ea] p-4 sm:p-6 lg:p-5 sm:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.02)]">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-[16px] font-bold text-[#da2966]">Homepage Slots</h2>
             <span className="text-[13px] text-gray-400 font-medium">
@@ -218,7 +218,7 @@ export default function BannersPage() {
           </div>
 
           {/* Grid identical to frontend ValentinesSection component */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6 items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-4 sm:p-6 items-stretch">
             {/* Slot 1 — large banner */}
             <div className="relative w-full aspect-square lg:aspect-[1.12/1] overflow-hidden border border-gray-100 bg-gray-50">
               {loading ? (
@@ -231,7 +231,7 @@ export default function BannersPage() {
             </div>
 
             {/* Slots 2, 3, 4 */}
-            <div className="flex flex-col lg:grid lg:grid-rows-[1fr_1fr] gap-4 lg:gap-6">
+            <div className="flex flex-col lg:grid lg:grid-rows-[1fr_1fr] gap-4 lg:gap-4 sm:p-6">
               
               {/* Slot 2 (Top Row) */}
               <div className="relative overflow-hidden w-full h-[250px] lg:h-full lg:min-h-0 border border-gray-100 bg-gray-50">
@@ -245,7 +245,7 @@ export default function BannersPage() {
               </div>
 
               {/* Slots 3 & 4 (Bottom Row) */}
-              <div className="grid grid-cols-5 gap-4 lg:gap-6 w-full h-[200px] lg:h-full lg:min-h-0">
+              <div className="grid grid-cols-5 gap-4 lg:gap-4 sm:p-6 w-full h-[200px] lg:h-full lg:min-h-0">
                 
                 {/* Slot 3 */}
                 <div className="col-span-3 relative overflow-hidden border border-gray-100 bg-gray-50 h-full w-full">
@@ -275,7 +275,7 @@ export default function BannersPage() {
         </div>
 
         {/* ─── Collection Hero Banner ───────────────────────────────────── */}
-        <div className="bg-white rounded-[10px] border border-[#f2e6ea] p-6 lg:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.02)]">
+        <div className="bg-white rounded-[10px] border border-[#f2e6ea] p-4 sm:p-6 lg:p-5 sm:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.02)]">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-[16px] font-bold text-[#da2966]">Collection Hero Banner</h2>
             {heroBanner && (
@@ -327,7 +327,7 @@ export default function BannersPage() {
                 </div>
               </>
             ) : (
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-[#da2966] bg-white transition-colors hover:bg-gray-50">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4 sm:p-6 border-2 border-dashed border-[#da2966] bg-white transition-colors hover:bg-gray-50">
                 {heroUploading ? (
                   <Loader2 size={32} className="text-[#da2966] animate-spin mb-2" />
                 ) : (

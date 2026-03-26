@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import MobileActionBar from '@/components/sections/MobileActionBar';
+import { Providers } from '@/app/Providers';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
@@ -22,8 +23,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className="pb-[64px] md:pb-0">
-        {children}
-        <MobileActionBar />
+        <Providers>
+          {children}
+          <MobileActionBar />
+        </Providers>
       </body>
     </html>
   );

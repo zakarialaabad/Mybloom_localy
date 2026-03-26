@@ -103,7 +103,7 @@ export default function EditCouponPage() {
     <div className="min-h-screen bg-[#f8f9fa] pb-20">
       {/* Header Container */}
       <div className="bg-white border-b border-gray-100">
-        <div className="w-full px-[144px] py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-24 max-w-[1400px] mx-auto py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
           <div>
             <Link
               href="/admin/dashboard/coupons"
@@ -112,24 +112,24 @@ export default function EditCouponPage() {
               <ArrowLeft size={16} strokeWidth={2.5} />
               Back to Coupon
             </Link>
-            <h1 className="text-[34px] font-serif font-bold text-[#333] tracking-tight leading-tight mb-1">
+            <h1 className="text-[28px] sm:text-[34px] font-serif font-bold text-[#333] tracking-tight leading-tight mb-1">
               Edit Coupon
             </h1>
             <p className="text-[14px] text-gray-500">
               Update your luxury promotion details and redemption rules
             </p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
             <Link
               href="/admin/dashboard/coupons"
-              className="px-6 py-2.5 rounded-full border border-gray-200 text-[#555] font-medium text-[14px] hover:bg-gray-50 transition-all font-serif italic"
+              className="px-6 py-2.5 rounded-full border border-gray-200 text-[#555] font-medium text-[14px] hover:bg-gray-50 transition-all font-serif italic text-center w-full sm:w-auto"
             >
               Discard
             </Link>
             <button
               onClick={handleSave}
               disabled={isSaving}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#ed3269] hover:bg-[#d42255] text-white font-medium text-[14px] transition-all shadow-sm disabled:opacity-60"
+              className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#ed3269] hover:bg-[#d42255] text-white font-medium text-[14px] transition-all shadow-sm disabled:opacity-60 w-full sm:w-auto"
             >
               <Save size={16} strokeWidth={2.5} />
               {isSaving ? 'Saving...' : 'Save Coupon'}
@@ -139,23 +139,23 @@ export default function EditCouponPage() {
       </div>
 
       {/* Main Content */}
-      <div className="w-full px-[144px] py-8">
+      <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-24 max-w-[1400px] mx-auto py-8">
         {error && (
           <div className="mb-6 px-4 py-3 bg-red-50 border border-red-200 text-red-600 rounded-[12px] text-[14px]">
             {error}
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-start">
           
           {/* Card 1: Basic Information */}
-          <div className="bg-white rounded-[16px] p-8 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
+          <div className="bg-white rounded-[16px] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
             <div className="flex items-center gap-2 text-[#da2966] mb-8">
               <Info size={20} strokeWidth={2} />
-              <h2 className="text-[18px] font-serif font-bold tracking-wide">Basic Information</h2>
+              <h2 className="text-[16px] sm:text-[18px] font-serif font-bold tracking-wide">Basic Information</h2>
             </div>
 
-            <div className="grid grid-cols-2 gap-5 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
               <div>
                 <label className="block text-[11px] font-bold text-[#444] mb-2">Coupon Code</label>
                 <input
@@ -180,7 +180,7 @@ export default function EditCouponPage() {
 
             <div>
               <label className="block text-[11px] font-bold text-[#444] mb-3">Promotion Type</label>
-              <div className="flex items-center gap-3">
+              <div className="flex flex-wrap items-center gap-3">
                 <button
                   type="button"
                   onClick={() => setPromoType('Influencers')}
@@ -218,10 +218,10 @@ export default function EditCouponPage() {
           </div>
 
           {/* Card 2: Validity */}
-          <div className="bg-white rounded-[16px] p-8 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
+          <div className="bg-white rounded-[16px] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
             <div className="flex items-center gap-2 text-[#da2966] mb-8">
               <Clock size={20} strokeWidth={2} />
-              <h2 className="text-[18px] font-serif font-bold tracking-wide">Validity</h2>
+              <h2 className="text-[16px] sm:text-[18px] font-serif font-bold tracking-wide">Validity</h2>
             </div>
             
             <div className="space-y-6">
@@ -253,13 +253,13 @@ export default function EditCouponPage() {
           </div>
 
           {/* Card 3: Discount Settings */}
-          <div className="bg-white rounded-[16px] p-8 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
+          <div className="bg-white rounded-[16px] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
             <div className="flex items-center gap-2 text-[#da2966] mb-8">
               <PercentCircle size={20} strokeWidth={2} />
-              <h2 className="text-[18px] font-serif font-bold tracking-wide">Discount Settings</h2>
+              <h2 className="text-[16px] sm:text-[18px] font-serif font-bold tracking-wide">Discount Settings</h2>
             </div>
 
-            <div className="grid grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-[11px] font-bold text-[#444] mb-2">Discount Type</label>
                 <select
@@ -292,10 +292,10 @@ export default function EditCouponPage() {
           </div>
 
           {/* Card 4: Usage Rules */}
-          <div className="bg-white rounded-[16px] p-8 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
+          <div className="bg-white rounded-[16px] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
             <div className="flex items-center gap-2 text-[#da2966] mb-8">
               <Settings2 size={20} strokeWidth={2} />
-              <h2 className="text-[18px] font-serif font-bold tracking-wide">Usage Rules</h2>
+              <h2 className="text-[16px] sm:text-[18px] font-serif font-bold tracking-wide">Usage Rules</h2>
             </div>
 
             <div>

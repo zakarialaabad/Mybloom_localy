@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api\V1\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
+use App\Models\ReviewImage;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ReviewController extends Controller
 {
@@ -53,6 +55,19 @@ class ReviewController extends Controller
             $query->where('product_id', (int) $productId);
         }
 
+        // Source filter: client = has order_number (submitted via /feedback)
+        //                admin  = no order_number (curated by admin)
+        $source = $request->query('source');
+        if ($source === 'client') {
+            $query->whereNotNull('order_number');
+        } elseif ($source === 'admin') {
+            $query->whereNull('order_number');
+        }
+
+        // Sort order
+        $sort = $request->query('sort', 'newest');
+        $query->reorder('created_at', $sort === 'oldest' ? 'asc' : 'desc');
+
         return ReviewResource::collection($query->paginate(25));
     }
 
@@ -68,15 +83,20 @@ class ReviewController extends Controller
      */
     public function stats(): JsonResponse
     {
-        $total   = Review::count();
-        $pending = Review::where('is_approved', false)->count();
+        // Stats apply only to admin-curated reviews (order_number IS NULL)
+        // Client-submitted feedback (with order_number) is tracked separately
+        $base = Review::whereNull('order_number');
+
+        $total   = (clone $base)->count();
+        $pending = (clone $base)->where('is_approved', false)->count();
 
         $average = $total > 0
-            ? round(Review::avg('rating'), 1)
+            ? round((clone $base)->avg('rating'), 1)
             : 0.0;
 
-        // Star distribution (all reviews)
-        $distributionRaw = Review::selectRaw('rating, COUNT(*) as count')
+        // Star distribution (admin-curated reviews only)
+        $distributionRaw = (clone $base)
+            ->selectRaw('rating, COUNT(*) as count')
             ->groupBy('rating')
             ->pluck('count', 'rating');
 
@@ -89,8 +109,9 @@ class ReviewController extends Controller
             ];
         }
 
-        // Most-reviewed product
-        $mostReviewed = Review::select('product_id', DB::raw('COUNT(*) as review_count'))
+        // Most-reviewed product (admin-curated reviews only)
+        $mostReviewed = (clone $base)
+            ->select('product_id', DB::raw('COUNT(*) as review_count'))
             ->with('product:id,name')
             ->groupBy('product_id')
             ->orderByDesc('review_count')
@@ -118,6 +139,7 @@ class ReviewController extends Controller
             'reviewer_name' => 'sometimes|required|string|max:255',
             'rating'        => 'sometimes|required|integer|min:1|max:5',
             'body'          => 'sometimes|nullable|string|max:5000',
+            'product_id'    => 'sometimes|nullable|integer|exists:products,id',
         ]);
 
         $review->update($validated);
@@ -162,5 +184,42 @@ class ReviewController extends Controller
         $review->delete();
 
         return response()->json(['message' => 'Review deleted.']);
+    }
+
+    /**
+     * POST /api/v1/admin/reviews
+     * Admin creates a curated review (no order_number — distinct from client feedback).
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'reviewer_name' => 'required|string|max:255',
+            'rating'        => 'required|integer|min:1|max:5',
+            'body'          => 'nullable|string|max:5000',
+            'product_id'    => 'nullable|integer|exists:products,id',
+            'images.*'      => 'nullable|file|image|max:5120',
+        ]);
+
+        $review = Review::create([
+            'reviewer_name' => $validated['reviewer_name'],
+            'rating'        => $validated['rating'],
+            'body'          => $validated['body'] ?? null,
+            'product_id'    => $validated['product_id'] ?? null,
+            'is_approved'   => true,
+            'approved_at'   => now(),
+        ]);
+
+        foreach ($request->file('images', []) as $file) {
+            $path = $file->store('review-images', 'public');
+            ReviewImage::create([
+                'review_id' => $review->id,
+                'url'       => Storage::disk('public')->url($path),
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Review created.',
+            'data'    => new ReviewResource($review->fresh(['product', 'images'])),
+        ], 201);
     }
 }

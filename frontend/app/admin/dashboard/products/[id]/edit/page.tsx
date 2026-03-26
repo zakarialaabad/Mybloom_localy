@@ -46,7 +46,7 @@ const Card = ({ title, icon, action, children, className = '' }: any) => (
     <div className="flex items-center justify-between mb-8">
       <div className="flex items-center gap-3">
          {icon}
-         <h2 className="text-[18px] font-bold text-[#da2966]">{title}</h2>
+         <h2 className="text-[16px] sm:text-[18px] font-bold text-[#da2966]">{title}</h2>
       </div>
       {action && <div>{action}</div>}
     </div>
@@ -100,6 +100,7 @@ export default function EditProductPage() {
   const [isLoading, setIsLoading] = useState(true);
 
   // --- Product Data State ---
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     category_id: '',
     brand_id: '',
@@ -274,6 +275,10 @@ export default function EditProductPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    const errorKey = e.target.name === 'short_description' ? 'subtitle' : 
+                     e.target.name === 'full_description' ? 'description' : 
+                     e.target.name;
+    setErrors(prev => ({ ...prev, [errorKey]: '' }));
   };
 
   // ── Image handlers ────────────────────────────────────────────────────────
@@ -510,8 +515,16 @@ export default function EditProductPage() {
 
       const jsonData = await res.json();
       if (!res.ok) {
-        console.error('Validation Errors:', jsonData);
-        showToast('Failed to save product. ' + (jsonData.message || 'Please check the fields.'));
+        if (jsonData.errors) {
+          const formattedErrors: Record<string, string> = {};
+          Object.keys(jsonData.errors).forEach(key => {
+            formattedErrors[key] = jsonData.errors[key][0];
+          });
+          setErrors(formattedErrors);
+          showToast('Please fix the validation errors.');
+        } else {
+          showToast('Failed to save product. ' + (jsonData.message || 'Please check the fields.'));
+        }
         return;
       }
       showToast('Product updated successfully!');
@@ -543,7 +556,7 @@ export default function EditProductPage() {
   }
 
   return (
-    <div className="px-8 py-8 space-y-6 min-h-screen bg-[#fcfcfc] max-w-7xl mx-auto">
+    <div className="px-4 sm:px-8 py-6 sm:py-8 space-y-6 min-h-screen bg-[#fcfcfc] max-w-7xl mx-auto">
       <style>{`
         @keyframes toastIn {
           from { opacity: 0; transform: translateX(-50%) translateY(-16px); }
@@ -559,7 +572,7 @@ export default function EditProductPage() {
       {toastVisible && (
         <div
           style={{ position: 'fixed', top: '24px', left: '50%', transform: 'translateX(-50%)', zIndex: 200, animation: 'toastIn 0.3s ease-out' }}
-          className="flex items-center gap-3 bg-white border border-[#da2966] text-[#da2966] px-5 py-3.5 rounded-2xl shadow-[0_8px_32px_rgba(218,41,102,0.2)] text-[14px] font-bold whitespace-nowrap pointer-events-none"
+          className="flex items-center gap-3 bg-white border border-[#da2966] text-[#da2966] px-5 py-3.5 rounded-t-[24px] sm:rounded-t-[24px] sm:rounded-[24px] rounded-b-none sm:rounded-b-[24px] w-full sm:w-auto rounded-b-none sm:rounded-b-[24px] w-full sm:w-auto shadow-[0_8px_32px_rgba(218,41,102,0.2)] text-[14px] font-bold whitespace-nowrap pointer-events-none"
         >
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
           {toastMsg}
@@ -590,9 +603,9 @@ export default function EditProductPage() {
       </div>
 
       {/* SEC 1: Details & Media */}
-      <div className="grid grid-cols-[1.4fr_1fr] gap-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-[1.4fr_1fr] gap-4 sm:p-6">
         <Card title="Product Details" icon={<DetailsIcon />}>
-          <div className="grid grid-cols-2 gap-6 mb-6">
+          <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4 sm:p-6 mb-6">
             <div className="flex flex-col gap-2">
               <label className="text-[13px] font-bold text-[#333]">Category</label>
               <div className="relative">
@@ -607,6 +620,7 @@ export default function EditProductPage() {
                     <option key={cat.id} value={cat.id}>{cat.name}</option>
                   ))}
                 </select>
+              {errors.category_id && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.category_id}</span>}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"><ChevronDown /></div>
               </div>
             </div>
@@ -625,6 +639,7 @@ export default function EditProductPage() {
                     <option key={brand.id} value={brand.id}>{brand.name}</option>
                   ))}
                 </select>
+              {errors.brand_id && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.brand_id}</span>}
                 <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"><ChevronDown /></div>
               </div>
             </div>
@@ -640,6 +655,7 @@ export default function EditProductPage() {
               placeholder="e.g Rose Damascena Elixir"
               className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
             />
+              {errors.name && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.name}</span>}
           </div>
 
           <div className="flex flex-col gap-2 mb-6">
@@ -682,6 +698,7 @@ export default function EditProductPage() {
               placeholder="One sentence summary ..."
               className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
             />
+              {errors.subtitle && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.subtitle}</span>}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -693,6 +710,7 @@ export default function EditProductPage() {
               placeholder="Describe the fragrance notes, key ingredients, and benefits..."
               className="w-full h-32 px-4 py-3 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40 resize-none resize-y"
             />
+              {errors.description && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.description}</span>}
             <div className="flex justify-end pr-1"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M9 1L1 9" stroke="#888" strokeWidth="1.5" strokeLinecap="round"/><path d="M5 9H9V5" stroke="#888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
           </div>
         </Card>
@@ -855,7 +873,7 @@ export default function EditProductPage() {
       </Card>
 
       {/* SEC 3: Status & Ingredients */}
-      <div className="grid grid-cols-[1fr_1.5fr] gap-6">
+      <div className="flex flex-col lg:grid lg:grid-cols-[1fr_1.5fr] gap-4 sm:p-6">
         <Card title="Status Settings" icon={<SettingsIcon />}>
           <div className="space-y-4">
             <ToggleRow label="Make as Best Seller" active={activeStatus === 'best_seller'} onClick={() => setActiveStatus(activeStatus === 'best_seller' ? 'none' : 'best_seller')} />
@@ -865,7 +883,7 @@ export default function EditProductPage() {
         </Card>
 
         <Card title="Ingredients" icon={<LeafIcon />}>
-          <div className="grid grid-cols-3 gap-6 mt-2 w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:p-6 mt-2 w-full">
             {[0, 1, 2].map((slot) => {
               const ing = ingredients[slot];
               return (
@@ -875,7 +893,7 @@ export default function EditProductPage() {
                       onClick={() => openIngredientModal(slot)}
                       className="absolute inset-0 rounded-full bg-white flex flex-col items-center justify-center hover:bg-[#fff0f3] transition-colors"
                     >
-                      <span className="text-[#da2966] font-bold text-[24px] leading-none mb-1">+</span>
+                      <span className="text-[#da2966] font-bold text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] leading-none mb-1">+</span>
                       <span className="text-[#da2966] text-[12px] font-bold">ADD</span>
                     </button>
                     {ing && (
@@ -906,7 +924,7 @@ export default function EditProductPage() {
       >
         <div>
           {/* Reviews row — up to 4 cards per page */}
-          <div className="flex items-stretch gap-6 py-6 px-4 flex-wrap">
+          <div className="flex items-stretch gap-4 sm:p-6 py-6 px-4 flex-wrap">
             {currentPageReviews.map((rev, i) => {
               const idx = reviewPage * 4 + i;
               return (
@@ -995,7 +1013,7 @@ export default function EditProductPage() {
 
       {/* SEC 5: FAQ */}
       <Card title="Product FAQ" icon={<ChatIcon />}>
-        <div className="grid grid-cols-2 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:p-6 md:gap-10">
           <div className="space-y-4">
             {faqs.map((faq, idx) => (
               <div key={idx} className="bg-[#ffffe9] rounded-[20px] border border-yellow-100 px-6 py-5 shadow-sm">
@@ -1048,13 +1066,13 @@ export default function EditProductPage() {
 
       {/* 1. Add / Edit Ingredient Modal */}
       {isIngredientModalOpen && createPortal(
-        <div className="fixed inset-0 bg-black/40 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative">
+        <div className="fixed inset-0 bg-black/40 z-[9999] flex items-end sm:items-center justify-center sm:p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl w-full max-w-md p-5 sm:p-8 shadow-2xl relative">
             <button
               onClick={() => { setIsIngredientModalOpen(false); setEditingIngredientSlot(null); setNewIngredientName(''); setNewIngredientFile(null); }}
-              className="absolute top-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute top-4 sm:p-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
             >✕</button>
-            <h3 className="text-[24px] font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
+            <h3 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
               <LeafIcon /> Ingredients
             </h3>
             <div className="mb-8">
@@ -1081,13 +1099,13 @@ export default function EditProductPage() {
 
       {/* 2. Add Review Modal */}
       {isReviewFormOpen && createPortal(
-        <div className="fixed inset-0 bg-black/40 z-[9999] flex items-center justify-center p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative">
+        <div className="fixed inset-0 bg-black/40 z-[9999] flex items-end sm:items-center justify-center sm:p-4 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl w-full max-w-md p-5 sm:p-8 shadow-2xl relative">
             <button
               onClick={() => { setIsReviewFormOpen(false); setNewReviewPhotoFile(null); setNewReviewPhotoUrl(''); setNewReview({ reviewer_name: '', rating: 0, comment: '', date: '' }); }}
-              className="absolute top-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+              className="absolute top-4 sm:p-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
             >✕</button>
-            <h3 className="text-[24px] font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
+            <h3 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
               <StarIcon /> Curated Reviews
             </h3>
             <div className="mb-6">

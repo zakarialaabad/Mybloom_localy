@@ -523,8 +523,8 @@ export interface AdminProductMeta {
 }
 
 export const adminProductService = {
-  list: async (params?: Record<string, unknown>): Promise<{ data: AdminProduct[]; meta: AdminProductMeta }> => {
-    const { data } = await apiClient.get<{ data: AdminProduct[]; meta: AdminProductMeta }>('/v1/admin/products', { params });
+  list: async (params?: Record<string, unknown>, signal?: AbortSignal): Promise<{ data: AdminProduct[]; meta: AdminProductMeta }> => {
+    const { data } = await apiClient.get<{ data: AdminProduct[]; meta: AdminProductMeta }>('/v1/admin/products', { params, signal });
     return data;
   },
 
@@ -767,7 +767,16 @@ export const adminReviewService = {
     const { data } = await apiClient.get<AdminReviewStats>('/v1/admin/reviews/stats');
     return data;
   },
-  update: async (id: number, payload: { reviewer_name?: string; rating?: number; body?: string | null }): Promise<AdminReview> => {
+  create: async (payload: FormData | { reviewer_name: string; rating: number; body?: string | null; product_id?: number | null }): Promise<AdminReview> => {
+    const isFormData = payload instanceof FormData;
+    const { data } = await apiClient.post<{ data: AdminReview }>(
+      '/v1/admin/reviews',
+      payload,
+      isFormData ? { headers: { 'Content-Type': 'multipart/form-data' } } : undefined,
+    );
+    return data.data;
+  },
+  update: async (id: number, payload: { reviewer_name?: string; rating?: number; body?: string | null; product_id?: number | null }): Promise<AdminReview> => {
     const { data } = await apiClient.patch<{ data: AdminReview }>(`/v1/admin/reviews/${id}`, payload);
     return data.data;
   },

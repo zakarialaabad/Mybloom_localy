@@ -40,6 +40,18 @@ class ReviewController extends Controller
             $baseQuery->where('product_id', $request->integer('product_id'));
         }
 
+        // Source filter:
+        //   source=admin  → admin-curated reviews only (order_number IS NULL)
+        //   source=client → client-submitted feedback (order_number IS NOT NULL)
+        //   (default)     → when no product_id, only show admin-curated on homepage
+        $source = $request->query('source');
+        if ($source === 'client') {
+            $baseQuery->whereNotNull('order_number');
+        } elseif ($source === 'admin' || ! $request->filled('product_id')) {
+            // Homepage (no product_id) defaults to admin-curated testimonials only
+            $baseQuery->whereNull('order_number');
+        }
+
         // ── Rating summary aggregation ────────────────────────────────────────
         $total = (clone $baseQuery)->count();
         $average = $total > 0

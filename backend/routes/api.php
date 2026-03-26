@@ -116,6 +116,7 @@ Route::prefix('api')->group(function () {
                 // Reviews
                 Route::get('reviews/stats',                [AdminReviewController::class, 'stats']);
                 Route::get('reviews',                      [AdminReviewController::class, 'index']);
+                Route::post('reviews',                     [AdminReviewController::class, 'store']);
                 Route::patch('reviews/{review}',           [AdminReviewController::class, 'update']);
                 Route::patch('reviews/{review}/approve',   [AdminReviewController::class, 'approve']);
                 Route::patch('reviews/{review}/reject',    [AdminReviewController::class, 'reject']);
