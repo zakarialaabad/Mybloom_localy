@@ -37,7 +37,7 @@ export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-100">
       {/* Main content */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-16 pb-10">
+      <div className="container mx-auto px-4 md:px-[69px] pt-16 pb-10">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
 
           {/* Col 1 — Logo + tagline + social */}
@@ -153,7 +153,7 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-gray-100">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 py-5 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
+        <div className="container mx-auto px-4 py-5 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
           <p className="text-[12px] text-gray-400 text-center">
             © 2026 MyBloom. All Rights Reserved.
           </p>

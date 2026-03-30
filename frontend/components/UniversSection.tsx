@@ -44,7 +44,7 @@ export default function UniversSection() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
           <div>
-            <h2 className="text-5xl font-serif text-gray-800">L'Univers de <span className="italic text-yellow-500 font-serif" style={{fontFamily: 'var(--font-serif, Playfair Display, serif)'}}>Bloom Parfums</span></h2>
+            <h2 className="text-5xl font-serif text-gray-800">L'Univers de <span className="text-[#e63a6c] italic font-light ml-1 text-4xl md:text-5xl" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>Bloom Parfums</span></h2>
             <p className="text-gray-500 text-sm mt-4 max-w-3xl leading-relaxed">
               Explorez notre catalogue complet regroupant tous nos produits, développés avec exigence pour répondre aux attentes les plus élevées, des solutions fiables et innovantes pensées pour vous apporter satisfaction, confiance et excellence.
             </p>

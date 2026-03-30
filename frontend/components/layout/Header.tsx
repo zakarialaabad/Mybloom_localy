@@ -50,7 +50,7 @@ export default function Header() {
       </div>
 
       {/* ── Logo · Search · Actions ─────────────────────────────────────── */}
-      <div className="container mx-auto flex items-center justify-between px-4 py-4 md:py-5">
+      <div className="container mx-auto flex items-center justify-between px-4 md:px-[69px] py-4 md:py-5">
         {/* Mobile Hamburger (hidden on pb-desktop) */}
         <div className="flex w-1/4 md:hidden">
           <button aria-label="Menu" className="text-gray-900" onClick={() => setIsMenuOpen(true)}>

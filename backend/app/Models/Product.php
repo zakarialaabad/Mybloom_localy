@@ -111,4 +111,15 @@ class Product extends Model
     {
         return $this->hasMany(ProductFaq::class);
     }
+
+    // ── Get recommended products ────────────────────────────────────────────────
+    /**
+     * Get all recommended products (products with is_recommended = true)
+     * Used by API to return in product detail response
+     */
+    public function scopeRecommended($query)
+    {
+        return $query->where('is_recommended', true)
+                     ->where('is_active', true);
+    }
 }

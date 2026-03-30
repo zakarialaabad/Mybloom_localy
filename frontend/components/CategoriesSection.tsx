@@ -41,7 +41,7 @@ export default function CategoriesSection() {
   return (
     <section className="bg-white">
       {/* ── Why Shop with us ────────────────────────────────────────────────── */}
-      <div className="relative py-10 md:py-24 overflow-hidden">
+      <div className="relative py-20 md:py-48 overflow-hidden">
         {/* Background - rotated on mobile */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           {/* Mobile version (Rotated) - Adjusted so it doesn't zoom in so much that it disappears */}
@@ -51,14 +51,14 @@ export default function CategoriesSection() {
           />
           {/* Desktop version (Normal) */}
           <div 
-            className="hidden md:block absolute inset-0 bg-cover bg-center bg-no-repeat"
+            className="hidden md:block absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
             style={{ backgroundImage: "url('/background.jpeg')" }}
           />
         </div>
         
         <div className="relative z-10 w-full max-w-7xl mx-auto">
           <SectionContainer>
-            <div className="flex flex-col items-center text-center mb-10 md:mb-20">
+            <div className="flex flex-col items-start text-left mb-10 md:mb-20">
               <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#3a3a3a] font-serif">
                 Why Shop with&nbsp;
                 <span className="inline-block align-middle">
@@ -67,9 +67,9 @@ export default function CategoriesSection() {
               </h2>
             </div>
 
-          <div className="grid grid-cols-1 px-4 gap-8 md:gap-14 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto">
+          <div className="grid grid-cols-1 px-4 gap-8 md:gap-14 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto auto-rows-fr">
             {/* 1. Authentic */}
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center h-full">
               <div className="mb-3 md:mb-6 flex h-14 w-14 md:h-20 md:w-20 items-center justify-center">
                 <Image 
                   src="/100_icon.jpeg" 
@@ -79,12 +79,12 @@ export default function CategoriesSection() {
                   className="object-contain md:w-20 md:h-20"
                 />
               </div>
-              <h3 className="text-base md:text-lg font-bold text-gray-900 font-serif">100% Authentic Products</h3>
+              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">100% Authentic Products</h3>
               <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">Sourced from Authorized<br />Suppliers.</p>
             </div>
 
             {/* 2. Pricing */}
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center h-full">
               <div className="mb-3 md:mb-6 flex h-14 w-14 md:h-20 md:w-20 items-center justify-center">
                 <Image 
                   src="/Competitive_icon.jpeg" 
@@ -94,12 +94,12 @@ export default function CategoriesSection() {
                   className="object-contain md:w-20 md:h-20"
                 />
               </div>
-              <h3 className="text-base md:text-lg font-bold text-gray-900 font-serif">Competitive Pricing</h3>
+              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Competitive Pricing</h3>
               <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">Best Prices, Guaranteed<br />Savings!</p>
             </div>
 
             {/* 3. Support */}
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center h-full">
               <div className="mb-3 md:mb-6 flex h-14 w-14 md:h-20 md:w-20 items-center justify-center">
                 <Image 
                   src="/Customer_icon.jpeg" 
@@ -109,12 +109,12 @@ export default function CategoriesSection() {
                   className="object-contain md:w-20 md:h-20"
                 />
               </div>
-              <h3 className="text-base md:text-lg font-bold text-gray-900 font-serif">Customer Support</h3>
+              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Customer Support</h3>
               <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">We’re here whenever<br />you need us.</p>
             </div>
 
             {/* 4. COD */}
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center h-full">
               <div className="mb-3 md:mb-6 flex h-14 w-14 md:h-20 md:w-20 items-center justify-center">
                 <Image 
                   src="/Cash_Icon.jpeg" 
@@ -124,7 +124,7 @@ export default function CategoriesSection() {
                   className="object-contain md:w-20 md:h-20"
                 />
               </div>
-              <h3 className="text-base md:text-lg font-bold text-gray-900 font-serif">Cash on Delivery</h3>
+              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Cash on Delivery</h3>
               <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">Pay when you<br />receive.</p>
             </div>
           </div>

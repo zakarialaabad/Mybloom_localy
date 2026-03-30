@@ -63,38 +63,32 @@ export default function TrackOrderPage() {
         />
       </div>
 
-      <main className="flex-1 flex items-center justify-center overflow-hidden px-3 pb-16 md:pb-0 md:block md:max-w-[1400px] md:w-full md:mx-auto md:px-6 lg:px-8 md:py-12">
-        <div className="w-full md:flex md:flex-col lg:flex-row gap-0 md:rounded-sm md:overflow-hidden md:border border-gray-100 md:shadow-sm md:flex-1">
+      <main className="flex-1 flex items-center justify-center overflow-hidden md:overflow-visible px-3 pb-16 md:pb-0 md:px-6 lg:px-8 md:py-12">
+        <div className="w-full md:max-w-[1200px] md:flex md:flex-col lg:flex-row gap-0 md:rounded-sm md:overflow-hidden md:border border-gray-100 md:shadow-sm md:min-h-[580px]">
           
           {/* Left Column - Desktop Only */}
           <div className="hidden lg:block lg:w-[55%] relative min-h-[500px] lg:min-h-[700px] bg-[#f5f5f5]">
             <Image 
-              src="https://images.unsplash.com/photo-1549460298-0524244a2c07?auto=format&fit=crop&q=80&w=1200" 
+              src="/public_Image/bloomDelivere.jpg" 
               alt="Bloom Parfums Delivery Van" 
               fill 
               className="object-cover"
             />
-            {/* Logo Overlay on Van */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="relative w-64 h-64 border-8 border-aura-gold/30 rounded-full flex flex-col items-center justify-center bg-white/10 backdrop-blur-[2px]">
-                 <span className="text-4xl font-serif font-bold text-aura-gold tracking-tight italic">Bloom</span>
-                 <span className="text-3xl font-serif text-aura-gold tracking-widest -mt-2">Parfums</span>
-              </div>
-            </div>
+            {/* Logo Overlay on Van — removed, image stands alone */}
           </div>
 
           {/* Right Column - Tracking Form */}
-          <div className="lg:w-[45%] px-5 py-5 md:p-20 bg-white w-full rounded-sm shadow-sm md:shadow-none flex flex-col justify-center">
+          <div className="lg:w-[45%] px-5 py-5 md:px-12 md:py-14 lg:px-16 lg:py-16 bg-white w-full rounded-sm shadow-sm md:shadow-none flex flex-col justify-center">
             <div className="max-w-md mx-auto w-full">
               
               {/* Pink Scalloped Truck Icon */}
               <div className="flex justify-center mb-4 md:mb-8">
-                <div className="relative w-[70px] h-[70px] md:w-[90px] md:h-[90px] flex items-center justify-center">
+                <div className="relative w-[80px] h-[80px] md:w-[100px] md:h-[100px] flex items-center justify-center">
                   <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full text-[#fdefed] fill-current">
-                    <path d="M 100, 10 A 20,20 0 0,1 120,30 A 20,20 0 0,0 145,45 A 20,20 0 0,1 160,70 A 20,20 0 0,0 170,95 A 20,20 0 0,1 170,125 A 20,20 0 0,0 160,150 A 20,20 0 0,1 145,175 A 20,20 0 0,0 120,190 A 20,20 0 0,1 100,210 A 20,20 0 0,1 80,190 A 20,20 0 0,0 55,175 A 20,20 0 0,1 40,150 A 20,20 0 0,0 30,125 A 20,20 0 0,1 30,95 A 20,20 0 0,0 40,70 A 20,20 0 0,1 55,45 A 20,20 0 0,0 80,30 A 20,20 0 0,1 100,10 z" />
+                    <path d="M 100.00,4.00 C 110.00,4.00 115.00,12.00 120.00,15.00 C 126.00,18.00 135.00,15.00 142.00,20.00 C 148.00,24.00 148.00,32.00 152.00,38.00 C 158.00,44.00 166.00,44.00 170.00,52.00 C 174.00,58.00 170.00,68.00 174.00,74.00 C 180.00,81.00 185.00,88.00 185.00,95.00 C 185.00,105.00 178.00,111.00 175.00,119.00 C 172.00,125.00 176.00,132.00 172.00,138.00 C 168.00,145.00 159.00,144.00 152.00,150.00 C 146.00,156.00 146.00,165.00 139.00,170.00 C 132.00,174.00 124.00,170.00 117.00,175.00 C 111.00,180.00 106.00,188.00 100.00,188.00 C 94.00,188.00 89.00,180.00 83.00,175.00 C 76.00,170.00 68.00,174.00 61.00,170.00 C 54.00,165.00 54.00,156.00 48.00,150.00 C 41.00,144.00 32.00,145.00 28.00,138.00 C 24.00,132.00 28.00,125.00 25.00,119.00 C 22.00,111.00 15.00,105.00 15.00,95.00 C 15.00,88.00 20.00,81.00 26.00,74.00 C 30.00,68.00 26.00,58.00 30.00,52.00 C 34.00,44.00 42.00,44.00 48.00,38.00 C 52.00,32.00 52.00,24.00 58.00,20.00 C 65.00,15.00 74.00,18.00 80.00,15.00 C 85.00,12.00 90.00,4.00 100.00,4.00 Z" />
                   </svg>
-                  <div className="relative z-10 w-12 h-12 bg-white rounded-full flex items-center justify-center">
-                    <svg className="w-6 h-6 text-[#da2966]" fill="currentColor" viewBox="0 0 24 24">
+                  <div className="relative z-10 w-[50px] h-[50px] md:w-[64px] md:h-[64px] bg-white rounded-full flex items-center justify-center shadow-sm">
+                    <svg className="w-7 h-7 md:w-9 md:h-9 text-[#da2966]" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM17 12V9.5h2.5l1.97 2.5H17z" />
                     </svg>
                   </div>

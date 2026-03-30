@@ -59,6 +59,8 @@ Route::prefix('api')->group(function () {
             // Orders — create + track (no auth)
             Route::post('/orders',                                [OrderController::class, 'store']);
             Route::get('/orders/{orderNumber}/track',             [OrderController::class, 'track']);
+            Route::post('/orders/{orderNumber}/send-invoice',     [OrderController::class, 'sendInvoice']);
+            Route::get('/invoices/{orderNumber}/download',        [OrderController::class, 'downloadInvoice']);
 
             // Reviews — GET (approved, optional product_id scope) | POST (submit, no auth)
             Route::get('/reviews',                     [ReviewController::class, 'index']);

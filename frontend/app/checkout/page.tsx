@@ -39,6 +39,7 @@ export default function CheckoutPage() {
   const [quartier,  setQuartier]  = useState('');
   const [zip,       setZip]       = useState('');
   const [address,   setAddress]   = useState('');
+  const [whatsappOptIn, setWhatsappOptIn] = useState(false);
 
   /* ── Coupon ───────────────────────────────────────────────────── */
   const [couponCode,    setCouponCode]    = useState('');
@@ -75,19 +76,34 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMethodId || items.length === 0) return;
+    
+    // Validate phone format: +212 followed by 5-7 or 6, then 8 digits
+    const phoneRegex = /^\+212[567]\d{8}$/;
+    if (!phoneRegex.test(phone)) {
+      setSubmitError('Veuillez entrer un numéro de téléphone valide au format +212XXXXXXXXX');
+      return;
+    }
+
+    // Require WhatsApp opt-in
+    if (!whatsappOptIn) {
+      setSubmitError('Vous devez accepter les notifications WhatsApp pour continuer.');
+      return;
+    }
+    
     setSubmitError('');
     setSubmitting(true);
     try {
       const result = await orderService.place({
-        customer_name:      `${firstName} ${lastName}`.trim(),
-        customer_phone:     phone,
-        shipping_address:   { city, quartier, zip, address },
+        customer_name: `${firstName} ${lastName}`.trim(),
+        customer_phone: phone,
+        shipping_address: { city, quartier, zip, address },
         shipping_method_id: selectedMethodId,
-        coupon_code:        couponResult ? couponCode : undefined,
-        items:              items.map((i) => ({
+        coupon_code: couponResult ? couponCode : undefined,
+        whatsapp_opt_in: whatsappOptIn,
+        items: items.map((i) => ({
           product_id: i.productId,
-          size_id:    i.sizeId,
-          quantity:   i.quantity,
+          size_id: i.sizeId,
+          quantity: i.quantity,
         })),
       });
       clearCart();
@@ -136,10 +152,17 @@ export default function CheckoutPage() {
                   {/* Phone */}
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Phone number *</label>
-                    <div className="flex border border-gray-200 rounded-sm focus-within:border-[#b89b72]">
+                    <div className={`flex border rounded-sm focus-within:border-[#b89b72] ${
+                      phone && !/^\+212[567]\d{8}$/.test(phone) 
+                        ? 'border-red-400' 
+                        : 'border-gray-200'
+                    }`}>
                       <span className="bg-gray-50 border-r border-gray-200 px-4 py-3 font-serif text-gray-700 text-sm">MAR</span>
                       <input required value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" placeholder="+212 6 XX XX XX XX" className="flex-1 px-4 py-3 focus:outline-none font-serif text-gray-600" />
                     </div>
+                    {phone && !/^\+212[567]\d{8}$/.test(phone) && (
+                      <p className="mt-1 text-xs text-red-600 font-serif">Format invalide. Utilisez +212XXXXXXXXX (ex: +212612345678)</p>
+                    )}
                   </div>
 
                   {/* City / Quartier / Zip */}
@@ -162,6 +185,31 @@ export default function CheckoutPage() {
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Address *</label>
                     <input required value={address} onChange={(e) => setAddress(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600" />
+                  </div>
+
+                  {/* WhatsApp Opt-in */}
+                  <div className="bg-blue-50 border border-blue-200 rounded-sm p-4 mt-8">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={whatsappOptIn}
+                        onChange={(e) => setWhatsappOptIn(e.target.checked)}
+                        className="mt-1 w-4 h-4 accent-blue-600"
+                      />
+                      <div className="flex-1">
+                        <span className="block font-serif font-bold text-gray-900 text-sm">
+                          ✓ Recevoir les notifications WhatsApp
+                        </span>
+                        <span className="block font-serif text-xs text-gray-600 mt-1">
+                          Vous recevrez les confirmations de commande et les mises à jour de statut via WhatsApp. Vous pouvez vous désabonner à tout moment.
+                        </span>
+                      </div>
+                    </label>
+                    {!whatsappOptIn && (
+                      <p className="text-xs text-blue-600 font-serif mt-3">
+                        ⚠️ Cette option est requise pour poursuivre votre commande.
+                      </p>
+                    )}
                   </div>
 
                   {/* Shipping Methods */}

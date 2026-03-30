@@ -72,7 +72,7 @@ export default function CustomerReviewsSection() {
           {/* Left Column: Rating Summary */}
           <div className="lg:col-span-4 space-y-8">
             <h2 className="text-4xl font-serif text-gray-800">
- Nos Clients, <span className="italic text-aura-gold">Notre Fierté</span>            </h2>
+ Nos Clients,  <span className="text-[#e63a6c] italic font-light ml-1 text-4xl md:text-5xl" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>Notre Fierté</span>       </h2>
             <div className="flex items-start gap-8">
               <div className="text-center">
                 <div className="text-7xl font-serif text-gray-800">{displayAverage}</div>

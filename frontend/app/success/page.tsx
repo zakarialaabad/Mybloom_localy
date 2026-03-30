@@ -1,11 +1,13 @@
 'use client';
 
-import { Headphones, ArrowLeft, Check } from 'lucide-react';
+import { Headphones, ArrowLeft, Check, MessageCircle, Loader2, AlertCircle } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useEffect, useRef, useState } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { orderService } from '@/services/api';
 
 export default function OrderSuccessPage() {
   const router = useRouter();
@@ -15,6 +17,32 @@ export default function OrderSuccessPage() {
   const name    = params.get('name')   ?? '';
   const phone   = params.get('phone')  ?? '';
   const city    = params.get('city')   ?? 'MAROC';
+
+  type InvoiceStatus = 'idle' | 'sending' | 'sent' | 'failed';
+  const [invoiceStatus, setInvoiceStatus] = useState<InvoiceStatus>('idle');
+  const [invoiceError,  setInvoiceError]  = useState<string | null>(null);
+
+  const invoiceSent = useRef(false);
+  useEffect(() => {
+    if (!order || invoiceSent.current) return;
+    invoiceSent.current = true;
+
+    console.log(`[WhatsApp Invoice] Queuing invoice for order: ${order}`);
+    setInvoiceStatus('sending');
+
+    orderService.sendInvoice(order)
+      .then(() => {
+        // Backend replied 202 instantly — WhatsApp is being sent in background
+        console.log(`[WhatsApp Invoice] ✅ Queued — invoice will arrive on ${phone} shortly.`);
+        setInvoiceStatus('sent');
+      })
+      .catch((err) => {
+        const msg = err?.response?.data?.message ?? err?.message ?? 'Network error';
+        console.error('[WhatsApp Invoice] ❌ Request failed:', msg, err);
+        setInvoiceStatus('failed');
+        setInvoiceError(msg);
+      });
+  }, [order, phone]);
 
   return (
     <>
@@ -29,6 +57,44 @@ export default function OrderSuccessPage() {
         </button>
         <Image src="/logo.png" alt="MyBloom" width={110} height={32} className="object-contain h-[28px] w-auto" />
       </div>
+
+      {/* ━━━ WHATSAPP INVOICE NOTIFICATION ━━━ */}
+      {invoiceStatus !== 'idle' && (
+        <div className={`fixed bottom-6 right-4 left-4 md:left-auto md:right-6 md:w-[340px] z-50 rounded-lg shadow-lg border px-4 py-3 flex items-start gap-3 transition-all duration-300 ${
+          invoiceStatus === 'sending' ? 'bg-white border-gray-200' :
+          invoiceStatus === 'sent'    ? 'bg-[#f0fdf4] border-green-200' :
+                                        'bg-[#fff5f7] border-[#fecdd3]'
+        }`}>
+          <div className="shrink-0 mt-0.5">
+            {invoiceStatus === 'sending' && <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />}
+            {invoiceStatus === 'sent'    && <MessageCircle className="w-4 h-4 text-green-600" />}
+            {invoiceStatus === 'failed'  && <AlertCircle className="w-4 h-4 text-[#da2966]" />}
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className={`text-[12px] font-bold tracking-wide uppercase ${
+              invoiceStatus === 'sending' ? 'text-gray-500' :
+              invoiceStatus === 'sent'    ? 'text-green-700' :
+                                            'text-[#da2966]'
+            }`}>
+              {invoiceStatus === 'sending' && 'Envoi de la facture…'}
+              {invoiceStatus === 'sent'    && 'Facture envoyée via WhatsApp'}
+              {invoiceStatus === 'failed'  && 'Facture non envoyée'}
+            </p>
+            <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">
+              {invoiceStatus === 'sending' && 'Génération du PDF et envoi WhatsApp en cours.'}
+              {invoiceStatus === 'sent'    && `Vous recevrez la facture sur ${phone} dans quelques instants.`}
+              {invoiceStatus === 'failed'  && (invoiceError ?? 'Une erreur est survenue lors de l\'envoi.')}
+            </p>
+          </div>
+          <button
+            onClick={() => setInvoiceStatus('idle')}
+            className="shrink-0 text-gray-300 hover:text-gray-500 text-lg leading-none mt-0.5"
+            aria-label="Dismiss"
+          >
+            ×
+          </button>
+        </div>
+      )}
 
       <main className="min-h-screen bg-[#fff9f9] md:bg-[#f9f9f9] font-serif">
         <div className="max-w-7xl mx-auto md:px-6 lg:px-8 md:py-12 flex flex-col items-center justify-center h-full">
@@ -55,16 +121,16 @@ export default function OrderSuccessPage() {
               <div className="max-w-md mx-auto w-full bg-white md:bg-transparent shadow-sm md:shadow-none rounded-xl md:rounded-none p-6 md:p-0 my-4 md:my-0">
                 
                 {/* Success Icon */}
-                <div className="relative w-16 h-16 mx-auto mb-5">
-                   {/* Pink Scalloped Badge Background */}
-                   <svg className="w-full h-full text-[#ffebee] drop-shadow-sm" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 2L14.5 4.5L18 3.5L19 6.8L22 8.5L21 12L22 15.5L19 17.2L18 20.5L14.5 19.5L12 22L9.5 19.5L6 20.5L5 17.2L2 15.5L3 12L2 8.5L5 6.8L6 3.5L9.5 4.5L12 2Z" />
-                   </svg>
-                   <div className="absolute inset-0 flex items-center justify-center">
-                      <div className="w-9 h-9 bg-[#da2966] rounded-full flex items-center justify-center shadow-sm">
-                        <Check className="w-5 h-5 text-white stroke-[3px]" />
-                      </div>
-                   </div>
+                <div className="flex justify-center mb-4 md:mb-8">
+                  <div className="relative w-[80px] h-[80px] md:w-[100px] md:h-[100px] flex items-center justify-center">
+                    {/* Pink Scalloped Badge Background */}
+                    <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full text-[#fdefed] fill-current">
+                      <path d="M 100.00,4.00 C 110.00,4.00 115.00,12.00 120.00,15.00 C 126.00,18.00 135.00,15.00 142.00,20.00 C 148.00,24.00 148.00,32.00 152.00,38.00 C 158.00,44.00 166.00,44.00 170.00,52.00 C 174.00,58.00 170.00,68.00 174.00,74.00 C 180.00,81.00 185.00,88.00 185.00,95.00 C 185.00,105.00 178.00,111.00 175.00,119.00 C 172.00,125.00 176.00,132.00 172.00,138.00 C 168.00,145.00 159.00,144.00 152.00,150.00 C 146.00,156.00 146.00,165.00 139.00,170.00 C 132.00,174.00 124.00,170.00 117.00,175.00 C 111.00,180.00 106.00,188.00 100.00,188.00 C 94.00,188.00 89.00,180.00 83.00,175.00 C 76.00,170.00 68.00,174.00 61.00,170.00 C 54.00,165.00 54.00,156.00 48.00,150.00 C 41.00,144.00 32.00,145.00 28.00,138.00 C 24.00,132.00 28.00,125.00 25.00,119.00 C 22.00,111.00 15.00,105.00 15.00,95.00 C 15.00,88.00 20.00,81.00 26.00,74.00 C 30.00,68.00 26.00,58.00 30.00,52.00 C 34.00,44.00 42.00,44.00 48.00,38.00 C 52.00,32.00 52.00,24.00 58.00,20.00 C 65.00,15.00 74.00,18.00 80.00,15.00 C 85.00,12.00 90.00,4.00 100.00,4.00 Z" />
+                    </svg>
+                    <div className="relative z-10 w-[50px] h-[50px] md:w-[64px] md:h-[64px] bg-[#da2966] rounded-full flex items-center justify-center shadow-sm">
+                      <Check className="w-7 h-7 md:w-9 md:h-9 text-white stroke-[3px]" />
+                    </div>
+                  </div>
                 </div>
 
                 {/* Headings */}

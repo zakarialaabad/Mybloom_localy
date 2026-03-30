@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             ReviewImageSeeder::class,        // 13 — review_images (needs reviews)
             IngredientSeeder::class,         // 14 — ingredients + pivot (needs products)
             ProductFaqSeeder::class,         // 15 — 3 FAQs linked to every product
+            RecommendedProductSeeder::class, // 16 — 10 recommended products for carousel
         ]);
     }
 }

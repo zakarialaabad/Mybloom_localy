@@ -143,7 +143,58 @@ class ProductDetailResource extends JsonResource
                     'answer'   => $f->answer,
                 ])
             ),
+            // ── Recommended products (all products with is_recommended = true) ──
+            'recommendations' => $this->getRecommendations(),
             'created_at'     => $this->created_at?->toISOString(),
         ];
+    }
+
+    /**
+     * Get all recommended products for carousel display
+     * Only returns products with is_recommended = true and is_active = true
+     * Returns data in same Product interface format as /api/v1/products list endpoint
+     */
+    private function getRecommendations(): array
+    {
+        $recommendedProducts = \App\Models\Product::where('is_recommended', true)
+            ->where('is_active', true)
+            ->with(['brand', 'images' => fn ($q) => $q->orderBy('sort_order')])
+            ->withAvg('reviews as avg_rating', 'rating')
+            ->withCount('reviews as review_count')
+            ->orderBy('id')
+            ->get();
+
+        return $recommendedProducts->map(fn ($product) => [
+            'id'              => $product->id,
+            'name'            => $product->name,
+            'slug'            => $product->slug,
+            'subtitle'        => $product->subtitle,
+            'price'           => (float) $product->price,
+            'min_price'       => (float) $product->price,
+            'max_price'       => $product->original_price ? (float) $product->original_price : (float) $product->price,
+            'original_price'  => $product->original_price ? (float) $product->original_price : null,
+            'stock'           => (int) $product->stock,
+            'is_active'       => (bool) $product->is_active,
+            'is_featured'     => (bool) $product->is_featured,
+            'is_best_seller'  => (bool) $product->is_best_seller,
+            'is_gift'         => (bool) $product->is_gift,
+            'is_recommended'  => (bool) $product->is_recommended,
+            'avg_rating'      => round((float) ($product->avg_rating ?? 0), 1),
+            'review_count'    => (int) ($product->review_count ?? 0),
+            'primary_image'   => $this->resolveUrl($product->images->firstWhere('is_primary', true)?->url ?? $product->images->first()?->url),
+            'images'          => $product->images->map(fn ($img) => [
+                'id'         => $img->id,
+                'image_url'  => $this->resolveUrl($img->url),
+                'alt'        => $img->alt,
+                'sort_order' => $img->sort_order,
+                'is_primary' => $img->is_primary,
+            ]),
+            'brand'           => $product->brand ? [
+                'id'   => $product->brand->id,
+                'name' => $product->brand->name,
+                'slug' => $product->brand->slug,
+            ] : null,
+            'badges'          => $product->is_best_seller ? ['Best Seller'] : [],
+        ])->toArray();
     }
 }

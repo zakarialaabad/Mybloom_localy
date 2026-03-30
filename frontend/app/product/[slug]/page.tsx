@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -10,12 +10,36 @@ import {
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import ProductCard, { type ProductCardProps } from '@/components/ui/ProductCard';
 import { productService, Product, ProductVariant } from '@/services/api';
 import useCartStore from '@/store/cart';
 import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
+import { testRecommendationCount } from '@/lib/testRecommendationCount';
 
 // ─── Status labels for order status histories ─────────────────────────────────
 const STATUS_STEPS = ['pending', 'confirmed', 'dispatched', 'shipped', 'delivered'];
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
+
+/**
+ * Transform Product API response to ProductCard props
+ * Matches UniversSection transformation for consistent styling
+ */
+function productToCard(p: Product): ProductCardProps {
+  return {
+    id:            p.id,
+    slug:          p.slug,
+    name:          p.name,
+    subtitle:      p.brand?.name ?? '',
+    description:   p.subtitle ?? '',
+    price:         p.min_price ?? 0,
+    originalPrice: p.max_price ?? p.min_price ?? 0,
+    rating:        p.avg_rating ?? 0,
+    reviewCount:   p.review_count ?? 0,
+    imageUrl:      p.primary_image ?? FALLBACK_IMG,
+    isBestSeller:  p.is_featured,
+    badge:         p.badges?.[0],
+  };
+}
 
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const slug = params.slug;
@@ -38,6 +62,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const [openFaqIndex,       setOpenFaqIndex]       = useState<number | null>(0);
   const [reviewPage,         setReviewPage]         = useState(0);
   const [ingredientPage,     setIngredientPage]     = useState(0);
+  const [recommendations,    setRecommendations]    = useState<ProductCardProps[]>([]);
+  const [recommendationPage, setRecommendationPage] = useState(0);
+  const [recommendationCount, setRecommendationCount] = useState(0);
+  const carouselRef = useRef<HTMLDivElement>(null);
 
   const addItem = useCartStore((s) => s.addItem);
 
@@ -90,6 +118,31 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           });
         }
         setWished(isInWishlist(data.id));
+        
+        // ── Set recommendation products from API response ──
+        // ✅ Only display true recommended products (is_recommended = true from database)
+        // Transform using productToCard to match UniversSection styling
+        if (data.recommendations && data.recommendations.length > 0) {
+          const transformedRecs = data.recommendations.map(productToCard);
+          setRecommendations(transformedRecs);
+          setRecommendationCount(transformedRecs.length);
+          
+          // ✅ Test & Verify: Log recommendation data for database verification
+          const verification = testRecommendationCount.logRecommendationData(
+            data.id,
+            transformedRecs.length,
+            data.recommendations
+          );
+          
+          if (!verification.passed) {
+            console.warn('⚠️ Recommendation count mismatch detected!', verification);
+          }
+        } else {
+          // No recommendations = display empty state (don't show fake data)
+          setRecommendations([]);
+          setRecommendationCount(0);
+          console.log('ℹ️ No recommended products for this product');
+        }
       })
       .catch(() => { if (mounted) setFetchError(true); })
       .finally(() => { if (mounted) setLoading(false); });
@@ -102,6 +155,17 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     if (!product) return;
     toggleWishlist(product.id);
     setWished((w) => !w);
+  };
+
+  // ─── Carousel scroll handlers ───────────────────────────────────────────────
+  const scrollCarousel = (direction: 'left' | 'right') => {
+    if (!carouselRef.current) return;
+    const scrollAmount = 320; // Approximate width of 1 ProductCard + gap
+    if (direction === 'left') {
+      carouselRef.current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+      carouselRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
   };
 
   // ─── Add to cart ────────────────────────────────────────────────────────────
@@ -186,159 +250,119 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
 
-      <main className="flex-grow container mx-auto px-4 py-12 sm:py-16 max-w-7xl">
-        {/* Breadcrumbs */}
-        <nav className="mb-8 text-sm text-gray-500">
-          <Link href="/" className="hover:text-gray-900 transition-colors">Home</Link> /{' '}
-          <Link href="/collection" className="hover:text-gray-900 transition-colors">{product.category?.name ?? 'Collection'}</Link> /{' '}
-          <span className="text-gray-900">{product.name}</span>
-        </nav>
+      <main className="flex-grow bg-white">
+        <div className="container mx-auto px-4 py-12 sm:py-16 max-w-7xl scroll-smooth">
+          {/* Breadcrumbs */}
+          <nav className="mb-8 text-sm text-gray-500">
+            <Link href="/" className="hover:text-gray-900 transition-colors">Home</Link> /{' '}
+            <Link href="/collection" className="hover:text-gray-900 transition-colors">{product.category?.name ?? 'Collection'}</Link> /{' '}
+            <span className="text-gray-900">{product.name}</span>
+          </nav>
 
-        {/* Product Layout */}
-        <div className="flex flex-col md:flex-row gap-12 lg:gap-16 items-start">
+          {/* ══════════════════════════════════════════════════════════════════════ */}
+          {/* STICKY SECTIONS: Media + Product Info (Fixed Height on Desktop) */}
+          {/* ══════════════════════════════════════════════════════════════════════ */}
           
-          {/* ── Product Info Header (Desktop: Left Column Top, Mobile: Full Width Top) ── */}
-          <div className="w-full md:hidden flex flex-col">
-            {/* Row 1: Product Name <-> Reviews */}
-            <div className="flex items-start justify-between">
-              <h1 className="text-2xl sm:text-3xl font-serif font-bold uppercase tracking-wider text-gray-900 leading-tight">
-                {product.name}
-              </h1>
-              {product.review_count > 0 && (
-                <div className="flex items-center gap-1 shrink-0 ml-4 pt-1">
-                  <div className="flex text-[#d4af37]">
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <svg key={star} className={`h-3 w-3 fill-current ${star <= Math.round(product.avg_rating) ? 'text-[#d4af37]' : 'text-gray-200'}`} viewBox="0 0 20 20">
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                      </svg>
+          {/* Product Layout — Sticky Section Container */}
+          <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
+            
+            {/* ── Media Column (Left, Sticky on Desktop) ── */}
+            <div className="w-full md:w-1/2 flex flex-col md:sticky md:top-20 md:h-max">
+            <div className="flex flex-col md:flex-row gap-4">
+              
+              {/* Desktop Thumbnails */}
+              <div className="hidden md:flex flex-col gap-4 w-16 lg:w-24 shrink-0">
+                {images.filter(img => img !== mainImage).slice(0, 3).map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setMainImage(img)}
+                    className="relative flex-1 w-full overflow-hidden rounded-sm border-2 transition-all border-transparent hover:border-gray-300"
+                  >
+                    {img && <Image src={img} alt={`${product.name} thumbnail ${idx + 1}`} fill className="object-cover" />}
+                  </button>
+                ))}
+              </div>
+
+              {/* Main Image & Carousel */}
+              <div className="group relative w-full flex-1 aspect-square md:aspect-[4/5] rounded-sm overflow-hidden bg-[#f8f8f8]">
+                {/* Badges & Actions */}
+                <div className="absolute top-4 left-4 z-10 flex gap-2">
+                  <button
+                    onClick={handleWishlist}
+                    className="md:hidden rounded-full bg-white/90 p-2.5 text-gray-500 hover:text-red-500 transition-colors shadow-sm"
+                  >
+                    <Heart className={`h-5 w-5 ${wished ? 'fill-red-500 text-red-500' : ''}`} />
+                  </button>
+                  <button className="rounded-full bg-white/90 p-2.5 text-gray-500 hover:bg-white transition-colors shadow-sm">
+                    <Share2 className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {product.badges?.includes('Best Seller') && (
+                  <div className="absolute top-4 right-4 z-10">
+                    <span className="inline-flex items-center gap-1 rounded bg-[#fdf6e3] px-3 py-1.5 text-xs font-medium text-[#b8860b] shadow-sm">
+                      ✨ Best seller
+                    </span>
+                  </div>
+                )}
+
+                {/* Image Carousel */}
+                <div className="relative w-full h-full">
+                  <Image
+                    src={mainImage}
+                    alt={product.name}
+                    fill
+                    className="object-contain p-8 mix-blend-multiply transition-opacity duration-300"
+                  />
+
+                  {/* Carousel Arrows */}
+                  {images.length > 1 && (
+                    <>
+                      <button
+                        onClick={() => {
+                          const idx = images.indexOf(mainImage);
+                          const prev = idx > 0 ? images[idx - 1] : images[images.length - 1];
+                          setMainImage(prev);
+                        }}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/40 p-1.5 text-gray-800 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <ChevronLeft className="h-5 w-5" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          const idx = images.indexOf(mainImage);
+                          const next = idx < images.length - 1 ? images[idx + 1] : images[0];
+                          setMainImage(next);
+                        }}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/40 p-1.5 text-gray-800 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <ChevronRight className="h-5 w-5" />
+                      </button>
+                    </>
+                  )}
+                </div>
+
+                {/* Progress Dots */}
+                {images.length > 1 && (
+                  <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5">
+                    {images.map((img, idx) => (
+                      <div
+                        key={idx}
+                        className={`h-1.5 rounded-full transition-all duration-300 ${
+                          mainImage === img ? 'w-6 bg-[#4a403a]' : 'w-1.5 bg-gray-300'
+                        }`}
+                      />
                     ))}
                   </div>
-                  <span className="text-xs text-gray-900 font-bold ml-1 italic">{product.avg_rating}</span>
-                  <span className="text-xs text-gray-400 font-medium whitespace-nowrap">({product.review_count})</span>
-                </div>
-              )}
-            </div>
-
-            {/* Row 2: Brand Name <-> Price */}
-            <div className="flex items-baseline justify-between transition-all">
-              {product.brand && (
-                <p className="font-serif italic text-gray-600 text-xl leading-none">{product.brand.name}</p>
-              )}
-              <div className="shrink-0 ml-4 flex items-baseline gap-2">
-                {selectedSize?.original_price && (
-                  <span className="font-serif text-base text-gray-400 line-through italic whitespace-nowrap leading-none">
-                    {selectedSize.original_price} DH
-                  </span>
-                )}
-                <span className="font-serif text-2xl font-bold italic text-gray-900 whitespace-nowrap leading-none">
-                  {selectedSize?.final_price ?? product.min_price} DH
-                </span>
-              </div>
-            </div>
-
-            {/* Row 3: Subtitle (Behind/Below Brand name) */}
-            {product.subtitle && (
-              <p className="text-xs text-gray-400 uppercase tracking-wider leading-none mt-3">
-                {product.subtitle}
-              </p>
-            )}
-          </div>
-
-          {/* ── Images Column ──────────────────────────────────────────────────────── */}
-          <div className="flex flex-col md:flex-row w-full md:w-1/2 gap-4 sticky top-24 h-max">
-            
-            {/* Desktop Thumbnails (Left side, Hidden on mobile) */}
-            <div className="hidden md:flex flex-col gap-4 w-16 lg:w-24 shrink-0">
-              {images.filter(img => img !== mainImage).slice(0, 3).map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setMainImage(img)}
-                  className="relative flex-1 w-full overflow-hidden rounded-sm border-2 transition-all border-transparent hover:border-gray-300"
-                >
-                  {img && <Image src={img} alt={`${product.name} thumbnail ${idx + 1}`} fill className="object-cover" />}
-                </button>
-              ))}
-            </div>
-
-            {/* Main Image & Carousel */}
-            <div className="group relative w-full flex-1 aspect-square md:aspect-[4/5] rounded-sm overflow-hidden bg-[#f8f8f8]">
-              {/* Badges & Actions */}
-              <div className="absolute top-4 left-4 z-10 flex gap-2">
-                <button
-                  onClick={handleWishlist}
-                  className="md:hidden rounded-full bg-white/90 p-2.5 text-gray-500 hover:text-red-500 transition-colors shadow-sm"
-                >
-                  <Heart className={`h-5 w-5 ${wished ? 'fill-red-500 text-red-500' : ''}`} />
-                </button>
-                <button className="rounded-full bg-white/90 p-2.5 text-gray-500 hover:bg-white transition-colors shadow-sm">
-                  <Share2 className="h-5 w-5" />
-                </button>
-              </div>
-
-              {product.badges?.includes('Best Seller') && (
-                <div className="absolute top-4 right-4 z-10">
-                  <span className="inline-flex items-center gap-1 rounded bg-[#fdf6e3] px-3 py-1.5 text-xs font-medium text-[#b8860b] shadow-sm">
-                    ✨ Best seller
-                  </span>
-                </div>
-              )}
-
-              {/* Image Carousel */}
-              <div className="relative w-full h-full">
-                <Image
-                  src={mainImage}
-                  alt={product.name}
-                  fill
-                  className="object-contain p-8 mix-blend-multiply transition-opacity duration-300"
-                />
-
-                {/* Mobile/Tablet Carousel Arrows (visible on hover or always on touch) */}
-                {images.length > 1 && (
-                  <>
-                    <button
-                      onClick={() => {
-                        const idx = images.indexOf(mainImage);
-                        const prev = idx > 0 ? images[idx - 1] : images[images.length - 1];
-                        setMainImage(prev);
-                      }}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/40 p-1.5 text-gray-800 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <ChevronLeft className="h-5 w-5" />
-                    </button>
-                    <button
-                      onClick={() => {
-                        const idx = images.indexOf(mainImage);
-                        const next = idx < images.length - 1 ? images[idx + 1] : images[0];
-                        setMainImage(next);
-                      }}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/40 p-1.5 text-gray-800 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      <ChevronRight className="h-5 w-5" />
-                    </button>
-                  </>
                 )}
               </div>
-
-              {/* Progress Dots (Carousel indicator) */}
-              {images.length > 1 && (
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-1.5">
-                  {images.map((img, idx) => (
-                    <div
-                      key={idx}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${
-                        mainImage === img ? 'w-6 bg-[#4a403a]' : 'w-1.5 bg-gray-300'
-                      }`}
-                    />
-                  ))}
-                </div>
-              )}
             </div>
           </div>
 
           {/* ── Details Column ─────────────────────────────────────────────────────── */}
-          <div className="w-full md:w-1/2 flex flex-col">
-            {/* Header (Desktop Only) */}
-            <div className="hidden md:block mb-6">
+          <div className="w-full md:w-1/2 flex flex-col md:sticky md:top-20 md:h-[calc(100vh-5rem)] md:overflow-y-auto md:overflow-x-hidden scrollbar-hide">
+            {/* Header */}
+            <div className="mb-6">
               <div className="flex items-start justify-between">
                 <div>
                   <div className="flex items-center gap-3 mb-2">
@@ -527,8 +551,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               </div>
             ) : null}
 
+            {/* ── Accordion Sections ─────────────────────────────────────────────── */}
+            <div className="mt-8 border-t border-gray-200">
+
             {/* Accordion: Description */}
-            <div className="border-t border-gray-200 pt-6 mt-12">
+            <div className="border-b border-gray-200 pt-6 pb-6 mt-0">
               <button onClick={() => setIsDescriptionOpen(!isDescriptionOpen)} className="flex w-full items-center justify-between text-left group">
                 <span className="font-serif text-2xl italic text-gray-900 group-hover:text-[#4a403a] transition-colors">Description</span>
                 {isDescriptionOpen ? <ChevronUp className="h-6 w-6 text-gray-500" /> : <ChevronDown className="h-6 w-6 text-gray-500" />}
@@ -552,7 +579,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               const canNextIng = ingredientPage < totalPages - 1;
 
               return (
-                <div className="border-t border-gray-200 pt-6 mt-6">
+                <div className="border-b border-gray-200 pt-6 pb-6">
                   <button
                     onClick={() => setIsIngredientsOpen(!isIngredientsOpen)}
                     className="flex w-full items-center justify-between text-left group"
@@ -804,22 +831,91 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 {isFaqOpen ? <ChevronUp className="h-6 w-6 text-gray-500" /> : <ChevronDown className="h-6 w-6 text-gray-500" />}
               </button>
               {isFaqOpen && (
-                <div className="mt-6 space-y-4">
+                <div className="mt-6 divide-y divide-gray-200 border-b border-gray-200">
                   {FAQ.map((faq, idx) => (
-                    <div key={idx} className="border-b border-gray-100 pb-4 last:border-0">
-                      <button onClick={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)} className="flex w-full items-center justify-between text-left">
+                    <div key={idx} className="py-4 px-4">
+                      <button onClick={() => setOpenFaqIndex(openFaqIndex === idx ? null : idx)} className="flex w-full items-center justify-between text-left gap-4">
                         <span className="font-serif text-lg font-bold italic text-gray-900">{faq.q}</span>
-                        {openFaqIndex === idx ? <ChevronUp className="h-4 w-4 text-gray-400" /> : <ChevronDown className="h-4 w-4 text-gray-400" />}
+                        {openFaqIndex === idx ? <ChevronUp className="h-4 w-4 text-gray-400 shrink-0" /> : <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />}
                       </button>
                       {openFaqIndex === idx && (
-                        <p className="mt-3 text-gray-500 text-sm leading-relaxed">{faq.a}</p>
+                        <p className="mt-3 text-gray-500 text-sm leading-relaxed pr-8">{faq.a}</p>
                       )}
                     </div>
                   ))}
                 </div>
               )}
             </div>
-          </div>
+            </div>{/* end accordion sections */}
+          </div>{/* end details column */}
+        </div>{/* end two-column flex row */}
+
+        {/* ── You may also Like — Recommendation Products Carousel ── */}
+        {recommendations && recommendations.length > 0 && (
+          <section className="w-full py-12 md:py-16 bg-white border-t border-gray-200">
+            <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+              {/* Header */}
+              <div className="mb-8 md:mb-12">
+                <h2 className="text-2xl md:text-3xl font-serif font-bold italic text-gray-900 text-center md:text-left">
+                  You may also <span className="not-italic" style={{ fontFamily: 'var(--font-serif-italic), cursive', fontStyle: 'italic', color: '#da2966' }}>Like</span>
+                </h2>
+              </div>
+
+              {/* Carousel Container with Arrow Buttons */}
+              <div className="relative group">
+                {/* Left Arrow Button */}
+                {recommendations.length > 5 && (
+                  <button
+                    onClick={() => scrollCarousel('left')}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all opacity-0 group-hover:opacity-100 duration-300"
+                    aria-label="Scroll recommendations left"
+                  >
+                    <ChevronLeft className="h-5 w-5" />
+                  </button>
+                )}
+
+                {/* Horizontal Scrollable Container */}
+                <div
+                  ref={carouselRef}
+                  className="overflow-x-auto scrollbar-hide"
+                  style={{
+                    scrollBehavior: 'smooth',
+                    scrollbarWidth: 'none',
+                    msOverflowStyle: 'none',
+                  }}
+                >
+                  <div className="flex gap-3 sm:gap-4 md:gap-6 pb-4" style={{ minWidth: 'min-content' }}>
+                    {recommendations.map((rec) => (
+                      <div key={rec.id} className="flex-shrink-0 w-auto" style={{
+                        width: '200px', // Approximate ProductCard width for consistency
+                      }}>
+                        <ProductCard
+                          {...rec}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Right Arrow Button */}
+                {recommendations.length > 5 && (
+                  <button
+                    onClick={() => scrollCarousel('right')}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-white border border-gray-200 shadow-md flex items-center justify-center text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all opacity-0 group-hover:opacity-100 duration-300"
+                    aria-label="Scroll recommendations right"
+                  >
+                    <ChevronRight className="h-5 w-5" />
+                  </button>
+                )}
+              </div>
+
+              {/* Product Count Display & Verification */}
+              <div className="mt-6 text-center text-sm text-gray-500">
+                <p>Showing <span className="font-semibold text-gray-900">{recommendationCount}</span> recommended products</p>
+              </div>
+            </div>
+          </section>
+        )}
         </div>
       </main>
       <Footer />
