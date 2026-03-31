@@ -293,10 +293,22 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                   >
                     <Heart className={`h-5 w-5 ${wished ? 'fill-red-500 text-red-500' : ''}`} />
                   </button>
-                  <button className="rounded-full bg-white/90 p-2.5 text-gray-500 hover:bg-white transition-colors shadow-sm">
-                    <Share2 className="h-5 w-5" />
-                  </button>
                 </div>
+
+                {/* Share Button - Right Top */}
+                <button 
+                  onClick={() => {
+                    if (typeof window !== 'undefined' && product) {
+                      const productUrl = `${window.location.origin}/product/${product.slug}`;
+                      const message = `${product.name}\n\n${product.description ||  product.subtitle || 'Premium fragrance'}\n\nPrice: ${product.min_price} DH\n\n${productUrl}`;
+                      const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
+                      window.open(whatsappUrl, '_blank');
+                    }
+                  }}
+                  className="absolute top-4 right-4 z-10 rounded-full bg-white/90 p-2.5 text-gray-500 hover:bg-white transition-colors shadow-sm"
+                >
+                  <Share2 className="h-5 w-5" />
+                </button>
 
                 {product.badges?.includes('Best Seller') && (
                   <div className="absolute top-4 right-4 z-10">
@@ -420,47 +432,51 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             <hr className="hidden md:block mb-8 border-gray-200" />
 
             {/* Actions Section */}
-            <div className="mb-8 flex items-center justify-between w-full h-12 gap-2">
-              {/* Quantity Selector: Fixed small width */}
-              <div className="flex h-full w-20 items-center justify-between rounded-lg border border-gray-200 px-1 shrink-0 bg-white">
+            <div className="mb-8 flex items-center gap-3 md:gap-4 lg:gap-5 w-full h-12 md:max-w-2xl">
+              {/* Quantity Selector: Fixed square-like proportions matching reference */}
+              <div className="flex h-11 w-[100px] md:h-12 md:w-[120px] items-center justify-between rounded-md border border-gray-300 px-2 shrink-0 bg-white shadow-sm">
                 <button 
                   onClick={() => setQuantity(Math.max(1, quantity - 1))} 
-                  className="text-gray-400 hover:text-gray-900 text-lg font-light w-5 flex justify-center"
+                  className="text-gray-500 hover:text-gray-900 text-xl font-light w-8 h-full flex justify-center items-center fallback-touch"
                 >-</button>
-                <span className="font-serif text-sm font-medium">{quantity}</span>
+                <span className="font-serif text-base font-medium">{quantity}</span>
                 <button
                   onClick={() => {
                     const max = selectedSize?.stock_quantity ?? product?.stock ?? 99;
                     setQuantity((q) => Math.min(max, q + 1));
                   }}
-                  className="text-gray-400 hover:text-gray-900 text-lg font-light w-5 flex justify-center"
+                  className="text-gray-500 hover:text-gray-900 text-xl font-light w-8 h-full flex justify-center items-center fallback-touch"
                 >+</button>
               </div>
 
-              {/* Buy Now: Centered and dynamic width (fill center) */}
+              {/* Buy Now: Dominant wide button */}
               <button
                 disabled={!selectedSize || selectedSize.stock_quantity === 0}
                 onClick={handleBuyNow}
-                className="flex h-full flex-1 items-center justify-center rounded-lg bg-[#443e3b] px-2 text-white transition-all hover:bg-[#342f2d] active:scale-[0.98] disabled:opacity-40"
+                className="flex h-11 md:h-12 flex-1 items-center justify-center rounded-md bg-[#4a403a] px-4 text-white shadow-sm transition-all hover:bg-[#342f2d] active:scale-[0.98] disabled:opacity-40"
               >
-                <span className="font-serif italic text-sm tracking-tight">Buy It Now ›</span>
+                <span className="font-serif italic text-base md:text-lg tracking-wide">Buy It Now &rsaquo;</span>
               </button>
 
-              {/* Cart Icon: Fixed small square */}
+              {/* Cart Icon: Fixed square */}
               <button
                 disabled={!selectedSize || selectedSize.stock_quantity === 0}
                 onClick={handleAddToCart}
-                className="flex h-full w-12 items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 shrink-0 active:scale-[0.98] disabled:opacity-40"
+                className="flex h-11 w-11 md:h-12 md:w-12 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-700 hover:border-gray-400 shrink-0 shadow-sm active:scale-[0.98] disabled:opacity-40"
               >
-                <ShoppingCart className="h-5 w-5" />
+                <ShoppingCart className="h-5 w-5 md:h-6 md:w-6" strokeWidth={1.5} />
               </button>
 
-              {/* Wishlist Link: Only on desktop */}
+              {/* Wishlist Link: Fixed square (Only on desktop) */}
               <button
                 onClick={handleWishlist}
-                className="hidden md:flex h-full w-12 items-center justify-center rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 shrink-0 active:scale-[0.98]"
+                className={`hidden md:flex h-12 w-12 items-center justify-center rounded-md border shrink-0 shadow-sm active:scale-[0.98] transition-colors ${
+                  wished
+                    ? 'border-red-500 bg-red-50'
+                    : 'border-gray-300 bg-white hover:border-gray-400'
+                }`}
               >
-                <Heart className={`h-5 w-5 transition-colors ${wished ? 'fill-red-500 text-red-500' : ''}`} />
+                <Heart className={`h-6 w-6 ${wished ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} strokeWidth={1.5} />
               </button>
             </div>
 
@@ -579,7 +595,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               const canNextIng = ingredientPage < totalPages - 1;
 
               return (
-                <div className="border-b border-gray-200 pt-6 pb-6">
+                <div className="pt-6 pb-6">
                   <button
                     onClick={() => setIsIngredientsOpen(!isIngredientsOpen)}
                     className="flex w-full items-center justify-between text-left group"

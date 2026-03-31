@@ -8,6 +8,7 @@ use App\Models\OrderStatusHistory;
 use App\Models\Product;
 use App\Models\ProductSize;
 use App\Models\ProductVariant;
+use App\Jobs\SendAdminOrderEmail;
 use App\Models\ShippingMethod;
 use Illuminate\Support\Facades\DB;
 
@@ -25,7 +26,7 @@ class OrderService
      */
     public function createOrder(array $data): Order
     {
-        return DB::transaction(function () use ($data) {
+        $order = DB::transaction(function () use ($data) {
 
             // Resolve shipping method
             $shippingMethod = ShippingMethod::findOrFail($data['shipping_method_id']);
@@ -185,6 +186,11 @@ class OrderService
 
             return $order;
         });
+
+        // Dispatch admin Gmail notification after the DB transaction commits successfully
+        SendAdminOrderEmail::dispatch($order->order_number);
+
+        return $order;
     }
 
     /**

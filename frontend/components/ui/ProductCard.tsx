@@ -38,14 +38,56 @@ export default function ProductCard({
   rating, reviewCount, imageUrl, badge, isBestSeller,
 }: ProductCardProps) {
   const [wished, setWished] = useState(() => isInWishlist(id));
+  const [isHovered, setIsHovered] = useState(false);
   const stars = [1, 2, 3, 4, 5];
 
   return (
-    <Link href={`/product/${slug}`} className="product-card group relative block">
+    <Link
+      href={`/product/${slug}`}
+      className="product-card group relative block"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <article className="cursor-pointer bg-white">
         {/* Image container */}
         <div className="relative mb-4 aspect-[4/5] overflow-hidden bg-[#f8f5f1]">
 
+          {/* Header overlay – favorite icon + discount badge */}
+          <div className="absolute top-0 left-0 right-0 z-10 p-2 sm:p-2.5 flex items-start justify-between">
+            {/* Favorite Icon */}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleWishlist(id);
+                setWished((w) => !w);
+              }}
+              className="flex items-center justify-center transition-colors"
+              aria-label="Toggle wishlist"
+            >
+              <svg
+                className={`h-5 w-5 sm:h-6 sm:w-6 ${wished ? 'fill-red-500 text-red-500' : 'fill-none text-gray-700'}`}
+                stroke="currentColor"
+                strokeWidth={1.5}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                />
+              </svg>
+            </button>
+
+            {/* Discount Badge */}
+            {originalPrice > price && (
+              <div className="rounded-sm bg-red-100/95 px-2 py-1 sm:px-2.5 sm:py-1">
+                <span className="text-[11px] sm:text-xs font-semibold text-red-600">
+                  - {Math.round(((originalPrice - price) / originalPrice) * 100)}%
+                </span>
+              </div>
+            )}
+          </div>
 
           {/* Product image */}
           <div className="relative h-full w-full">
@@ -63,7 +105,7 @@ export default function ProductCard({
           </div>
 
           {/* Action buttons overlay bar – hidden below image, slides up on hover/tap */}
-          <div className="
+          <div className={`
             absolute bottom-0 left-0 w-full
             bg-white/95
             py-2 md:py-3
@@ -71,8 +113,8 @@ export default function ProductCard({
             gap-4 sm:gap-5 md:gap-7
             shadow-[0_-2px_10px_rgba(0,0,0,0.05)]
             transition-transform duration-300 ease-in-out
-            translate-y-full group-hover:translate-y-0
-          ">
+            ${isHovered ? 'translate-y-0' : 'translate-y-full'}
+          `}>
             <button className="text-gray-600 hover:text-black transition-colors" aria-label="Add to cart">
               <svg className="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -96,14 +138,23 @@ export default function ProductCard({
                 setWished((w) => !w);
               }}
               aria-label="Toggle wishlist"
-              className="transition-colors"
+              className={`flex h-7 w-7 md:h-8 md:w-8 items-center justify-center rounded-full transition-colors ${
+                wished 
+                  ? 'bg-red-100 text-red-500' 
+                  : 'text-gray-600 hover:bg-gray-100'
+              }`}
             >
               <svg
-                className={`h-4 w-4 md:h-5 md:w-5 ${wished ? 'fill-red-500 text-red-500' : 'fill-none text-gray-600 hover:text-red-500'}`}
-                stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24"
+                className={`h-4 w-4 md:h-5 md:w-5 ${wished ? 'fill-red-500' : 'fill-none'}`}
+                stroke="currentColor"
+                strokeWidth={1.5}
+                viewBox="0 0 24 24"
               >
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                />
               </svg>
             </button>
           </div>
@@ -118,12 +169,11 @@ export default function ProductCard({
 
           <p className="text-[11px] text-gray-500 pt-1">{description}</p>
 
-          <div className="flex items-center space-x-2 pt-1 pb-1">
-            <span className="text-[13px] text-gray-900">{price} DH</span>
+          <div className="flex items-baseline space-x-2 pt-2 pb-1">
+            <span className="text-base sm:text-lg font-bold text-gray-900">{price} DH</span>
             {originalPrice > price && (
               <>
-                <span className="text-[13px] text-gray-900">-</span>
-                <span className="text-[13px] text-gray-400 line-through decoration-1">{originalPrice} DH</span>
+                <span className="text-xs text-gray-400 line-through decoration-1">{originalPrice} DH</span>
               </>
             )}
           </div>
