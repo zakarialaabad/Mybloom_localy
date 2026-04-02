@@ -1,6 +1,7 @@
 ﻿'use client';
 
 import React, { useState, useEffect } from 'react';
+import { AdminSelect } from '@/components/admin/AdminSelect';
 import { adminOrderService, AdminOrder, AdminOrderStats } from '@/services/api';
 import { useOrderList } from '@/hooks/useOrderList';
 import OrderDetailsSidebar from './components/OrderDetailsSidebar';
@@ -157,19 +158,17 @@ export default function OrdersPage() {
             </p>
             <p className="text-[13px] text-gray-400 mb-5">{editingOrder.customer_name}</p>
 
-            <div className="relative mb-5">
-              <select
-                value={newStatus}
-                onChange={(e) => setNewStatus(e.target.value)}
-                className="w-full appearance-none pl-4 pr-9 py-2.5 border border-gray-200 rounded-[8px] text-[14px] text-[#333] focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] cursor-pointer"
-              >
-                <option value="">Select new status…</option>
-                {VALID_STATUSES.map((s) => (
-                  <option key={s} value={s}>{capitalize(s)}</option>
-                ))}
-              </select>
-              <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-            </div>
+            <AdminSelect
+              variant="compact"
+              wrapperClassName="mb-5"
+              value={newStatus}
+              onChange={(e) => setNewStatus(e.target.value)}
+            >
+              <option value="">Select new status…</option>
+              {VALID_STATUSES.map((s) => (
+                <option key={s} value={s}>{capitalize(s)}</option>
+              ))}
+            </AdminSelect>
 
             <div className="flex gap-3">
               <button
@@ -279,19 +278,17 @@ export default function OrdersPage() {
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
 
             {/* Status filter */}
-            <div className="relative w-full sm:w-auto">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full sm:w-auto appearance-none pl-4 pr-10 py-2 border border-gray-200 rounded-[8px] text-[13px] font-bold text-[#444] hover:bg-gray-50 focus:outline-none focus:border-[#da2966] transition-colors cursor-pointer"
-              >
-                <option value="">All Statuses</option>
-                {VALID_STATUSES.map((s) => (
-                  <option key={s} value={s}>{capitalize(s)}</option>
-                ))}
-              </select>
-              <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-            </div>
+            <AdminSelect
+              variant="filter"
+              wrapperClassName="w-full sm:w-auto"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="">All Statuses</option>
+              {VALID_STATUSES.map((s) => (
+                <option key={s} value={s}>{capitalize(s)}</option>
+              ))}
+            </AdminSelect>
 
             {/* Search */}
             <div className="relative w-full sm:w-[280px]">

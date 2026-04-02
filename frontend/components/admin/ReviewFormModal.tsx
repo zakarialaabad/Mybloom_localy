@@ -4,6 +4,17 @@ import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Loader2 } from 'lucide-react';
 
+// ── Hide scrollbar styles ─────────────────────────────────────────────────────
+const SCROLLBAR_HIDE_STYLES = `
+  .scrollbar-hide {
+    -ms-overflow-style: none;      /* IE & Edge */
+    scrollbar-width: none;         /* Firefox */
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;                 /* Chrome & Safari */
+  }
+`;
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface ReviewFormSaveData {
@@ -89,6 +100,25 @@ export default function ReviewFormModal({
   // ── Product search state — removed (field no longer shown) ————————
   const searchAbortRef = useRef<AbortController | null>(null);
   const fileInputRef   = useRef<HTMLInputElement>(null);
+
+  // ── Lock body scroll when modal is open ───────────────────────────────────
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
+  // ── Inject scrollbar-hide styles once ────────────────────────────────────
+  useEffect(() => {
+    if (document.getElementById('__review-scrollbar-hide')) return;
+    const s = document.createElement('style');
+    s.id = '__review-scrollbar-hide';
+    s.textContent = SCROLLBAR_HIDE_STYLES;
+    document.head.appendChild(s);
+  }, []);
 
   // ── Reset / populate form when modal opens ─────────────────────────────────
   useEffect(() => {
@@ -191,7 +221,7 @@ export default function ReviewFormModal({
         </div>
 
         {/* ── Scrollable body ─────────────────────────────────────────────── */}
-        <div className="overflow-y-auto flex-1">
+        <div className="flex-1 overflow-y-auto scrollbar-hide">
           <div className="p-5 sm:p-7 space-y-5">
 
             {/* Customer Photo */}

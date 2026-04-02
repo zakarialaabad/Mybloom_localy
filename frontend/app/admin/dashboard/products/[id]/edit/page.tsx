@@ -3,8 +3,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
-import { createPortal } from 'react-dom';
 import ReviewFormModal, { ReviewFormSaveData } from '@/components/admin/ReviewFormModal';
+import { AdminSelect } from '@/components/admin/AdminSelect';
+import IngredientSelectModal from '@/components/admin/IngredientSelectModal';
+import CreateIngredientModal from '@/components/admin/CreateIngredientModal';
 import { adminProductService, adminCategoryService, adminProductTypeService, brandService } from '@/services/api';
 
 // === Icons ===
@@ -122,16 +124,15 @@ export default function EditProductPage() {
   const [ingredients, setIngredients] = useState<any[]>([]);
   const [availableIngredients, setAvailableIngredients] = useState<{id: number; name: string; image_url: string | null}[]>([]);
   const [isIngredientModalOpen, setIsIngredientModalOpen] = useState(false);
+  const [isCreateIngredientModalOpen, setIsCreateIngredientModalOpen] = useState(false);
   const [editingIngredientSlot, setEditingIngredientSlot] = useState<number | null>(null);
-  const [newIngredientSelectedId, setNewIngredientSelectedId] = useState('');
-  const [newIngredientName, setNewIngredientName] = useState('');
-  const [newIngredientFile, setNewIngredientFile] = useState<File | null>(null);
-  const ingredientFileInputRef = useRef<HTMLInputElement>(null);
+  const [ingredientInitialId, setIngredientInitialId] = useState('');
 
   const openIngredientModal = (slot: number) => {
     setEditingIngredientSlot(slot);
-    setNewIngredientName(ingredients[slot]?.name ?? '');
-    setNewIngredientFile(null);
+    const ing = ingredients[slot];
+    const matched = ing ? availableIngredients.find(a => a.name === ing.name) : undefined;
+    setIngredientInitialId(matched ? String(matched.id) : '');
     setIsIngredientModalOpen(true);
   };
 
@@ -173,15 +174,17 @@ export default function EditProductPage() {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const [cats, brnds, types] = await Promise.all([
+        const [cats, brnds, types, ingrData] = await Promise.all([
           adminCategoryService.list(),
           brandService.list(),
           adminProductTypeService.list(),
+          fetch('http://localhost:8000/api/v1/ingredients').then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] })),
         ]);
 
         setCategories(cats);
         setBrands(brnds);
         setProductTypes(types);
+        setAvailableIngredients(ingrData.data || []);
 
         // Now fetch the product
         const product = await adminProductService.get(productId);
@@ -219,7 +222,7 @@ export default function EditProductPage() {
             .map(img => ({ type: 'existing', id: img.id, url: img.image_url }))
         );
 
-        // Variants — prefill from product.variants (new system)
+        // Variants ï¿½ prefill from product.variants (new system)
         if (product.variants && product.variants.length > 0) {
           setVariants(product.variants.map(v => ({
             size: String(v.size),
@@ -294,7 +297,7 @@ export default function EditProductPage() {
       const remaining = 4 - total;
       const filesToAdd = selectedFiles.slice(0, remaining);
       if (selectedFiles.length > remaining) {
-        showToast(`Only ${remaining} slot${remaining !== 1 ? 's' : ''} remaining — extra photos were skipped.`);
+        showToast(`Only ${remaining} slot${remaining !== 1 ? 's' : ''} remaining ï¿½ extra photos were skipped.`);
       }
       const newEntries: ImageEntry[] = filesToAdd.map(f => ({
         type: 'new',
@@ -355,24 +358,20 @@ export default function EditProductPage() {
   };
 
   // -- Ingredient handlers ---------------------------------------------------
-  const handleAddIngredient = () => {
-    if (!newIngredientName || editingIngredientSlot === null) return;
+  const handleIngredientConfirmed = (ingredient: { id: number; name: string; image_url: string | null }) => {
+    if (editingIngredientSlot === null) return;
+    const thumb = ingredient.image_url ?? `https://placehold.co/150x150?text=${encodeURIComponent(ingredient.name)}`;
     const updated = [...ingredients];
-    // Ensure the sparse array covers the target slot
     while (updated.length <= editingIngredientSlot) updated.push(null);
-    const prevThumb = updated[editingIngredientSlot]?.thumb;
-    updated[editingIngredientSlot] = {
-      name: newIngredientName,
-      thumb: newIngredientFile
-        ? URL.createObjectURL(newIngredientFile)
-        : prevThumb || `https://placehold.co/150x150?text=${encodeURIComponent(newIngredientName)}`,
-      file: newIngredientFile ?? updated[editingIngredientSlot]?.file ?? undefined,
-    };
+    updated[editingIngredientSlot] = { name: ingredient.name, thumb, file: undefined };
     setIngredients(updated);
-    setIsIngredientModalOpen(false);
     setEditingIngredientSlot(null);
-    setNewIngredientName('');
-    setNewIngredientFile(null);
+  };
+
+  const handleIngredientCreated = (ingredient: { id: number; name: string; image_url: string | null }) => {
+    setAvailableIngredients(prev => [...prev, ingredient]);
+    const thumb = ingredient.image_url ?? `https://placehold.co/150x150?text=${encodeURIComponent(ingredient.name)}`;
+    setIngredients(prev => [...prev, { name: ingredient.name, thumb, file: undefined }]);
   };
 
   // -- Review handlers -------------------------------------------------------
@@ -596,40 +595,32 @@ export default function EditProductPage() {
           <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4 sm:p-6 mb-6">
             <div className="flex flex-col gap-2">
               <label className="text-[13px] font-bold text-[#333]">Category</label>
-              <div className="relative">
-                <select
-                  name="category_id"
-                  value={formData.category_id}
-                  onChange={handleInputChange}
-                  className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40 appearance-none"
-                >
-                  <option value="">Select Category</option>
-                  {categories.map((cat: any) => (
-                    <option key={cat.id} value={cat.id}>{cat.name}</option>
-                  ))}
-                </select>
-              {errors.category_id && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.category_id}</span>}
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"><ChevronDown /></div>
-              </div>
+              <AdminSelect
+                name="category_id"
+                value={formData.category_id}
+                onChange={handleInputChange}
+                error={errors.category_id}
+              >
+                <option value="">Select Category</option>
+                {categories.map((cat: any) => (
+                  <option key={cat.id} value={cat.id}>{cat.name}</option>
+                ))}
+              </AdminSelect>
             </div>
 
             <div className="flex flex-col gap-2">
               <label className="text-[13px] font-bold text-[#333]">Brand <span className="font-normal text-gray-400 text-[11px]">(Optional)</span></label>
-              <div className="relative">
-                <select
-                  name="brand_id"
-                  value={formData.brand_id}
-                  onChange={handleInputChange}
-                  className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40 appearance-none"
-                >
-                  <option value="">Select Brand</option>
-                  {brands.map((brand: any) => (
-                    <option key={brand.id} value={brand.id}>{brand.name}</option>
-                  ))}
-                </select>
-              {errors.brand_id && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.brand_id}</span>}
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"><ChevronDown /></div>
-              </div>
+              <AdminSelect
+                name="brand_id"
+                value={formData.brand_id}
+                onChange={handleInputChange}
+                error={errors.brand_id}
+              >
+                <option value="">Select Brand</option>
+                {brands.map((brand: any) => (
+                  <option key={brand.id} value={brand.id}>{brand.name}</option>
+                ))}
+              </AdminSelect>
             </div>
           </div>
 
@@ -749,8 +740,8 @@ export default function EditProductPage() {
           />
           <div onClick={() => fileInputRef.current?.click()} className="w-full min-h-[120px] rounded-2xl border-2 border-dashed border-[#da2966] bg-[#fcfcfc] flex flex-col items-center justify-center py-4 px-4 hover:bg-[#fff0f3] transition-colors cursor-pointer overflow-hidden">
             <CloudUploadIcon />
-            <p className="text-[13px] sm:text-[14px] font-bold text-[#333] mt-2 mb-1 text-center leading-snug">Glissez-déposez des photos ici</p>
-            <p className="text-[11px] font-medium text-gray-400 text-center">Maximum 4 photos autorisées</p>
+            <p className="text-[13px] sm:text-[14px] font-bold text-[#333] mt-2 mb-1 text-center leading-snug">Glissez-dï¿½posez des photos ici</p>
+            <p className="text-[11px] font-medium text-gray-400 text-center">Maximum 4 photos autorisï¿½es</p>
             <p className="text-[10px] text-gray-400 mt-1 text-center">JPG ou PNG Â· 10 Mo max</p>
           </div>
         </Card>
@@ -780,15 +771,16 @@ export default function EditProductPage() {
                 readOnly={editingVariantIndex !== index}
                 onChange={e => { const u = [...variants]; u[index] = { ...u[index], size: e.target.value }; setVariants(u); }}
                 className={`w-full h-12 text-center rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
-              <div className="relative">
-                <select value={v.unit} disabled={editingVariantIndex !== index}
-                  onChange={e => { const u = [...variants]; u[index] = { ...u[index], unit: e.target.value }; setVariants(u); }}
-                  className={`w-full appearance-none h-12 px-6 rounded-xl text-[14px] font-bold text-[#333] focus:outline-none pb-1 ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`}>
-                  <option value="ml">ml</option>
-                  <option value="g">g</option>
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><ChevronUp /></div>
-              </div>
+              <AdminSelect
+                variant="row"
+                value={v.unit}
+                disabled={editingVariantIndex !== index}
+                onChange={e => { const u = [...variants]; u[index] = { ...u[index], unit: e.target.value }; setVariants(u); }}
+                className={editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}
+              >
+                <option value="ml">ml</option>
+                <option value="g">g</option>
+              </AdminSelect>
               <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
                 <input type="text" value={v.price}
                   readOnly={editingVariantIndex !== index}
@@ -827,13 +819,15 @@ export default function EditProductPage() {
               style={entryRowHighlight ? { animation: 'rowPulse 2s ease-out forwards' } : {}}
             >
               <input type="text" value={draftVariant.size} onChange={e => setDraftVariant({ ...draftVariant, size: e.target.value })} placeholder="20" className="w-full h-12 text-center rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm" />
-              <div className="relative">
-                <select value={draftVariant.unit} onChange={e => setDraftVariant({ ...draftVariant, unit: e.target.value })} className="w-full appearance-none h-12 px-6 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm pb-1">
-                  <option value="ml">ml</option>
-                  <option value="g">g</option>
-                </select>
-                <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400"><ChevronUp /></div>
-              </div>
+              <AdminSelect
+                variant="row"
+                value={draftVariant.unit}
+                onChange={e => setDraftVariant({ ...draftVariant, unit: e.target.value })}
+                className="bg-white border border-yellow-100/50 shadow-sm"
+              >
+                <option value="ml">ml</option>
+                <option value="g">g</option>
+              </AdminSelect>
               <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
                 <input type="text" value={draftVariant.price} onChange={e => setDraftVariant({ ...draftVariant, price: e.target.value })} placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
                 <div className="h-6 w-px bg-gray-200" /><span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
@@ -854,7 +848,7 @@ export default function EditProductPage() {
 
           {variants.length === 0 && draftVariant === null && (
             <div className="py-8 text-center text-[14px] text-gray-400 font-medium">
-              No variants yet — click &ldquo;+ Add Size Variant&rdquo; to add one.
+              No variants yet ï¿½ click &ldquo;+ Add Size Variant&rdquo; to add one.
             </div>
           )}
         </div>
@@ -870,7 +864,7 @@ export default function EditProductPage() {
           </div>
         </Card>
 
-        <Card title="Ingredients" icon={<LeafIcon />}>
+        <Card title="Ingredients" icon={<LeafIcon />} action={<button onClick={() => setIsCreateIngredientModalOpen(true)} className="text-[#da2966] text-[13px] font-bold hover:underline">+ New Ingredient</button>}>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:p-6 mt-2 w-full">
             {[0, 1, 2].map((slot) => {
               const ing = ingredients[slot];
@@ -911,7 +905,7 @@ export default function EditProductPage() {
         action={<button onClick={() => setIsReviewFormOpen(true)} className="text-[#da2966] text-[13px] font-bold hover:underline">+ Add Manual Review</button>}
       >
         <div>
-          {/* Reviews row — up to 4 cards per page */}
+          {/* Reviews row ï¿½ up to 4 cards per page */}
           <div className="flex items-stretch gap-4 sm:p-6 py-6 px-4 flex-wrap">
             {currentPageReviews.map((rev, i) => {
               const idx = reviewPage * 4 + i;
@@ -955,7 +949,7 @@ export default function EditProductPage() {
             )}
           </div>
 
-          {/* Pagination — only visible when there are multiple pages */}
+          {/* Pagination ï¿½ only visible when there are multiple pages */}
           {reviewTotalPages > 1 && (
             <div className="flex items-center justify-between px-4 pb-4 pt-2 border-t border-gray-50 mt-2">
               <button
@@ -1049,38 +1043,22 @@ export default function EditProductPage() {
 
       {/* -- MODALS -- */}
 
-      {/* 1. Add / Edit Ingredient Modal */}
-      {isIngredientModalOpen && createPortal(
-        <div className="fixed inset-0 bg-black/40 z-[9999] flex items-end sm:items-center justify-center sm:p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-md p-5 sm:p-8 shadow-2xl relative">
-            <button
-              onClick={() => { setIsIngredientModalOpen(false); setEditingIngredientSlot(null); setNewIngredientName(''); setNewIngredientFile(null); }}
-              className="absolute top-4 sm:p-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
-            >?</button>
-            <h3 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
-              <LeafIcon /> Ingredients
-            </h3>
-            <div className="mb-8">
-              <label className="text-[14px] font-bold text-[#333] block mb-4">Ingredient Image</label>
-              <input type="file" ref={ingredientFileInputRef} onChange={(e) => setNewIngredientFile(e.target.files?.[0] || null)} accept="image/*" className="hidden" />
-              <div onClick={() => ingredientFileInputRef.current?.click()} className="w-full py-12 border-2 border-dashed border-[#da2966] rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-[#fff0f3] transition-colors gap-3">
-                {newIngredientFile ? (
-                  <><CloudUploadIcon /><span className="text-[13px] text-[#333] font-bold">{newIngredientFile.name}</span></>
-                ) : (
-                  <><CloudUploadIcon /><p className="text-[14px] text-[#333] font-medium">Drag & drop or click to upload</p></>
-                )}
-              </div>
-            </div>
-            <div className="mb-8">
-              <label className="text-[14px] font-bold text-[#333] block mb-3">Ingredient Name</label>
-              <input type="text" value={newIngredientName} onChange={e => setNewIngredientName(e.target.value)} placeholder="e.g Hyaluronic Acid" className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#da2966]/40" />
-            </div>
-            <button onClick={handleAddIngredient} className="w-full h-12 rounded-xl bg-[#da2966] text-white font-bold text-[14px] hover:bg-[#c22158] transition-colors flex items-center justify-center gap-2">
-              + {editingIngredientSlot !== null && ingredients[editingIngredientSlot] ? 'Update Ingredient' : 'Add Ingredient'}
-            </button>
-          </div>
-        </div>
-      , document.body)}
+      {/* 1. Select Ingredient Modal */}
+      <IngredientSelectModal
+        isOpen={isIngredientModalOpen}
+        onClose={() => { setIsIngredientModalOpen(false); setEditingIngredientSlot(null); }}
+        availableIngredients={availableIngredients}
+        initialSelectedId={ingredientInitialId}
+        isEditing={editingIngredientSlot !== null && !!(ingredients[editingIngredientSlot ?? -1])}
+        onConfirm={handleIngredientConfirmed}
+      />
+
+      {/* 2. Create Custom Ingredient Modal */}
+      <CreateIngredientModal
+        isOpen={isCreateIngredientModalOpen}
+        onClose={() => setIsCreateIngredientModalOpen(false)}
+        onCreated={handleIngredientCreated}
+      />
 
       {/* 2. Add Review Modal */}
       <ReviewFormModal

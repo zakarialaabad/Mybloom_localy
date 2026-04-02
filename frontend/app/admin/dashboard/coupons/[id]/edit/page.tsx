@@ -1,4 +1,5 @@
 'use client';
+import { AdminSelect } from '@/components/admin/AdminSelect';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -262,14 +263,14 @@ export default function EditCouponPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
                 <label className="block text-[11px] font-bold text-[#444] mb-2">Discount Type</label>
-                <select
+                <AdminSelect
+                  variant="compact"
                   value={discountType}
                   onChange={(e) => setDiscountType(e.target.value as 'percent' | 'fixed')}
-                  className="w-full px-4 py-3 bg-[#f8f9fa] border-transparent rounded-[8px] text-[13px] text-[#555] focus:bg-white focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all outline-none appearance-none"
                 >
                   <option value="percent">Percentage (%)</option>
                   <option value="fixed">Fixed Amount (DH)</option>
-                </select>
+                </AdminSelect>
               </div>
 
               <div>

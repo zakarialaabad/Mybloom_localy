@@ -12,6 +12,7 @@ import {
 import { useProductList } from '@/hooks/useProductList';
 import ProductTable from '@/components/ProductTable';
 import { PRODUCT_CONFIG } from '@/lib/utils';
+import { AdminSelect } from '@/components/admin/AdminSelect';
 
 /* ═══════════════════════════════════════════════════════════════════════════
  * VIRTUAL STOCK SYSTEM
@@ -273,53 +274,44 @@ export default function ProductsPage() {
           </div>
           
           <div className="flex gap-2 w-full overflow-x-auto pb-1 -mx-1 px-1 sm:px-0 sm:pb-0 sm:mx-0 sm:overflow-visible sm:w-auto no-scrollbar">
-            <div className="relative flex-1 sm:flex-none min-w-[130px]">
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="w-full sm:min-w-[160px] appearance-none h-11 pl-4 pr-10 rounded-xl border border-gray-200 bg-white text-[13px] text-gray-700 focus:outline-none focus:border-[#da2966]/40 shadow-sm cursor-pointer"
-              >
-                <option value="">All Categories</option>
-                {categories.map((c) => (
-                  <option key={c.id} value={String(c.id)}>{c.name}</option>
-                ))}
-              </select>
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
-                <ChevronIcon />
-              </span>
-            </div>
+            <AdminSelect
+              variant="filter"
+              wrapperClassName="flex-1 sm:flex-none min-w-[130px]"
+              className="sm:min-w-[160px]"
+              value={categoryFilter}
+              onChange={(e) => setCategoryFilter(e.target.value)}
+            >
+              <option value="">All Categories</option>
+              {categories.map((c) => (
+                <option key={c.id} value={String(c.id)}>{c.name}</option>
+              ))}
+            </AdminSelect>
 
-            <div className="relative flex-1 sm:flex-none min-w-[130px]">
-              <select
-                value={typeFilter}
-                onChange={(e) => setTypeFilter(e.target.value)}
-                className="w-full sm:min-w-[150px] appearance-none h-11 pl-4 pr-10 rounded-xl border border-gray-200 bg-white text-[13px] text-gray-700 focus:outline-none focus:border-[#da2966]/40 shadow-sm cursor-pointer"
-              >
-                <option value="">All Types</option>
-                {productTypes.map((t) => (
-                  <option key={t.id} value={String(t.id)}>{t.name}</option>
-                ))}
-              </select>
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
-                <ChevronIcon />
-              </span>
-            </div>
+            <AdminSelect
+              variant="filter"
+              wrapperClassName="flex-1 sm:flex-none min-w-[130px]"
+              className="sm:min-w-[150px]"
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+            >
+              <option value="">All Types</option>
+              {productTypes.map((t) => (
+                <option key={t.id} value={String(t.id)}>{t.name}</option>
+              ))}
+            </AdminSelect>
 
-            <div className="relative flex-1 sm:flex-none min-w-[130px]">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full sm:min-w-[160px] appearance-none h-11 pl-4 pr-10 rounded-xl border border-gray-200 bg-white text-[13px] text-gray-700 focus:outline-none focus:border-[#da2966]/40 shadow-sm cursor-pointer"
-              >
-                <option value="">All Statuses</option>
-                <option value="active">Active</option>
-                <option value="low_stock">Low Stock</option>
-                <option value="inactive">Inactive</option>
-              </select>
-              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
-                <ChevronIcon />
-              </span>
-            </div>
+            <AdminSelect
+              variant="filter"
+              wrapperClassName="flex-1 sm:flex-none min-w-[130px]"
+              className="sm:min-w-[160px]"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="">All Statuses</option>
+              <option value="active">Active</option>
+              <option value="low_stock">Low Stock</option>
+              <option value="inactive">Inactive</option>
+            </AdminSelect>
           </div>
 
           {!isLoading && (
