@@ -51,6 +51,10 @@ class ProductController extends Controller
             $query->whereIn('category_id', (array) $categoryIds);
         }
 
+        if ($ingredientIds = $request->query('ingredient_ids')) {
+            $query->whereHas('ingredientItems', fn ($q) => $q->whereIn('ingredients.id', (array) $ingredientIds));
+        }
+
         // Specific product IDs (used by wishlist page)
         if ($ids = $request->query('ids')) {
             $query->whereIn('id', array_map('intval', (array) $ids));

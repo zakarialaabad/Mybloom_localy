@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\BrandController;
 use App\Http\Controllers\Api\V1\CategoryController;
+use App\Http\Controllers\Api\V1\IngredientController;
 use App\Http\Controllers\Api\V1\CouponController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ProductController;
@@ -50,6 +51,7 @@ Route::prefix('api')->group(function () {
             Route::get('/products/{slug}',             [ProductController::class, 'show']);
             Route::get('/brands',                      [BrandController::class, 'index']);
             Route::get('/categories',                  [CategoryController::class, 'index']);
+            Route::get('/ingredients',                 [IngredientController::class, 'index']);
             Route::get('/product-types',               [AdminProductTypeController::class, 'index']);
             Route::get('/shipping-methods',            [ShippingMethodController::class, 'index']);
 

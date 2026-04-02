@@ -30,7 +30,7 @@
  */
 
 import { create } from 'zustand';
-import { brandService, categoryService, Brand, Category } from '@/services/api';
+import { brandService, categoryService, ingredientService, Brand, Category, Ingredient } from '@/services/api';
 
 interface ReferenceStore {
   // ── Brands ──────────────────────────────────────────────────────────────────
@@ -45,6 +45,12 @@ interface ReferenceStore {
   categoriesReady: boolean;
   categoriesLoading: boolean;
   ensureCategories: () => void;   // idempotent
+
+  // ── Ingredients ──────────────────────────────────────────────────────────
+  ingredients: Ingredient[];
+  ingredientsReady: boolean;
+  ingredientsLoading: boolean;
+  ensureIngredients: () => void;  // idempotent
 }
 
 const useReferenceStore = create<ReferenceStore>((set, get) => ({
@@ -84,6 +90,21 @@ const useReferenceStore = create<ReferenceStore>((set, get) => ({
       })
       .catch(() => {})
       .finally(() => set({ categoriesLoading: false }));
+  },
+
+  // ── Ingredients ──────────────────────────────────────────────────────────
+  ingredients: [],
+  ingredientsReady: false,
+  ingredientsLoading: false,
+
+  ensureIngredients: () => {
+    if (get().ingredientsReady || get().ingredientsLoading) return;
+    set({ ingredientsLoading: true });
+    ingredientService
+      .list()
+      .then((data) => set({ ingredients: data, ingredientsReady: true }))
+      .catch(() => {})
+      .finally(() => set({ ingredientsLoading: false }));
   },
 }));
 

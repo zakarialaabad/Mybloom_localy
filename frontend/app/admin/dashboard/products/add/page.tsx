@@ -125,22 +125,32 @@ export default function AddProductPage() {
 
   // --- Phase 6: Ingredients State ---
   const [ingredients, setIngredients] = useState<any[]>([]); 
+  const [availableIngredients, setAvailableIngredients] = useState<{id: number; name: string; image_url: string | null}[]>([]);
   const [isIngredientModalOpen, setIsIngredientModalOpen] = useState(false);
   const [editingIngredientSlot, setEditingIngredientSlot] = useState<number | null>(null);
+  const [newIngredientSelectedId, setNewIngredientSelectedId] = useState('');
   const [newIngredientName, setNewIngredientName] = useState('');
   const [newIngredientFile, setNewIngredientFile] = useState<File | null>(null);
   const ingredientFileInputRef = useRef<HTMLInputElement>(null);
 
   const openIngredientModal = (slot?: number) => {
-    if (slot !== undefined && ingredients[slot]) {
-      setEditingIngredientSlot(slot);
-      setNewIngredientName(ingredients[slot].name);
-      setNewIngredientFile(null);
+    const actualSlot = slot ?? ingredients.length;
+    setEditingIngredientSlot(actualSlot);
+    const ing = ingredients[actualSlot];
+    if (ing) {
+      const matched = availableIngredients.find(a => a.name === ing.name);
+      if (matched) {
+        setNewIngredientSelectedId(String(matched.id));
+        setNewIngredientName(matched.name);
+      } else {
+        setNewIngredientSelectedId('custom');
+        setNewIngredientName(ing.name);
+      }
     } else {
-      setEditingIngredientSlot(null);
+      setNewIngredientSelectedId('');
       setNewIngredientName('');
-      setNewIngredientFile(null);
     }
+    setNewIngredientFile(null);
     setIsIngredientModalOpen(true);
   };
 
@@ -162,6 +172,7 @@ export default function AddProductPage() {
         const catRes = await fetch('http://localhost:8000/api/v1/categories');
         const brandRes = await fetch('http://localhost:8000/api/v1/brands');
         const typeRes = await fetch('http://localhost:8000/api/v1/product-types');
+        const ingrRes = await fetch('http://localhost:8000/api/v1/ingredients');
         
         if (catRes.ok) {
           const catData = await catRes.json();
@@ -176,6 +187,10 @@ export default function AddProductPage() {
           const types = typeData.data || [];
           setProductTypes(types);
           if (types.length > 0) setProductType(types.find((t: any) => t.name === 'Body')?.name || types[0].name);
+        }
+        if (ingrRes.ok) {
+          const ingrData = await ingrRes.json();
+          setAvailableIngredients(ingrData.data || []);
         }
       } catch (error) {
         console.error("Error fetching dependencies:", error);
@@ -298,30 +313,30 @@ export default function AddProductPage() {
 
   // --- Handlers for Phases 6, 7 & 8 ---
   const handleAddIngredient = () => {
-    if (newIngredientName) {
-      if (editingIngredientSlot !== null) {
-        // Edit existing ingredient
-        const updated = [...ingredients];
-        const prevThumb = updated[editingIngredientSlot].thumb;
-        updated[editingIngredientSlot] = {
-          name: newIngredientName,
-          thumb: newIngredientFile ? URL.createObjectURL(newIngredientFile) : prevThumb,
-          file: newIngredientFile ?? updated[editingIngredientSlot].file,
-        };
-        setIngredients(updated);
-      } else {
-        if (ingredients.length >= 3) {
-          showToast('Maximum 3 ingredients allowed per product.');
-          return;
-        }
-        const thumb = newIngredientFile ? URL.createObjectURL(newIngredientFile) : 'https://placehold.co/150x150?text=Ingr';
-        setIngredients([...ingredients, { name: newIngredientName, thumb, file: newIngredientFile }]);
-      }
-      setIsIngredientModalOpen(false);
-      setEditingIngredientSlot(null);
-      setNewIngredientName('');
-      setNewIngredientFile(null);
+    if (!newIngredientSelectedId || editingIngredientSlot === null) return;
+    let name: string;
+    let thumb: string;
+    let file: File | null = null;
+    if (newIngredientSelectedId === 'custom') {
+      if (!newIngredientName) { showToast('Please enter an ingredient name.'); return; }
+      name = newIngredientName;
+      thumb = newIngredientFile ? URL.createObjectURL(newIngredientFile) : 'https://placehold.co/150x150?text=Ingr';
+      file = newIngredientFile;
+    } else {
+      const found = availableIngredients.find(i => String(i.id) === newIngredientSelectedId);
+      if (!found) return;
+      name = found.name;
+      thumb = found.image_url ?? `https://placehold.co/150x150?text=${encodeURIComponent(found.name)}`;
     }
+    const updated = [...ingredients];
+    while (updated.length <= editingIngredientSlot) updated.push(null);
+    updated[editingIngredientSlot] = { name, thumb, file };
+    setIngredients(updated);
+    setIsIngredientModalOpen(false);
+    setEditingIngredientSlot(null);
+    setNewIngredientSelectedId('');
+    setNewIngredientName('');
+    setNewIngredientFile(null);
   };
 
   const handleAddReview = (data: ReviewFormSaveData) => {
@@ -789,7 +804,7 @@ export default function AddProductPage() {
                   <div className={`relative w-full aspect-square rounded-full overflow-hidden transition-colors ${ing ? 'border-[2.5px] border-[#da2966]' : 'border-[2.5px] border-dashed border-[#da2966]'}`}>
                     {/* +ADD layer — always underneath */}
                     <button
-                      onClick={() => !ing && openIngredientModal()}
+                      onClick={() => !ing && openIngredientModal(slot)}
                       className="absolute inset-0 rounded-full bg-white flex flex-col items-center justify-center hover:bg-[#fff0f3] transition-colors"
                     >
                       <span className="text-[#da2966] font-bold text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] leading-none mb-1">+</span>
@@ -934,67 +949,115 @@ export default function AddProductPage() {
         <div className="fixed inset-0 bg-black/40 z-[9999] flex items-end sm:items-center justify-center sm:p-4 backdrop-blur-sm">
           <div className="bg-white rounded-3xl w-full max-w-md p-5 sm:p-8 shadow-2xl relative">
             {/* Close button */}
-            <button 
-              onClick={() => { setIsIngredientModalOpen(false); setEditingIngredientSlot(null); setNewIngredientName(''); setNewIngredientFile(null); }}
-              className="absolute top-4 sm:p-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              ✕
-            </button>
-            
-            {/* Title with leaf icon */}
-            <h3 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-serialize font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
+            <button
+              onClick={() => { setIsIngredientModalOpen(false); setEditingIngredientSlot(null); setNewIngredientSelectedId(''); setNewIngredientName(''); setNewIngredientFile(null); }}
+              className="absolute top-4 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
+            >✕</button>
+
+            <h3 className="text-[18px] font-bold text-[#da2966] mb-6 flex items-center justify-center gap-2">
               <LeafIcon />
-              Ingredients
+              {editingIngredientSlot !== null && ingredients[editingIngredientSlot] ? 'Edit Ingredient' : 'Add Ingredient'}
             </h3>
-            
-            {/* Ingredient Image Upload */}
-            <div className="mb-8">
-              <label className="text-[14px] font-bold text-[#333] block mb-4">Ingredient Image</label>
-              <input 
-                type="file" 
-                ref={ingredientFileInputRef}
-                onChange={(e) => setNewIngredientFile(e.target.files?.[0] || null)}
-                accept="image/*"
-                className="hidden" 
-              />
-              <div 
-                onClick={() => ingredientFileInputRef.current?.click()}
-                className="w-full py-12 border-2 border-dashed border-[#da2966] rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-[#fff0f3] transition-colors gap-3"
-              >
-                {newIngredientFile ? (
-                  <>
-                    <CloudUploadIcon />
-                    <span className="text-[13px] text-[#333] font-bold">{newIngredientFile.name}</span>
-                  </>
-                ) : (
-                  <>
-                    <CloudUploadIcon />
-                    <div className="text-center">
-                      <p className="text-[14px] text-[#333] font-medium">Drag & drop or click to uplad</p>
-                    </div>
-                  </>
-                )}
+
+            {/* Select from available ingredients */}
+            <div className="mb-6">
+              <label className="text-[13px] font-bold text-[#333] block mb-3">Select Ingredient</label>
+              <div className="relative">
+                <select
+                  value={newIngredientSelectedId}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setNewIngredientSelectedId(v);
+                    if (v && v !== 'custom') {
+                      const found = availableIngredients.find(i => String(i.id) === v);
+                      if (found) setNewIngredientName(found.name);
+                      setNewIngredientFile(null);
+                    } else if (v === 'custom') {
+                      setNewIngredientName('');
+                      setNewIngredientFile(null);
+                    }
+                  }}
+                  className="w-full h-12 px-4 pr-10 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40 appearance-none cursor-pointer"
+                >
+                  <option value="">— Choose an ingredient —</option>
+                  {availableIngredients.map(ing => (
+                    <option key={ing.id} value={String(ing.id)}>{ing.name}</option>
+                  ))}
+                  <option value="custom">+ Custom Ingredient</option>
+                </select>
+                <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"><ChevronDown /></div>
               </div>
             </div>
 
-            {/* Ingredient Name */}
-            <div className="mb-8">
-              <label className="text-[14px] font-bold text-[#333] block mb-3">Ingredient Name</label>
-              <input 
-                type="text" 
-                value={newIngredientName}
-                onChange={e => setNewIngredientName(e.target.value)}
-                placeholder="e.g Hyaluronic Acid" 
-                className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#da2966]/40" 
-              />
-            </div>
+            {/* Existing ingredient selected: image URL (read-only) + disabled upload */}
+            {newIngredientSelectedId && newIngredientSelectedId !== 'custom' && (() => {
+              const found = availableIngredients.find(i => String(i.id) === newIngredientSelectedId);
+              return (
+                <>
+                  <div className="mb-6">
+                    <label className="text-[13px] font-bold text-[#333] block mb-3">Image URL</label>
+                    <div className="flex items-center gap-3">
+                      {found?.image_url && (
+                        <img src={found.image_url} alt={found.name} className="w-14 h-14 rounded-full object-cover border-2 border-[#da2966] shrink-0" />
+                      )}
+                      <input
+                        type="text"
+                        value={found?.image_url ?? 'No image'}
+                        readOnly
+                        className="flex-1 h-12 px-4 rounded-xl bg-[#f0f0f0] border-none text-[13px] text-gray-400 cursor-not-allowed focus:outline-none truncate"
+                      />
+                    </div>
+                  </div>
+                  <div className="mb-8">
+                    <div className="flex items-center justify-between mb-3">
+                      <label className="text-[13px] font-bold text-[#333]">Upload Image</label>
+                      <span className="text-[11px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">Linked from ingredient</span>
+                    </div>
+                    <div className="w-full py-8 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center gap-2 opacity-40 cursor-not-allowed bg-gray-50">
+                      <CloudUploadIcon />
+                      <p className="text-[13px] text-gray-400">Image linked from ingredient</p>
+                    </div>
+                  </div>
+                </>
+              );
+            })()}
 
-            {/* Submit Button */}
-            <button 
-              onClick={handleAddIngredient} 
-              className="w-full h-12 rounded-xl bg-[#da2966] text-white font-bold text-[14px] hover:bg-[#c22158] transition-colors flex items-center justify-center gap-2"
+            {/* Custom ingredient: name input + file upload */}
+            {newIngredientSelectedId === 'custom' && (
+              <>
+                <div className="mb-6">
+                  <label className="text-[13px] font-bold text-[#333] block mb-3">Ingredient Name</label>
+                  <input
+                    type="text"
+                    value={newIngredientName}
+                    onChange={e => setNewIngredientName(e.target.value)}
+                    placeholder="e.g. Hyaluronic Acid"
+                    className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
+                  />
+                </div>
+                <div className="mb-8">
+                  <label className="text-[13px] font-bold text-[#333] block mb-3">Upload Image</label>
+                  <input type="file" ref={ingredientFileInputRef} onChange={(e) => setNewIngredientFile(e.target.files?.[0] || null)} accept="image/*" className="hidden" />
+                  <div
+                    onClick={() => ingredientFileInputRef.current?.click()}
+                    className="w-full py-10 border-2 border-dashed border-[#da2966] rounded-2xl flex flex-col items-center justify-center cursor-pointer hover:bg-[#fff0f3] transition-colors gap-3"
+                  >
+                    {newIngredientFile ? (
+                      <><CloudUploadIcon /><span className="text-[13px] text-[#333] font-bold">{newIngredientFile.name}</span></>
+                    ) : (
+                      <><CloudUploadIcon /><p className="text-[14px] text-[#333] font-medium">Drag & drop or click to upload</p></>
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+
+            <button
+              onClick={handleAddIngredient}
+              disabled={!newIngredientSelectedId}
+              className={`w-full h-12 rounded-xl text-white font-bold text-[14px] transition-colors flex items-center justify-center gap-2 ${!newIngredientSelectedId ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-[#da2966] hover:bg-[#c22158]'}`}
             >
-              + {editingIngredientSlot !== null ? 'Update Ingredient' : 'Add Ingredient'}
+              + {editingIngredientSlot !== null && ingredients[editingIngredientSlot] ? 'Update Ingredient' : 'Add Ingredient'}
             </button>
           </div>
         </div>

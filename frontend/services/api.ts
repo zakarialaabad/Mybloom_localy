@@ -220,6 +220,12 @@ export interface Category {
   children?: Category[];
 }
 
+export interface Ingredient {
+  id: number;
+  name: string;
+  image_url: string | null;
+}
+
 export interface ShippingMethod {
   id: number;
   name: string;
@@ -314,6 +320,15 @@ export const brandService = {
 export const categoryService = {
   list: async () => {
     const { data } = await apiClient.get<{ data: Category[] }>('/v1/categories');
+    return data.data;
+  },
+};
+
+// ─── Ingredient service ──────────────────────────────────────────────────────
+
+export const ingredientService = {
+  list: async () => {
+    const { data } = await apiClient.get<{ data: Ingredient[] }>('/v1/ingredients');
     return data.data;
   },
 };

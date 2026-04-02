@@ -24,18 +24,18 @@ function usePerPage() {
 }
 
 export default function CategoriesSection() {
-  const categories       = useReferenceStore((s) => s.categories);
-  const ensureCategories = useReferenceStore((s) => s.ensureCategories);
+  const ingredients       = useReferenceStore((s) => s.ingredients);
+  const ensureIngredients = useReferenceStore((s) => s.ensureIngredients);
   const [page, setPage]  = useState(0);
   const perPage          = usePerPage();
 
-  useEffect(() => { ensureCategories(); }, [ensureCategories]);
+  useEffect(() => { ensureIngredients(); }, [ensureIngredients]);
 
   // Reset to page 0 whenever perPage changes so we never land on an out-of-range page
   useEffect(() => { setPage(0); }, [perPage]);
 
-  const totalPages   = Math.ceil(categories.length / perPage);
-  const visible      = categories.slice(page * perPage, (page + 1) * perPage);
+  const totalPages   = Math.ceil(ingredients.length / perPage);
+  const visible      = ingredients.slice(page * perPage, (page + 1) * perPage);
   const canPrev      = page > 0;
   const canNext      = page < totalPages - 1;
   return (
@@ -180,19 +180,19 @@ export default function CategoriesSection() {
 
             {/* 6-per-page grid */}
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 md:gap-x-8 md:gap-y-12">
-            {visible.map((category) => (
-                <Link key={category.id} href={`/collection?category=${category.id}`} className="group block text-center">
+            {visible.map((ingredient) => (
+                <Link key={ingredient.id} href={`/collection?ingredient=${ingredient.id}`} className="group block text-center">
                     <div className="relative mx-auto h-32 w-32 md:h-40 md:w-40 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105">
                         <Image
-                            src={category.image_url ?? 'https://images.unsplash.com/photo-1598007264887-acc47d519b88?auto=format&fit=crop&q=80&w=200'}
-                            alt={category.name}
+                            src={ingredient.image_url ?? 'https://images.unsplash.com/photo-1598007264887-acc47d519b88?auto=format&fit=crop&q=80&w=200'}
+                            alt={ingredient.name}
                             width={120}
                             height={120}
                             className="h-full w-full object-cover opacity-90 mix-blend-multiply"
                         />
                     </div>
                     <h3 className="mt-4 md:mt-6 text-xs md:text-sm font-serif uppercase tracking-widest text-[#4a403a]">
-                        {category.name}
+                        {ingredient.name}
                     </h3>
                 </Link>
             ))}

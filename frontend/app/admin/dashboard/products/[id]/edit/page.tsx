@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -69,12 +69,12 @@ const ToggleRow = ({ label, active, border, onClick }: { label: string, active: 
   </div>
 );
 
-// ─── Image entry types ────────────────────────────────────────────────────────
+// --- Image entry types --------------------------------------------------------
 type ImageEntry =
   | { type: 'existing'; id: number; url: string }
   | { type: 'new'; file: File; preview: string };
 
-// ─── Review entry types ───────────────────────────────────────────────────────
+// --- Review entry types -------------------------------------------------------
 interface ReviewEntry {
   id?: number;
   reviewer_name: string;
@@ -84,7 +84,7 @@ interface ReviewEntry {
   photoFile?: File;
 }
 
-// ─── FAQ entry types ──────────────────────────────────────────────────────────
+// --- FAQ entry types ----------------------------------------------------------
 interface FaqEntry {
   id?: number;
   question: string;
@@ -120,8 +120,10 @@ export default function EditProductPage() {
 
   // --- Ingredients State ---
   const [ingredients, setIngredients] = useState<any[]>([]);
+  const [availableIngredients, setAvailableIngredients] = useState<{id: number; name: string; image_url: string | null}[]>([]);
   const [isIngredientModalOpen, setIsIngredientModalOpen] = useState(false);
   const [editingIngredientSlot, setEditingIngredientSlot] = useState<number | null>(null);
+  const [newIngredientSelectedId, setNewIngredientSelectedId] = useState('');
   const [newIngredientName, setNewIngredientName] = useState('');
   const [newIngredientFile, setNewIngredientFile] = useState<File | null>(null);
   const ingredientFileInputRef = useRef<HTMLInputElement>(null);
@@ -167,7 +169,7 @@ export default function EditProductPage() {
     setTimeout(() => setToastVisible(false), 3200);
   };
 
-  // ── Load select data + product data on mount ──────────────────────────────
+  // -- Load select data + product data on mount ------------------------------
   useEffect(() => {
     const fetchAll = async () => {
       try {
@@ -217,7 +219,7 @@ export default function EditProductPage() {
             .map(img => ({ type: 'existing', id: img.id, url: img.image_url }))
         );
 
-        // Variants — prefill from product.variants (new system)
+        // Variants � prefill from product.variants (new system)
         if (product.variants && product.variants.length > 0) {
           setVariants(product.variants.map(v => ({
             size: String(v.size),
@@ -277,7 +279,7 @@ export default function EditProductPage() {
     setErrors(prev => ({ ...prev, [errorKey]: '' }));
   };
 
-  // ── Image handlers ────────────────────────────────────────────────────────
+  // -- Image handlers --------------------------------------------------------
   const allImagePreviews = imageEntries.map(e => e.type === 'existing' ? e.url : e.preview);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -292,7 +294,7 @@ export default function EditProductPage() {
       const remaining = 4 - total;
       const filesToAdd = selectedFiles.slice(0, remaining);
       if (selectedFiles.length > remaining) {
-        showToast(`Only ${remaining} slot${remaining !== 1 ? 's' : ''} remaining — extra photos were skipped.`);
+        showToast(`Only ${remaining} slot${remaining !== 1 ? 's' : ''} remaining � extra photos were skipped.`);
       }
       const newEntries: ImageEntry[] = filesToAdd.map(f => ({
         type: 'new',
@@ -314,7 +316,7 @@ export default function EditProductPage() {
     setImageEntries(imageEntries.filter((_, i) => i !== index));
   };
 
-  // ── Variant handlers ──────────────────────────────────────────────────────
+  // -- Variant handlers ------------------------------------------------------
   const handleAddVariantClick = () => {
     if (variants.length >= 3) {
       showToast('Maximum 3 size variants allowed.');
@@ -352,7 +354,7 @@ export default function EditProductPage() {
     if (editingVariantIndex === index) setEditingVariantIndex(null);
   };
 
-  // ── Ingredient handlers ───────────────────────────────────────────────────
+  // -- Ingredient handlers ---------------------------------------------------
   const handleAddIngredient = () => {
     if (!newIngredientName || editingIngredientSlot === null) return;
     const updated = [...ingredients];
@@ -373,7 +375,7 @@ export default function EditProductPage() {
     setNewIngredientFile(null);
   };
 
-  // ── Review handlers ───────────────────────────────────────────────────────
+  // -- Review handlers -------------------------------------------------------
   const handleAddReview = (data: ReviewFormSaveData) => {
     const photoUrl = data.photoFile ? URL.createObjectURL(data.photoFile) : '';
     setReviews(prev => [...prev, {
@@ -395,7 +397,7 @@ export default function EditProductPage() {
     if (reviewPage > maxPage) setReviewPage(maxPage);
   };
 
-  // ── FAQ handlers ──────────────────────────────────────────────────────────
+  // -- FAQ handlers ----------------------------------------------------------
   const handleAddFaq = () => {
     if (!newFaq.question && !newFaq.answer) {
       showToast('Please fill in both the question and answer fields.');
@@ -422,7 +424,7 @@ export default function EditProductPage() {
     setEditingFaqIndex(index);
   };
 
-  // ── Submit ────────────────────────────────────────────────────────────────
+  // -- Submit ----------------------------------------------------------------
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
@@ -444,7 +446,7 @@ export default function EditProductPage() {
       const validVariants = variants.filter(v => v.size && v.price);
       data.append('variants', JSON.stringify(validVariants));
       if (validVariants.length > 0) {
-        // Mirror backend rule: 1 variant → index 0; 2 variants → largest (index 1); 3 variants → middle (index 1)
+        // Mirror backend rule: 1 variant ? index 0; 2 variants ? largest (index 1); 3 variants ? middle (index 1)
         const sorted = [...validVariants].sort((a, b) => Number(a.size) - Number(b.size));
         const defaultV = sorted.length === 1 ? sorted[0] : sorted[1];
         data.append('price', defaultV.price);
@@ -523,13 +525,13 @@ export default function EditProductPage() {
     }
   };
 
-  // ── Review pagination ─────────────────────────────────────────────────────
+  // -- Review pagination -----------------------------------------------------
   const reviewAddButtonPage = Math.floor(reviews.length / 4);
   const reviewTotalPages = reviewAddButtonPage + 1;
   const currentPageReviews = reviews.slice(reviewPage * 4, (reviewPage + 1) * 4);
   const showAddOnCurrentPage = reviewPage === reviewAddButtonPage;
 
-  // ── Render ────────────────────────────────────────────────────────────────
+  // -- Render ----------------------------------------------------------------
   if (isLoading) {
     return (
       <div className="min-h-screen bg-[#fcfcfc] flex items-center justify-center">
@@ -747,9 +749,9 @@ export default function EditProductPage() {
           />
           <div onClick={() => fileInputRef.current?.click()} className="w-full min-h-[120px] rounded-2xl border-2 border-dashed border-[#da2966] bg-[#fcfcfc] flex flex-col items-center justify-center py-4 px-4 hover:bg-[#fff0f3] transition-colors cursor-pointer overflow-hidden">
             <CloudUploadIcon />
-            <p className="text-[13px] sm:text-[14px] font-bold text-[#333] mt-2 mb-1 text-center leading-snug">Glissez-déposez des photos ici</p>
-            <p className="text-[11px] font-medium text-gray-400 text-center">Maximum 4 photos autorisées</p>
-            <p className="text-[10px] text-gray-400 mt-1 text-center">JPG ou PNG Â· 10 Mo max</p>
+            <p className="text-[13px] sm:text-[14px] font-bold text-[#333] mt-2 mb-1 text-center leading-snug">Glissez-d�posez des photos ici</p>
+            <p className="text-[11px] font-medium text-gray-400 text-center">Maximum 4 photos autoris�es</p>
+            <p className="text-[10px] text-gray-400 mt-1 text-center">JPG ou PNG · 10 Mo max</p>
           </div>
         </Card>
       </div>
@@ -852,7 +854,7 @@ export default function EditProductPage() {
 
           {variants.length === 0 && draftVariant === null && (
             <div className="py-8 text-center text-[14px] text-gray-400 font-medium">
-              No variants yet — click &ldquo;+ Add Size Variant&rdquo; to add one.
+              No variants yet � click &ldquo;+ Add Size Variant&rdquo; to add one.
             </div>
           )}
         </div>
@@ -909,7 +911,7 @@ export default function EditProductPage() {
         action={<button onClick={() => setIsReviewFormOpen(true)} className="text-[#da2966] text-[13px] font-bold hover:underline">+ Add Manual Review</button>}
       >
         <div>
-          {/* Reviews row — up to 4 cards per page */}
+          {/* Reviews row � up to 4 cards per page */}
           <div className="flex items-stretch gap-4 sm:p-6 py-6 px-4 flex-wrap">
             {currentPageReviews.map((rev, i) => {
               const idx = reviewPage * 4 + i;
@@ -934,7 +936,7 @@ export default function EditProductPage() {
                   <div className="mt-4 text-center px-2">
                     <p className="text-[13px] font-bold text-[#333]">{rev.reviewer_name}</p>
                     <div className="text-[#facc15] text-[13px] space-x-[2px] mt-1 tracking-widest flex justify-center">
-                      {'★'.repeat(rev.rating)}{'☆'.repeat(5 - rev.rating)}
+                      {'?'.repeat(rev.rating)}{'?'.repeat(5 - rev.rating)}
                     </div>
                     <p className="text-[10px] text-gray-400 mt-1 font-medium">{rev.date}</p>
                   </div>
@@ -953,7 +955,7 @@ export default function EditProductPage() {
             )}
           </div>
 
-          {/* Pagination — only visible when there are multiple pages */}
+          {/* Pagination � only visible when there are multiple pages */}
           {reviewTotalPages > 1 && (
             <div className="flex items-center justify-between px-4 pb-4 pt-2 border-t border-gray-50 mt-2">
               <button
@@ -1045,7 +1047,7 @@ export default function EditProductPage() {
 
       <div className="pb-10" />
 
-      {/* ── MODALS ── */}
+      {/* -- MODALS -- */}
 
       {/* 1. Add / Edit Ingredient Modal */}
       {isIngredientModalOpen && createPortal(
@@ -1054,7 +1056,7 @@ export default function EditProductPage() {
             <button
               onClick={() => { setIsIngredientModalOpen(false); setEditingIngredientSlot(null); setNewIngredientName(''); setNewIngredientFile(null); }}
               className="absolute top-4 sm:p-6 right-6 w-6 h-6 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
-            >✕</button>
+            >?</button>
             <h3 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-bold text-[#da2966] mb-8 flex items-center justify-center gap-2">
               <LeafIcon /> Ingredients
             </h3>

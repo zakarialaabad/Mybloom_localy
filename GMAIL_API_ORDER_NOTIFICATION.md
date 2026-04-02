@@ -2,18 +2,20 @@
 
 ## 📋 Table of Contents
 1. [Step 0 — How to Obtain Gmail API Credentials](#step-0--how-to-obtain-gmail-api-credentials-one-time-setup)
-2. [Overview](#overview)
-3. [Real Architecture](#real-architecture)
-4. [Real File Structure](#real-file-structure)
-5. [File 1 — GmailService.php](#file-1--gmailservicephp)
-6. [File 2 — SendAdminOrderEmail.php](#file-2--sendadminorderemailphp)
-7. [File 3 — InvoiceService.php](#file-3--invoiceservicephp)
-8. [File 4 — OrderService.php (dispatch)](#file-4--orderservicephp)
-9. [File 5 — invoices/order.blade.php](#file-5--invoicesorderbladephp)
-10. [Environment Configuration (.env)](#environment-configuration)
-11. [Operation Flow Step-by-Step](#operation-flow)
-12. [Queue Worker](#queue-worker)
-13. [Troubleshooting](#troubleshooting)
+2. [Helper Scripts — Token Acquisition Files](#helper-scripts--token-acquisition-files)
+3. [google-credentials.json — Role & Structure](#google-credentialsjson--role--structure)
+4. [Overview](#overview)
+5. [Real Architecture](#real-architecture)
+6. [Real File Structure](#real-file-structure)
+7. [File 1 — GmailService.php](#file-1--gmailservicephp)
+8. [File 2 — SendAdminOrderEmail.php](#file-2--sendadminorderemailphp)
+9. [File 3 — InvoiceService.php](#file-3--invoiceservicephp)
+10. [File 4 — OrderService.php (dispatch)](#file-4--orderservicephp)
+11. [File 5 — invoices/order.blade.php](#file-5--invoicesorderbladephp)
+12. [Environment Configuration (.env)](#environment-configuration)
+13. [Operation Flow Step-by-Step](#operation-flow)
+14. [Queue Worker](#queue-worker)
+15. [Troubleshooting](#troubleshooting)
 
 ---
 
@@ -122,6 +124,204 @@ MAIL_PASSWORD=iottdrjtfctaxbqr
 
 > ⚠️ App Passwords may be blocked by Google if your account is flagged for security.
 > The Gmail REST API with OAuth2 (PART A) is the **recommended and production-grade** approach.
+
+---
+
+## 🛠️ Helper Scripts — Token Acquisition Files
+
+Three standalone PHP files exist in the `backend/` root to help obtain the OAuth2 refresh token. Each serves a specific stage of the OAuth flow. They are **one-time setup tools** — not part of the production runtime.
+
+---
+
+### 📄 `get-google-token.php`
+
+**Path:** `backend/get-google-token.php`
+**Purpose:** Interactive CLI script. Run from terminal once to obtain the refresh token manually.
+**Method:** User pastes the redirect URL into the terminal after browser authentication.
+**Dependency:** Uses Guzzle (already installed via `composer.json`).
+
+**How it works — step by step:**
+
+```
+Step 1: Script builds the Google OAuth2 authorization URL using:
+        - client_id (hardcoded from google-credentials.json)
+        - redirect_uri = http://localhost
+        - scope = https://www.googleapis.com/auth/gmail.send
+        - access_type = offline  ← REQUIRED to receive refresh_token
+        - prompt = consent       ← Forces Google to always return refresh_token
+
+Step 2: Script prints the URL and waits for user input (fgets(STDIN))
+
+Step 3: User opens URL in browser → signs in → browser redirects to:
+        http://localhost/?code=4/0Adeu5BV...  (page won't load — normal)
+
+Step 4: User copies full URL from browser address bar
+        and pastes it into the terminal
+
+Step 5: Script extracts the `code` parameter from the pasted URL using:
+        parse_str(parse_url($redirectUrl, PHP_URL_QUERY), $parsedQuery)
+
+Step 6: Script sends POST to https://oauth2.googleapis.com/token via Guzzle:
+        - code          = the extracted code
+        - client_id     = from credentials
+        - client_secret = from credentials
+        - redirect_uri  = http://localhost
+        - grant_type    = authorization_code
+
+Step 7: Google responds with JSON containing:
+        { "refresh_token": "1//03rLluk...", "access_token": "ya29...", ... }
+
+Step 8: Script writes GOOGLE_REFRESH_TOKEN=... directly into .env
+        using file_get_contents + preg_replace + file_put_contents
+```
+
+**Run it:**
+```bash
+cd backend
+php get-google-token.php
+```
+
+> ⚠️ **Limitation:** Requires user to manually paste the redirect URL.
+> Fails if `http://localhost` is occupied by another app (e.g. your frontend on port 3000).
+> In that case, use `exchange_token_server.php` instead.
+
+---
+
+### 📄 `exchange_token_server.php`
+
+**Path:** `backend/exchange_token_server.php`
+**Purpose:** Auto-capture server. Starts a tiny PHP web server on port 9090 that automatically catches the OAuth redirect and exchanges the code — no manual URL copy needed.
+**Method:** PHP's built-in server listens on `http://localhost:9090`, Google redirects directly to it.
+**Dependency:** Uses PHP's native `curl` functions.
+
+**How it works — step by step:**
+
+```
+Step 1: An artisan command (gmail:get-token) starts PHP's built-in server:
+        php -S localhost:9090 exchange_token_server.php
+
+Step 2: The OAuth URL is built with redirect_uri = http://localhost:9090
+        User opens URL in browser → signs in → browser redirects to:
+        http://localhost:9090/?code=4/0Adeu5BV...
+
+Step 3: exchange_token_server.php loads automatically (it IS the server).
+        It checks: if (!isset($_GET['code'])) → returns 400 error page
+
+Step 4: If code is present, sends POST to https://oauth2.googleapis.com/token
+        using curl with params:
+        - code, client_id, client_secret, redirect_uri, grant_type
+
+Step 5: On success, parses the JSON response for `refresh_token`
+
+Step 6: Writes the token to .env:
+        - If GOOGLE_REFRESH_TOKEN= exists → replaces it using preg_replace
+        - If not found → appends it at end of file
+
+Step 7: Runs php artisan config:clear via shell_exec to clear config cache
+
+Step 8: Returns a green HTML success page in the browser:
+        "✅ Success! Refresh token saved to .env"
+
+Step 9: On failure → returns red HTML error page with raw API response
+```
+
+**Run it (via artisan command):**
+```bash
+php artisan gmail:get-token
+```
+The artisan command automatically starts the server and prints the OAuth URL.
+
+> ✅ **Best option** — fully automatic, no manual copy needed.
+> The browser redirects to port 9090 which nothing else uses.
+
+---
+
+### 📄 `exchange_token.php`
+
+**Path:** `backend/exchange_token.php`
+**Purpose:** Emergency/debug one-shot script. Hardcodes a specific auth code and immediately exchanges it for a refresh token.
+**Method:** Direct curl POST to Google's token endpoint with a fixed code.
+**Dependency:** PHP native `curl`.
+
+**How it works — step by step:**
+
+```
+Step 1: Hardcoded OAuth code in the script (obtained manually from redirect URL):
+        'code' => '4/0Aci98E9dfxvwJNiDvx4dCVKkWB17YRuobpahMOnh...'
+
+Step 2: Sends POST via curl to https://oauth2.googleapis.com/token with:
+        - code          = hardcoded auth code
+        - client_id     = from google-credentials.json
+        - client_secret = from google-credentials.json
+        - redirect_uri  = http://localhost:9090
+        - grant_type    = authorization_code
+
+Step 3: Parses JSON response:
+        - If refresh_token found → prints it + writes to .env
+        - If error → prints HTTP code + full raw response for debugging
+
+Step 4: Auto-writes GOOGLE_REFRESH_TOKEN to .env using:
+        preg_replace or append
+```
+
+**Run it:**
+```bash
+cd backend
+php exchange_token.php
+```
+
+> ⚠️ **Important:** Auth codes expire in ~60 seconds. This script only works
+> if run **immediately** after copying the auth code from the browser URL.
+> Used once during debugging when `exchange_token_server.php` was not yet available.
+
+---
+
+### 🔄 Comparison of All Three Scripts
+
+| Script | Method | Requires User Input | Best Use |
+|---|---|---|---|
+| `get-google-token.php` | CLI + Guzzle | Yes — paste URL | When port 9090 is free but localhost:3000 is busy |
+| `exchange_token_server.php` | PHP server + curl | No — fully auto | **Recommended — production setup** |
+| `exchange_token.php` | Direct curl + hardcode | Hardcoded code | Emergency debug only |
+
+---
+
+### 🔑 `google-credentials.json`
+
+**Path:** `backend/storage/app/google-credentials.json`
+**Purpose:** Stores the OAuth2 client credentials downloaded from Google Cloud Console.
+**Security:** Never commit this file to git. Contains your client secret.
+
+**Structure:**
+```json
+{
+  "installed": {
+    "client_id": "379053566763-8ikbpbc0mohpls89fddv859n992l9ghq.apps.googleusercontent.com",
+    "project_id": "focus-reality-486412-a2",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_secret": "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",
+    "redirect_uris": ["http://localhost"]
+  }
+}
+```
+
+**Each field explained:**
+
+| Field | Role |
+|---|---|
+| `client_id` | Unique ID of your Google Cloud OAuth2 app → `GOOGLE_CLIENT_ID` in `.env` |
+| `project_id` | Your Google Cloud project name (informational only) |
+| `auth_uri` | Google's authorization endpoint — where user signs in |
+| `token_uri` | Google's token endpoint — where code is exchanged for tokens |
+| `auth_provider_x509_cert_url` | Google's public key URL (for JWT verification, not used here) |
+| `client_secret` | Secret key from Google Cloud → `GOOGLE_CLIENT_SECRET` in `.env` |
+| `redirect_uris` | Allowed redirect URIs registered in Google Cloud Console |
+
+> **Note:** The `exchange_token_server.php` uses `redirect_uri = http://localhost:9090`
+> while `get-google-token.php` uses `redirect_uri = http://localhost`.
+> Both must be registered in the Google Cloud Console's "Authorized redirect URIs".
 
 ---
 

@@ -45,8 +45,10 @@ export default function CollectionPage() {
   // Reference data from global store — fetched once, reused across navigations
   const brands           = useReferenceStore((s) => s.brands);
   const categories       = useReferenceStore((s) => s.categories);
+  const ingredients      = useReferenceStore((s) => s.ingredients);
   const ensureBrands     = useReferenceStore((s) => s.ensureBrands);
   const ensureCategories = useReferenceStore((s) => s.ensureCategories);
+  const ensureIngredients = useReferenceStore((s) => s.ensureIngredients);
 
   const PER_PAGE = 10;
   const [products, setProducts] = useState<Product[]>([]);
@@ -59,6 +61,10 @@ export default function CollectionPage() {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
 
+  // Ingredient carousel state
+  const [ingredientCarouselPage, setIngredientCarouselPage] = useState(0);
+  const [ingredientCarouselPerPage, setIngredientCarouselPerPage] = useState(6);
+
   // ── Filter state — shared with FilterModal via useFilterStore ─────────────
   const globalMin          = useFilterStore((s) => s.globalMin);
   const globalMax          = useFilterStore((s) => s.globalMax);
@@ -66,6 +72,7 @@ export default function CollectionPage() {
   const selectedMax        = useFilterStore((s) => s.selectedMax);
   const selectedBrands     = useFilterStore((s) => s.selectedBrands);
   const selectedCategories = useFilterStore((s) => s.selectedCategories);
+  const selectedIngredients = useFilterStore((s) => s.selectedIngredients);
   const selectedRating     = useFilterStore((s) => s.selectedRating);
   const promotionOnly      = useFilterStore((s) => s.promotionOnly);
   const featuredOnly       = useFilterStore((s) => s.featuredOnly);
@@ -75,6 +82,7 @@ export default function CollectionPage() {
   const toggleBrand          = useFilterStore((s) => s.toggleBrand);
   const toggleCategory       = useFilterStore((s) => s.toggleCategory);
   const setSelectedCategories = useFilterStore((s) => s.setSelectedCategories);
+  const setSelectedIngredients = useFilterStore((s) => s.setSelectedIngredients);
   const setSelectedRating    = useFilterStore((s) => s.setSelectedRating);
   const setPromotionOnly     = useFilterStore((s) => s.setPromotionOnly);
   const setFeaturedOnly      = useFilterStore((s) => s.setFeaturedOnly);
@@ -87,7 +95,23 @@ export default function CollectionPage() {
   // Ensure reference data + price bounds loaded (idempotent — no-op if already in store)
   useEffect(() => { ensureBrands(); }, [ensureBrands]);
   useEffect(() => { ensureCategories(); }, [ensureCategories]);
+  useEffect(() => { ensureIngredients(); }, [ensureIngredients]);
   useEffect(() => { ensureAggregates(); }, [ensureAggregates]);
+
+  // Ingredient carousel responsive perPage
+  useEffect(() => {
+    const update = () => {
+      if (window.innerWidth < 640) setIngredientCarouselPerPage(2);
+      else if (window.innerWidth < 768) setIngredientCarouselPerPage(4);
+      else setIngredientCarouselPerPage(6);
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  // Reset carousel page when perPage changes
+  useEffect(() => { setIngredientCarouselPage(0); }, [ingredientCarouselPerPage]);
 
   // Close sort dropdown on outside click
   useEffect(() => {
@@ -102,12 +126,14 @@ export default function CollectionPage() {
 
   // Apply URL params to filter store — re-runs on every URL change (soft navigation too)
   useEffect(() => {
-    const categoryId = searchParams.get('category');
-    const featured   = searchParams.get('featured');
+    const categoryId   = searchParams.get('category');
+    const ingredientId = searchParams.get('ingredient');
+    const featured     = searchParams.get('featured');
     // Reset URL-controlled filters first, then apply current URL values
     setSelectedCategories(categoryId ? [Number(categoryId)] : []);
+    setSelectedIngredients(ingredientId ? [Number(ingredientId)] : []);
     setFeaturedOnly(featured === '1');
-  }, [searchParams, setSelectedCategories, setFeaturedOnly]);
+  }, [searchParams, setSelectedCategories, setSelectedIngredients, setFeaturedOnly]);
 
   // Fetch hero banner for the active collection (category) or global
   useEffect(() => {
@@ -139,6 +165,7 @@ export default function CollectionPage() {
       } else {
         if (selectedBrands.length > 0) params['brand_ids[]'] = selectedBrands;
         if (selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
+        if (selectedIngredients.length > 0) params['ingredient_ids[]'] = selectedIngredients;
         // Only apply price filter once real bounds are known — avoids the default
         // 0-100 range silently wiping out products before aggregates load.
         if (aggregatesReady) {
@@ -166,7 +193,7 @@ export default function CollectionPage() {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [selectedBrands, selectedCategories, selectedMin, selectedMax, selectedRating, promotionOnly, featuredOnly, aggregatesReady, sortBy]);
+  }, [selectedBrands, selectedCategories, selectedIngredients, selectedMin, selectedMax, selectedRating, promotionOnly, featuredOnly, aggregatesReady, sortBy]);
 
   // Reset to page 1 whenever the product list changes (new filter applied)
   useEffect(() => { setCurrentPage(1); }, [products]);
@@ -214,6 +241,90 @@ export default function CollectionPage() {
           )
         ) : null}
       </div>
+
+      {/* ── Ingredient Circles Carousel ──────────────────────────────────── */}
+      {ingredients.length > 0 && (() => {
+        const totalIngredientPages = Math.ceil(ingredients.length / ingredientCarouselPerPage);
+        const visibleIngredients   = ingredients.slice(
+          ingredientCarouselPage * ingredientCarouselPerPage,
+          (ingredientCarouselPage + 1) * ingredientCarouselPerPage
+        );
+        return (
+          <div className="bg-white py-10 sm:py-12 border-b border-gray-100">
+            <div className="container mx-auto px-4 max-w-7xl">
+              <div className="relative">
+                {/* Left arrow */}
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-0 md:-translate-x-4 z-10">
+                  <button
+                    onClick={() => setIngredientCarouselPage((p) => Math.max(0, p - 1))}
+                    disabled={ingredientCarouselPage === 0}
+                    className={`h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-opacity ${
+                      ingredientCarouselPage > 0 ? 'text-gray-600 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
+                    }`}
+                  >‹</button>
+                </div>
+
+                {/* Ingredient circles grid */}
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 md:gap-x-8 md:gap-y-6">
+                  {visibleIngredients.map((ingredient) => {
+                    const isActive = selectedIngredients.includes(ingredient.id);
+                    return (
+                      <Link
+                        key={ingredient.id}
+                        href={isActive ? '/collection' : `/collection?ingredient=${ingredient.id}`}
+                        className="group block text-center"
+                      >
+                        <div className={`relative mx-auto h-24 w-24 md:h-32 md:w-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105 ring-2 ${
+                          isActive ? 'ring-[#4a403a]' : 'ring-transparent'
+                        }`}>
+                          <Image
+                            src={ingredient.image_url ?? 'https://images.unsplash.com/photo-1598007264887-acc47d519b88?auto=format&fit=crop&q=80&w=200'}
+                            alt={ingredient.name}
+                            width={120}
+                            height={120}
+                            className="h-full w-full object-cover opacity-90 mix-blend-multiply"
+                          />
+                        </div>
+                        <h3 className={`mt-3 text-xs font-serif uppercase tracking-widest ${
+                          isActive ? 'text-[#4a403a] font-semibold' : 'text-gray-500'
+                        }`}>
+                          {ingredient.name}
+                        </h3>
+                      </Link>
+                    );
+                  })}
+                </div>
+
+                {/* Right arrow */}
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-0 md:translate-x-4 z-10">
+                  <button
+                    onClick={() => setIngredientCarouselPage((p) => Math.min(totalIngredientPages - 1, p + 1))}
+                    disabled={ingredientCarouselPage >= totalIngredientPages - 1}
+                    className={`h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-opacity ${
+                      ingredientCarouselPage < totalIngredientPages - 1 ? 'text-gray-600 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
+                    }`}
+                  >›</button>
+                </div>
+
+                {/* Page dots */}
+                {totalIngredientPages > 1 && (
+                  <div className="flex justify-center gap-2 mt-6">
+                    {Array.from({ length: totalIngredientPages }).map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setIngredientCarouselPage(i)}
+                        className={`h-1.5 rounded-full transition-all ${
+                          i === ingredientCarouselPage ? 'w-6 bg-[#4a403a]' : 'w-1.5 bg-gray-300 hover:bg-gray-400'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
 
       <main className="flex-grow container mx-auto px-4 py-8 max-w-7xl">
         {/* Breadcrumbs */}

@@ -38,6 +38,7 @@ interface FilterStore {
   selectedMax: number;
   selectedBrands: number[];
   selectedCategories: number[];
+  selectedIngredients: number[];
   selectedRating: number | null;
   promotionOnly: boolean;
   featuredOnly: boolean;
@@ -48,6 +49,8 @@ interface FilterStore {
   toggleBrand: (id: number) => void;
   toggleCategory: (id: number) => void;
   setSelectedCategories: (ids: number[]) => void;
+  toggleIngredient: (id: number) => void;
+  setSelectedIngredients: (ids: number[]) => void;
   setSelectedRating: (r: number | null) => void;
   setPromotionOnly: (v: boolean) => void;
   setFeaturedOnly: (v: boolean) => void;
@@ -87,6 +90,7 @@ const useFilterStore = create<FilterStore>((set, get) => ({
   selectedMax: 100,
   selectedBrands: [],
   selectedCategories: [],
+  selectedIngredients: [],
   selectedRating: null,
   promotionOnly: false,
   featuredOnly: false,
@@ -114,6 +118,15 @@ const useFilterStore = create<FilterStore>((set, get) => ({
   setFeaturedOnly: (v) => set({ featuredOnly: v }),
   setSelectedCategories: (ids) => set({ selectedCategories: ids }),
 
+  toggleIngredient: (id) =>
+    set((s) => ({
+      selectedIngredients: s.selectedIngredients.includes(id)
+        ? s.selectedIngredients.filter((i) => i !== id)
+        : [...s.selectedIngredients, id],
+    })),
+
+  setSelectedIngredients: (ids) => set({ selectedIngredients: ids }),
+
   resetFilters: () => {
     const { globalMin, globalMax } = get();
     set({
@@ -121,6 +134,7 @@ const useFilterStore = create<FilterStore>((set, get) => ({
       selectedMax: globalMax,
       selectedBrands: [],
       selectedCategories: [],
+      selectedIngredients: [],
       selectedRating: null,
       promotionOnly: false,
       featuredOnly: false,
