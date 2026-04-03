@@ -30,7 +30,6 @@ class Order extends Model
         'status',
         'notes',
         'admin_notes',
-        'whatsapp_opt_in',
     ];
 
     protected function casts(): array
@@ -40,7 +39,6 @@ class Order extends Model
             'discount_amount' => 'decimal:2',
             'shipping_cost'   => 'decimal:2',
             'total'           => 'decimal:2',
-            'whatsapp_opt_in' => 'boolean',
         ];
     }
 

@@ -18,6 +18,7 @@ export default function OrderStatusPage() {
   const [loading,   setLoading]   = useState(false);
   const [error,     setError]     = useState('');
   const [isContentsOpen, setIsContentsOpen] = useState(true);
+  const [showReviewTooltip, setShowReviewTooltip] = useState(false);
 
   useEffect(() => {
     if (!orderNumber) return;
@@ -159,15 +160,45 @@ export default function OrderStatusPage() {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-3">
-                <Link
-                  href={`/feedback?order=${encodeURIComponent(orderNumber)}&phone=${encodeURIComponent(phone)}`}
-                  className="flex-1 bg-[#403531] text-white py-[14px] rounded-[5px] font-serif italic text-[14px] hover:bg-[#2d2522] transition-colors text-center shadow-sm"
+                {/* Leave a Review Button */}
+                <div 
+                  className="flex-1 relative"
+                  onMouseEnter={() => currentStatus !== 'delivered' && setShowReviewTooltip(true)}
+                  onMouseLeave={() => setShowReviewTooltip(false)}
+                  onFocus={() => currentStatus !== 'delivered' && setShowReviewTooltip(true)}
+                  onBlur={() => setShowReviewTooltip(false)}
                 >
-                  Leave a Review ›
-                </Link>
-                <button className="flex-1 bg-white text-[#333] border border-gray-200 py-[14px] rounded-[5px] font-serif italic text-[14px] hover:bg-gray-50 transition-colors shadow-sm">
+                  {currentStatus === 'delivered' ? (
+                    <Link
+                      href={`/feedback?order=${encodeURIComponent(orderNumber)}&phone=${encodeURIComponent(phone)}`}
+                      className="block w-full bg-[#403531] text-white py-[14px] rounded-[5px] font-serif italic text-[14px] hover:bg-[#2d2522] transition-colors text-center shadow-sm"
+                    >
+                      Leave a Review ›
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      className="w-full bg-gray-300 text-gray-500 py-[14px] rounded-[5px] font-serif italic text-[14px] cursor-not-allowed shadow-sm opacity-60 transition-opacity hover:opacity-70"
+                    >
+                      Leave a Review ›
+                    </button>
+                  )}
+                  
+                  {/* Tooltip - Shows when not delivered and hovering */}
+                  {currentStatus !== 'delivered' && showReviewTooltip && (
+                    <div className="absolute -top-24 left-1/2 transform -translate-x-1/2 w-max px-4 py-3 bg-[#da2966] text-white rounded-[6px] text-[12px] font-serif shadow-xl z-50 pointer-events-none">
+                      <p className="font-bold tracking-wide whitespace-nowrap">Reviews Available After Delivery</p>
+                      <p className="text-[11px] opacity-95 mt-1.5 whitespace-normal max-w-[220px]">This button activates once your order is delivered</p>
+                      {/* Arrow pointer */}
+                      <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#da2966]"></div>
+                    </div>
+                  )}
+                </div>
+
+                <Link href="/contact" className="flex-1 bg-white text-[#333] border border-gray-200 py-[14px] rounded-[5px] font-serif italic text-[14px] hover:bg-gray-50 transition-colors shadow-sm text-center">
                   Need Help ?
-                </button>
+                </Link>
               </div>
             </div>
 

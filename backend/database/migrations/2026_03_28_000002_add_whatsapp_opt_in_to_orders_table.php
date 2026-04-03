@@ -11,10 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            // Add opt-in flag for WhatsApp notifications
-            $table->boolean('whatsapp_opt_in')->default(false)->after('customer_phone');
-        });
+        // WhatsApp opt-in feature has been removed.
+        // This migration is now a no-op to preserve migration history.
     }
 
     /**
@@ -22,8 +20,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('whatsapp_opt_in');
-        });
+        // WhatsApp opt-in feature has been removed.
     }
 };

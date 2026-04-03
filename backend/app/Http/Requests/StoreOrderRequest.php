@@ -22,9 +22,6 @@ class StoreOrderRequest extends FormRequest
             'customer_phone'                   => ['required', 'string', 'max:20'],
             'customer_email'                   => ['nullable', 'email', 'max:200'],
 
-            // WhatsApp opt-in
-            'whatsapp_opt_in'                  => ['required', 'boolean'],
-
             // Shipping address — sent as nested object from the frontend
             'shipping_address'                 => ['required', 'array'],
             'shipping_address.address'         => ['required', 'string', 'max:300'],

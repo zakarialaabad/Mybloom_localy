@@ -142,7 +142,6 @@ class OrderService
                 'total'               => $total,
                 'status'              => 'pending',
                 'notes'               => $data['notes'] ?? null,
-                'whatsapp_opt_in'     => $data['whatsapp_opt_in'] ?? false,
             ]);
 
             // Create order items + decrement stock at the correct level

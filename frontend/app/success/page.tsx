@@ -1,13 +1,12 @@
 'use client';
 
-import { Headphones, ArrowLeft, Check, MessageCircle, Loader2, AlertCircle } from 'lucide-react';
+import { Headphones, ArrowLeft, Check } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { orderService } from '@/services/api';
 
 export default function OrderSuccessPage() {
   const router = useRouter();
@@ -17,32 +16,6 @@ export default function OrderSuccessPage() {
   const name    = params.get('name')   ?? '';
   const phone   = params.get('phone')  ?? '';
   const city    = params.get('city')   ?? 'MAROC';
-
-  type InvoiceStatus = 'idle' | 'sending' | 'sent' | 'failed';
-  const [invoiceStatus, setInvoiceStatus] = useState<InvoiceStatus>('idle');
-  const [invoiceError,  setInvoiceError]  = useState<string | null>(null);
-
-  const invoiceSent = useRef(false);
-  useEffect(() => {
-    if (!order || invoiceSent.current) return;
-    invoiceSent.current = true;
-
-    console.log(`[WhatsApp Invoice] Queuing invoice for order: ${order}`);
-    setInvoiceStatus('sending');
-
-    orderService.sendInvoice(order)
-      .then(() => {
-        // Backend replied 202 instantly — WhatsApp is being sent in background
-        console.log(`[WhatsApp Invoice] ✅ Queued — invoice will arrive on ${phone} shortly.`);
-        setInvoiceStatus('sent');
-      })
-      .catch((err) => {
-        const msg = err?.response?.data?.message ?? err?.message ?? 'Network error';
-        console.error('[WhatsApp Invoice] ❌ Request failed:', msg, err);
-        setInvoiceStatus('failed');
-        setInvoiceError(msg);
-      });
-  }, [order, phone]);
 
   return (
     <>
@@ -58,44 +31,6 @@ export default function OrderSuccessPage() {
         <Image src="/logo.png" alt="MyBloom" width={110} height={32} className="object-contain h-[28px] w-auto" />
       </div>
 
-      {/* ━━━ WHATSAPP INVOICE NOTIFICATION ━━━ */}
-      {invoiceStatus !== 'idle' && (
-        <div className={`fixed bottom-6 right-4 left-4 md:left-auto md:right-6 md:w-[340px] z-50 rounded-lg shadow-lg border px-4 py-3 flex items-start gap-3 transition-all duration-300 ${
-          invoiceStatus === 'sending' ? 'bg-white border-gray-200' :
-          invoiceStatus === 'sent'    ? 'bg-[#f0fdf4] border-green-200' :
-                                        'bg-[#fff5f7] border-[#fecdd3]'
-        }`}>
-          <div className="shrink-0 mt-0.5">
-            {invoiceStatus === 'sending' && <Loader2 className="w-4 h-4 text-gray-400 animate-spin" />}
-            {invoiceStatus === 'sent'    && <MessageCircle className="w-4 h-4 text-green-600" />}
-            {invoiceStatus === 'failed'  && <AlertCircle className="w-4 h-4 text-[#da2966]" />}
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className={`text-[12px] font-bold tracking-wide uppercase ${
-              invoiceStatus === 'sending' ? 'text-gray-500' :
-              invoiceStatus === 'sent'    ? 'text-green-700' :
-                                            'text-[#da2966]'
-            }`}>
-              {invoiceStatus === 'sending' && 'Envoi de la facture…'}
-              {invoiceStatus === 'sent'    && 'Facture envoyée via WhatsApp'}
-              {invoiceStatus === 'failed'  && 'Facture non envoyée'}
-            </p>
-            <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">
-              {invoiceStatus === 'sending' && 'Génération du PDF et envoi WhatsApp en cours.'}
-              {invoiceStatus === 'sent'    && `Vous recevrez la facture sur ${phone} dans quelques instants.`}
-              {invoiceStatus === 'failed'  && (invoiceError ?? 'Une erreur est survenue lors de l\'envoi.')}
-            </p>
-          </div>
-          <button
-            onClick={() => setInvoiceStatus('idle')}
-            className="shrink-0 text-gray-300 hover:text-gray-500 text-lg leading-none mt-0.5"
-            aria-label="Dismiss"
-          >
-            ×
-          </button>
-        </div>
-      )}
-
       <main className="min-h-screen bg-[#fff9f9] md:bg-[#f9f9f9] font-serif">
         <div className="max-w-7xl mx-auto md:px-6 lg:px-8 md:py-12 flex flex-col items-center justify-center h-full">
           <div className="w-full md:flex md:flex-row md:bg-white md:shadow-sm md:rounded-sm md:overflow-hidden">
@@ -103,7 +38,7 @@ export default function OrderSuccessPage() {
             {/* Left Column - Image (Desktop Only) */}
             <div className="hidden md:block md:w-1/2 relative min-h-[600px] bg-[#f4ece3]">
               <Image 
-                src="https://images.unsplash.com/photo-1607344645866-009c320b63e0?auto=format&fit=crop&q=80&w=1000" 
+                src="/public_Image/order_packaging.jpg" 
                 alt="Order Packaging" 
                 fill 
                 className="object-cover"
@@ -192,7 +127,7 @@ export default function OrderSuccessPage() {
                 </div>
                 {/* Support Link */}
                 <div className="text-center text-[11px] text-gray-400">
-                  Need assistance ? <Link href="#" className="text-[#da2966] underline decoration-[#da2966] underline-offset-2 hover:text-[#b82256] transition-colors">Contact Support</Link>
+                  Need assistance ? <Link href="/contact" className="text-[#da2966] underline decoration-[#da2966] underline-offset-2 hover:text-[#b82256] transition-colors">Contact Support</Link>
                 </div>
 
               </div>

@@ -12,30 +12,21 @@ class ShippingMethodSeeder extends Seeder
         DB::table('shipping_methods')->insert([
             [
                 'id'          => 1,
-                'name'        => 'Livraison Standard',
-                'description' => 'Livraison en 3-5 jours ouvrables partout au Maroc.',
-                'price'       => 35.00,
+                'name'        => 'Laayoun',
+                'description' => 'Livraison à Laayoun - 2-3 jours ouvrables',
+                'price'       => 15.00,
                 'free_over'   => null,
                 'is_active'   => true,
                 'sort_order'  => 1,
             ],
             [
                 'id'          => 2,
-                'name'        => 'Livraison Express',
-                'description' => 'Livraison en 24-48h dans les grandes villes.',
-                'price'       => 65.00,
+                'name'        => 'Autres Villes',
+                'description' => 'Livraison dans les autres villes - 3-5 jours ouvrables',
+                'price'       => 35.00,
                 'free_over'   => null,
                 'is_active'   => true,
                 'sort_order'  => 2,
-            ],
-            [
-                'id'          => 3,
-                'name'        => 'Livraison Gratuite',
-                'description' => 'Gratuit pour toute commande supérieure ou égale à 500 MAD.',
-                'price'       => 0.00,
-                'free_over'   => 500.00,
-                'is_active'   => true,
-                'sort_order'  => 3,
             ],
         ]);
     }

@@ -394,10 +394,6 @@ export const orderService = {
     const { data } = await apiClient.get<{ data: OrderTrackResult }>(`/v1/orders/${orderNumber}/track`, { params: { phone } });
     return data.data;
   },
-
-  sendInvoice: async (orderNumber: string): Promise<void> => {
-    await apiClient.post(`/v1/orders/${orderNumber}/send-invoice`);
-  },
 };
 
 // â”€â”€â”€ Review service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€

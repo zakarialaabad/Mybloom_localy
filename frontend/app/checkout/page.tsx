@@ -39,7 +39,6 @@ export default function CheckoutPage() {
   const [quartier,  setQuartier]  = useState('');
   const [zip,       setZip]       = useState('');
   const [address,   setAddress]   = useState('');
-  const [whatsappOptIn, setWhatsappOptIn] = useState(false);
 
   /* ── Coupon ───────────────────────────────────────────────────── */
   const [couponCode,    setCouponCode]    = useState('');
@@ -83,12 +82,6 @@ export default function CheckoutPage() {
       setSubmitError('Veuillez entrer un numéro de téléphone valide au format +212XXXXXXXXX');
       return;
     }
-
-    // Require WhatsApp opt-in
-    if (!whatsappOptIn) {
-      setSubmitError('Vous devez accepter les notifications WhatsApp pour continuer.');
-      return;
-    }
     
     setSubmitError('');
     setSubmitting(true);
@@ -99,7 +92,6 @@ export default function CheckoutPage() {
         shipping_address: { city, quartier, zip, address },
         shipping_method_id: selectedMethodId,
         coupon_code: couponResult ? couponCode : undefined,
-        whatsapp_opt_in: whatsappOptIn,
         items: items.map((i) => ({
           product_id: i.productId,
           size_id: i.sizeId,
@@ -133,7 +125,7 @@ export default function CheckoutPage() {
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col-reverse lg:flex-row gap-8 lg:gap-12">
               {/* ── Left: Shipping Form ─────────────────────────────── */}
-              <div className="flex-1 lg:w-[60%]">
+              <div className="flex-1 lg:w-1/2">
                 <h1 className="text-2xl font-serif font-bold text-gray-800 mb-8">Shipping Address</h1>
 
                 <div className="space-y-6">
@@ -187,38 +179,13 @@ export default function CheckoutPage() {
                     <input required value={address} onChange={(e) => setAddress(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600" />
                   </div>
 
-                  {/* WhatsApp Opt-in */}
-                  <div className="bg-blue-50 border border-blue-200 rounded-sm p-4 mt-8">
-                    <label className="flex items-start gap-3 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={whatsappOptIn}
-                        onChange={(e) => setWhatsappOptIn(e.target.checked)}
-                        className="mt-1 w-4 h-4 accent-blue-600"
-                      />
-                      <div className="flex-1">
-                        <span className="block font-serif font-bold text-gray-900 text-sm">
-                          ✓ Recevoir les notifications WhatsApp
-                        </span>
-                        <span className="block font-serif text-xs text-gray-600 mt-1">
-                          Vous recevrez les confirmations de commande et les mises à jour de statut via WhatsApp. Vous pouvez vous désabonner à tout moment.
-                        </span>
-                      </div>
-                    </label>
-                    {!whatsappOptIn && (
-                      <p className="text-xs text-blue-600 font-serif mt-3">
-                        ⚠️ Cette option est requise pour poursuivre votre commande.
-                      </p>
-                    )}
-                  </div>
-
                   {/* Shipping Methods */}
                   <div className="pt-6">
                     <h2 className="text-xl font-serif font-bold text-gray-800 mb-6">Mode d&apos;expédition</h2>
                     {shippingMethods.length === 0 ? (
                       <p className="font-serif italic text-gray-400 text-sm">Chargement…</p>
                     ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {shippingMethods.map((method) => {
                           const isFree       = method.free_over !== null && subtotal >= method.free_over;
                           const displayPrice = isFree ? 0 : method.price;
@@ -253,7 +220,7 @@ export default function CheckoutPage() {
               </div>
 
               {/* ── Right: Order Summary ─────────────────────────────── */}
-              <div className="lg:w-[40%] bg-[#fcfcfc] p-4 md:p-8 border border-gray-100 rounded-sm h-fit">
+              <div className="lg:w-1/2 bg-[#fcfcfc] p-4 md:p-8 border border-gray-100 rounded-sm h-fit">
                 <h2 className="text-lg font-serif font-bold text-gray-800 mb-6 md:mb-8">Your Cart</h2>
 
                 {/* Items */}
