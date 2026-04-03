@@ -661,6 +661,11 @@ export const storeService = {
     const { data } = await apiClient.get<{ data: { email: string | null; phone: string | null } }>('/v1/store/contact');
     return data.data;
   },
+
+  submitContact: async (payload: { name: string; phone: string; subject: string; message: string }): Promise<{ success: boolean; message: string }> => {
+    const { data } = await apiClient.post<{ success: boolean; message: string }>('/v1/store/contact-submit', payload);
+    return data;
+  },
 };
 
 export interface AdminOrderMeta {

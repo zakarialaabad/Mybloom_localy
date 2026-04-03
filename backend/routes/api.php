@@ -73,6 +73,7 @@ Route::prefix('api')->group(function () {
 
             // Store — public contact info
             Route::get('/store/contact',               [StoreController::class, 'contact']);
+            Route::post('/store/contact-submit',       [StoreController::class, 'submitContact']);
         });
 
         // ── Admin — auth endpoint (no sanctum guard, only throttle) ─────────
