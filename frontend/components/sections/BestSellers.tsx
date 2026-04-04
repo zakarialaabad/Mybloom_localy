@@ -30,6 +30,7 @@ const VISIBLE = 5; // cards visible at once on desktop
 
 export default function BestSellers() {
   const [products, setProducts] = useState<ProductCardProps[]>([]);
+  const [loading, setLoading] = useState(true);
   const [canPrev, setCanPrev]   = useState(false);
   const [canNext, setCanNext]   = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -38,7 +39,8 @@ export default function BestSellers() {
     // Fetch ALL featured products — no artificial limit
     productService.list({ is_featured: true, limit: 100 })
       .then(({ data }) => setProducts(data.map(productToCard)))
-      .catch(() => {});
+      .catch(() => {})
+      .finally(() => setLoading(false));
   }, []);
 
   // Update arrow visibility whenever products load or scroll position changes
@@ -124,14 +126,32 @@ export default function BestSellers() {
             onScroll={syncArrows}
             className="flex gap-4 md:gap-6 overflow-x-auto md:overflow-x-hidden scroll-smooth snap-x snap-mandatory pb-6 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
           >
-            {products.map((product) => (
-              <div
-                key={product.id}
-                className="flex-none snap-start w-[calc(50%-8px)] md:w-[calc(20%-19.2px)]"
-              >
-                <ProductCard {...product} />
-              </div>
-            ))}
+            {loading || products.length === 0 ? (
+              // Skeleton placeholders
+              Array.from({ length: 5 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="flex-none snap-start w-[calc(50%-8px)] md:w-[calc(20%-19.2px)] animate-pulse"
+                >
+                  <div className="bg-gray-100 rounded-sm aspect-[4/5] mb-4" />
+                  <div className="space-y-2">
+                    <div className="h-3 bg-gray-100 rounded w-3/4" />
+                    <div className="h-2 bg-gray-100 rounded w-1/2" />
+                    <div className="h-2 bg-gray-100 rounded w-2/3" />
+                    <div className="h-3 bg-gray-100 rounded w-1/3" />
+                  </div>
+                </div>
+              ))
+            ) : (
+              products.map((product) => (
+                <div
+                  key={product.id}
+                  className="flex-none snap-start w-[calc(50%-8px)] md:w-[calc(20%-19.2px)]"
+                >
+                  <ProductCard {...product} />
+                </div>
+              ))
+            )}
           </div>
         </div>
       </SectionContainer>

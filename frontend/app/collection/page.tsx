@@ -566,8 +566,6 @@ export default function CollectionPage() {
                   ))}
                 </div>
               )
-            ) : products.length === 0 ? (
-              <div className="text-center py-20 text-gray-400 font-serif italic">No products found.</div>
             ) : (
               <>
                 {viewMode === 'grid' ? (

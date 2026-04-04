@@ -56,8 +56,8 @@ export default function UniversSection() {
 
         {/* Product Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-12 gap-x-6">
-          {loading ? (
-            // Skeleton placeholders — same grid slot count, same aspect ratio
+          {loading || products.length === 0 ? (
+            // Skeleton placeholders — shown during loading or if no products
             Array.from({ length: 10 }).map((_, i) => (
               <div key={i} className="animate-pulse">
                 <div className="bg-gray-100 rounded-sm aspect-[4/5] mb-4" />
@@ -69,10 +69,6 @@ export default function UniversSection() {
                 </div>
               </div>
             ))
-          ) : products.length === 0 ? (
-            <p className="col-span-5 text-center text-sm text-gray-400 font-serif italic py-12">
-              No products available at the moment.
-            </p>
           ) : (
             products.map((product) => (
               <ProductCard key={product.id} {...product} />
