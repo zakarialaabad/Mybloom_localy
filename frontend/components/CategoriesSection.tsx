@@ -59,12 +59,23 @@ export default function CategoriesSection() {
         <div className="relative z-10 w-full max-w-7xl mx-auto">
           <SectionContainer>
             <div className="flex flex-col items-start text-left mb-10 md:mb-20">
-              <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#3a3a3a] font-serif">
-                Why Shop with&nbsp;
-                <span className="inline-block align-middle">
-                  <Image src="/logo.png" alt="MyBloom" width={140} height={40} className="object-contain h-9 md:h-11 w-auto inline" />
-                </span>
-              </h2>
+              {/* Flex container ensures perfect logo alignment with title text */}
+              <div className="flex items-center gap-2 md:gap-3 flex-wrap">
+                <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#3a3a3a] font-serif">
+                  Why Shop with
+                </h2>
+                {/* Logo image: declared dimensions match max CSS height (44px md breakpoint) */}
+                <div className="h-9 md:h-11 w-auto flex items-center">
+                  <Image 
+                    src="/logo.png" 
+                    alt="MyBloom" 
+                    width={176} 
+                    height={44} 
+                    className="h-full w-auto object-contain"
+                    priority
+                  />
+                </div>
+              </div>
             </div>
 
           <div className="grid grid-cols-1 px-4 gap-8 md:gap-14 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto auto-rows-fr">

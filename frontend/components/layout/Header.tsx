@@ -10,12 +10,12 @@ import { getWishlist } from '@/lib/wishlist';
 
 
 const NAV_LINKS = [
-  { label: 'NOUVEAUTÉS',    href: '#' },
-  { label: 'PARFUMS',       href: '#' },
-  { label: 'SOINS',         href: '#' },
-  { label: 'MARQUES',       href: '#' },
-  { label: 'OUTLETS',       href: '#', highlight: true },
-  { label: 'ABONNEMENT',    href: '#' },
+  { label: 'GIFTS',       href: '#' },
+  { label: 'VISAGE',      href: '#' },
+  { label: 'CORPS',       href: '#' },
+  { label: 'PARFUMS',     href: '#' },
+  { label: 'SKINCARE',    href: '#' },
+  { label: 'HAIR',        href: '#' },
 ];
 
 export default function Header() {
@@ -40,13 +40,11 @@ export default function Header() {
       <header className="sticky top-0 z-50 bg-white shadow-sm">
       {/* ── Announcement Bar ─────────────────────────────────────────────── */}
       <div className="overflow-hidden bg-black py-2 text-[10px] font-medium uppercase tracking-widest text-white">
-        <span className="scrolling-text">
-          PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%
-          AUTHENTIQUE GARANTIE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FREE SHIPPING ON ORDERS OVER
-          $150 &nbsp;|&nbsp; 100% AUTHENTIC GUARANTEE &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PROFITEZ
-          DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100% AUTHENTIQUE
-          GARANTIE
-        </span>
+        <div className="flex items-center justify-center">
+          <span>
+            PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%
+          </span>
+        </div>
       </div>
 
       {/* ── Logo · Search · Actions ─────────────────────────────────────── */}
@@ -164,13 +162,11 @@ export default function Header() {
       {/* ── Main Navigation ─────────────────────────────────────────────── */}
       <nav className="hidden md:block container mx-auto px-4 pb-4">
         <ul className="flex justify-center space-x-10 text-sm font-semibold tracking-widest text-gray-700">
-          {NAV_LINKS.map(({ label, href, highlight }) => (
+          {NAV_LINKS.map(({ label, href }) => (
             <li key={label}>
               <Link
                 href={href}
-                className={`transition-colors hover:text-aura-gold ${
-                  highlight ? 'text-red-500' : ''
-                }`}
+                className="transition-colors hover:text-[#da2966]"
               >
                 {label}
               </Link>
@@ -240,12 +236,15 @@ export default function Header() {
 
           {/* Navigation Links */}
           <div className="flex flex-col px-6 space-y-7 mb-auto">
-            <Link href="#" className="font-serif text-[22px] uppercase text-[#e63a6c] transition-colors">GIFTS</Link>
-            <Link href="#" className="font-serif text-[22px] uppercase text-gray-900 transition-colors">VISAGE</Link>
-            <Link href="#" className="font-serif text-[22px] uppercase text-gray-900 transition-colors">CORPS</Link>
-            <Link href="#" className="font-serif text-[22px] uppercase text-gray-900 transition-colors">PARFUMS</Link>
-            <Link href="#" className="font-serif text-[22px] uppercase text-gray-900 transition-colors">SKINCARE</Link>
-            <Link href="#" className="font-serif text-[22px] uppercase text-gray-900 transition-colors">HAIR</Link>
+            {NAV_LINKS.map(({ label, href }) => (
+              <Link
+                key={label}
+                href={href}
+                className="font-serif text-[22px] uppercase text-gray-900 transition-colors hover:text-[#da2966]"
+              >
+                {label}
+              </Link>
+            ))}
           </div>
 
           {/* Collection Highlights */}
