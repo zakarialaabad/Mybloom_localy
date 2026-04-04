@@ -127,13 +127,22 @@ export default function CollectionPage() {
   // Apply URL params to filter store — re-runs on every URL change (soft navigation too)
   useEffect(() => {
     const categoryId   = searchParams.get('category');
-    const ingredientId = searchParams.get('ingredient');
+    const ingredientIds = searchParams.getAll('ingredient');
     const featured     = searchParams.get('featured');
     // Reset URL-controlled filters first, then apply current URL values
     setSelectedCategories(categoryId ? [Number(categoryId)] : []);
-    setSelectedIngredients(ingredientId ? [Number(ingredientId)] : []);
+    setSelectedIngredients(ingredientIds.length > 0 ? ingredientIds.map((id) => Number(id)) : []);
     setFeaturedOnly(featured === '1');
   }, [searchParams, setSelectedCategories, setSelectedIngredients, setFeaturedOnly]);
+
+  // Helper function to toggle ingredient selection
+  const toggleIngredientSelect = (ingredientId: number) => {
+    const current = Array.isArray(selectedIngredients) ? selectedIngredients : [];
+    const updated = current.includes(ingredientId)
+      ? current.filter((id) => id !== ingredientId)
+      : [...current, ingredientId];
+    setSelectedIngredients(updated);
+  };
 
   // Fetch hero banner for the active collection (category) or global
   useEffect(() => {
@@ -266,16 +275,16 @@ export default function CollectionPage() {
 
                 {/* Ingredient circles grid */}
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 md:gap-x-8 md:gap-y-6">
-                  {visibleIngredients.map((ingredient) => {
-                    const isActive = selectedIngredients.includes(ingredient.id);
-                    return (
-                      <Link
-                        key={ingredient.id}
-                        href={isActive ? '/collection' : `/collection?ingredient=${ingredient.id}`}
-                        className="group block text-center"
-                      >
-                        <div className={`relative mx-auto h-24 w-24 md:h-32 md:w-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105 ring-2 ${
-                          isActive ? 'ring-[#4a403a]' : 'ring-transparent'
+                  {visibleIngredients.map((ingredient) => (
+                    <button
+                      key={ingredient.id}
+                      onClick={() => {
+                        toggleIngredientSelect(ingredient.id);
+                      }}
+                      className="group block text-center focus:outline-none w-full"
+                    >
+                        <div className={`relative mx-auto h-24 w-24 md:h-32 md:w-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:scale-105 ring-2 ${
+                          Array.isArray(selectedIngredients) && selectedIngredients.includes(ingredient.id) ? 'ring-[#da2966]' : 'ring-transparent'
                         }`}>
                           <Image
                             src={ingredient.image_url ?? 'https://images.unsplash.com/photo-1598007264887-acc47d519b88?auto=format&fit=crop&q=80&w=200'}
@@ -285,14 +294,13 @@ export default function CollectionPage() {
                             className="h-full w-full object-cover opacity-90 mix-blend-multiply"
                           />
                         </div>
-                        <h3 className={`mt-3 text-xs font-serif uppercase tracking-widest ${
-                          isActive ? 'text-[#4a403a] font-semibold' : 'text-gray-500'
+                        <h3 className={`mt-3 text-xs font-serif uppercase tracking-widest transition-colors ${
+                          Array.isArray(selectedIngredients) && selectedIngredients.includes(ingredient.id) ? 'text-[#da2966] font-semibold' : 'text-gray-500'
                         }`}>
                           {ingredient.name}
                         </h3>
-                      </Link>
-                    );
-                  })}
+                      </button>
+                    ))}
                 </div>
 
                 {/* Right arrow */}
@@ -318,6 +326,27 @@ export default function CollectionPage() {
                         }`}
                       />
                     ))}
+                  </div>
+                )}
+
+                {/* Selected ingredients pills (mobile-friendly) */}
+                {Array.isArray(selectedIngredients) && selectedIngredients.length > 0 && (
+                  <div className="mt-6 flex flex-wrap gap-2 justify-center">
+                    {selectedIngredients
+                      .map((id) => ingredients.find((ing) => ing.id === id))
+                      .filter(Boolean)
+                      .map((ingredient) => (
+                        <button
+                          key={ingredient!.id}
+                          onClick={() => toggleIngredientSelect(ingredient!.id)}
+                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#da2966] text-white text-xs font-semibold rounded-full hover:bg-[#c7235a] transition-colors"
+                        >
+                          {ingredient!.name}
+                          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      ))}
                   </div>
                 )}
               </div>

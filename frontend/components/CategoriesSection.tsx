@@ -27,12 +27,19 @@ export default function CategoriesSection() {
   const ingredients       = useReferenceStore((s) => s.ingredients);
   const ensureIngredients = useReferenceStore((s) => s.ensureIngredients);
   const [page, setPage]  = useState(0);
+  const [selectedIngredients, setSelectedIngredients] = useState<number[]>([]);
   const perPage          = usePerPage();
 
   useEffect(() => { ensureIngredients(); }, [ensureIngredients]);
 
   // Reset to page 0 whenever perPage changes so we never land on an out-of-range page
   useEffect(() => { setPage(0); }, [perPage]);
+
+  const toggleIngredient = (id: number) => {
+    setSelectedIngredients((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id]
+    );
+  };
 
   const totalPages   = Math.ceil(ingredients.length / perPage);
   const visible      = ingredients.slice(page * perPage, (page + 1) * perPage);
@@ -158,7 +165,7 @@ export default function CategoriesSection() {
             {/* Mobile button under text */}
             <div className="mt-6 md:hidden">
               <Link 
-                href="/categories" 
+                href="/collection" 
                 className="inline-flex items-center justify-center bg-[#4a403a] px-6 py-2.5 text-sm font-bold text-white shadow-md hover:bg-[#3a322d] transition-colors rounded-md font-serif italic"
               >
                 Shop all notes ›
@@ -167,7 +174,7 @@ export default function CategoriesSection() {
           </div>
           {/* Desktop button */}
           <Link 
-            href="/categories" 
+            href="/collection" 
             className="hidden md:inline-flex items-center justify-center bg-[#4a403a] px-8 py-3 text-sm font-bold text-white shadow-md hover:bg-[#3a322d] transition-colors rounded-md font-serif italic"
           >
             Shop all notes ›
@@ -191,9 +198,18 @@ export default function CategoriesSection() {
 
             {/* 6-per-page grid */}
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 md:gap-x-8 md:gap-y-12">
-            {visible.map((ingredient) => (
-                <Link key={ingredient.id} href={`/collection?ingredient=${ingredient.id}`} className="group block text-center">
-                    <div className="relative mx-auto h-32 w-32 md:h-40 md:w-40 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-transform duration-300 group-hover:scale-105">
+            {visible.map((ingredient) => {
+              const isSelected = selectedIngredients.includes(ingredient.id);
+              
+              return (
+                <button
+                  key={ingredient.id}
+                  onClick={() => toggleIngredient(ingredient.id)}
+                  className="group block text-center focus:outline-none"
+                >
+                    <div className={`relative mx-auto h-32 w-32 md:h-40 md:w-40 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:scale-105 ring-2 ${
+                      isSelected ? 'ring-[#da2966]' : 'ring-transparent'
+                    }`}>
                         <Image
                             src={ingredient.image_url ?? 'https://images.unsplash.com/photo-1598007264887-acc47d519b88?auto=format&fit=crop&q=80&w=200'}
                             alt={ingredient.name}
@@ -202,11 +218,14 @@ export default function CategoriesSection() {
                             className="h-full w-full object-cover opacity-90 mix-blend-multiply"
                         />
                     </div>
-                    <h3 className="mt-4 md:mt-6 text-xs md:text-sm font-serif uppercase tracking-widest text-[#4a403a]">
+                    <h3 className={`mt-4 md:mt-6 text-xs md:text-sm font-serif uppercase tracking-widest transition-colors ${
+                      isSelected ? 'text-[#da2966] font-semibold' : 'text-[#4a403a]'
+                    }`}>
                         {ingredient.name}
                     </h3>
-                </Link>
-            ))}
+                </button>
+              );
+            })}
             </div>
 
             {/* Right arrow */}
@@ -222,20 +241,30 @@ export default function CategoriesSection() {
                 </button>
             </div>
 
-            {/* Page dots */}
-            {totalPages > 1 && (
-              <div className="flex justify-center gap-2 mt-8">
-                {Array.from({ length: totalPages }).map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setPage(i)}
-                    className={`h-1.5 rounded-full transition-all ${
-                      i === page ? 'w-6 bg-[#4a403a]' : 'w-1.5 bg-gray-300 hover:bg-gray-400'
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
+            {/* Page dots and View Collection button */}
+            <div className="mt-8 flex flex-col items-center gap-6">
+              {totalPages > 1 && (
+                <div className="flex justify-center gap-2">
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setPage(i)}
+                      className={`h-1.5 rounded-full transition-all ${
+                        i === page ? 'w-6 bg-[#4a403a]' : 'w-1.5 bg-gray-300 hover:bg-gray-400'
+                      }`}
+                    />
+                  ))}
+                </div>
+              )}
+              {selectedIngredients.length > 0 && (
+                <Link
+                  href={`/collection?${selectedIngredients.map((id) => `ingredient=${id}`).join('&')}`}
+                  className="inline-flex items-center justify-center bg-[#da2966] px-8 py-3 text-sm font-bold text-white shadow-md hover:bg-[#c7235a] transition-colors rounded-md font-serif italic"
+                >
+                  View Collection ›
+                </Link>
+              )}
+            </div>
         </div>
         </SectionContainer>
       </div>
