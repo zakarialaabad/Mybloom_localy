@@ -48,7 +48,7 @@ export default function ProductCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <article className="cursor-pointer bg-white">
+      <article className="cursor-pointer bg-white border border-t-0 border-gray-200">
         {/* Image container */}
         <div className="relative mb-4 aspect-[4/5] overflow-hidden bg-[#f8f5f1]">
 
@@ -160,16 +160,17 @@ export default function ProductCard({
           </div>
         </div>
 
-        {/* Info */}
-        <div className="space-y-1.5 px-2 pb-2 text-left">
+        {/* Info Section — with inner dividing border */}
+        <div className="space-y-1.5 px-3 py-2.5 text-left">
           <h3 className="font-serif text-lg font-bold text-gray-900 tracking-wide">{name}</h3>
-          <p className="text-xs text-gray-600 pb-2">{subtitle}</p>
+          <p className="text-xs text-gray-600">{subtitle}</p>
           
-          <div className="border-t border-gray-100/80 w-full mb-2"></div>
+          {/* Inner dividing border */}
+          <div className="border-t border-gray-100/60 w-full my-2.5"></div>
 
-          <p className="text-[11px] text-gray-500 pt-1">{description}</p>
+          <p className="text-[11px] text-gray-500">{description}</p>
 
-          <div className="flex items-baseline space-x-2 pt-2 pb-1">
+          <div className="flex items-baseline space-x-2 pt-1.5 pb-1">
             <span className="text-base sm:text-lg font-bold text-gray-900">{price} DH</span>
             {originalPrice > price && (
               <>
@@ -179,7 +180,7 @@ export default function ProductCard({
           </div>
 
           {/* Stars */}
-          <div className="flex items-center space-x-1">
+          <div className="flex items-center space-x-1 pt-0.5">
             <div className="flex">
               {stars.map((s) => (
                 <StarIcon key={s} filled={s <= Math.round(rating)} />
