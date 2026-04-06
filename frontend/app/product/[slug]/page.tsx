@@ -11,6 +11,7 @@ import {
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ProductCard, { type ProductCardProps } from '@/components/ui/ProductCard';
+import { LoadingSpinner } from '@/components/Skeleton';
 import { productService, Product, ProductVariant } from '@/services/api';
 import useCartStore from '@/store/cart';
 import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
@@ -205,19 +206,53 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     router.push('/checkout');
   };
 
-  // ─── Loading / Error states ─────────────────────────────────────────────────
+  // ─── Loading skeleton — renders the page layout (behind the spinner overlay) ──
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-white">
+        {/* Spinner overlay sits on top of the skeleton layout below */}
+        <LoadingSpinner />
         <Header />
-        <main className="flex-grow flex items-center justify-center">
-          <p className="font-serif italic text-gray-400 text-lg animate-pulse">Loading…</p>
+        <main className="flex-grow bg-white">
+          <div className="container mx-auto px-4 py-12 max-w-7xl">
+            {/* Breadcrumb skeleton */}
+            <div className="flex gap-2 mb-8">
+              <div className="h-4 w-12 bg-gray-100 rounded animate-pulse" />
+              <div className="h-4 w-4 bg-gray-100 rounded animate-pulse" />
+              <div className="h-4 w-24 bg-gray-100 rounded animate-pulse" />
+              <div className="h-4 w-4 bg-gray-100 rounded animate-pulse" />
+              <div className="h-4 w-32 bg-gray-100 rounded animate-pulse" />
+            </div>
+            {/* Product layout skeleton */}
+            <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
+              {/* Left: image */}
+              <div className="w-full md:w-1/2 space-y-4">
+                <div className="w-full aspect-square md:aspect-[4/5] bg-gray-100 rounded-sm animate-pulse" />
+                <div className="flex gap-3">
+                  {[1,2,3,4].map(i => <div key={i} className="h-20 w-20 bg-gray-100 rounded-sm animate-pulse" />)}
+                </div>
+              </div>
+              {/* Right: info */}
+              <div className="w-full md:w-1/2 space-y-5">
+                <div className="h-4 w-24 bg-gray-100 rounded animate-pulse" />
+                <div className="h-9 w-3/4 bg-gray-100 rounded animate-pulse" />
+                <div className="h-4 w-1/3 bg-gray-100 rounded animate-pulse" />
+                <div className="h-8 w-1/4 bg-gray-100 rounded animate-pulse" />
+                <div className="flex gap-3">
+                  {[1,2,3].map(i => <div key={i} className="h-10 w-20 bg-gray-100 rounded-lg animate-pulse" />)}
+                </div>
+                <div className="h-12 w-full bg-gray-100 rounded-lg animate-pulse" />
+                <div className="h-12 w-full bg-gray-100 rounded-lg animate-pulse" />
+              </div>
+            </div>
+          </div>
         </main>
         <Footer />
       </div>
     );
   }
 
+  // ─── Error / not found ──────────────────────────────────────────────────────
   if (fetchError || !product) {
     return (
       <div className="min-h-screen flex flex-col bg-white">
@@ -249,6 +284,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   return (
     <div className="min-h-screen flex flex-col bg-white">
       <Header />
+
+      {/* Loading Overlay */}
+      {loading && <LoadingSpinner />}
 
       <main className="flex-grow bg-white">
         <div className="container mx-auto px-4 py-12 sm:py-16 max-w-7xl scroll-smooth">

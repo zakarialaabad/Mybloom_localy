@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/ui/ProductCard';
 import SectionContainer from '@/components/SectionContainer';
+import { ProductCardSkeleton } from '@/components/Skeleton';
 import { productService, Product } from '@/services/api';
 import { type ProductCardProps } from '@/components/ui/ProductCard';
 
@@ -131,15 +132,9 @@ export default function BestSellers() {
               Array.from({ length: 5 }).map((_, i) => (
                 <div
                   key={i}
-                  className="flex-none snap-start w-[calc(50%-8px)] md:w-[calc(20%-19.2px)] animate-pulse"
+                  className="flex-none snap-start w-[calc(50%-8px)] md:w-[calc(20%-19.2px)]"
                 >
-                  <div className="bg-gray-100 rounded-sm aspect-[4/5] mb-4" />
-                  <div className="space-y-2">
-                    <div className="h-3 bg-gray-100 rounded w-3/4" />
-                    <div className="h-2 bg-gray-100 rounded w-1/2" />
-                    <div className="h-2 bg-gray-100 rounded w-2/3" />
-                    <div className="h-3 bg-gray-100 rounded w-1/3" />
-                  </div>
+                  <ProductCardSkeleton />
                 </div>
               ))
             ) : (

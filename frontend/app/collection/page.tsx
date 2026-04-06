@@ -20,6 +20,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { productService, Product, bannerService, Banner } from '@/services/api';
 import ProductCard from '@/components/ui/ProductCard';
+import { ProductGridSkeleton, FilterSkeleton, LoadingSpinner } from '@/components/Skeleton';
 import useReferenceStore from '@/store/reference';
 import useFilterStore from '@/store/filters';
 import PriceHistogram from '@/components/ui/PriceHistogram';
@@ -54,6 +55,7 @@ export default function CollectionPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [heroBanner, setHeroBanner] = useState<Banner | null>(null);
   const [loadingProducts, setLoadingProducts] = useState(true);
+  const [pageLoading, setPageLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('newest');
@@ -97,6 +99,13 @@ export default function CollectionPage() {
   useEffect(() => { ensureCategories(); }, [ensureCategories]);
   useEffect(() => { ensureIngredients(); }, [ensureIngredients]);
   useEffect(() => { ensureAggregates(); }, [ensureAggregates]);
+
+  // Mark page as loaded once initial reference data is ready
+  useEffect(() => {
+    if (brands.length > 0 && categories.length > 0 && ingredients.length > 0) {
+      setPageLoading(false);
+    }
+  }, [brands.length, categories.length, ingredients.length]);
 
   // Ingredient carousel responsive perPage
   useEffect(() => {
@@ -225,6 +234,8 @@ export default function CollectionPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      {/* Loading Overlay — always renders behind spinner, same pattern as admin dashboard */}
+      {(pageLoading || loadingProducts) && <LoadingSpinner />}
       <Header />
       {/* Collection Hero Banner — dynamic from API, falls back to a solid color block */}
       <div className="w-full relative h-[200px] md:h-[300px] bg-[#5a1818]">
@@ -404,6 +415,9 @@ export default function CollectionPage() {
         <div className="flex flex-col md:flex-row gap-8">
           {/* Sidebar */}
           <aside className="hidden md:block w-64 shrink-0">
+            {brands.length === 0 || categories.length === 0 || !aggregatesReady ? (
+              <FilterSkeleton />
+            ) : (
             <div className="bg-[#fcfcfc] p-6 rounded-sm">
               <h2 className="font-serif text-gray-500 mb-6">Filter</h2>
 
@@ -497,6 +511,7 @@ export default function CollectionPage() {
               </div>
 
             </div>
+            )}
           </aside>
 
           {/* Main Content */}
@@ -572,11 +587,7 @@ export default function CollectionPage() {
             {/* Product Grid / List */}
             {loadingProducts ? (
               viewMode === 'grid' ? (
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-6">
-                  {Array.from({ length: 8 }).map((_, i) => (
-                    <div key={i} className="aspect-[4/5] bg-gray-100 rounded-sm animate-pulse" />
-                  ))}
-                </div>
+                <ProductGridSkeleton count={8} />
               ) : (
                 <div className="flex flex-col gap-3">
                   {Array.from({ length: 6 }).map((_, i) => (

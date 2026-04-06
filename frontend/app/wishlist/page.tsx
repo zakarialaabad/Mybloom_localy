@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Heart, Grid, List, ChevronDown } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { LoadingSpinner } from '@/components/Skeleton';
 import { productService, Product } from '@/services/api';
 import { getWishlist, removeFromWishlist } from '@/lib/wishlist';
 import ProductCard from '@/components/ui/ProductCard';
@@ -32,6 +33,7 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      {loading && <LoadingSpinner />}
       <Header />
       <main className="flex-grow container mx-auto px-4 py-8 sm:py-12 max-w-7xl">
         {/* Breadcrumbs */}
@@ -59,10 +61,6 @@ export default function WishlistPage() {
             </div>
           </div>
         </div>
-
-        {loading && (
-          <p className="text-center text-gray-400 font-serif italic py-20">Loading wishlist…</p>
-        )}
 
         {!loading && products.length === 0 && (
           <div className="text-center py-20">

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import SectionContainer from '@/components/SectionContainer';
+import { Skeleton } from '@/components/Skeleton';
 import useReferenceStore from '@/store/reference';
 
 /** Returns how many items to show per "page" based on viewport width */
@@ -198,7 +199,16 @@ export default function CategoriesSection() {
 
             {/* 6-per-page grid */}
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 md:gap-x-8 md:gap-y-12">
-            {visible.map((ingredient) => {
+            {ingredients.length === 0 ? (
+              // Skeleton placeholders
+              Array.from({ length: perPage }).map((_, i) => (
+                <div key={i} className="flex flex-col items-center">
+                  <Skeleton className="w-32 h-32 md:w-40 md:h-40 rounded-full mb-3 md:mb-6" />
+                  <Skeleton className="h-3 w-20 rounded" />
+                </div>
+              ))
+            ) : (
+              visible.map((ingredient) => {
               const isSelected = selectedIngredients.includes(ingredient.id);
               
               return (
@@ -225,7 +235,8 @@ export default function CategoriesSection() {
                     </h3>
                 </button>
               );
-            })}
+              })
+            )}
             </div>
 
             {/* Right arrow */}

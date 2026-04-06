@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import SectionContainer from '@/components/SectionContainer';
 import ProductCard, { type ProductCardProps } from '@/components/ui/ProductCard';
+import { ProductGridSkeleton } from '@/components/Skeleton';
 import { productService, Product } from '@/services/api';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
@@ -58,17 +59,9 @@ export default function UniversSection() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-y-12 gap-x-6">
           {loading || products.length === 0 ? (
             // Skeleton placeholders — shown during loading or if no products
-            Array.from({ length: 10 }).map((_, i) => (
-              <div key={i} className="animate-pulse">
-                <div className="bg-gray-100 rounded-sm aspect-[4/5] mb-4" />
-                <div className="space-y-2">
-                  <div className="h-3 bg-gray-100 rounded w-3/4" />
-                  <div className="h-2 bg-gray-100 rounded w-1/2" />
-                  <div className="h-2 bg-gray-100 rounded w-2/3" />
-                  <div className="h-3 bg-gray-100 rounded w-1/3" />
-                </div>
-              </div>
-            ))
+            <div className="col-span-2 md:col-span-3 lg:col-span-5">
+              <ProductGridSkeleton count={10} />
+            </div>
           ) : (
             products.map((product) => (
               <ProductCard key={product.id} {...product} />
