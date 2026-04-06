@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Invoice – {{ $order->order_number }}</title>
+<title>Invoice – <?php echo e($order->order_number); ?></title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; color: #333; background: #fff; }
@@ -52,7 +52,7 @@
   /* ── Totals section ──────────────────────────────────────────────────── */
   .totals-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
   .totals-table td { padding: 8px 15px; font-size: 12px; border-bottom: 1px solid #eee; }
-  .totals-table tr:last-child td { border-bottom: none; }                 
+  .totals-table tr:last-child td { border-bottom: none; }
   .totals-table .label { color: #666; width: 50%; border-right: 1px solid #eee; }
   .totals-table .value { text-align: right; font-weight: 600; color: #666; }
   .totals-table .shipping .value { color: #da2966; }
@@ -76,48 +76,48 @@
 <body>
 <div class="page">
 
-  {{-- ── HEADER ─────────────────────────────────────────────────────────── --}}
+  
   <div class="header">
-    @php
+    <?php
       $logoPath = public_path('logo.png');
       $logoData = base64_encode(file_get_contents($logoPath));
       $logoSrc = 'data:image/png;base64,' . $logoData;
-    @endphp
-    <img src="{{ $logoSrc }}" alt="MyBloom" style="height: 90px; margin-bottom: 5px; display: block; margin-left: auto; margin-right: auto;">
+    ?>
+    <img src="<?php echo e($logoSrc); ?>" alt="MyBloom" style="height: 90px; margin-bottom: 5px; display: block; margin-left: auto; margin-right: auto;">
     <div class="invoice-title">INVOICE</div>
   </div>
 
-  {{-- ── INFO GRID ──────────────────────────────────────────────────────── --}}
+  
   <div class="info-wrapper">
     <div class="info-grid">
       <div class="info-block left">
         <div class="info-label">INVOICE NUMBER</div>
-        <div class="info-value pink">#{{ $order->order_number }}</div>
+        <div class="info-value pink">#<?php echo e($order->order_number); ?></div>
         <div class="info-label">ORDER ID</div>
-        <div class="info-value">{{ $order->order_number }}</div>
+        <div class="info-value"><?php echo e($order->order_number); ?></div>
       </div>
       <div class="info-block center">
         <div class="info-label">CUSTOMER DETAILS</div>
-        <div class="info-value">{{ $order->customer_name }}</div>
-        <div class="info-value normal">{{ $order->customer_phone }}</div>
+        <div class="info-value"><?php echo e($order->customer_name); ?></div>
+        <div class="info-value normal"><?php echo e($order->customer_phone); ?></div>
       </div>
       <div class="info-block right">
         <div class="info-label">DATE</div>
-        <div class="info-value normal">{{ $order->created_at->format('F d, Y') }}</div>
+        <div class="info-value normal"><?php echo e($order->created_at->format('F d, Y')); ?></div>
       </div>
     </div>
   </div>
 
-  {{-- ── DIVIDER ─────────────────────────────────────────────────────────── --}}
+  
   <div class="divider"></div>
 
-  {{-- ── DELIVERY ADDRESS ────────────────────────────────────────────────── --}}
+  
   <div class="delivery-section">
     <div class="delivery-label">Delivery Address</div>
-    <div class="delivery-address">{{ $order->shipping_address_full ?? $order->shipping_address }}</div>
+    <div class="delivery-address"><?php echo e($order->shipping_address_full ?? $order->shipping_address); ?></div>
   </div>
 
-  {{-- ── ITEMS TABLE ─────────────────────────────────────────────────────── --}}
+  
   <table>
     <thead>
       <tr>
@@ -128,50 +128,50 @@
       </tr>
     </thead>
     <tbody>
-      @foreach($order->items as $item)
+      <?php $__currentLoopData = $order->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
       <tr>
         <td>
-          <div class="product-name">{{ $item->product->name ?? 'Product' }}</div>
-          @if($item->size_label)
-            <div class="product-details">{{ $item->size_label }}</div>
-          @endif
+          <div class="product-name"><?php echo e($item->product->name ?? 'Product'); ?></div>
+          <?php if($item->size_label): ?>
+            <div class="product-details"><?php echo e($item->size_label); ?></div>
+          <?php endif; ?>
         </td>
-        <td style="text-align: center;">{{ $item->quantity }}</td>
-        <td style="text-align: right;">{{ number_format((float)$item->unit_price, 2, '.', '') }} DH</td>
-        <td style="text-align: right; font-weight: 700;">{{ number_format((float)$item->unit_price * $item->quantity, 2, '.', '') }} DH</td>
+        <td style="text-align: center;"><?php echo e($item->quantity); ?></td>
+        <td style="text-align: right;"><?php echo e(number_format((float)$item->unit_price, 2, '.', '')); ?> DH</td>
+        <td style="text-align: right; font-weight: 700;"><?php echo e(number_format((float)$item->unit_price * $item->quantity, 2, '.', '')); ?> DH</td>
       </tr>
-      @endforeach
+      <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </tbody>
   </table>
 
-  {{-- ── TOTALS ──────────────────────────────────────────────────────────── --}}
+  
   <table class="totals-table">
     <tbody>
       <tr>
         <td class="label">Subtotal</td>
-        <td class="value">{{ number_format((float)$order->subtotal, 2, '.', '') }} DH</td>
+        <td class="value"><?php echo e(number_format((float)$order->subtotal, 2, '.', '')); ?> DH</td>
       </tr>
       <tr class="shipping">
         <td class="label">Shipping</td>
-        <td class="value">@if((float)$order->shipping_cost === 0.0)Free @else {{ number_format((float)$order->shipping_cost, 2, '.', '') }} DH @endif</td>
+        <td class="value"><?php if((float)$order->shipping_cost === 0.0): ?>Free <?php else: ?> <?php echo e(number_format((float)$order->shipping_cost, 2, '.', '')); ?> DH <?php endif; ?></td>
       </tr>
-      @if((float)$order->discount_amount > 0)
+      <?php if((float)$order->discount_amount > 0): ?>
       <tr class="discount">
         <td class="label" style="color: #999;">Discount (Coupon)</td>
-        <td class="value">-{{ number_format((float)$order->discount_amount, 2, '.', '') }} DH</td>
+        <td class="value">-<?php echo e(number_format((float)$order->discount_amount, 2, '.', '')); ?> DH</td>
       </tr>
-      @endif
+      <?php endif; ?>
       <tr class="total-row">
         <td class="label">Total Due</td>
-        <td class="value">{{ number_format((float)$order->total, 2, '.', '') }} DH</td>
+        <td class="value"><?php echo e(number_format((float)$order->total, 2, '.', '')); ?> DH</td>
       </tr>
     </tbody>
   </table>
 
-  {{-- ── DIVIDER ─────────────────────────────────────────────────────────── --}}
+  
   <div class="divider-footer"></div>
 
-  {{-- ── FOOTER ──────────────────────────────────────────────────────────── --}}
+  
   <div class="footer">
     <div class="thank-you">Thank you for your purchase with MyBloom</div>
     <div class="footer-contact">
@@ -183,3 +183,4 @@
 </div>
 </body>
 </html>
+<?php /**PATH C:\Users\acer\Desktop\Parfum\backend\resources\views\invoices\order.blade.php ENDPATH**/ ?>

@@ -17,6 +17,20 @@ export default function OrderSuccessPage() {
   const phone   = params.get('phone')  ?? '';
   const city    = params.get('city')   ?? 'MAROC';
 
+  useEffect(() => {
+    if (!order) return;
+    // Auto-download invoice PDF after a short delay so the page renders first
+    const timer = setTimeout(() => {
+      const link = document.createElement('a');
+      link.href = `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${order}/download`;
+      link.download = `invoice-${order}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }, 1500);
+    return () => clearTimeout(timer);
+  }, [order]);
+
   return (
     <>
       <div className="hidden md:block">

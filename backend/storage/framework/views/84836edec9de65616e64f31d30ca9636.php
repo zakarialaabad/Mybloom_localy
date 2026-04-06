@@ -1,72 +1,76 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Facture – <?php echo e($order->order_number); ?></title>
+<title>Invoice – <?php echo e($order->order_number); ?></title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: DejaVu Sans, sans-serif; font-size: 13px; color: #2d2d2d; background: #ffffff; }
-  .page { padding: 40px 48px; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; color: #333; background: #fff; }
+  .page { padding: 50px 60px; max-width: 900px; margin: 0 auto; }
 
   /* ── Header ─────────────────────────────────────────────────────────── */
-  .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 36px; border-bottom: 2px solid #da2966; padding-bottom: 24px; }
-  .brand-name { font-size: 28px; font-weight: 700; color: #da2966; letter-spacing: 1px; font-style: italic; }
-  .brand-tagline { font-size: 10px; color: #9e9e9e; margin-top: 4px; letter-spacing: 2px; text-transform: uppercase; }
-  .invoice-meta { text-align: right; }
-  .invoice-label { font-size: 22px; font-weight: 700; color: #423835; text-transform: uppercase; letter-spacing: 3px; }
-  .invoice-number { font-size: 13px; color: #9e9e9e; margin-top: 4px; }
-  .invoice-date { font-size: 11px; color: #bdbdbd; margin-top: 2px; }
+  .header { text-align: center; margin-bottom: 50px; }
+  .invoice-title { font-size: 15px; font-weight: 700; color: #da2966; letter-spacing: 1px; margin-top: 10px; margin-bottom: 40px; text-transform: uppercase; font-family: 'Times New Roman', serif;}
 
-  /* ── Addresses ───────────────────────────────────────────────────────── */
-  .addresses { display: flex; justify-content: space-between; margin-bottom: 32px; gap: 24px; }
-  .address-block { flex: 1; }
-  .address-block h3 { font-size: 9px; font-weight: 700; color: #9e9e9e; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
-  .address-block p { font-size: 12px; color: #2d2d2d; line-height: 1.7; }
-  .address-block .name { font-weight: 700; font-size: 13px; margin-bottom: 2px; }
+  /* ── Info grid ────────────────────────────────────────────────────────── */
+  .info-wrapper { padding: 20px 0; margin-bottom: 10px; }
+  .info-grid { display: table; width: 100%; }
+  .info-block { display: table-cell; vertical-align: top; }
+  .info-block.left { text-align: left; width: 35%; }
+  .info-block.center { text-align: left; width: 40%; border-left: 1px solid #f0e0e6; padding-left: 24px; }
+  .info-block.right { text-align: right; width: 25%; border-left: 1px solid #f0e0e6; padding-left: 24px; }
+  .info-label { font-size: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: 600; }
+  .info-value { font-size: 13px; font-weight: bold; color: #222; margin-bottom: 14px; line-height: 1.4; }
+  .info-value.pink { color: #da2966; }
+  .info-value.normal { font-weight: normal; color: #444; }
+  
+  /* ── Divider ──────────────────────────────────────────────────────────── */
+  .divider { height: 1.5px; background: #da2966; margin: 10px 0 24px 0; }
 
-  /* ── Status badge ────────────────────────────────────────────────────── */
-  .status-row { display: flex; justify-content: flex-end; margin-bottom: 28px; }
-  .status-badge { display: inline-block; padding: 4px 14px; border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
-  .status-pending    { background: #fff3e0; color: #e65100; }
-  .status-confirmed  { background: #e8f5e9; color: #2e7d32; }
-  .status-shipped    { background: #e3f2fd; color: #1565c0; }
-  .status-delivered  { background: #f3e5f5; color: #6a1b9a; }
-  .status-cancelled  { background: #fce4ec; color: #c62828; }
+  /* ── Delivery address ────────────────────────────────────────────────────── */
+  .delivery-section { background: #f0ebe3; padding: 20px 24px 24px 24px; margin-bottom: 30px; border-radius: 3px; width: 100%; }
+  .delivery-label { font-size: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; margin-bottom: 10px; }
+  .delivery-address { font-size: 14px; color: #333; line-height: 1.6; font-weight: normal; }
 
   /* ── Items table ─────────────────────────────────────────────────────── */
-  table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
-  thead tr { background: #423835; color: #ffffff; }
-  thead th { padding: 10px 14px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
-  thead th:last-child { text-align: right; }
-  tbody tr { border-bottom: 1px solid #f0f0f0; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+  thead tr { background: #333; color: #fff; }
+  thead th { padding: 10px 15px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  thead th:nth-child(2) { text-align: center; }
+  thead th:nth-child(3) { text-align: right; }
+  thead th:nth-child(4) { text-align: right; }
+  tbody tr { border-bottom: 1px solid #eee; }
   tbody tr:last-child { border-bottom: none; }
-  tbody td { padding: 11px 14px; font-size: 12px; vertical-align: middle; }
-  tbody td:last-child { text-align: right; font-weight: 600; }
-  tbody .product-name { font-weight: 600; color: #2d2d2d; }
-  tbody .product-variant { font-size: 10px; color: #9e9e9e; margin-top: 2px; }
-  tbody tr:nth-child(even) { background: #fafafa; }
+  tbody td { padding: 12px 15px; font-size: 12px; vertical-align: top; }
+  tbody td:nth-child(2) { text-align: center; font-weight: 700; color: #333; vertical-align: middle; }
+  tbody td:nth-child(3) { text-align: right; color: #666; vertical-align: middle; }
+  tbody td:nth-child(4) { text-align: right; font-weight: 700; color: #333; vertical-align: middle; }
+  tbody .product-name { font-weight: 700; color: #333; margin-bottom: 2px; text-transform: uppercase; font-size: 11px; }
+  tbody .product-details { font-size: 10px; color: #999; }
 
-  /* ── Totals ──────────────────────────────────────────────────────────── */
-  .totals { float: right; width: 280px; margin-bottom: 40px; }
-  .totals table { margin-bottom: 0; }
-  .totals td { padding: 7px 14px; font-size: 12px; border-bottom: none; }
-  .totals .label { color: #757575; }
-  .totals .value { text-align: right; font-weight: 600; }
-  .totals .discount { color: #2e7d32; }
-  .totals .divider { border-top: 1px solid #e0e0e0; }
-  .totals .total-row td { padding: 10px 14px; font-weight: 700; font-size: 15px; color: #da2966; }
+  /* ── Totals section ──────────────────────────────────────────────────── */
+  .totals-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+  .totals-table td { padding: 8px 15px; font-size: 12px; border-bottom: 1px solid #eee; }
+  .totals-table tr:last-child td { border-bottom: none; }                 
+  .totals-table .label { color: #666; width: 50%; border-right: 1px solid #eee; }
+  .totals-table .value { text-align: right; font-weight: 600; color: #666; }
+  .totals-table .shipping .value { color: #da2966; }
+  .totals-table .discount .value { color: #da2966; }
+  .totals-table .discount .label { color: #999; }
+  
+  .total-row { background: #222; }
+  .total-row td { padding: 12px 15px; border: none; }
+  .total-row .label { color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; border-right: none; }
+  .total-row .value { color: #fff; font-size: 14px; font-weight: 700; }
 
   /* ── Footer ──────────────────────────────────────────────────────────── */
-  .clearfix { clear: both; }
-  .footer { border-top: 1px solid #f0f0f0; padding-top: 20px; margin-top: 24px; text-align: center; }
-  .footer p { font-size: 10px; color: #bdbdbd; line-height: 1.8; }
-  .footer .thank-you { font-size: 14px; font-weight: 700; color: #da2966; margin-bottom: 8px; font-style: italic; }
-  .footer .contact { font-size: 11px; color: #9e9e9e; }
-
-  /* ── Note box ────────────────────────────────────────────────────────── */
-  .note-box { background: #fff5f7; border-left: 3px solid #da2966; padding: 12px 16px; margin-bottom: 28px; border-radius: 2px; }
-  .note-box p { font-size: 11px; color: #6d4c41; line-height: 1.6; }
+  .divider-footer { height: 1px; background: #da2966; margin: 30px 0 20px 0; }
+  .footer { text-align: center; }
+  .thank-you { font-size: 12px; font-style: italic; color: #333; margin-bottom: 12px; }
+  .footer-contact { font-size: 11px; color: #1976d2; }
+  .footer-contact a { color: #1976d2; text-decoration: none; }
+  .footer-contact .phone { color: #1976d2; }
 </style>
 </head>
 <body>
@@ -74,132 +78,106 @@
 
   
   <div class="header">
-    <div>
-      <div class="brand-name">MyBloom</div>
-      <div class="brand-tagline">Parfums &amp; Soins • Maroc</div>
-    </div>
-    <div class="invoice-meta">
-      <div class="invoice-label">Facture</div>
-      <div class="invoice-number"># <?php echo e($order->order_number); ?></div>
-      <div class="invoice-date"><?php echo e($order->created_at->format('d M Y')); ?></div>
-    </div>
-  </div>
-
-  
-  <div class="status-row">
     <?php
-      $statusClass = match($order->status) {
-        'confirmed'  => 'status-confirmed',
-        'shipped'    => 'status-shipped',
-        'delivered'  => 'status-delivered',
-        'cancelled'  => 'status-cancelled',
-        default      => 'status-pending',
-      };
-      $statusLabel = match($order->status) {
-        'confirmed'  => 'Confirmée',
-        'shipped'    => 'Expédiée',
-        'delivered'  => 'Livrée',
-        'cancelled'  => 'Annulée',
-        default      => 'En attente',
-      };
+      $logoPath = public_path('logo.png');
+      $logoData = base64_encode(file_get_contents($logoPath));
+      $logoSrc = 'data:image/png;base64,' . $logoData;
     ?>
-    <span class="status-badge <?php echo e($statusClass); ?>"><?php echo e($statusLabel); ?></span>
+    <img src="<?php echo e($logoSrc); ?>" alt="MyBloom" style="height: 90px; margin-bottom: 5px; display: block; margin-left: auto; margin-right: auto;">
+    <div class="invoice-title">INVOICE</div>
   </div>
 
   
-  <div class="addresses">
-    <div class="address-block">
-      <h3>Vendeur</h3>
-      <p class="name">MyBloom</p>
-      <p>Laayoune, Maroc<br>contact@mybloom.ma</p>
+  <div class="info-wrapper">
+    <div class="info-grid">
+      <div class="info-block left">
+        <div class="info-label">INVOICE NUMBER</div>
+        <div class="info-value pink">#<?php echo e($order->order_number); ?></div>
+        <div class="info-label">ORDER ID</div>
+        <div class="info-value"><?php echo e($order->order_number); ?></div>
+      </div>
+      <div class="info-block center">
+        <div class="info-label">CUSTOMER DETAILS</div>
+        <div class="info-value"><?php echo e($order->customer_name); ?></div>
+        <div class="info-value normal"><?php echo e($order->customer_phone); ?></div>
+      </div>
+      <div class="info-block right">
+        <div class="info-label">DATE</div>
+        <div class="info-value normal"><?php echo e($order->created_at->format('F d, Y')); ?></div>
+      </div>
     </div>
-    <div class="address-block" style="text-align: right;">
-      <h3>Client</h3>
-      <p class="name"><?php echo e($order->customer_name); ?></p>
-      <p>
-        <?php echo e($order->customer_phone); ?><br>
-        <?php if($order->shipping_city): ?><?php echo e($order->shipping_city); ?><?php endif; ?>
-        <?php if($order->customer_email): ?><br><?php echo e($order->customer_email); ?><?php endif; ?>
-      </p>
-    </div>
+  </div>
+
+  
+  <div class="divider"></div>
+
+  
+  <div class="delivery-section">
+    <div class="delivery-label">Delivery Address</div>
+    <div class="delivery-address"><?php echo e($order->shipping_address_full ?? $order->shipping_address); ?></div>
   </div>
 
   
   <table>
     <thead>
       <tr>
-        <th style="width:50%">Produit</th>
-        <th style="text-align:center">Taille</th>
-        <th style="text-align:center">Qté</th>
-        <th style="text-align:right">P.U.</th>
-        <th>Total</th>
+        <th style="width: 45%;">Product / Description</th>
+        <th style="width: 15%; text-align: center;">Qty</th>
+        <th style="width: 20%; text-align: right;">Unit Price</th>
+        <th style="width: 20%; text-align: right;">Total</th>
       </tr>
     </thead>
     <tbody>
       <?php $__currentLoopData = $order->items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
       <tr>
         <td>
-          <div class="product-name"><?php echo e($item->product->name ?? 'Produit'); ?></div>
+          <div class="product-name"><?php echo e($item->product->name ?? 'Product'); ?></div>
           <?php if($item->size_label): ?>
-            <div class="product-variant"><?php echo e($item->size_label); ?></div>
+            <div class="product-details"><?php echo e($item->size_label); ?></div>
           <?php endif; ?>
         </td>
-        <td style="text-align:center; color:#9e9e9e;"><?php echo e($item->size_label ?? '—'); ?></td>
-        <td style="text-align:center;"><?php echo e($item->quantity); ?></td>
-        <td style="text-align:right;"><?php echo e(number_format((float)$item->unit_price, 2, '.', ' ')); ?> DH</td>
-        <td><?php echo e(number_format((float)$item->unit_price * $item->quantity, 2, '.', ' ')); ?> DH</td>
+        <td style="text-align: center;"><?php echo e($item->quantity); ?></td>
+        <td style="text-align: right;"><?php echo e(number_format((float)$item->unit_price, 2, '.', '')); ?> DH</td>
+        <td style="text-align: right; font-weight: 700;"><?php echo e(number_format((float)$item->unit_price * $item->quantity, 2, '.', '')); ?> DH</td>
       </tr>
       <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
     </tbody>
   </table>
 
   
-  <div class="totals">
-    <table>
+  <table class="totals-table">
+    <tbody>
       <tr>
-        <td class="label">Sous-total</td>
-        <td class="value"><?php echo e(number_format((float)$order->subtotal, 2, '.', ' ')); ?> DH</td>
+        <td class="label">Subtotal</td>
+        <td class="value"><?php echo e(number_format((float)$order->subtotal, 2, '.', '')); ?> DH</td>
       </tr>
-      <tr>
-        <td class="label">Livraison</td>
-        <td class="value">
-          <?php if((float)$order->shipping_cost === 0.0): ?>
-            Gratuit
-          <?php else: ?>
-            <?php echo e(number_format((float)$order->shipping_cost, 2, '.', ' ')); ?> DH
-          <?php endif; ?>
-        </td>
+      <tr class="shipping">
+        <td class="label">Shipping</td>
+        <td class="value"><?php if((float)$order->shipping_cost === 0.0): ?>Free <?php else: ?> <?php echo e(number_format((float)$order->shipping_cost, 2, '.', '')); ?> DH <?php endif; ?></td>
       </tr>
       <?php if((float)$order->discount_amount > 0): ?>
-      <tr>
-        <td class="label discount">Remise</td>
-        <td class="value discount">− <?php echo e(number_format((float)$order->discount_amount, 2, '.', ' ')); ?> DH</td>
+      <tr class="discount">
+        <td class="label" style="color: #999;">Discount (Coupon)</td>
+        <td class="value">-<?php echo e(number_format((float)$order->discount_amount, 2, '.', '')); ?> DH</td>
       </tr>
       <?php endif; ?>
-      <tr class="divider">
-        <td colspan="2" style="padding:0; border-top: 1px solid #e0e0e0;"></td>
-      </tr>
       <tr class="total-row">
-        <td class="label">Total</td>
-        <td class="value"><?php echo e(number_format((float)$order->total, 2, '.', ' ')); ?> DH</td>
+        <td class="label">Total Due</td>
+        <td class="value"><?php echo e(number_format((float)$order->total, 2, '.', '')); ?> DH</td>
       </tr>
-    </table>
-  </div>
-
-  <div class="clearfix"></div>
+    </tbody>
+  </table>
 
   
-  <div class="note-box">
-    <p>Notre équipe vous contactera dans les plus brefs délais pour confirmer votre commande et vous communiquer les détails de livraison. Merci de votre confiance.</p>
-  </div>
+  <div class="divider-footer"></div>
 
   
   <div class="footer">
-    <div class="thank-you">Merci pour votre achat !</div>
-    <p class="contact">
-      MyBloom — Laayoune, Maroc &nbsp;|&nbsp; contact@mybloom.ma
-    </p>
-    <p style="margin-top:6px;">Cette facture a été générée automatiquement. Pour toute question, contactez-nous via WhatsApp.</p>
+    <div class="thank-you">Thank you for your purchase with MyBloom</div>
+    <div class="footer-contact">
+      &#9993; <a href="mailto:mybloom@gmail.com">mybloom@gmail.com</a><br>
+      <div style="margin-top: 6px;" class="phone">+212 600 000 000</div>
+    </div>
   </div>
 
 </div>
