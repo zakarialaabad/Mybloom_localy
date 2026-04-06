@@ -18,6 +18,7 @@ export interface ProductCardProps {
   imageUrl: string;
   badge?: string;
   isBestSeller?: boolean;
+  onWishlistToggle?: (id: number) => void;
 }
 
 function StarIcon({ filled }: { filled: boolean }) {
@@ -35,7 +36,7 @@ function StarIcon({ filled }: { filled: boolean }) {
 
 export default function ProductCard({
   id, slug, name, subtitle, description, price, originalPrice,
-  rating, reviewCount, imageUrl, badge, isBestSeller,
+  rating, reviewCount, imageUrl, badge, isBestSeller, onWishlistToggle,
 }: ProductCardProps) {
   const [wished, setWished] = useState(() => isInWishlist(id));
   const [isHovered, setIsHovered] = useState(false);
@@ -59,8 +60,12 @@ export default function ProductCard({
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                toggleWishlist(id);
-                setWished((w) => !w);
+                if (onWishlistToggle) {
+                  onWishlistToggle(id);
+                } else {
+                  toggleWishlist(id);
+                  setWished((w) => !w);
+                }
               }}
               className="flex items-center justify-center transition-colors"
               aria-label="Toggle wishlist"

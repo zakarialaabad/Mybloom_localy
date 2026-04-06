@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { ChevronDown, ChevronUp, Search, Grid, List, SlidersHorizontal, X } from 'lucide-react';
+import { ChevronDown, ChevronUp, Search, Grid, List, SlidersHorizontal, X, Check } from 'lucide-react';
 
 const SORT_OPTIONS = [
   { value: 'newest',      label: 'Relevance (Default)' },
@@ -551,31 +551,30 @@ export default function CollectionPage() {
                 <div ref={sortRef} className="relative">
                   <button
                     onClick={() => setShowSortMenu((v) => !v)}
-                    className="flex items-center gap-1 text-xs text-gray-500 font-serif italic hover:text-gray-900 transition-colors select-none"
+                    className="flex items-center gap-2 text-sm font-serif italic text-gray-500 hover:text-gray-900 transition-colors select-none"
                   >
                     <span>
-                      Sort by:{' '}
-                      <span className="text-gray-900 not-italic font-medium">
+                      Trier par :{' '}
+                      <span className="text-[#3d342f] font-bold not-italic">
                         {SORT_OPTIONS.find((o) => o.value === sortBy)?.label ?? 'Relevance (Default)'}
                       </span>
                     </span>
-                    <ChevronDown className={`h-3 w-3 transition-transform duration-150 ${showSortMenu ? 'rotate-180' : ''}`} />
+                    <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${showSortMenu ? 'rotate-180' : ''}`} />
                   </button>
 
                   {showSortMenu && (
-                    <div className="absolute right-0 top-full mt-2 z-50 w-52 bg-white border border-gray-200 rounded-sm shadow-lg overflow-hidden">
+                    <div className="absolute right-0 top-full mt-2 w-52 bg-white border border-gray-100 rounded-sm shadow-lg z-50 overflow-hidden">
                       {SORT_OPTIONS.map((opt) => (
                         <button
                           key={opt.value}
                           onClick={() => { setSortBy(opt.value); setShowSortMenu(false); }}
-                          className={`w-full text-left px-4 py-2.5 text-xs transition-colors ${
-                            sortBy === opt.value
-                              ? 'bg-[#fdf6e3] text-[#b8860b] font-medium'
-                              : 'text-gray-600 hover:bg-[#fdf6e3] hover:text-[#b8860b]'
-                          }`}
+                          className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-serif italic text-left transition-colors
+                            ${sortBy === opt.value
+                              ? 'bg-[#3d342f]/5 text-[#3d342f] font-semibold'
+                              : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'}`}
                         >
-                          {opt.value === sortBy && <span className="mr-1.5 text-[#b8860b]">✓</span>}
                           {opt.label}
+                          {sortBy === opt.value && <Check className="h-3.5 w-3.5 text-[#da2966] shrink-0" />}
                         </button>
                       ))}
                     </div>
