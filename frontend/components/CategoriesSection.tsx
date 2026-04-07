@@ -49,7 +49,7 @@ export default function CategoriesSection() {
   return (
     <section className="bg-white">
       {/* ── Why Shop with us ────────────────────────────────────────────────── */}
-      <div className="relative py-20 md:py-48 overflow-hidden">
+      <div className="relative py-20 md:py-48 overflow-hidden w-full">
         {/* Background - rotated on mobile */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           {/* Mobile version (Rotated) - Adjusted so it doesn't zoom in so much that it disappears */}
@@ -64,34 +64,22 @@ export default function CategoriesSection() {
           />
         </div>
         
-        <div className="relative z-10 w-full max-w-7xl mx-auto">
-          <SectionContainer>
+        <div className="relative z-10 w-full px-4 md:px-[69px]">
             <div className="flex flex-col items-start text-left mb-10 md:mb-20">
               {/* Flex container ensures perfect logo alignment with title text */}
               <div className="flex items-center gap-2 md:gap-3 flex-wrap">
                 <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#3a3a3a] font-serif">
-                  Why Shop with
+                  Why Shop with <span className="text-[#df4079] italic font-light ml-1" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>My Bloom</span>
                 </h2>
-                {/* Logo image: declared dimensions match max CSS height (44px md breakpoint) */}
-                <div className="h-9 md:h-11 w-auto flex items-center">
-                  <Image 
-                    src="/logo.png" 
-                    alt="MyBloom" 
-                    width={176} 
-                    height={44} 
-                    className="h-full w-auto object-contain"
-                    priority
-                  />
-                </div>
               </div>
             </div>
 
-          <div className="grid grid-cols-1 px-4 gap-8 md:gap-14 sm:grid-cols-2 lg:grid-cols-4 max-w-5xl mx-auto auto-rows-fr">
+          <div className="grid grid-cols-1 px-4 gap-8 md:gap-14 sm:grid-cols-2 lg:grid-cols-4 w-full auto-rows-fr">
             {/* 1. Authentic */}
             <div className="flex flex-col items-center h-full">
               <div className="mb-3 md:mb-6 flex h-14 w-14 md:h-20 md:w-20 items-center justify-center">
                 <Image 
-                  src="/100_icon.jpeg" 
+                  src="/100_icon.png" 
                   alt="Authentic icon" 
                   width={60} 
                   height={60} 
@@ -106,7 +94,7 @@ export default function CategoriesSection() {
             <div className="flex flex-col items-center h-full">
               <div className="mb-3 md:mb-6 flex h-14 w-14 md:h-20 md:w-20 items-center justify-center">
                 <Image 
-                  src="/Competitive_icon.jpeg" 
+                  src="/Competitive_icon.png" 
                   alt="Competitive icon" 
                   width={60} 
                   height={60} 
@@ -121,7 +109,7 @@ export default function CategoriesSection() {
             <div className="flex flex-col items-center h-full">
               <div className="mb-3 md:mb-6 flex h-14 w-14 md:h-20 md:w-20 items-center justify-center">
                 <Image 
-                  src="/Customer_icon.jpeg" 
+                  src="/Customer_icon.png" 
                   alt="Support icon" 
                   width={60} 
                   height={60} 
@@ -136,7 +124,7 @@ export default function CategoriesSection() {
             <div className="flex flex-col items-center h-full">
               <div className="mb-3 md:mb-6 flex h-14 w-14 md:h-20 md:w-20 items-center justify-center">
                 <Image 
-                  src="/Cash_Icon.jpeg" 
+                  src="/Cash_Icon.png" 
                   alt="COD icon" 
                   width={60} 
                   height={60} 
@@ -147,7 +135,6 @@ export default function CategoriesSection() {
               <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">Pay when you<br />receive.</p>
             </div>
           </div>
-        </SectionContainer>
         </div>
       </div>
 

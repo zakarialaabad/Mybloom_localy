@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import useSWR from 'swr';
 import { adminReviewService, AdminReviewStats } from '@/services/api';
 
 interface UseReviewStatsReturn {
@@ -12,20 +12,21 @@ interface UseReviewStatsReturn {
 }
 
 export const useReviewStats = (): UseReviewStatsReturn => {
-  const { data, isLoading, error, isError, refetch } = useQuery({
-    queryKey: ['reviewStats'],
-    queryFn: () => adminReviewService.stats(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-    retry: 1,
-    refetchOnWindowFocus: false,
-  });
+  const { data, error, isLoading, mutate } = useSWR(
+    ['reviewStats'],
+    () => adminReviewService.stats(),
+    {
+      dedupingInterval: 5 * 60 * 1000,
+      revalidateOnFocus: false,
+      errorRetryCount: 1,
+    }
+  );
 
   return {
     stats: data || null,
     isLoading,
     error: error as Error | null,
-    isError,
-    refetch: () => refetch(),
+    isError: !!error,
+    refetch: () => mutate(),
   };
 };

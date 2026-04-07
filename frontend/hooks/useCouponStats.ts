@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import useSWR from 'swr';
 import { adminCouponService, AdminCouponStats } from '@/services/api';
 
 interface UseCouponStatsReturn {
@@ -12,20 +12,21 @@ interface UseCouponStatsReturn {
 }
 
 export const useCouponStats = (): UseCouponStatsReturn => {
-  const { data, isLoading, error, isError, refetch } = useQuery({
-    queryKey: ['couponStats'],
-    queryFn: () => adminCouponService.stats(),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-    retry: 1,
-    refetchOnWindowFocus: false,
-  });
+  const { data, error, isLoading, mutate } = useSWR(
+    ['couponStats'],
+    () => adminCouponService.stats(),
+    {
+      dedupingInterval: 5 * 60 * 1000,
+      revalidateOnFocus: false,
+      errorRetryCount: 1,
+    }
+  );
 
   return {
     stats: data || null,
     isLoading,
     error: error as Error | null,
-    isError,
-    refetch: () => refetch(),
+    isError: !!error,
+    refetch: () => mutate(),
   };
 };

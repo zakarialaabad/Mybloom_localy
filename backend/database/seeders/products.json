@@ -1,0 +1,1852 @@
+{
+    "catalog": {
+        "brand": "My Bloom",
+        "total_products": 34,
+        "categories": [
+            "beurre",
+            "gommage",
+            "maquillage",
+            "parfum",
+            "hygiene corporelle"
+        ],
+        "products": [
+            {
+                "id": 1,
+                "name": "Summer in Bali",
+                "type_produit": "Body Butter",
+                "img_main": "/images/Summer in Bali Body Butter/summer-in-bali-body-butter-img_main.png",
+                "subtitle": "Plongez dans la chaleur d'une sérénité tropicale",
+                "description": "Ce beurre corporel 100% naturel, enrichi en huile de sésame et huile de pépins de raisin, offre un soin complet qui unifie le teint du corps et atténue les taches pigmentaires tout en hydratant la peau en profondeur.",
+                "price": 80,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "beurre",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 200,
+                        "price": 80,
+                        "final_price": 80,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Sésame",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Pépins de raisin",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, il est recommandé de l'utiliser quotidiennement pour obtenir une hydratation et une douceur optimales."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, ce beurre est exclusivement destiné au corps."
+                    },
+                    {
+                        "question": "Aide-t-il à unifier le teint ?",
+                        "answer": "Oui, sa formule contribue à réduire les taches pigmentaires et à unifier le teint du corps."
+                    },
+                    {
+                        "question": "Les ingrédients sont-ils naturels ?",
+                        "answer": "Oui, ce produit est fabriqué avec des ingrédients 100% naturels."
+                    }
+                ]
+            },
+            {
+                "id": 2,
+                "name": "Summer in Bali",
+                "type_produit": "Body Scrub",
+                "img_main": "/images/Summer in Bali Body Scrub/summer-in-bali-body-scrub-img_main.png",
+                "subtitle": "Une exfoliation luxueuse inspirée de Bali pour révéler une peau douce, éclatante et parfaitement unifiée",
+                "description": "Gommage corporel 100% naturel enrichi en huile de pépins de raisin et huile de sésame. Il élimine efficacement les cellules mortes, aide à unifier le teint et laisse la peau douce, lisse et lumineuse.",
+                "price": 80,
+                "original_price": null,
+                "stock": 10,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "gommage",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 200,
+                        "price": 80,
+                        "final_price": 80,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 10
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Pépins de raisin",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Sésame",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Il est recommandé de l'utiliser 2 à 3 fois par semaine pour un résultat optimal."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, ce gommage est destiné uniquement au corps."
+                    },
+                    {
+                        "question": "Convient-il à tous les types de peau ?",
+                        "answer": "Oui, sa formule naturelle convient à tous les types de peau."
+                    },
+                    {
+                        "question": "Peut-il être utilisé comme gel douche ?",
+                        "answer": "Oui, grâce à sa mousse légère, il peut être utilisé comme gommage ou gel douche."
+                    },
+                    {
+                        "question": "Les ingrédients sont-ils naturels ?",
+                        "answer": "Oui, le produit est fabriqué à partir d'ingrédients 100% naturels."
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "name": "A Lot of Love",
+                "type_produit": "Body Scrub",
+                "img_main": "/images/A lot of love Body Scrub/a-lot-of-love-body-scrub-img_main.png",
+                "subtitle": "L'élixir gommant qui révèle la douceur naturelle de votre peau",
+                "description": "Gommage corporel 100% naturel alliant la puissance purifiante de l'huile d'arbre à thé à la douceur nourrissante de l'huile de jojoba. Exfolie en douceur, traite la peau de poule et laisse la peau soyeuse et lumineuse.",
+                "price": 80,
+                "original_price": null,
+                "stock": 0,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "gommage",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 200,
+                        "price": 80,
+                        "final_price": 80,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 0
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Jojoba",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Arbre à thé",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on utiliser ce gommage quotidiennement ?",
+                        "answer": "Il est conseillé de l'utiliser 2 à 3 fois par semaine pour de meilleurs résultats sans irriter la peau."
+                    },
+                    {
+                        "question": "Ce gommage est-il adapté au visage ?",
+                        "answer": "Non, ce gommage est exclusivement formulé pour le corps."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser comme gel douche ?",
+                        "answer": "Oui, grâce à sa légère mousse, il peut s'utiliser aussi bien comme gommage que comme gel douche."
+                    },
+                    {
+                        "question": "Les ingrédients sont-ils naturels ?",
+                        "answer": "Oui, ce produit est fabriqué à partir d'ingrédients 100% naturels, sans additifs chimiques."
+                    }
+                ]
+            },
+            {
+                "id": 4,
+                "name": "A Lot of Love",
+                "type_produit": "Body Butter",
+                "img_main": "/images/A lot of Love -- Body Butter/a-lot-of-love-body-butter-img_main.png",
+                "subtitle": "Enveloppez votre peau d'un charme fruité irrésistible",
+                "description": "Beurre corporel 100% naturel enrichi en huile d'arbre à thé et huile de jojoba. Spécialement formulé pour traiter la peau de poulet (keratosis pilaris), il lisse et adoucit l'épiderme tout en restaurant sa texture soyeuse.",
+                "price": 80,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "beurre",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 200,
+                        "price": 80,
+                        "final_price": 80,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Arbre à thé",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Jojoba",
+                        "image_url": null
+                    },
+                    {
+                        "id": 3,
+                        "name": "Cacao",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, il est recommandé de l'utiliser quotidiennement pour obtenir une hydratation et une douceur optimales."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, ce beurre est exclusivement destiné au corps."
+                    },
+                    {
+                        "question": "Aide-t-il à traiter la peau de poulet ?",
+                        "answer": "Oui, sa formule améliore la texture de la peau et contribue à traiter la kératose pilaire (peau de poulet)."
+                    },
+                    {
+                        "question": "Les ingrédients sont-ils naturels ?",
+                        "answer": "Oui, ce produit est fabriqué avec des ingrédients 100% naturels."
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "name": "Sugar Pop",
+                "type_produit": "Body Scrub",
+                "img_main": "/images/Sugar Pop Body Scrub/sugar-pop-body-scrub-img_main.png",
+                "subtitle": "La douceur sucrée qui transforme votre peau dès la première utilisation",
+                "description": "Gommage corporel 100% naturel alliant l'huile d'amande douce et l'huile de noix de coco. Exfolie délicatement tout en traitant les boutons du corps. Utilisable aussi comme gel douche.",
+                "price": 80,
+                "original_price": null,
+                "stock": 0,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "gommage",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 200,
+                        "price": 80,
+                        "final_price": 80,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 0
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Amande",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on utiliser ce gommage quotidiennement ?",
+                        "answer": "Il est conseillé de l'utiliser 2 à 3 fois par semaine pour de meilleurs résultats sans irriter la peau."
+                    },
+                    {
+                        "question": "Ce gommage est-il adapté au visage ?",
+                        "answer": "Non, ce gommage est exclusivement formulé pour le corps."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser comme gel douche ?",
+                        "answer": "Oui, grâce à sa légère mousse, il peut s'utiliser aussi bien comme gommage que comme gel douche."
+                    },
+                    {
+                        "question": "Les ingrédients sont-ils naturels ?",
+                        "answer": "Oui, ce produit est fabriqué à partir d'ingrédients 100% naturels, sans additifs chimiques."
+                    }
+                ]
+            },
+            {
+                "id": 6,
+                "name": "Sugar Pop",
+                "type_produit": "Body Butter",
+                "img_main": "/images/Sugar Pop -- Body Butter/sugar-pop-body-butter-img_main.png",
+                "subtitle": "Douceur sucrée et peau de soie dès la première application",
+                "description": "Beurre corporel 100% naturel enrichi en huile d'amande douce, huile de coco, beurre de karité, beurre de cacao et vitamine E. Traite les imperfections cutanées tout en hydratant la peau en profondeur.",
+                "price": 80,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "beurre",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 200,
+                        "price": 80,
+                        "final_price": 80,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Amande",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    },
+                    {
+                        "id": 3,
+                        "name": "Karité",
+                        "image_url": null
+                    },
+                    {
+                        "id": 4,
+                        "name": "Cacao",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, il est recommandé de l'utiliser quotidiennement pour obtenir une hydratation et une douceur optimales."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, ce beurre est exclusivement destiné au corps."
+                    },
+                    {
+                        "question": "Laisse-t-il un parfum sur la peau ?",
+                        "answer": "Oui, sa formule vous enveloppe d'un parfum gourmand qui perdure longtemps."
+                    },
+                    {
+                        "question": "Les ingrédients sont-ils naturels ?",
+                        "answer": "Oui, ce produit est fabriqué avec des ingrédients 100% naturels."
+                    }
+                ]
+            },
+            {
+                "id": 7,
+                "name": "Cherry Tint",
+                "type_produit": "Tint Visage",
+                "img_main": "/images/Cherry Tint/cherry-tint-img_main.png",
+                "subtitle": "L'éclat naturel à portée de main",
+                "description": "Tint naturel aux reflets cerise enrichi en eau de rose distillée et aloe vera. Sublime joues et lèvres d'une teinte fraîche et naturelle avec une hydratation délicate qui perdure toute la journée.",
+                "price": 50,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "maquillage",
+                "type": "visage",
+                "variants": [
+                    {
+                        "size": 15,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Aloe vera",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Eau de rose distillée",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+                    },
+                    {
+                        "question": "Convient-il à tous les types de peau ?",
+                        "answer": "Oui, sa formule légère convient à tous les types de peau."
+                    },
+                    {
+                        "question": "Hydrate-t-il les lèvres ?",
+                        "answer": "Oui, grâce à l'aloe vera, il aide à hydrater les lèvres en profondeur."
+                    },
+                    {
+                        "question": "Comment l'appliquer ?",
+                        "answer": "Appliquez une petite quantité sur les joues ou les lèvres et estompez délicatement pour obtenir une couleur naturelle."
+                    }
+                ]
+            },
+            {
+                "id": 8,
+                "name": "Sexy Bloom Hair Mist",
+                "type_produit": "Hair Mist",
+                "img_main": "/images/Sexy Bloom Hair Mist/sexy-bloom-hair-mist-img_main.png",
+                "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
+                "description": "Brume capillaire délicate enrichie en eau de rose distillée et vitamine E. Enveloppe vos cheveux d'un parfum féminin captivant qui persiste toute la journée sans alourdir la chevelure.",
+                "price": 50,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "cheveux",
+                "variants": [
+                    {
+                        "size": 30,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Eau de rose distillée",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+                    },
+                    {
+                        "question": "Convient-il à tous les types de cheveux ?",
+                        "answer": "Oui, sa formule convient à tous les types de cheveux."
+                    },
+                    {
+                        "question": "Laisse-t-il les cheveux lourds ou gras ?",
+                        "answer": "Non, sa formule légère n'alourdit pas les cheveux et ne laisse aucun effet gras."
+                    },
+                    {
+                        "question": "Comment l'appliquer ?",
+                        "answer": "Vaporisez légèrement sur les cheveux à distance pour obtenir un parfum frais et durable."
+                    }
+                ]
+            },
+            {
+                "id": 9,
+                "name": "The Secret Hair Mist",
+                "type_produit": "Hair Mist",
+                "img_main": "/images/Thes sucret Hair Mist/the-secret-hair-mist-img_main.png",
+                "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
+                "description": "Brume capillaire délicate enrichie en eau de rose distillée et vitamine E. Enveloppe vos cheveux d'un parfum féminin captivant qui persiste toute la journée sans alourdir la chevelure.",
+                "price": 50,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "cheveux",
+                "variants": [
+                    {
+                        "size": 30,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Eau de rose distillée",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+                    },
+                    {
+                        "question": "Convient-il à tous les types de cheveux ?",
+                        "answer": "Oui, sa formule convient à tous les types de cheveux."
+                    },
+                    {
+                        "question": "Laisse-t-il les cheveux lourds ou gras ?",
+                        "answer": "Non, sa formule légère n'alourdit pas les cheveux et ne laisse aucun effet gras."
+                    },
+                    {
+                        "question": "Comment l'appliquer ?",
+                        "answer": "Vaporisez légèrement sur les cheveux à distance pour obtenir un parfum frais et durable."
+                    }
+                ]
+            },
+            {
+                "id": 10,
+                "name": "Paradis Adress Hair Mist",
+                "type_produit": "Hair Mist",
+                "img_main": "/images/Paradis Adresse Hair Mist/paradis-adress-hair-mist-img_main.png",
+                "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
+                "description": "Brume capillaire délicate enrichie en eau de rose distillée et vitamine E. Enveloppe vos cheveux d'un parfum féminin captivant qui persiste toute la journée sans alourdir la chevelure.",
+                "price": 50,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "cheveux",
+                "variants": [
+                    {
+                        "size": 30,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Eau de rose distillée",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+                    },
+                    {
+                        "question": "Convient-il à tous les types de cheveux ?",
+                        "answer": "Oui, sa formule convient à tous les types de cheveux."
+                    },
+                    {
+                        "question": "Laisse-t-il les cheveux lourds ou gras ?",
+                        "answer": "Non, sa formule légère n'alourdit pas les cheveux et ne laisse aucun effet gras."
+                    },
+                    {
+                        "question": "Comment l'appliquer ?",
+                        "answer": "Vaporisez légèrement sur les cheveux à distance pour obtenir un parfum frais et durable."
+                    }
+                ]
+            },
+            {
+                "id": 11,
+                "name": "Heartbeat Body Mist",
+                "type_produit": "Body Mist",
+                "img_main": "/images/Heartbeat Body Mist/heart-rate-body-mist-img_main.png",
+                "subtitle": "Chaque battement raconte une histoire d'amour",
+                "description": "Brume corporelle envoûtante enrichie en eau de rose distillée. Enveloppe la peau d'un parfum frais et captivant avec un voile subtil de reflets scintillants.",
+                "price": 75,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 75,
+                        "final_price": 75,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Eau de rose distillée",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+                    },
+                    {
+                        "question": "Convient-il à tous les types de peau ?",
+                        "answer": "Oui, sa formule convient à tous les types de peau."
+                    },
+                    {
+                        "question": "Laisse-t-il un effet brillant visible sur le corps ?",
+                        "answer": "Il offre un effet scintillant subtil qui apporte une touche lumineuse délicate et élégante."
+                    },
+                    {
+                        "question": "Comment l'appliquer ?",
+                        "answer": "Vaporisez directement sur le corps pour obtenir un parfum frais et une touche lumineuse subtile."
+                    }
+                ]
+            },
+            {
+                "id": 12,
+                "name": "Over Dose Body Mist",
+                "type_produit": "Body Mist",
+                "img_main": "/images/Over Dose Body Mist/over-dose-body-mist-img_main.png",
+                "subtitle": "Chaque battement raconte une histoire d'amour",
+                "description": "Brume corporelle envoûtante enrichie en eau de rose distillée. Enveloppe la peau d'un parfum frais et captivant avec un voile subtil de reflets scintillants.",
+                "price": 75,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 75,
+                        "final_price": 75,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Eau de rose distillée",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+                    },
+                    {
+                        "question": "Convient-il à tous les types de peau ?",
+                        "answer": "Oui, sa formule convient à tous les types de peau."
+                    },
+                    {
+                        "question": "Laisse-t-il un effet brillant visible sur le corps ?",
+                        "answer": "Il offre un effet scintillant subtil qui apporte une touche lumineuse délicate et élégante."
+                    },
+                    {
+                        "question": "Comment l'appliquer ?",
+                        "answer": "Vaporisez directement sur le corps pour obtenir un parfum frais et une touche lumineuse subtile."
+                    }
+                ]
+            },
+            {
+                "id": 13,
+                "name": "Remember Body Mist",
+                "type_produit": "Body Mist",
+                "img_main": "/images/Remember Body Mist/remember-body-mist-img_main.png",
+                "subtitle": "Chaque battement raconte une histoire d'amour",
+                "description": "Brume corporelle envoûtante enrichie en eau de rose distillée. Enveloppe la peau d'un parfum frais et captivant avec un voile subtil de reflets scintillants.",
+                "price": 75,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 75,
+                        "final_price": 75,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Eau de rose distillée",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+                    },
+                    {
+                        "question": "Convient-il à tous les types de peau ?",
+                        "answer": "Oui, sa formule convient à tous les types de peau."
+                    },
+                    {
+                        "question": "Laisse-t-il un effet brillant visible sur le corps ?",
+                        "answer": "Il offre un effet scintillant subtil qui apporte une touche lumineuse délicate et élégante."
+                    },
+                    {
+                        "question": "Comment l'appliquer ?",
+                        "answer": "Vaporisez directement sur le corps pour obtenir un parfum frais et une touche lumineuse subtile."
+                    }
+                ]
+            },
+            {
+                "id": 14,
+                "name": "Deo Roll-On Femme",
+                "type_produit": "Déodorant",
+                "img_main": "/images/Deo Roll Femme/deo-roll-on-femme-img_main.png",
+                "subtitle": "Fraîcheur naturelle et douceur au quotidien",
+                "description": "Déodorant roll-on naturel enrichi en gel d'aloe vera et oliban. Protection 48h sans sels d'aluminium, sans sulfates et sans alcool. Unifie progressivement le teint des aisselles.",
+                "price": 50,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "female",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "hygiene corporelle",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 60,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Aloe vera",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Oliban",
+                        "image_url": null
+                    },
+                    {
+                        "id": 3,
+                        "name": "Eau de rose distillée",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Convient-il à tous les types de peau ?",
+                        "answer": "Oui, sa formule douce convient à tous les types de peau, même les plus sensibles."
+                    },
+                    {
+                        "question": "Contient-il des substances nocives ?",
+                        "answer": "Non, sa formule naturelle est exempte de sels d'aluminium, sulfates, alcool et autres substances agressives pour la peau."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, vous pouvez l'utiliser quotidiennement pour maintenir une fraîcheur optimale."
+                    },
+                    {
+                        "question": "Hydrate-t-il la peau ?",
+                        "answer": "Oui, grâce à l'aloe vera, il hydrate délicatement la zone des aisselles."
+                    }
+                ]
+            },
+            {
+                "id": 15,
+                "name": "Deo Roll-On Homme",
+                "type_produit": "Déodorant",
+                "img_main": "/images/Deo Roll Homme/deo-roll-on-homme-img_main.png",
+                "subtitle": "Protection efficace et fraîcheur masculine toute la journée",
+                "description": "Déodorant roll-on naturel pour homme, enrichi en gel d'aloe vera et oliban. Protection 48h sans sels d'aluminium, sans sulfates et sans alcool.",
+                "price": 50,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "male",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "hygiene corporelle",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 60,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Aloe vera",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Oliban",
+                        "image_url": null
+                    },
+                    {
+                        "id": 3,
+                        "name": "Eau de rose distillée",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Convient-il à tous les types de peau ?",
+                        "answer": "Oui, sa formule douce convient à tous les types de peau, même les plus sensibles."
+                    },
+                    {
+                        "question": "Contient-il des substances nocives ?",
+                        "answer": "Non, sa formule naturelle est exempte de sels d'aluminium, sulfates, alcool et autres substances agressives pour la peau."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser quotidiennement ?",
+                        "answer": "Oui, vous pouvez l'utiliser quotidiennement pour maintenir une fraîcheur optimale."
+                    },
+                    {
+                        "question": "Hydrate-t-il la peau ?",
+                        "answer": "Oui, grâce à l'aloe vera, il hydrate la zone des aisselles tout en assurant une protection efficace."
+                    }
+                ]
+            },
+            {
+                "id": 16,
+                "name": "La Luna Crème Parfumée",
+                "type_produit": "Crème Parfumée",
+                "img_main": "/images/La Luna Crème Parfumée/la-luna-creme-parfumee-img_main.png",
+                "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+                "description": "Crème parfumée luxueuse enrichie en huile de coco et huile d'amande douce. Enveloppe corps et cheveux d'un parfum féminin captivant avec une texture onctueuse sans film gras.",
+                "price": 60,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 50,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Amande",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser sur les cheveux ?",
+                        "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le corps ?",
+                        "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+                    },
+                    {
+                        "question": "Alourdit-elle les cheveux ?",
+                        "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+                    }
+                ]
+            },
+            {
+                "id": 17,
+                "name": "Imperial Valley Crème Parfumée",
+                "type_produit": "Crème Parfumée",
+                "img_main": "/images/Imperial Valley Crème Parfumée/imperial-valley-creme-parfumee-img_main.png",
+                "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+                "description": "Crème parfumée luxueuse enrichie en huile de coco et huile d'amande douce. Enveloppe corps et cheveux d'un parfum féminin captivant avec une texture onctueuse sans film gras.",
+                "price": 60,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 50,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Amande",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser sur les cheveux ?",
+                        "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le corps ?",
+                        "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+                    },
+                    {
+                        "question": "Alourdit-elle les cheveux ?",
+                        "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+                    }
+                ]
+            },
+            {
+                "id": 18,
+                "name": "Bombshel Passion Crème Parfumée",
+                "type_produit": "Crème Parfumée",
+                "img_main": "/images/Bombshel Passion Crème Parfumée/bombshel-passion-creme-parfumee-img_main.png",
+                "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+                "description": "Crème parfumée luxueuse enrichie en huile de coco et huile d'amande douce. Enveloppe corps et cheveux d'un parfum féminin captivant avec une texture onctueuse sans film gras.",
+                "price": 60,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 50,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Amande",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser sur les cheveux ?",
+                        "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le corps ?",
+                        "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+                    },
+                    {
+                        "question": "Alourdit-elle les cheveux ?",
+                        "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+                    }
+                ]
+            },
+            {
+                "id": 19,
+                "name": "Eros Crème Parfumée",
+                "type_produit": "Crème Parfumée",
+                "img_main": "/images/Eros Crème Parfumée/eros-creme-parfumee-img_main.png",
+                "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+                "description": "Crème parfumée luxueuse enrichie en huile de coco et huile d'amande douce. Enveloppe corps et cheveux d'un parfum féminin captivant avec une texture onctueuse sans film gras.",
+                "price": 60,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 50,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Amande",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser sur les cheveux ?",
+                        "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le corps ?",
+                        "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+                    },
+                    {
+                        "question": "Alourdit-elle les cheveux ?",
+                        "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+                    }
+                ]
+            },
+            {
+                "id": 20,
+                "name": "One And Only Crème Parfumée",
+                "type_produit": "Crème Parfumée",
+                "img_main": "/images/One And Only Crème Parfumée/one-and-only-creme-parfumee-img_main.png",
+                "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+                "description": "Crème parfumée luxueuse enrichie en huile de coco et huile d'amande douce. Enveloppe corps et cheveux d'un parfum féminin captivant avec une texture onctueuse sans film gras.",
+                "price": 60,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 50,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Amande",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser sur les cheveux ?",
+                        "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le corps ?",
+                        "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+                    },
+                    {
+                        "question": "Alourdit-elle les cheveux ?",
+                        "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+                    }
+                ]
+            },
+            {
+                "id": 21,
+                "name": "Nina Ricci Crème Parfumée",
+                "type_produit": "Crème Parfumée",
+                "img_main": "/images/Nina Ricci Crème Parfumée/nina-ricci-creme-parfumee-img_main.png",
+                "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+                "description": "Crème parfumée luxueuse enrichie en huile de coco et huile d'amande douce. Enveloppe corps et cheveux d'un parfum féminin captivant avec une texture onctueuse sans film gras.",
+                "price": 60,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 50,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Amande",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser sur les cheveux ?",
+                        "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le corps ?",
+                        "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+                    },
+                    {
+                        "question": "Alourdit-elle les cheveux ?",
+                        "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+                    }
+                ]
+            },
+            {
+                "id": 22,
+                "name": "Hudson Valley Crème Parfumée",
+                "type_produit": "Crème Parfumée",
+                "img_main": "/images/Hudson Valley Crème Parfumée/hudson-valley-creme-parfumee-img_main.png",
+                "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+                "description": "Crème parfumée luxueuse enrichie en huile de coco et huile d'amande douce. Enveloppe corps et cheveux d'un parfum féminin captivant avec une texture onctueuse sans film gras.",
+                "price": 60,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 50,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Amande",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser sur les cheveux ?",
+                        "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le corps ?",
+                        "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+                    },
+                    {
+                        "question": "Alourdit-elle les cheveux ?",
+                        "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+                    }
+                ]
+            },
+            {
+                "id": 23,
+                "name": "Idol Crème Parfumée",
+                "type_produit": "Crème Parfumée",
+                "img_main": "/images/Idol Crème Parfumée/idol-creme-parfumee-img_main.png",
+                "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+                "description": "Crème parfumée luxueuse enrichie en huile de coco et huile d'amande douce. Enveloppe corps et cheveux d'un parfum féminin captivant avec une texture onctueuse sans film gras.",
+                "price": 60,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 50,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Amande",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on l'utiliser sur les cheveux ?",
+                        "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le corps ?",
+                        "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+                    },
+                    {
+                        "question": "Peut-on l'utiliser sur le visage ?",
+                        "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+                    },
+                    {
+                        "question": "Alourdit-elle les cheveux ?",
+                        "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+                    }
+                ]
+            },
+            {
+                "id": 24,
+                "name": "Fruité des Bois Diffuseur",
+                "type_produit": "Diffuseur",
+                "img_main": "/images/Fruité des Bois Diffuseur/fruite-des-bois-diffuseur-img_main.png",
+                "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
+                "description": "Diffuseur d'ambiance aux notes fruitées délicates qui transforme votre intérieur en havre de bien-être olfactif. Libère progressivement un parfum frais et élégant pendant des heures.",
+                "price": 70,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "maison",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 70,
+                        "final_price": 70,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Vanille",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Où peut-on l'utiliser ?",
+                        "answer": "Il peut être utilisé dans les chambres, le salon, le bureau ou n'importe quelle pièce de la maison."
+                    },
+                    {
+                        "question": "Combien de temps dure le parfum ?",
+                        "answer": "Le parfum perdure pendant plusieurs heures et se diffuse progressivement dans l'espace."
+                    },
+                    {
+                        "question": "Comment l'utiliser ?",
+                        "answer": "Placez-le simplement à l'endroit souhaité et laissez le parfum se diffuser naturellement dans l'atmosphère."
+                    }
+                ]
+            },
+            {
+                "id": 25,
+                "name": "Mange Péche Diffuseur",
+                "type_produit": "Diffuseur",
+                "img_main": "/images/Mange Péche Diffuseur/mange-peche-diffuseur-img_main.png",
+                "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
+                "description": "Diffuseur d'ambiance aux notes fruitées délicates qui transforme votre intérieur en havre de bien-être olfactif. Libère progressivement un parfum frais et élégant pendant des heures.",
+                "price": 70,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "maison",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 70,
+                        "final_price": 70,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Vanille",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Où peut-on l'utiliser ?",
+                        "answer": "Il peut être utilisé dans les chambres, le salon, le bureau ou n'importe quelle pièce de la maison."
+                    },
+                    {
+                        "question": "Combien de temps dure le parfum ?",
+                        "answer": "Le parfum perdure pendant plusieurs heures et se diffuse progressivement dans l'espace."
+                    },
+                    {
+                        "question": "Comment l'utiliser ?",
+                        "answer": "Placez-le simplement à l'endroit souhaité et laissez le parfum se diffuser naturellement dans l'atmosphère."
+                    }
+                ]
+            },
+            {
+                "id": 26,
+                "name": "Coco Diffuseur",
+                "type_produit": "Diffuseur",
+                "img_main": "/images/Coco Diffuseur/coco-diffuseur-img_main.png",
+                "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
+                "description": "Diffuseur d'ambiance aux notes fruitées délicates qui transforme votre intérieur en havre de bien-être olfactif. Libère progressivement un parfum frais et élégant pendant des heures.",
+                "price": 70,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "maison",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 70,
+                        "final_price": 70,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Vanille",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Où peut-on l'utiliser ?",
+                        "answer": "Il peut être utilisé dans les chambres, le salon, le bureau ou n'importe quelle pièce de la maison."
+                    },
+                    {
+                        "question": "Combien de temps dure le parfum ?",
+                        "answer": "Le parfum perdure pendant plusieurs heures et se diffuse progressivement dans l'espace."
+                    },
+                    {
+                        "question": "Comment l'utiliser ?",
+                        "answer": "Placez-le simplement à l'endroit souhaité et laissez le parfum se diffuser naturellement dans l'atmosphère."
+                    }
+                ]
+            },
+            {
+                "id": 27,
+                "name": "My Bloom Spray d'Intérieur Tropical",
+                "type_produit": "Spray d'Intérieur",
+                "img_main": "/images/My Bloom Spray d'Intérieur Tropical/my-bloom-spray-d-intérieur-tropical-img_main.png",
+                "subtitle": "L'évasion tropicale en un simple geste",
+                "description": "Spray d'ambiance polyvalent à parfum tropical rafraîchissant et persistant. Utilisable sur les intérieurs, textiles, vêtements, bureau et voiture.",
+                "price": 60,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "maison",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Vanille",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Où peut-on l'utiliser ?",
+                        "answer": "Il peut être utilisé à la maison, sur les vêtements, les tissus d'ameublement, au bureau ou dans la voiture."
+                    },
+                    {
+                        "question": "Peut-on le vaporiser directement sur les textiles ?",
+                        "answer": "Oui, vous pouvez le vaporiser sur les textiles pour leur donner un parfum frais et agréable."
+                    },
+                    {
+                        "question": "Combien de temps dure le parfum ?",
+                        "answer": "Le parfum persiste pendant plusieurs heures en laissant une sensation de fraîcheur durable."
+                    },
+                    {
+                        "question": "Comment l'utiliser ?",
+                        "answer": "Vaporisez dans l'espace souhaité ou sur les textiles pour obtenir un parfum frais et agréable."
+                    }
+                ]
+            },
+            {
+                "id": 28,
+                "name": "My Bloom Spray d'Intérieur Caramel",
+                "type_produit": "Spray d'Intérieur",
+                "img_main": "/images/My Bloom Spray d'Intérieur Caramel/my-bloom-spray-d-intérieur-caramel-img_main.png",
+                "subtitle": "L'évasion tropicale en un simple geste",
+                "description": "Spray d'ambiance polyvalent à parfum caramel rafraîchissant et persistant. Utilisable sur les intérieurs, textiles, vêtements, bureau et voiture.",
+                "price": 60,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "maison",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Vanille",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Où peut-on l'utiliser ?",
+                        "answer": "Il peut être utilisé à la maison, sur les vêtements, les tissus d'ameublement, au bureau ou dans la voiture."
+                    },
+                    {
+                        "question": "Peut-on le vaporiser directement sur les textiles ?",
+                        "answer": "Oui, vous pouvez le vaporiser sur les textiles pour leur donner un parfum frais et agréable."
+                    },
+                    {
+                        "question": "Combien de temps dure le parfum ?",
+                        "answer": "Le parfum persiste pendant plusieurs heures en laissant une sensation de fraîcheur durable."
+                    },
+                    {
+                        "question": "Comment l'utiliser ?",
+                        "answer": "Vaporisez dans l'espace souhaité ou sur les textiles pour obtenir un parfum frais et agréable."
+                    }
+                ]
+            },
+            {
+                "id": 29,
+                "name": "My Bloom Spray d'Intérieur Oud",
+                "type_produit": "Spray d'Intérieur",
+                "img_main": "/images/My Bloom Spray d'Intérieur Oud/my-bloom-spray-d-intérieur-oud-img_main.png",
+                "subtitle": "L'évasion tropicale en un simple geste",
+                "description": "Spray d'ambiance polyvalent à parfum oud rafraîchissant et persistant. Utilisable sur les intérieurs, textiles, vêtements, bureau et voiture.",
+                "price": 60,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "maison",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Vanille",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Où peut-on l'utiliser ?",
+                        "answer": "Il peut être utilisé à la maison, sur les vêtements, les tissus d'ameublement, au bureau ou dans la voiture."
+                    },
+                    {
+                        "question": "Peut-on le vaporiser directement sur les textiles ?",
+                        "answer": "Oui, vous pouvez le vaporiser sur les textiles pour leur donner un parfum frais et agréable."
+                    },
+                    {
+                        "question": "Combien de temps dure le parfum ?",
+                        "answer": "Le parfum persiste pendant plusieurs heures en laissant une sensation de fraîcheur durable."
+                    },
+                    {
+                        "question": "Comment l'utiliser ?",
+                        "answer": "Vaporisez dans l'espace souhaité ou sur les textiles pour obtenir un parfum frais et agréable."
+                    }
+                ]
+            },
+            {
+                "id": 30,
+                "name": "Coffret Cadeau Bloom d'Amour",
+                "type_produit": "Coffret Cadeau",
+                "img_main": "/images/Coffret Cadeau Bloom d'Amour/coffret-cadeau-bloom-d-amour-img_main.png",
+                "subtitle": "L'expérience sensorielle complète pour rayonner de féminité",
+                "description": "Coffret parfumé d'exception réunissant une collection de soins corporels harmonisés autour d'une même fragrance féminine envoûtante. Présenté dans une pochette cadeau élégante.",
+                "price": 250,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": true,
+                "is_recommended": true,
+                "gender": "female",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 300,
+                        "price": 250,
+                        "final_price": 250,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Amande",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    },
+                    {
+                        "id": 3,
+                        "name": "Eau de rose distillée",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Tous les produits du coffret ont-ils le même parfum ?",
+                        "answer": "Oui, tous les produits du coffret partagent la même fragrance féminine distinctive pour une expérience olfactive harmonieuse."
+                    },
+                    {
+                        "question": "Peut-on utiliser ces produits quotidiennement ?",
+                        "answer": "Oui, vous pouvez les utiliser quotidiennement pour profiter d'un parfum frais et durable."
+                    },
+                    {
+                        "question": "Les produits laissent-ils un effet brillant sur le corps ?",
+                        "answer": "Oui, ils contiennent une touche de brillance subtile qui apporte un éclat lumineux délicat à la peau."
+                    },
+                    {
+                        "question": "Ce coffret convient-il comme cadeau ?",
+                        "answer": "Oui, il est présenté avec une pochette cadeau élégante, ce qui en fait un présent idéal pour toutes les occasions."
+                    }
+                ]
+            },
+            {
+                "id": 31,
+                "name": "قطرة دلع",
+                "type_produit": "Huile Parfumée",
+                "img_main": "/images/قطرة-دلع/قطرة دلعimg_main.png",
+                "subtitle": "L'élixir parfumé qui enveloppe votre peau d'une douceur irrésistible",
+                "description": "Huile parfumée 100% naturelle à base d'huile de noix de coco et d'huile d'amande douce. Hydratation intense et sillage envoûtant qui dure toute la journée.",
+                "price": 50,
+                "original_price": null,
+                "stock": 100,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "unisex",
+                "badges": [
+                    "100% Naturel"
+                ],
+                "category": "parfum",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 30,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 100
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Noix de coco",
+                        "image_url": null
+                    },
+                    {
+                        "id": 2,
+                        "name": "Amande",
+                        "image_url": null
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Peut-on utiliser cette huile au quotidien ?",
+                        "answer": "Oui, cette huile parfumée peut être utilisée chaque jour pour hydrater le corps et maintenir un sillage agréable tout au long de la journée."
+                    },
+                    {
+                        "question": "Cette huile est-elle adaptée au visage ?",
+                        "answer": "Non, cette huile est exclusivement formulée pour le corps. Elle n'est pas recommandée pour une application sur le visage."
+                    },
+                    {
+                        "question": "Laisse-t-elle un vrai parfum sur la peau ?",
+                        "answer": "Oui, sa formule unique dépose un parfum envoûtant et persistant qui accompagne votre peau tout au long de la journée."
+                    },
+                    {
+                        "question": "Les ingrédients sont-ils naturels ?",
+                        "answer": "Absolument. Qatrat Dalaa est composée d'ingrédients 100% naturels, sans additifs artificiels, pour prendre soin de votre peau en toute sérénité."
+                    }
+                ]
+            }
+        ]
+    }
+}

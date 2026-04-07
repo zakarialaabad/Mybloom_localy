@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import useSWR from 'swr';
 import { adminReviewService, AdminReview, AdminProductMeta } from '@/services/api';
 
 interface UseReviewListOptions {
@@ -22,23 +22,23 @@ interface UseReviewListReturn {
 }
 
 export const useReviewList = (options?: UseReviewListOptions): UseReviewListReturn => {
-  const queryKey = ['reviews', options];
-
-  const { data, isLoading, error, isError, refetch } = useQuery({
-    queryKey,
-    queryFn: () => adminReviewService.list(options),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-    retry: 1,
-    refetchOnWindowFocus: false,
-  });
+  const key = ['reviews', options];
+  const { data, error, isLoading, mutate } = useSWR(
+    key,
+    () => adminReviewService.list(options),
+    {
+      dedupingInterval: 5 * 60 * 1000,
+      revalidateOnFocus: false,
+      errorRetryCount: 1,
+    }
+  );
 
   return {
     reviews: data?.data || [],
     meta: data?.meta,
     isLoading,
     error: error as Error | null,
-    isError,
-    refetch: () => refetch(),
+    isError: !!error,
+    refetch: () => mutate(),
   };
 };

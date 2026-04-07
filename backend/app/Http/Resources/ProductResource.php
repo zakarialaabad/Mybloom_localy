@@ -7,6 +7,30 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductResource extends JsonResource
 {
+    /**
+     * Normalise any image URL to an absolute URL using the current APP_URL.
+     * Handles three cases:
+     *  - https://... (CDN / Unsplash) — returned as-is
+     *  - http://...  (possibly old IP/host) — host replaced with APP_URL
+     *  - /storage/...  (relative path) — prefixed with APP_URL
+     */
+    private function resolveUrl(?string $url): ?string
+    {
+        if (!$url) return null;
+        if (str_starts_with($url, 'https://')) return $url;
+        if (str_starts_with($url, 'http://')) {
+            $path = parse_url($url, PHP_URL_PATH) ?? '';
+            return rtrim(config('app.url'), '/') . $path;
+        }
+        // Only prefix Laravel storage paths with the backend URL.
+        // Frontend public assets (/images/, /ingredients/, etc.) stay relative
+        // so Next.js serves them directly from its own public folder.
+        if (str_starts_with($url, '/storage/')) {
+            return rtrim(config('app.url'), '/') . $url;
+        }
+        return $url;
+    }
+
     public function toArray(Request $request): array
     {
         return [
@@ -43,10 +67,10 @@ class ProductResource extends JsonResource
                 'name' => $this->productType->name,
                 'slug' => $this->productType->slug,
             ] : null),
-            // Returns the URL string directly — frontend expects primary_image as string
+            // Properly resolve image URL — handles storage paths, CDN URLs, and old hosts
             'primary_image'  => $this->whenLoaded('images', function () {
                 $primary = $this->images->firstWhere('is_primary', true) ?? $this->images->first();
-                return $primary?->url;
+                return $this->resolveUrl($primary?->url);
             }),
             'variants'       => $this->whenLoaded('variants', fn () =>
                 $this->variants->map(function ($v) {

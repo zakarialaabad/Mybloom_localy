@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@tanstack/react-query';
+import useSWR from 'swr';
 import { adminOrderService, AdminOrder, AdminOrderMeta } from '@/services/api';
 
 interface UseOrderListOptions {
@@ -22,23 +22,23 @@ interface UseOrderListReturn {
 }
 
 export const useOrderList = (options?: UseOrderListOptions): UseOrderListReturn => {
-  const queryKey = ['orders', options];
-
-  const { data, isLoading, error, isError, refetch } = useQuery({
-    queryKey,
-    queryFn: () => adminOrderService.list(options),
-    staleTime: 5 * 60 * 1000, // 5 minutes
-    gcTime: 10 * 60 * 1000, // 10 minutes
-    retry: 1,
-    refetchOnWindowFocus: false,
-  });
+  const key = ['orders', options];
+  const { data, error, isLoading, mutate } = useSWR(
+    key,
+    () => adminOrderService.list(options),
+    {
+      dedupingInterval: 5 * 60 * 1000,
+      revalidateOnFocus: false,
+      errorRetryCount: 1,
+    }
+  );
 
   return {
     orders: data?.data || [],
     meta: data?.meta,
     isLoading,
     error: error as Error | null,
-    isError,
-    refetch: () => refetch(),
+    isError: !!error,
+    refetch: () => mutate(),
   };
 };

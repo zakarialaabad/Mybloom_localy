@@ -22,7 +22,13 @@ class ProductDetailResource extends JsonResource
             $path = parse_url($url, PHP_URL_PATH) ?? '';
             return rtrim(config('app.url'), '/') . $path;
         }
-        return rtrim(config('app.url'), '/') . $url;
+        // Only prefix Laravel storage paths with the backend URL.
+        // Frontend public assets (/images/, /ingredients/, etc.) stay relative
+        // so Next.js serves them directly from its own public folder.
+        if (str_starts_with($url, '/storage/')) {
+            return rtrim(config('app.url'), '/') . $url;
+        }
+        return $url;
     }
 
     /**

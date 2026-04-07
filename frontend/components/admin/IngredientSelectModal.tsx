@@ -1,16 +1,12 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { AdminSelect } from './AdminSelect';
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 const LeafIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
     <path d="M12 22V12M12 12C12 12 7 10 5 6c2 0 5 1 7 6zM12 12c0 0 5-2 7-6-2 0-5 1-7 6z" stroke="#da2966" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-  </svg>
-);
-const ChevronDown = () => (
-  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-    <path d="M2.5 4.5l3.5 3.5 3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -71,20 +67,17 @@ export default function IngredientSelectModal({
         </h3>
 
         {/* Dropdown */}
-        <div className="relative mb-5">
-          <select
+        <div className="mb-5">
+          <AdminSelect
+            variant="form"
             value={selectedId}
             onChange={(e) => setSelectedId(e.target.value)}
-            className="w-full h-12 px-4 pr-10 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40 appearance-none cursor-pointer"
           >
             <option value="">— Choose an ingredient —</option>
             {availableIngredients.map(ing => (
               <option key={ing.id} value={String(ing.id)}>{ing.name}</option>
             ))}
-          </select>
-          <div className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-gray-400">
-            <ChevronDown />
-          </div>
+          </AdminSelect>
         </div>
 
         {/* Preview card */}

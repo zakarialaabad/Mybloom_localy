@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             OrderStatusHistorySeeder::class, // 11 — order_status_histories (needs orders)
             ReviewSeeder::class,             // 12 — reviews (needs products + orders)
             ReviewImageSeeder::class,        // 13 — review_images (needs reviews)
+            CommentReviewSeeder::class,      // 14 — homepage comments from frontend/Public/comments
             IngredientSeeder::class,         // 14 — ingredients + pivot (needs products)
             ProductFaqSeeder::class,         // 15 — 3 FAQs linked to every product
             RecommendedProductSeeder::class, // 16 — 10 recommended products for carousel

@@ -1,4 +1,6 @@
-import { useQuery } from '@tanstack/react-query';
+'use client';
+
+import useSWR from 'swr';
 import { dashboardService, DashboardData } from '@/services/api';
 
 /**
@@ -16,23 +18,21 @@ import { dashboardService, DashboardData } from '@/services/api';
  *   const { data, isLoading, error } = useDashboardMetrics();
  */
 export function useDashboardMetrics() {
-  const query = useQuery<DashboardData, Error>({
-    queryKey: ['dashboard', 'metrics'],
-    queryFn: async () => {
-      const res = await dashboardService.get();
-      return res;
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-    gcTime: 1000 * 60 * 10, // 10 minutes
-    retry: 1,
-    refetchOnWindowFocus: false,
-  });
+  const { data, error, isLoading, mutate } = useSWR<DashboardData, Error>(
+    ['dashboard', 'metrics'],
+    () => dashboardService.get(),
+    {
+      dedupingInterval: 1000 * 60 * 5,
+      revalidateOnFocus: false,
+      errorRetryCount: 1,
+    }
+  );
 
   return {
-    data: query.data ?? null,
-    isLoading: query.isPending,
-    error: query.error?.message ?? null,
-    isError: query.isError,
-    refetch: () => query.refetch(),
+    data: data ?? null,
+    isLoading,
+    error: error?.message ?? null,
+    isError: !!error,
+    refetch: () => mutate(),
   };
 }

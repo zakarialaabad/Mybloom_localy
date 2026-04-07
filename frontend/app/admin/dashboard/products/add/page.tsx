@@ -123,7 +123,7 @@ export default function AddProductPage() {
 
   // --- Phase 5: Status Settings ---
   // The prompt allows only ONE to be active at a time to represent product flag logic cleanly.
-  const [activeStatus, setActiveStatus] = useState<string>('best_seller');
+  const [activeStatus, setActiveStatus] = useState<string>('none');
 
   // --- Phase 6: Ingredients State ---
   const [ingredients, setIngredients] = useState<any[]>([]); 
