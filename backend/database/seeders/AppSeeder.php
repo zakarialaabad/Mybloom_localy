@@ -17,6 +17,7 @@ class AppSeeder extends Seeder
             ShippingMethodSeeder::class,
             RandomProductFlagsSeeder::class,
             CommentReviewSeeder::class,            
+            RandomProductReviewSeeder::class,
         ]);
     }
 }
