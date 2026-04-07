@@ -226,7 +226,7 @@ export default function FeedbackPage() {
       <div className="hidden md:block">
         <Header />
         <main className="min-h-screen bg-white">
-          <div className="flex flex-col lg:flex-row min-h-[800px]">
+          <div className="flex flex-col lg:flex-row min-h-screen w-full">
 
             {/* Left Column */}
             <div className="lg:w-1/2 bg-[#f4ece3] flex flex-col items-center justify-center p-12 relative">

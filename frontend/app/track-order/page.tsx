@@ -63,11 +63,11 @@ export default function TrackOrderPage() {
         />
       </div>
 
-      <main className="flex-1 flex items-center justify-center overflow-hidden md:overflow-visible px-3 pb-16 md:pb-0 md:px-6 lg:px-8 md:py-12">
-        <div className="w-full md:max-w-[1200px] md:flex md:flex-col lg:flex-row gap-0 md:rounded-sm md:overflow-hidden md:border border-gray-100 md:shadow-sm md:min-h-[580px]">
+      <main className="flex-1 flex items-center justify-center overflow-hidden md:overflow-visible px-3 pb-16 md:pb-0 md:px-0 md:py-0" style={{backgroundColor: 'rgba(252, 138, 138, 0.08)'}}>
+        <div className="w-full md:flex md:flex-col lg:flex-row gap-0 md:rounded-none md:overflow-hidden md:border-none border-gray-100 md:shadow-none md:min-h-screen">
           
           {/* Left Column - Desktop Only */}
-          <div className="hidden lg:block lg:w-[55%] relative min-h-[500px] lg:min-h-[700px] bg-[#f5f5f5]">
+          <div className="hidden lg:block lg:w-1/2 relative min-h-[500px] lg:min-h-screen bg-[#f5f5f5]">
             <Image 
               src="/public_Image/bloomDelivere.jpg" 
               alt="Bloom Parfums Delivery Van" 
@@ -78,8 +78,8 @@ export default function TrackOrderPage() {
           </div>
 
           {/* Right Column - Tracking Form */}
-          <div className="lg:w-[45%] px-5 py-5 md:px-12 md:py-14 lg:px-16 lg:py-16 bg-white w-full rounded-sm shadow-sm md:shadow-none flex flex-col justify-center">
-            <div className="max-w-md mx-auto w-full">
+          <div className="lg:w-1/2 px-5 py-5 md:px-8 lg:px-12 bg-transparent w-full rounded-sm shadow-sm md:shadow-none md:rounded-none flex flex-col justify-center items-center">
+            <div className="md:max-w-md lg:max-w-[480px] w-full md:bg-white md:shadow-[0_4px_24px_rgba(0,0,0,0.04)] md:rounded-lg p-2 md:p-10 lg:p-12">
               
               {/* Pink Scalloped Truck Icon */}
               <div className="flex justify-center mb-4 md:mb-8">

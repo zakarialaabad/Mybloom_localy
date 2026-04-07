@@ -45,12 +45,12 @@ export default function OrderSuccessPage() {
         <Image src="/logo.png" alt="MyBloom" width={110} height={32} className="object-contain h-[28px] w-auto" />
       </div>
 
-      <main className="min-h-screen bg-[#fff9f9] md:bg-[#f9f9f9] font-serif">
-        <div className="max-w-7xl mx-auto md:px-6 lg:px-8 md:py-12 flex flex-col items-center justify-center h-full">
-          <div className="w-full md:flex md:flex-row md:bg-white md:shadow-sm md:rounded-sm md:overflow-hidden">
+      <main className="min-h-screen bg-[#fff9f9] md:bg-[#f9f9f9] font-serif" style={{backgroundColor: 'rgba(252, 138, 138, 0.08)'}}>
+        <div className="w-full md:flex md:flex-row items-center justify-center h-full">
+          <div className="w-full md:flex md:flex-row md:bg-transparent md:shadow-none md:rounded-none md:overflow-hidden">
             
             {/* Left Column - Image (Desktop Only) */}
-            <div className="hidden md:block md:w-1/2 relative min-h-[600px] bg-[#f4ece3]">
+            <div className="hidden md:block md:w-1/2 relative min-h-screen bg-[#f4ece3]">
               <Image 
                 src="/public_Image/order_packaging.jpg" 
                 alt="Order Packaging" 
@@ -66,8 +66,8 @@ export default function OrderSuccessPage() {
             </div>
 
             {/* Right Column - Order Details */}
-            <div className="w-full md:w-1/2 p-4 md:p-16 flex flex-col justify-center">
-              <div className="max-w-md mx-auto w-full bg-white md:bg-transparent shadow-sm md:shadow-none rounded-xl md:rounded-none p-6 md:p-0 my-4 md:my-0">
+            <div className="w-full md:w-1/2 p-4 md:p-8 lg:p-12 flex flex-col justify-center items-center bg-transparent">
+              <div className="md:max-w-md lg:max-w-[480px] w-full md:bg-white md:shadow-[0_4px_24px_rgba(0,0,0,0.04)] md:rounded-lg p-2 md:p-10 lg:p-12 my-4 md:my-0">
                 
                 {/* Success Icon */}
                 <div className="flex justify-center mb-4 md:mb-8">
