@@ -160,35 +160,54 @@ export default function ProductCard({
           </div>
         </div>
 
-        {/* Info Section — with inner dividing border */}
-        <div className="space-y-1.5 px-3 py-2.5 text-left">
-          <h3 className="font-serif text-lg font-bold text-gray-900 tracking-wide">{name}</h3>
-          <p className="text-xs text-gray-600">{subtitle}</p>
-          
-          {/* Inner dividing border */}
-          <div className="border-t border-gray-100/60 w-full my-2.5"></div>
-
-          <p className="text-[11px] text-gray-500">{description}</p>
-
-          <div className="flex items-baseline space-x-2 pt-1.5 pb-1">
-            <span className="text-base sm:text-lg font-bold text-gray-900">{price} DH</span>
-            {originalPrice > price && (
-              <>
-                <span className="text-xs text-gray-400 line-through decoration-1">{originalPrice} DH</span>
-              </>
-            )}
+        {/* Info Section — Structured & Aligned Layout */}
+        <div className="px-3 py-3 text-left flex flex-col h-56 justify-between">
+          {/* HEADER BLOCK — Product Name & Brand (Fixed: 48px) */}
+          <div className="space-y-1">
+            {/* Product Name — exactly 2 lines, 36px height */}
+            <h3 className="font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-tight line-clamp-2 h-9">
+              {name}
+            </h3>
+            
+            {/* Brand Subtitle — 1 line, 16px height */}
+            <p className="text-xs text-gray-600 line-clamp-1 h-4">
+              {subtitle}
+            </p>
           </div>
 
-          {/* Stars */}
-          <div className="flex items-center space-x-1 pt-0.5">
-            <div className="flex">
-              {stars.map((s) => (
-                <StarIcon key={s} filled={s <= Math.round(rating)} />
-              ))}
+          {/* DIVIDER — Visual Separator (Fixed: 8px) */}
+          <div className="border-t border-gray-100/60 w-full"></div>
+
+          {/* MIDDLE BLOCK — Description (Fixed: 32px = 2 lines) */}
+          <div className="h-8 overflow-hidden">
+            <p className="text-[11px] text-gray-500 leading-relaxed line-clamp-2">
+              {description}
+            </p>
+          </div>
+
+          {/* FOOTER BLOCK — Price & Rating */}
+          <div className="space-y-1.5 pt-0.5">
+            {/* Price Row — Consistent height */}
+            <div className="flex items-baseline space-x-2 h-6">
+              <span className="text-base sm:text-lg font-bold text-gray-900 leading-none">{price} DH</span>
+              {originalPrice > price && (
+                <>
+                  <span className="text-xs text-gray-400 line-through decoration-1">{originalPrice} DH</span>
+                </>
+              )}
             </div>
-            <span className="text-[10px] text-gray-500 font-medium">
-              <span className="text-gray-900 font-semibold pr-1">{rating}</span>({reviewCount})
-            </span>
+
+            {/* Rating Row — Consistent height */}
+            <div className="flex items-center space-x-1 h-5">
+              <div className="flex gap-0.5">
+                {stars.map((s) => (
+                  <StarIcon key={s} filled={s <= Math.round(rating)} />
+                ))}
+              </div>
+              <span className="text-[10px] text-gray-500 font-medium">
+                <span className="text-gray-900 font-semibold pr-1">{rating}</span>({reviewCount})
+              </span>
+            </div>
           </div>
         </div>
       </article>
