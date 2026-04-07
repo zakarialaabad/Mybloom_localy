@@ -13,6 +13,10 @@ class AppSeeder extends Seeder
             ProductTypeSeederFrench::class,
             IngredientSeederFrench::class,
             ProductJsonSeeder::class,
+            BrandLogoSeeder::class,
+            ShippingMethodSeeder::class,
+            RandomProductFlagsSeeder::class,
+            CommentReviewSeeder::class,            
         ]);
     }
 }
