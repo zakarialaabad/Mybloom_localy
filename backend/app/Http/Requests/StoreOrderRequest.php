@@ -41,7 +41,14 @@ class StoreOrderRequest extends FormRequest
                 'nullable', 
                 'integer', 
                 function ($attribute, $value, $fail) {
-                    if ($value && $value > 0 && !\App\Models\ProductSize::where('id', $value)->exists()) {
+                    if (! $value || $value <= 0) {
+                        return;
+                    }
+
+                    $variantExists = \App\Models\ProductVariant::where('id', $value)->exists();
+                    $sizeExists = \App\Models\ProductSize::where('id', $value)->exists();
+
+                    if (! $variantExists && ! $sizeExists) {
                         $fail('The selected size is invalid.');
                     }
                 }

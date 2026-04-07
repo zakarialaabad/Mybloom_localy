@@ -333,6 +333,7 @@ class ProductJsonSeeder extends Seeder
                     'product_id' => $productId,
                     'size' => $variant['size'] ?? 0,
                     'price' => $variant['price'] ?? $jsonProduct['price'] ?? 0,
+                    'stock_quantity' => $variant['stock_quantity'] ?? $variant['stock'] ?? $jsonProduct['stock'] ?? 0,
                     'is_default' => $sortOrder === 0, // First variant is default
                     'created_at' => now(),
                     'updated_at' => now(),

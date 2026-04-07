@@ -9,7 +9,7 @@ class ShippingMethodSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('shipping_methods')->insert([
+        $rows = [
             [
                 'id'          => 1,
                 'name'        => 'Laayoun',
@@ -28,6 +28,13 @@ class ShippingMethodSeeder extends Seeder
                 'is_active'   => true,
                 'sort_order'  => 2,
             ],
-        ]);
+        ];
+
+        foreach ($rows as $row) {
+            DB::table('shipping_methods')->updateOrInsert(
+                ['id' => $row['id']],
+                $row,
+            );
+        }
     }
 }

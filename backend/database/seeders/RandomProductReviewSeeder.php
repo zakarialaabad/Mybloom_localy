@@ -20,6 +20,16 @@ class RandomProductReviewSeeder extends Seeder
             ->take(100)
             ->get();
 
+        // Fallback to homepage/admin reviews when no product/order reviews exist
+        if ($sourceReviews->isEmpty()) {
+            $sourceReviews = Review::with('images')
+                ->whereNull('product_id')
+                ->whereNull('order_number')
+                ->orderByDesc('created_at')
+                ->take(100)
+                ->get();
+        }
+
         if ($sourceReviews->isEmpty()) {
             return;
         }
@@ -30,7 +40,7 @@ class RandomProductReviewSeeder extends Seeder
 
         foreach (Product::orderBy('id')->get(['id']) as $product) {
             $existingCount = Review::where('product_id', $product->id)->count();
-            $needed = 5 - $existingCount;
+            $needed = 6 - $existingCount;
 
             if ($needed <= 0) {
                 continue;
