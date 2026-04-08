@@ -18,6 +18,8 @@ export interface ProductCardProps {
   imageUrl: string;
   badge?: string;
   isBestSeller?: boolean;
+  category?: string;
+  productType?: string;
   onWishlistToggle?: (id: number) => void;
 }
 
@@ -36,11 +38,12 @@ function StarIcon({ filled }: { filled: boolean }) {
 
 export default function ProductCard({
   id, slug, name, subtitle, description, price, originalPrice,
-  rating, reviewCount, imageUrl, badge, isBestSeller, onWishlistToggle,
+  rating, reviewCount, imageUrl, badge, isBestSeller, category, productType, onWishlistToggle,
 }: ProductCardProps) {
   const [wished, setWished] = useState(() => isInWishlist(id));
   const [isHovered, setIsHovered] = useState(false);
   const stars = [1, 2, 3, 4, 5];
+  const categoryDisplay = category || productType || description;
 
   return (
     <Link
@@ -161,9 +164,9 @@ export default function ProductCard({
         </div>
 
         {/* Info Section — Structured & Aligned Layout */}
-        <div className="px-3 py-3 text-left flex flex-col h-56 justify-between">
-          {/* HEADER BLOCK — Product Name & Brand (Fixed: 48px) */}
-          <div className="space-y-1">
+        <div className="px-4 py-3 text-left flex flex-col gap-2">
+          {/* HEADER BLOCK — Product Name & Brand */}
+          <div className="space-y-0 pb-2 border-b border-gray-100/60">
             {/* Product Name — exactly 2 lines, 36px height */}
             <h3 className="font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-tight line-clamp-2 h-9">
               {name}
@@ -175,18 +178,13 @@ export default function ProductCard({
             </p>
           </div>
 
-          {/* DIVIDER — Visual Separator (Fixed: 8px) */}
-          <div className="border-t border-gray-100/60 w-full"></div>
-
-          {/* MIDDLE BLOCK — Description (Fixed: 32px = 2 lines) */}
-          <div className="h-8 overflow-hidden">
-            <p className="text-[11px] text-gray-500 leading-relaxed line-clamp-2">
-              {description}
-            </p>
-          </div>
+          {/* CATEGORY/TYPE — Single line, 16px height */}
+          <p className="text-xs text-gray-500 line-clamp-1 h-4">
+            {categoryDisplay}
+          </p>
 
           {/* FOOTER BLOCK — Price & Rating */}
-          <div className="space-y-1.5 pt-0.5">
+          <div className="space-y-0.5 pt-0.5">
             {/* Price Row — Consistent height */}
             <div className="flex items-baseline space-x-2 h-6">
               <span className="text-base sm:text-lg font-bold text-gray-900 leading-none">{price} DH</span>

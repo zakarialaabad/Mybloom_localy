@@ -39,6 +39,8 @@ function productToCard(p: Product) {
     rating: p.avg_rating ?? 0,
     reviewCount: p.review_count ?? 0,
     imageUrl: p.primary_image ?? FALLBACK_IMG,
+    category: p.category?.name,
+    productType: p.gender,
   };
 }
 

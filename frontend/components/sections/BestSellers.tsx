@@ -24,6 +24,8 @@ function productToCard(p: Product): ProductCardProps {
     imageUrl:      p.primary_image ?? FALLBACK_IMG,
     isBestSeller:  p.is_featured,
     badge:         p.badges?.[0],
+    category:      p.category?.name,
+    productType:   p.gender,
   };
 }
 
