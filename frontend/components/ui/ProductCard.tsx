@@ -167,8 +167,8 @@ export default function ProductCard({
         <div className="px-4 py-3 text-left flex flex-col gap-2">
           {/* HEADER BLOCK — Product Name & Brand */}
           <div className="space-y-0 pb-2 border-b border-gray-100/60">
-            {/* Product Name — exactly 2 lines, 36px height */}
-            <h3 className="font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-tight line-clamp-2 h-9">
+            {/* Product Name — Single line, clean overflow */}
+            <h3 className="font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-tight h-6 overflow-hidden">
               {name}
             </h3>
             
