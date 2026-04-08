@@ -166,21 +166,21 @@ export default function ProductCard({
         {/* Info Section — Structured & Aligned Layout */}
         <div className="px-4 py-3 text-left flex flex-col gap-2">
           {/* HEADER BLOCK — Product Name & Brand */}
-          <div className="space-y-0 pb-2 border-b border-gray-100/60">
+          <div className="space-y-0.5 pb-2 border-b border-gray-100/60">
             {/* Product Name — Single line, clean overflow */}
             <h3 className="font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-tight h-6 overflow-hidden">
               {name}
             </h3>
             
-            {/* Brand Subtitle — 1 line, 16px height */}
-            <p className="text-xs text-gray-600 line-clamp-1 h-4">
-              {subtitle}
+            {/* Product Type — 1 line, 16px height */}
+            <p className="text-xs text-gray-600 line-clamp-1 h-4 capitalize">
+              {productType || subtitle}
             </p>
           </div>
 
-          {/* CATEGORY/TYPE — Single line, 16px height */}
+          {/* CATEGORY — Single line, 16px height */}
           <p className="text-xs text-gray-500 line-clamp-1 h-4">
-            {categoryDisplay}
+            {category || description}
           </p>
 
           {/* FOOTER BLOCK — Price & Rating */}
