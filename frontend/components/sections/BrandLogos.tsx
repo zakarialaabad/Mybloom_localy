@@ -22,9 +22,19 @@ export default function BrandLogos() {
           <div className="flex w-max animate-[scrollBrand_60s_linear_infinite] items-center justify-start gap-[76px] opacity-70
             grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0 hover:[animation-play-state:paused] pr-[76px]">
             {duplicatedBrands.map((brand, i) => (
-              <span key={`${brand.id}-${i}`} className="text-xl font-bold font-serif whitespace-nowrap">
-                {brand.name.toUpperCase()}
-              </span>
+              brand.logo_url ? (
+                <img
+                  key={`${brand.id}-${i}`}
+                  src={brand.logo_url}
+                  alt={brand.name}
+                  className="h-12 w-auto object-contain whitespace-nowrap"
+                  loading="lazy"
+                />
+              ) : (
+                <span key={`${brand.id}-${i}`} className="text-xl font-bold font-serif whitespace-nowrap">
+                  {brand.name.toUpperCase()}
+                </span>
+              )
             ))}
           </div>
         </div>

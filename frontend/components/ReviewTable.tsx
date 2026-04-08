@@ -287,22 +287,6 @@ export function ReviewTable({
 
           {/* Actions */}
           <div className="flex items-center justify-end gap-2 pt-3 border-t border-gray-100 mt-1">
-            {onApproveToggle && (
-              <button
-                onClick={(e) => { e.stopPropagation(); onApproveToggle(review); }}
-                disabled={actionLoading === review.id}
-                title={review.is_approved ? 'Retirer approbation' : 'Approuver'}
-                 className={`flex-1 h-9 rounded-lg flex items-center justify-center gap-1.5 text-[13px] font-medium transition-all border ${
-                  review.is_approved
-                    ? 'bg-green-50 text-green-700 border-green-200 hover:bg-green-100'
-                    : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'
-                }`}
-              >
-                <Eye size={15} strokeWidth={2.5} />
-                {review.is_approved ? 'Masquer' : 'Afficher'}
-              </button>
-            )}
-            
             <div className="flex gap-2">
               {onEdit && (
                 <button

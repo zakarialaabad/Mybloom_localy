@@ -262,11 +262,11 @@ export default function AdminDashboardLayout({
               </div>
               <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
             </div>
-            <div className="flex flex-col min-w-0">
+            <div className="flex flex-col flex-1 min-w-0">
               <span className="text-[14px] font-bold text-[#1a1a1a] leading-tight truncate">
                 {adminProfile?.username ?? 'Admin'}
               </span>
-              <span className="text-[12px] text-gray-400 font-medium truncate">
+              <span className="text-[12px] text-gray-400 font-medium break-words leading-snug">
                 {formatLastLogin(adminProfile?.last_login_at)}
               </span>
             </div>
