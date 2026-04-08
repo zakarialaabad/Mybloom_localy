@@ -99,6 +99,11 @@
     100% { transform: translateX(-100%); }
   }
 
+  @keyframes scrollBrand {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-25%)); } /* Translate by exactly 1 entire set of products since we duplicated 4 times, 25% represents the initial list size. */
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .scrolling-text {
       animation: none !important;

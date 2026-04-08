@@ -49,23 +49,23 @@ export default function CategoriesSection() {
   return (
     <section className="bg-white">
       {/* ── Why Shop with us ────────────────────────────────────────────────── */}
-      <div className="relative py-20 md:py-48 overflow-hidden w-full">
+      <div className="relative py-12 md:py-0 overflow-hidden w-full h-auto md:h-[502px] flex flex-col justify-center">
         {/* Background - rotated on mobile */}
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
           {/* Mobile version (Rotated) - Adjusted so it doesn't zoom in so much that it disappears */}
           <div 
-            className="md:hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200vh] h-[100vw] min-w-[1200px] bg-cover bg-center bg-no-repeat rotate-90 opacity-90"
+            className="md:hidden absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200vh] h-[100vw] min-w-[1200px] bg-cover bg-top bg-no-repeat rotate-90 opacity-90"
             style={{ backgroundImage: "url('/background.jpeg')" }}
           />
-          {/* Desktop version (Normal) */}
+          {/* Desktop version (Normal) - Focus on upper side */}
           <div 
-            className="hidden md:block absolute inset-0 w-full h-full bg-cover bg-center bg-no-repeat"
+            className="hidden md:block absolute inset-0 w-full h-full bg-cover bg-top bg-no-repeat"
             style={{ backgroundImage: "url('/background.jpeg')" }}
           />
         </div>
         
         <div className="relative z-10 w-full px-4 md:px-[69px]">
-            <div className="flex flex-col items-start text-left mb-10 md:mb-20">
+            <div className="flex flex-col items-start text-left mb-8 md:mb-12 mt-4 md:mt-0">
               {/* Flex container ensures perfect logo alignment with title text */}
               <div className="flex items-center gap-2 md:gap-3 flex-wrap">
                 <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#3a3a3a] font-serif">

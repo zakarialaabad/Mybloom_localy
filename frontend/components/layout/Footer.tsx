@@ -38,10 +38,10 @@ export default function Footer() {
     <footer className="bg-white border-t border-gray-100">
       {/* Main content */}
       <div className="container mx-auto px-4 md:px-[69px] pt-16 pb-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
+        <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-10 md:gap-4 lg:gap-8">
 
           {/* Col 1 — Logo + tagline + social */}
-          <div className="md:col-span-1 flex flex-col items-center md:items-start text-center md:text-left">
+          <div className="flex flex-col items-center md:items-start">
             <Link href="/" className="mb-5 inline-block">
               <Image
                 src="/logo.png"
@@ -51,8 +51,8 @@ export default function Footer() {
                 className="object-contain h-[36px] w-auto"
               />
             </Link>
-            <p className="text-[13px] text-gray-400 leading-relaxed mb-8 max-w-[220px]">
-              Notre objectif : vous offrir des produits qui allient qualité, performance et satisfaction.
+            <p className="text-[12px] text-gray-500 leading-loose mb-8 md:max-w-[320px]">
+              Notre objectif : vous offrir des produits qui allient qualité, performance<br className="hidden xl:block"/> et satisfaction.
             </p>
             <div className="flex items-center gap-3">
               {[
@@ -67,7 +67,7 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="w-9 h-9 rounded-full border border-gray-300 flex items-center justify-center text-gray-600 hover:border-[#da2966] hover:text-[#da2966] transition-colors"
+                  className="w-[38px] h-[38px] rounded-full bg-[#f1f1f1] flex items-center justify-center text-gray-700 hover:bg-[#da2966] hover:text-white transition-colors"
                 >
                   {icon}
                 </Link>
@@ -76,8 +76,8 @@ export default function Footer() {
           </div>
 
           {/* Col 2 — NOS COLLECTIONS */}
-          <div className="flex flex-col items-center md:items-start text-center md:text-left mt-4 md:mt-0">
-            <h4 className="text-[11px] font-bold text-gray-900 uppercase tracking-[0.15em] mb-6">
+          <div className="flex flex-col items-center md:items-start mt-4 md:mt-0">
+            <h4 className="text-[11px] font-bold text-gray-800 uppercase tracking-widest mb-6">
               NOS COLLECTIONS
             </h4>
             <ul className="space-y-4">
@@ -85,7 +85,7 @@ export default function Footer() {
                 <li key={item}>
                   <Link
                     href={`/collection?category=${item.toLowerCase()}`}
-                    className="text-[13px] text-gray-400 hover:text-gray-900 transition-colors"
+                    className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors"
                   >
                     {item}
                   </Link>
@@ -95,8 +95,8 @@ export default function Footer() {
           </div>
 
           {/* Col 3 — BEAUTÉ & SOINS */}
-          <div className="flex flex-col items-center md:items-start text-center md:text-left mt-4 md:mt-0">
-            <h4 className="text-[11px] font-bold text-gray-900 uppercase tracking-[0.15em] mb-6">
+          <div className="flex flex-col items-center md:items-start mt-4 md:mt-0">
+            <h4 className="text-[11px] font-bold text-gray-800 uppercase tracking-widest mb-6">
               BEAUTÉ & SOINS
             </h4>
             <ul className="space-y-4">
@@ -104,7 +104,7 @@ export default function Footer() {
                 <li key={item}>
                   <Link
                     href={`/collection?category=${item.toLowerCase()}`}
-                    className="text-[13px] text-gray-400 hover:text-gray-900 transition-colors"
+                    className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors"
                   >
                     {item}
                   </Link>
@@ -114,8 +114,8 @@ export default function Footer() {
           </div>
 
           {/* Col 4 — CONTACT */}
-          <div className="flex flex-col items-center md:items-start text-center md:text-left mt-4 md:mt-0">
-            <h4 className="text-[11px] font-bold text-gray-900 uppercase tracking-[0.15em] mb-6">
+          <div className="flex flex-col items-center md:items-start mt-4 md:mt-0 md:pl-4">
+            <h4 className="text-[11px] font-bold text-gray-800 uppercase tracking-widest mb-6">
               CONTACT
             </h4>
             <ul className="space-y-4">
@@ -123,7 +123,7 @@ export default function Footer() {
                 {contact.email ? (
                   <a
                     href={`mailto:${contact.email}`}
-                    className="text-[13px] text-gray-400 hover:text-gray-900 transition-colors"
+                    className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors"
                   >
                     {contact.email}
                   </a>
@@ -135,7 +135,7 @@ export default function Footer() {
                 {contact.phone ? (
                   <a
                     href={`tel:${contact.phone.replace(/\s/g, '')}`}
-                    className="text-[13px] text-gray-400 hover:text-gray-900 transition-colors"
+                    className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors"
                   >
                     {contact.phone}
                   </a>
@@ -144,7 +144,7 @@ export default function Footer() {
                 )}
               </li>
               <li>
-                <span className="text-[13px] text-gray-400">Laayoune, Maroc</span>
+                <span className="text-[13px] text-gray-500">Laayoune, Maroc</span>
               </li>
             </ul>
           </div>
