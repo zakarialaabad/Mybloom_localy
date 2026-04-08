@@ -10,12 +10,12 @@ import { getWishlist } from '@/lib/wishlist';
 
 
 const NAV_LINKS = [
-  { label: 'GIFTS',       href: '#' },
-  { label: 'VISAGE',      href: '#' },
-  { label: 'CORPS',       href: '#' },
-  { label: 'PARFUMS',     href: '#' },
-  { label: 'SKINCARE',    href: '#' },
-  { label: 'HAIR',        href: '#' },
+  { label: 'GIFTS',       href: '/collection?is_gift=true' },
+  { label: 'VISAGE',      href: '/collection?product_type=visage' },
+  { label: 'CORPS',       href: '/collection?product_type=corps' },
+  { label: 'PARFUMS',     href: '/collection?product_type=parfums' },
+  { label: 'SKINCARE',    href: '/collection?product_type=skincare' },
+  { label: 'HAIR',        href: '/collection?product_type=hair' },
 ];
 
 export default function Header() {
@@ -255,14 +255,14 @@ export default function Header() {
             </div>
             
             <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <Link href="#best-sellers" className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
+              <Link href="/collection?is_best_seller=true" className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
                 <Image src="https://images.unsplash.com/photo-1615397323214-cb9192415d86?auto=format&fit=crop&q=80&w=400" alt="Best Sellers" fill className="object-cover opacity-90 transition-transform group-hover:scale-105" />
                 <div className="absolute inset-0 bg-white/20 p-4 flex flex-col justify-end">
                   <h4 className="font-serif font-bold text-black text-xl">Best Sellers</h4>
                   <p className="text-[11px] text-gray-800 mt-1 font-medium">Shop Now</p>
                 </div>
               </Link>
-              <Link href="#" className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
+              <Link href="/collection?is_gift=true" className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
                 <Image src="https://images.unsplash.com/photo-1595425970377-c9703bc48b4d?auto=format&fit=crop&q=80&w=400" alt="Gift Sets" fill className="object-cover opacity-90 transition-transform group-hover:scale-105" />
                 <div className="absolute inset-0 bg-white/20 p-4 flex flex-col justify-end">
                   <h4 className="font-serif font-bold text-black text-xl">Gift Sets</h4>

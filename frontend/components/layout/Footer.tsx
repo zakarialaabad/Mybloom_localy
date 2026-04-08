@@ -81,13 +81,16 @@ export default function Footer() {
               NOS COLLECTIONS
             </h4>
             <ul className="space-y-4">
-              {['Gifts', 'Marque', 'Parfums'].map((item) => (
-                <li key={item}>
+              {[
+                { label: 'Gifts', href: '/collection?is_gift=true' },
+                { label: 'Parfums', href: '/collection?product_type=parfums' },
+              ].map(({ label, href }) => (
+                <li key={label}>
                   <Link
-                    href={`/collection?category=${item.toLowerCase()}`}
+                    href={href}
                     className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors"
                   >
-                    {item}
+                    {label}
                   </Link>
                 </li>
               ))}
@@ -100,13 +103,17 @@ export default function Footer() {
               BEAUTÉ & SOINS
             </h4>
             <ul className="space-y-4">
-              {['Corps', 'Hair', 'Visage'].map((item) => (
-                <li key={item}>
+              {[
+                { label: 'Corps', href: '/collection?product_type=corps' },
+                { label: 'Hair', href: '/collection?product_type=hair' },
+                { label: 'Visage', href: '/collection?product_type=visage' },
+              ].map(({ label, href }) => (
+                <li key={label}>
                   <Link
-                    href={`/collection?category=${item.toLowerCase()}`}
+                    href={href}
                     className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors"
                   >
-                    {item}
+                    {label}
                   </Link>
                 </li>
               ))}
