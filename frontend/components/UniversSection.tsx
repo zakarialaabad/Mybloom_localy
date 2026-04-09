@@ -21,6 +21,7 @@ function productToCard(p: Product): ProductCardProps {
     rating:        p.avg_rating ?? 0,
     reviewCount:   p.review_count ?? 0,
     imageUrl:      p.primary_image ?? FALLBACK_IMG,
+    secondaryImageUrl: p.images?.[1]?.image_url,
     isBestSeller:  p.is_featured,
     badge:         p.badges?.[0],
     category:      p.category?.name,

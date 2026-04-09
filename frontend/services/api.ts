@@ -296,8 +296,16 @@ export const productService = {
   },
 
   show: async (slug: string) => {
-    const { data } = await apiClient.get<{ data: Product }>(`/v1/products/${slug}`);
-    return data.data;
+    const url = `/v1/products/${slug}`;
+    console.log('[productService.show] Requesting:', `${process.env.NEXT_PUBLIC_API_URL}${url}`);
+    try {
+      const { data } = await apiClient.get<{ data: Product }>(url);
+      console.log('[productService.show] Success:', data.data);
+      return data.data;
+    } catch (error) {
+      console.error('[productService.show] Error:', error);
+      throw error;
+    }
   },
   // Aggregates for price histogram and min/max
   aggregates: async () => {

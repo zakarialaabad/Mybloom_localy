@@ -37,6 +37,7 @@ function productToCard(p: Product): ProductCardProps {
     rating:        p.avg_rating ?? 0,
     reviewCount:   p.review_count ?? 0,
     imageUrl:      p.primary_image ?? FALLBACK_IMG,
+    secondaryImageUrl: p.images?.[1]?.image_url,
     isBestSeller:  p.is_featured,
     badge:         p.badges?.[0],
     category:      p.category?.name,
@@ -47,6 +48,8 @@ function productToCard(p: Product): ProductCardProps {
 export default function ProductPage({ params }: { params: { slug: string } }) {
   const slug = params.slug;
   const router = useRouter();
+
+  console.log('[ProductPage] Component mounted with slug:', slug, 'params:', params);
 
   const [product, setProduct]           = useState<Product | null>(null);
   const [loading, setLoading]           = useState(true);
@@ -78,8 +81,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     setLoading(true);
     setFetchError(false);
 
+    console.log('[ProductPage] Fetching product with slug:', slug);
     productService.show(slug)
       .then((data) => {
+        console.log('[ProductPage] Product fetched successfully:', data);
         if (!mounted) return;
         setProduct(data);
         const primary = data.images?.find((i) => i.is_primary)?.image_url ?? data.images?.[0]?.image_url ?? data.primary_image ?? 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800';
@@ -147,7 +152,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           console.log('ℹ️ No recommended products for this product');
         }
       })
-      .catch(() => { if (mounted) setFetchError(true); })
+      .catch((err) => { 
+        console.error('[ProductPage] Error fetching product:', err);
+        if (mounted) setFetchError(true); 
+      })
       .finally(() => { if (mounted) setLoading(false); });
 
     return () => { mounted = false; };
@@ -345,7 +353,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                       window.open(whatsappUrl, '_blank');
                     }
                   }}
-                  className="absolute top-4 right-4 z-10 rounded-full bg-white/90 p-2.5 text-gray-500 hover:bg-white transition-colors shadow-sm"
+                  className="absolute top-16 right-4 z-10 rounded-full bg-white/90 p-2.5 text-gray-500 hover:bg-white transition-colors shadow-sm"
                 >
                   <Share2 className="h-5 w-5" />
                 </button>
@@ -364,7 +372,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                     src={mainImage}
                     alt={product.name}
                     fill
-                    className="object-contain p-8 mix-blend-multiply transition-opacity duration-300"
+                    className="object-cover transition-opacity duration-300"
                   />
 
                   {/* Carousel Arrows */}

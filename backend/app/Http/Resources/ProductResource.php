@@ -72,6 +72,14 @@ class ProductResource extends JsonResource
                 $primary = $this->images->firstWhere('is_primary', true) ?? $this->images->first();
                 return $this->resolveUrl($primary?->url);
             }),
+            'images'         => $this->whenLoaded('images', fn () =>
+                $this->images->map(fn ($img) => [
+                    'id'         => $img->id,
+                    'image_url'  => $this->resolveUrl($img->url),
+                    'is_primary' => $img->is_primary,
+                    'sort_order' => $img->sort_order,
+                ])
+            ),
             'variants'       => $this->whenLoaded('variants', fn () =>
                 $this->variants->map(function ($v) {
                     $base  = (float) $v->price;

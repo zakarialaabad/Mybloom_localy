@@ -195,6 +195,7 @@ export default function WishlistPage() {
                       rating={product.avg_rating ?? 0}
                       reviewCount={product.review_count ?? 0}
                       imageUrl={product.primary_image ?? FALLBACK_IMG}
+                      secondaryImageUrl={product.images?.[1]?.image_url}
                       category={product.category?.name}
                       productType={product.gender}
                       onWishlistToggle={handleRemove}

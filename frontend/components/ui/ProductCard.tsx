@@ -16,6 +16,7 @@ export interface ProductCardProps {
   rating: number;
   reviewCount: number;
   imageUrl: string;
+  secondaryImageUrl?: string;
   badge?: string;
   isBestSeller?: boolean;
   category?: string;
@@ -38,12 +39,13 @@ function StarIcon({ filled }: { filled: boolean }) {
 
 export default function ProductCard({
   id, slug, name, subtitle, description, price, originalPrice,
-  rating, reviewCount, imageUrl, badge, isBestSeller, category, productType, onWishlistToggle,
+  rating, reviewCount, imageUrl, secondaryImageUrl, badge, isBestSeller, category, productType, onWishlistToggle,
 }: ProductCardProps) {
   const [wished, setWished] = useState(() => isInWishlist(id));
   const [isHovered, setIsHovered] = useState(false);
   const stars = [1, 2, 3, 4, 5];
   const categoryDisplay = category || productType || description;
+  const hasSecondary = !!secondaryImageUrl;
 
   return (
     <Link
@@ -97,22 +99,37 @@ export default function ProductCard({
             )}
           </div>
 
-          {/* Product image */}
+          {/* Product image — crossfade between primary and secondary */}
           <div className="relative h-full w-full">
+            {/* Primary image — fades out on hover when secondary exists */}
             {imageUrl ? (
               <Image
                 src={imageUrl}
                 alt={name}
                 fill
                 unoptimized
-                className="object-cover transition-transform duration-700 group-hover:scale-105"
+                className={`object-cover transition-opacity duration-500 ease-in-out will-change-opacity ${
+                  hasSecondary && isHovered ? 'opacity-0' : 'opacity-100'
+                }`}
               />
             ) : (
               <div className="w-full h-full bg-[#f0ebe6]" />
             )}
+            {/* Secondary image — fades in on hover */}
+            {hasSecondary && (
+              <Image
+                src={secondaryImageUrl!}
+                alt={`${name} hover`}
+                fill
+                unoptimized
+                className={`object-cover absolute inset-0 transition-opacity duration-500 ease-in-out will-change-opacity ${
+                  isHovered ? 'opacity-100' : 'opacity-0'
+                }`}
+              />
+            )}
           </div>
 
-          {/* Action buttons overlay bar – hidden below image, slides up on hover/tap */}
+          {/* Action buttons overlay bar – slides up + fades in on hover */}
           <div className={`
             absolute bottom-0 left-0 w-full
             bg-white/95
@@ -120,8 +137,9 @@ export default function ProductCard({
             flex justify-between items-center
             px-4 md:px-6
             shadow-[0_-2px_10px_rgba(0,0,0,0.05)]
-            transition-transform duration-300 ease-in-out
-            ${isHovered ? 'translate-y-0' : 'translate-y-full'}
+            transition-all duration-300 ease-out
+            will-change-transform
+            ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
           `}>
             <button className="flex-1 flex justify-center text-gray-600 hover:text-black transition-colors" aria-label="Add to cart">
               <svg className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -164,9 +182,9 @@ export default function ProductCard({
         </div>
 
         {/* Info Section — Structured & Aligned Layout */}
-        <div className="px-4 py-3 text-left flex flex-col gap-2">
+        <div className="px-4 py-3 text-left flex flex-col gap-2" style={{ backgroundColor: '#FAFAFA' }}>
           {/* HEADER BLOCK — Product Name & Brand */}
-          <div className="space-y-0.5 pb-2 border-b border-gray-100/60">
+          <div className="space-y-0.5 pb-2 border-b border-gray-200">
             {/* Product Name — Single line, clean overflow */}
             <h3 className="font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-tight h-6 overflow-hidden">
               {name}
