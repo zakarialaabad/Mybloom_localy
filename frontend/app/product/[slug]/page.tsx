@@ -72,9 +72,22 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const [recommendationPage, setRecommendationPage] = useState(0);
   const [recommendationCount, setRecommendationCount] = useState(0);
   const [isGalleryOpen, setGalleryOpen] = useState(false);
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({ show: false, message: '', type: 'success' });
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const addItem = useCartStore((s) => s.addItem);
+
+  // Auto-hide toast after 3 seconds
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => setToast({ ...toast, show: false }), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
+
+  const showToast = (message: string, type: 'success' | 'error') => {
+    setToast({ show: true, message, type });
+  };
 
   // Lock body scroll when gallery is open
   useEffect(() => {
@@ -193,6 +206,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   // ─── Add to cart ────────────────────────────────────────────────────────────
   const handleAddToCart = () => {
     if (!product || !selectedSize) return;
+    if (selectedSize.stock_quantity === 0) {
+      showToast('Ce produit est actuellement épuisé.', 'error');
+      return;
+    }
     // size === 0 means it's a virtual placeholder (no real variant)
     const sizeLabel = selectedSize.size > 0
       ? `${selectedSize.size}ml`
@@ -207,10 +224,15 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       unitPrice:   selectedSize.final_price,
       imageUrl:    mainImage,
     });
+    showToast('Produit ajouté au panier avec succès !', 'success');
   };
 
   const handleBuyNow = () => {
     if (!product || !selectedSize) return;
+    if (selectedSize.stock_quantity === 0) {
+      showToast('Ce produit est actuellement épuisé.', 'error');
+      return;
+    }
     const sizeLabel = selectedSize.size > 0
       ? `${selectedSize.size}ml`
       : null;
@@ -224,7 +246,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       unitPrice:   selectedSize.final_price,
       imageUrl:    mainImage,
     });
-    router.push('/checkout');
+    showToast('Redirection vers le paiement...', 'success');
+    setTimeout(() => {
+      router.push('/checkout');
+    }, 1000);
   };
 
   // ─── Loading skeleton — renders the page layout (behind the spinner overlay) ──
@@ -344,19 +369,30 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
               {/* Main Image & Carousel */}
               <div className="group relative w-full flex-1 aspect-square md:aspect-[4/5] rounded-sm overflow-hidden bg-[#f8f8f8]">
-                {/* Badges & Actions */}
-                <div className="absolute top-4 left-4 z-10 flex gap-2">
+                
+                {/* Badges & Actions (Left Side) */}
+                <div className="absolute top-5 left-5 z-10 flex flex-col gap-2 items-start pointer-events-none">
                   <button
-                    onClick={handleWishlist}
-                    className="md:hidden rounded-full bg-white/90 p-2.5 text-gray-500 hover:text-red-500 transition-colors shadow-sm"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleWishlist();
+                    }}
+                    className="md:hidden rounded-full bg-white/90 p-2.5 text-gray-500 hover:text-red-500 transition-colors shadow-sm pointer-events-auto"
                   >
                     <Heart className={`h-5 w-5 ${wished ? 'fill-red-500 text-red-500' : ''}`} />
                   </button>
+
+                  {product.badges?.includes('Best Seller') && (
+                    <span className="inline-flex items-center gap-1 rounded bg-[#fdf6e3] px-3 py-1.5 text-xs font-medium text-[#b8860b] shadow-sm pointer-events-auto">
+                      ✨ Best seller
+                    </span>
+                  )}
                 </div>
 
-                {/* Share Button - Right Top */}
+                {/* Share Button (Right Side - Top) */}
                 <button 
-                  onClick={() => {
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevents zooming the gallery when clicking Share
                     if (typeof window !== 'undefined' && product) {
                       const productUrl = `${window.location.origin}/product/${product.slug}`;
                       const message = `${product.name}\n\n${product.description ||  product.subtitle || 'Premium fragrance'}\n\nPrice: ${product.min_price} DH\n\n${productUrl}`;
@@ -364,18 +400,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                       window.open(whatsappUrl, '_blank');
                     }
                   }}
-                  className="absolute top-16 right-4 z-10 rounded-full bg-white/90 p-2.5 text-gray-500 hover:bg-white transition-colors shadow-sm"
+                  className="absolute top-5 right-5 z-10 rounded-full bg-white/90 p-2.5 text-gray-500 hover:text-gray-900 hover:bg-white transition-colors shadow-sm"
                 >
                   <Share2 className="h-5 w-5" />
                 </button>
-
-                {product.badges?.includes('Best Seller') && (
-                  <div className="absolute top-4 right-4 z-10">
-                    <span className="inline-flex items-center gap-1 rounded bg-[#fdf6e3] px-3 py-1.5 text-xs font-medium text-[#b8860b] shadow-sm">
-                      ✨ Best seller
-                    </span>
-                  </div>
-                )}
 
                 {/* Image Carousel */}
                 <div 
@@ -521,18 +549,24 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
               {/* Buy Now: Dominant wide button */}
               <button
-                disabled={!selectedSize || selectedSize.stock_quantity === 0}
                 onClick={handleBuyNow}
-                className="flex h-11 md:h-12 flex-1 items-center justify-center rounded-md bg-[#4a403a] px-4 text-white shadow-sm transition-all hover:bg-[#342f2d] active:scale-[0.98] disabled:opacity-40"
+                className={`flex h-11 md:h-12 flex-1 items-center justify-center rounded-md px-4 shadow-sm transition-all active:scale-[0.98] ${
+                  !selectedSize || selectedSize.stock_quantity === 0
+                    ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                    : 'bg-[#4a403a] text-white hover:bg-[#342f2d]'
+                }`}
               >
                 <span className="font-serif italic text-base md:text-lg tracking-wide">Buy It Now &rsaquo;</span>
               </button>
 
               {/* Cart Icon: Fixed square */}
               <button
-                disabled={!selectedSize || selectedSize.stock_quantity === 0}
                 onClick={handleAddToCart}
-                className="flex h-11 w-11 md:h-12 md:w-12 items-center justify-center rounded-md border border-gray-300 bg-white text-gray-700 hover:border-gray-400 shrink-0 shadow-sm active:scale-[0.98] disabled:opacity-40"
+                className={`flex h-11 w-11 md:h-12 md:w-12 items-center justify-center rounded-md border shrink-0 shadow-sm active:scale-[0.98] transition-colors ${
+                  !selectedSize || selectedSize.stock_quantity === 0
+                    ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
+                    : 'bg-white border-gray-300 text-gray-700 hover:border-gray-400 hover:text-gray-900'
+                }`}
               >
                 <ShoppingCart className="h-5 w-5 md:h-6 md:w-6" strokeWidth={1.5} />
               </button>
@@ -1081,6 +1115,28 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── Custom Toast Notification ── */}
+        {toast.show && (
+          <div
+            className={`fixed top-4 right-4 z-[9999] flex items-center space-x-3 px-5 py-3 rounded-md shadow-lg transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${
+              toast.type === 'success'
+                ? 'bg-[#4a403a] text-white border border-[#342f2d]'
+                : 'bg-red-50 text-red-800 border border-red-200'
+            }`}
+          >
+            {toast.type === 'success' ? (
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+            ) : (
+              <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+              </svg>
+            )}
+            <span className="font-serif text-sm md:text-base tracking-wide">{toast.message}</span>
           </div>
         )}
       </main>
