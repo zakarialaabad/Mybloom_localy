@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   Heart, ShoppingCart, Share2, ChevronUp, ChevronDown,
-  Truck, Clock, Banknote, Package, ChevronLeft, ChevronRight,
+  Truck, Clock, Banknote, Package, ChevronLeft, ChevronRight, X
 } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -71,9 +71,20 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const [recommendations,    setRecommendations]    = useState<ProductCardProps[]>([]);
   const [recommendationPage, setRecommendationPage] = useState(0);
   const [recommendationCount, setRecommendationCount] = useState(0);
+  const [isGalleryOpen, setGalleryOpen] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const addItem = useCartStore((s) => s.addItem);
+
+  // Lock body scroll when gallery is open
+  useEffect(() => {
+    if (isGalleryOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => { document.body.style.overflow = 'unset'; };
+  }, [isGalleryOpen]);
 
   // ─── Fetch product ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -367,36 +378,47 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 )}
 
                 {/* Image Carousel */}
-                <div className="relative w-full h-full">
+                <div 
+                  className="relative w-full h-full cursor-zoom-in group/zoom bg-white"
+                  onClick={() => setGalleryOpen(true)}
+                >
                   <Image
                     src={mainImage}
                     alt={product.name}
                     fill
-                    className="object-cover transition-opacity duration-300"
+                    className="object-cover transition-transform duration-500 group-hover/zoom:scale-105"
                   />
+                  {/* Zoom hint overlay */}
+                  <div className="absolute inset-0 bg-black/0 group-hover/zoom:bg-black/5 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover/zoom:opacity-100 pointer-events-none">
+                    <span className="bg-white/90 backdrop-blur-sm text-gray-900 px-4 py-2 flex items-center gap-2 rounded-full text-sm font-medium shadow-sm invisible md:visible transform translate-y-4 group-hover/zoom:translate-y-0 transition-all duration-300">
+                      Click to Enlarge
+                    </span>
+                  </div>
 
                   {/* Carousel Arrows */}
                   {images.length > 1 && (
                     <>
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           const idx = images.indexOf(mainImage);
                           const prev = idx > 0 ? images[idx - 1] : images[images.length - 1];
                           setMainImage(prev);
                         }}
-                        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/40 p-1.5 text-gray-800 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/60 p-2 text-gray-900 shadow-sm backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 z-20"
                       >
-                        <ChevronLeft className="h-5 w-5" />
+                        <ChevronLeft className="h-6 w-6" />
                       </button>
                       <button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           const idx = images.indexOf(mainImage);
                           const next = idx < images.length - 1 ? images[idx + 1] : images[0];
                           setMainImage(next);
                         }}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/40 p-1.5 text-gray-800 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity"
+                        className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/60 p-2 text-gray-900 shadow-sm backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-all hover:bg-white hover:scale-110 z-20"
                       >
-                        <ChevronRight className="h-5 w-5" />
+                        <ChevronRight className="h-6 w-6" />
                       </button>
                     </>
                   )}
@@ -981,6 +1003,86 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           </section>
         )}
         </div>
+
+        {/* ── Fullscreen Image Gallery Modal ── */}
+        {isGalleryOpen && (
+          <div className="fixed inset-0 z-[100] flex flex-col bg-black/95 backdrop-blur-md animate-in fade-in duration-300">
+            {/* Top bar with Close & Counter */}
+            <div className="flex items-center justify-between p-4 sm:p-6 text-white/70 absolute top-0 w-full z-10 pointer-events-none">
+              {images.length > 0 && (
+                <span className="text-sm font-medium tracking-widest bg-black/50 px-3 py-1 rounded-full">
+                  {images.indexOf(mainImage) + 1} / {images.length}
+                </span>
+              )}
+              <button
+                onClick={() => setGalleryOpen(false)}
+                className="p-2.5 bg-black/50 hover:text-white hover:bg-white/20 rounded-full transition-all active:scale-95 pointer-events-auto"
+                aria-label="Close gallery"
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            {/* Main Image Area */}
+            <div className="flex-1 relative w-full flex items-center justify-center mt-16 sm:mt-0 p-4 sm:p-12 overflow-hidden touch-pan-x">
+              <div className="relative w-full h-full max-w-5xl mx-auto">
+                <Image
+                  src={mainImage}
+                  alt={product.name}
+                  fill
+                  className="object-contain"
+                  quality={100}
+                  priority
+                />
+              </div>
+              {images.length > 1 && (
+                <>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const idx = images.indexOf(mainImage);
+                      setMainImage(idx > 0 ? images[idx - 1] : images[images.length - 1]);
+                    }} 
+                    className="absolute left-2 sm:left-8 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all active:scale-95 hidden sm:flex"
+                  >
+                    <ChevronLeft className="h-8 w-8" />
+                  </button>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      const idx = images.indexOf(mainImage);
+                      setMainImage(idx < images.length - 1 ? images[idx + 1] : images[0]);
+                    }} 
+                    className="absolute right-2 sm:right-8 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all active:scale-95 hidden sm:flex"
+                  >
+                    <ChevronRight className="h-8 w-8" />
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Thumbnails Slider */}
+            {images.length > 1 && (
+              <div className="h-28 sm:h-32 w-full flex-shrink-0 flex items-center justify-center pb-4 sm:pb-6">
+                <div className="flex gap-3 sm:gap-4 overflow-x-auto px-4 max-w-full scrollbar-hide py-2 snap-x snap-mandatory">
+                  {images.map((img, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => setMainImage(img)}
+                      className={`relative shrink-0 w-16 h-20 sm:w-20 sm:h-24 rounded-md overflow-hidden transition-all duration-300 snap-center ${
+                        mainImage === img 
+                          ? 'ring-2 ring-white scale-105 opacity-100 shadow-xl' 
+                          : 'opacity-40 hover:opacity-100 ring-1 ring-white/20 hover:scale-100'
+                      }`}
+                    >
+                      <Image src={img} alt={`Gallery thumbnail ${idx + 1}`} fill className="object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </main>
       <Footer />
     </div>
