@@ -257,7 +257,7 @@ export default function CategoriesSection() {
               {selectedIngredients.length > 0 && (
                 <Link
                   href={`/collection?${selectedIngredients.map((id) => `ingredient=${id}`).join('&')}`}
-                  className="inline-flex items-center justify-center bg-[#da2966] px-8 py-3 text-sm font-bold text-white shadow-md hover:bg-[#c7235a] transition-colors rounded-md font-serif italic"
+                  className="inline-flex items-center justify-center bg-[#da2966] px-6 md:px-8 py-2.5 md:py-3 text-sm font-bold text-white shadow-md hover:bg-[#c7235a] transition-colors rounded-md font-serif italic whitespace-nowrap"
                 >
                   View Collection ›
                 </Link>

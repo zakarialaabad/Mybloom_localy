@@ -71,7 +71,7 @@ export default function BestSellers() {
     <section id="best-sellers" className="pb-24 pt-16">
       {/* Section header */}
       <SectionContainer className="mb-8 md:mb-10">
-        <div className="flex flex-col items-start gap-4 md:flex-row md:items-end md:justify-between md:gap-8">
+        <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between md:gap-8">
           <div className="max-w-3xl">
             <h2 className="mb-4 font-serif text-4xl font-bold text-gray-900 tracking-tight">
               Best <span className="text-[#df4079] italic font-light ml-1" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>Sellers</span>
@@ -82,7 +82,7 @@ export default function BestSellers() {
           </div>
           <Link
             href="/collection?featured=1"
-            className="mt-2 md:mt-0 flex w-auto items-center justify-center rounded-sm bg-[#4a403a] px-6 md:px-8 py-2.5 md:py-3 text-xs md:text-sm font-bold font-serif italic text-white shadow-sm transition-colors hover:bg-[#3a322d] whitespace-nowrap"
+            className="mt-2 md:mt-0 inline-flex items-center justify-center bg-[#4a403a] px-6 md:px-8 py-2.5 md:py-3 text-sm font-bold text-white shadow-md hover:bg-[#3a322d] transition-colors rounded-md font-serif italic whitespace-nowrap"
           >
             Shop Best Sellers ›
           </Link>

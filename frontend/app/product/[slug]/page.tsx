@@ -11,6 +11,7 @@ import {
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import ProductCard, { type ProductCardProps } from '@/components/ui/ProductCard';
+import ImageGalleryModal from '@/components/ui/ImageGalleryModal';
 import { LoadingSpinner } from '@/components/Skeleton';
 import { productService, Product, ProductVariant } from '@/services/api';
 import useCartStore from '@/store/cart';
@@ -72,7 +73,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const [recommendationPage, setRecommendationPage] = useState(0);
   const [recommendationCount, setRecommendationCount] = useState(0);
   const [isGalleryOpen, setGalleryOpen] = useState(false);
-  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' }>({ show: false, message: '', type: 'success' });
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' | 'favorite' }>({ show: false, message: '', type: 'success' });
   const carouselRef = useRef<HTMLDivElement>(null);
 
   const addItem = useCartStore((s) => s.addItem);
@@ -85,19 +86,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     }
   }, [toast.show]);
 
-  const showToast = (message: string, type: 'success' | 'error') => {
+  const showToast = (message: string, type: 'success' | 'error' | 'favorite') => {
     setToast({ show: true, message, type });
   };
-
-  // Lock body scroll when gallery is open
-  useEffect(() => {
-    if (isGalleryOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => { document.body.style.overflow = 'unset'; };
-  }, [isGalleryOpen]);
 
   // ─── Fetch product ──────────────────────────────────────────────────────────
   useEffect(() => {
@@ -189,7 +180,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const handleWishlist = () => {
     if (!product) return;
     toggleWishlist(product.id);
-    setWished((w) => !w);
+    const newState = !wished;
+    setWished(newState);
+    showToast(newState ? 'Ajouté aux favoris' : 'Retiré des favoris', 'favorite');
   };
 
   // ─── Carousel scroll handlers ───────────────────────────────────────────────
@@ -1039,84 +1032,14 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         </div>
 
         {/* ── Fullscreen Image Gallery Modal ── */}
-        {isGalleryOpen && (
-          <div className="fixed inset-0 z-[100] flex flex-col bg-black/95 backdrop-blur-md animate-in fade-in duration-300">
-            {/* Top bar with Close & Counter */}
-            <div className="flex items-center justify-between p-4 sm:p-6 text-white/70 absolute top-0 w-full z-10 pointer-events-none">
-              {images.length > 0 && (
-                <span className="text-sm font-medium tracking-widest bg-black/50 px-3 py-1 rounded-full">
-                  {images.indexOf(mainImage) + 1} / {images.length}
-                </span>
-              )}
-              <button
-                onClick={() => setGalleryOpen(false)}
-                className="p-2.5 bg-black/50 hover:text-white hover:bg-white/20 rounded-full transition-all active:scale-95 pointer-events-auto"
-                aria-label="Close gallery"
-              >
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-
-            {/* Main Image Area */}
-            <div className="flex-1 relative w-full flex items-center justify-center mt-16 sm:mt-0 p-4 sm:p-12 overflow-hidden touch-pan-x">
-              <div className="relative w-full h-full max-w-5xl mx-auto">
-                <Image
-                  src={mainImage}
-                  alt={product.name}
-                  fill
-                  className="object-contain"
-                  quality={100}
-                  priority
-                />
-              </div>
-              {images.length > 1 && (
-                <>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const idx = images.indexOf(mainImage);
-                      setMainImage(idx > 0 ? images[idx - 1] : images[images.length - 1]);
-                    }} 
-                    className="absolute left-2 sm:left-8 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all active:scale-95 hidden sm:flex"
-                  >
-                    <ChevronLeft className="h-8 w-8" />
-                  </button>
-                  <button 
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const idx = images.indexOf(mainImage);
-                      setMainImage(idx < images.length - 1 ? images[idx + 1] : images[0]);
-                    }} 
-                    className="absolute right-2 sm:right-8 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white backdrop-blur-sm transition-all active:scale-95 hidden sm:flex"
-                  >
-                    <ChevronRight className="h-8 w-8" />
-                  </button>
-                </>
-              )}
-            </div>
-
-            {/* Thumbnails Slider */}
-            {images.length > 1 && (
-              <div className="h-28 sm:h-32 w-full flex-shrink-0 flex items-center justify-center pb-4 sm:pb-6">
-                <div className="flex gap-3 sm:gap-4 overflow-x-auto px-4 max-w-full scrollbar-hide py-2 snap-x snap-mandatory">
-                  {images.map((img, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => setMainImage(img)}
-                      className={`relative shrink-0 w-16 h-20 sm:w-20 sm:h-24 rounded-md overflow-hidden transition-all duration-300 snap-center ${
-                        mainImage === img 
-                          ? 'ring-2 ring-white scale-105 opacity-100 shadow-xl' 
-                          : 'opacity-40 hover:opacity-100 ring-1 ring-white/20 hover:scale-100'
-                      }`}
-                    >
-                      <Image src={img} alt={`Gallery thumbnail ${idx + 1}`} fill className="object-cover" />
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+        <ImageGalleryModal
+          isOpen={isGalleryOpen}
+          onClose={() => setGalleryOpen(false)}
+          images={images}
+          currentImage={mainImage}
+          onImageChange={setMainImage}
+          altText={product.name}
+        />
 
         {/* ── Custom Toast Notification ── */}
         {toast.show && (
@@ -1124,6 +1047,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             className={`fixed top-4 right-4 z-[9999] flex items-center space-x-3 px-5 py-3 rounded-md shadow-lg transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${
               toast.type === 'success'
                 ? 'bg-[#4a403a] text-white border border-[#342f2d]'
+                : toast.type === 'favorite'
+                ? 'bg-[#df4079]/90 backdrop-blur-md text-white border border-[#df4079]/50 shadow-[0_4px_20px_-4px_rgba(223,64,121,0.4)]'
                 : 'bg-red-50 text-red-800 border border-red-200'
             }`}
           >
@@ -1131,6 +1056,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
               </svg>
+            ) : toast.type === 'favorite' ? (
+              <Heart className="w-5 h-5 text-white fill-white" />
             ) : (
               <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>

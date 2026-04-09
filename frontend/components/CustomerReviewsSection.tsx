@@ -1,6 +1,7 @@
 ﻿"use client";
 import { useEffect, useRef, useState } from 'react';
 import SectionContainer from '@/components/SectionContainer';
+import ImageGalleryModal from '@/components/ui/ImageGalleryModal';
 import { reviewService, ReviewItem, RatingSummary } from '@/services/api';
 
 function StarRating({ rating }: { rating: number }) {
@@ -27,6 +28,20 @@ export default function CustomerReviewsSection() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [canLeft,  setCanLeft]  = useState(false);
   const [canRight, setCanRight] = useState(false);
+
+  // Gallery State
+  const [isGalleryOpen, setGalleryOpen] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [currentImage, setCurrentImage] = useState('');
+
+  const openGallery = (clickedImageUrl: string) => {
+    const allImages = reviews.flatMap(r => r.images.map(img => img.image_url));
+    if (allImages.length > 0) {
+      setGalleryImages(allImages);
+      setCurrentImage(clickedImageUrl);
+      setGalleryOpen(true);
+    }
+  };
 
   const updateArrows = () => {
     const el = trackRef.current;
@@ -117,8 +132,11 @@ export default function CustomerReviewsSection() {
               {reviews.map((review) => (
                 <div key={review.id} className="flex-none w-[calc(50%-12px)] snap-start bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
                   {review.images.length > 0 && (
-                    <div className="aspect-square w-full rounded-xl overflow-hidden bg-gray-100">
-                      <img alt="Review" className="w-full h-full object-contain mix-blend-multiply p-4" src={review.images[0].image_url} />
+                    <div 
+                      className="aspect-square w-full rounded-xl overflow-hidden bg-gray-100 cursor-pointer group"
+                      onClick={() => openGallery(review.images[0].image_url)}
+                    >
+                      <img alt="Review" className="w-full h-full object-contain mix-blend-multiply p-4 transition-transform duration-500 group-hover:scale-110" src={review.images[0].image_url} />
                     </div>
                   )}
                   <div className="space-y-2">
@@ -152,6 +170,16 @@ export default function CustomerReviewsSection() {
           
         </div>
       </SectionContainer>
+      
+      {/* Shared Fullscreen Image Modal */}
+      <ImageGalleryModal
+        isOpen={isGalleryOpen}
+        onClose={() => setGalleryOpen(false)}
+        images={galleryImages}
+        currentImage={currentImage}
+        onImageChange={setCurrentImage}
+        altText="Customer Review Image"
+      />
     </section>
   );
 }
