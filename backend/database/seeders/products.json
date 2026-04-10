@@ -1881,7 +1881,7 @@
       {
         "id": 35,
         "name": "212",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Musqué",
         "img_main": "/images/212 femme/212-femme-img_main.jpg",
         "subtitle": "L'énergie urbaine de New York",
         "description": "212 de Carolina Herrera est un parfum floral musqué moderne qui capture l'esprit dynamique et sophistiqué de la femme urbaine. Frais et pétillant, il allie des notes de fleur d'oranger, gardénia et musc blanc.",
@@ -1933,7 +1933,7 @@
       {
         "id": 36,
         "name": "Bad Boy",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Boisé",
         "img_main": "/images/Bad diesel/bad-diesel-img_main.jpg",
         "subtitle": "Osez être différent",
         "description": "Bad Boy de Diesel est un parfum oriental boisé audacieux qui incarne la dualité masculine moderne. Avec ses notes de poivre noir, bergamote, cèdre et cacao, il représente l'homme confiant qui ose être lui-même.",
@@ -1983,7 +1983,7 @@
       {
         "id": 37,
         "name": "Burberry Goddess",
-        "type_produit": "Parfum",
+        "type_produit": "Gourmand Floral",
         "img_main": "/images/Burberry goddess/burberry-goddess-img_main.jpg",
         "subtitle": "La force féminine réinventée",
         "description": "Burberry Goddess est un parfum gourmand floral moderne qui célèbre la confiance et la force féminine. Avec ses notes de vanille, lavande et cacao, ce parfum luxueux offre une signature olfactive unique et captivante.",
@@ -2036,7 +2036,7 @@
       {
         "id": 38,
         "name": "Cinema",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Floral",
         "img_main": "/images/Cinema/cinema-img_main.jpg",
         "subtitle": "L'élégance hollywoodienne",
         "description": "Cinema d'Yves Saint Laurent est un parfum oriental floral glamour qui évoque le charme et l'élégance du cinéma d'or. Avec ses notes de mandarine, jasmin, ambre et vanille, il incarne la féminité sophistiquée et captivante.",
@@ -2088,7 +2088,7 @@
       {
         "id": 39,
         "name": "Dior Addict",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Floral",
         "img_main": "/images/Dior addict/dior-addict-img_main.jpg",
         "subtitle": "La séduction absolue",
         "description": "Dior Addict est un parfum oriental floral sensuel et addictif. Avec ses notes de fleur d'oranger de Tunisie, jasmin sambac et vanille bourbon, il incarne la féminité moderne, audacieuse et irrésistible.",
@@ -2141,7 +2141,7 @@
       {
         "id": 40,
         "name": "Good Girl",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Floral",
         "img_main": "/images/Good girl/good-girl-img_main.jpg",
         "subtitle": "Osez votre dualité",
         "description": "Good Girl de Carolina Herrera est un parfum oriental floral audacieux qui célèbre la dualité féminine. Avec ses notes de jasmin, tonka et cacao, dans un flacon iconique en forme d'escarpin, il incarne la femme moderne, à la fois bonne et audacieuse.",
@@ -2194,7 +2194,7 @@
       {
         "id": 41,
         "name": "Idôle",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Chypré",
         "img_main": "/images/Idole/idole-img_main.jpg",
         "subtitle": "Soyez votre propre idole",
         "description": "Idôle de Lancôme est un parfum floral chypré frais et moderne qui célèbre la nouvelle génération de femmes accomplies. Avec ses notes de poire, rose et jasmin, dans un flacon infiniment fin et rechargeable, il incarne la féminité forte et indépendante.",
@@ -2247,7 +2247,7 @@
       {
         "id": 42,
         "name": "La Nuit Trésor",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Gourmand",
         "img_main": "/images/La nuit tresor/la-nuit-tresor-img_main.jpg",
         "subtitle": "L'amour à son apogée",
         "description": "La Nuit Trésor de Lancôme est un parfum oriental gourmand sensuel et envoûtant. Avec ses notes de framboise, rose, vanille et praline, il capture l'essence de l'amour passionné et de la séduction nocturne.",
@@ -2299,7 +2299,7 @@
       {
         "id": 43,
         "name": "Light Blue Femme",
-        "type_produit": "Parfum",
+        "type_produit": "Fruité Floral",
         "img_main": "/images/light bleu femme/light-blue-femme-img_main.jpg",
         "subtitle": "L'esprit méditerranéen",
         "description": "Light Blue de Dolce & Gabbana est un parfum fruité floral frais et lumineux qui capture l'essence de l'été méditerranéen. Avec ses notes de citron de Sicile, pomme Granny Smith et jasmin, il incarne la joie de vivre italienne.",
@@ -2352,7 +2352,7 @@
       {
         "id": 44,
         "name": "L'Interdit Rouge",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Épicé",
         "img_main": "/images/l'interdit rouge/linterdit-rouge-img_main.jpg",
         "subtitle": "Osez l'interdit ultime",
         "description": "L'Interdit Rouge de Givenchy est un parfum floral épicé audacieux et captivant. Avec ses notes de gingembre, fleur d'oranger, tubéreuse et santal, il représente une féminité ardente et passionnée qui ose franchir toutes les limites.",
@@ -2405,7 +2405,7 @@
       {
         "id": 45,
         "name": "Miss Dior",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Chypré",
         "img_main": "/images/Miss laverne/miss-dior-img_main.jpg",
         "subtitle": "L'amour toujours",
         "description": "Miss Dior est un parfum floral chypré frais et romantique. Avec ses notes de mandarine sanguine, rose de Grasse et patchouli blanc, il incarne l'optimisme, la féminité joyeuse et l'élégance parisienne intemporelle.",
@@ -2459,7 +2459,7 @@
       {
         "id": 46,
         "name": "Nina",
-        "type_produit": "Parfum",
+        "type_produit": "Fruité Gourmand",
         "img_main": "/images/Nina Ricci/nina-ricci-img_main.jpg",
         "subtitle": "Croquez la vie à pleines dents",
         "description": "Nina de Nina Ricci est un parfum fruité gourmand pétillant et joyeux. Avec ses notes de citron, pomme caramel et vanille, dans son flacon iconique en forme de pomme, il incarne la jeunesse, la fraîcheur et la gourmandise.",
@@ -2512,7 +2512,7 @@
       {
         "id": 47,
         "name": "Olympéa",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Floral Aquatique",
         "img_main": "/images/Olympeca/olympea-img_main.jpg",
         "subtitle": "La déesse moderne",
         "description": "Olympéa de Paco Rabanne est un parfum oriental floral aquatique puissant et sensuel. Avec ses notes de mandarine verte, jasmin, sel marin, ambre et vanille, il célèbre la femme triomphante, divine et irrésistible.",
@@ -2565,7 +2565,7 @@
       {
         "id": 48,
         "name": "Panda",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Boisé",
         "img_main": "/images/Panda/panda-img_main.jpg",
         "subtitle": "L'élégance contemporaine",
         "description": "Panda de Paco Rabanne est un parfum floral boisé moderne et sophistiqué. Créé pour la femme urbaine contemporaine, il allie fraîcheur et sensualité dans une composition élégante et raffinée.",
@@ -2611,7 +2611,7 @@
       {
         "id": 49,
         "name": "Quelques Notes d'Amour",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Fruité",
         "img_main": "/images/Quelque notees damour/quelques-notes-damour-img_main.jpg",
         "subtitle": "Une déclaration olfactive",
         "description": "Quelques Notes d'Amour de Van Cleef & Arpels est un parfum floral fruité élégant et romantique. Avec ses notes de jasmin, rose, pêche et ambre, il célèbre l'amour sous toutes ses formes avec raffinement et poésie.",
@@ -2664,7 +2664,7 @@
       {
         "id": 50,
         "name": "Sì",
-        "type_produit": "Parfum",
+        "type_produit": "Chypré Fruité",
         "img_main": "/images/Si/si-img_main.jpg",
         "subtitle": "Dites oui à la vie",
         "description": "Sì de Giorgio Armani est un parfum chypré fruité élégant et moderne. Avec ses notes de cassis, rose de mai, musc et patchouli, il célèbre la féminité affirmée et l'indépendance de la femme qui dit oui à ses choix.",
@@ -2717,7 +2717,7 @@
       {
         "id": 51,
         "name": "Y pour Homme",
-        "type_produit": "Parfum",
+        "type_produit": "Aromatique Fougère",
         "img_main": "/images/YSI homme/ysl-homme-img_main.jpg",
         "subtitle": "Osez poser la question",
         "description": "Y pour Homme d'Yves Saint Laurent est un parfum aromatique fougère moderne et audacieux. Avec ses notes de bergamote, sauge, géranium et bois de cèdre, il incarne l'homme qui ose accomplir ses rêves et réussit.",
@@ -2769,7 +2769,7 @@
       {
         "id": 52,
         "name": "Amira Al Arab",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental",
         "img_main": "/images/أميرة العرب/amira-al-arab-img_main.jpg",
         "subtitle": "La princesse des parfums arabes",
         "description": "Amira Al Arab est un parfum oriental luxueux et raffiné. Avec ses notes de rose, oud, safran et ambre, il incarne l'élégance et la richesse de la tradition parfumée arabe, créant une signature olfactive royale et envoûtante.",
@@ -2822,7 +2822,7 @@
       {
         "id": 53,
         "name": "Azzaro Wanted Girl",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Oriental Gourmand",
         "img_main": "/images/Azzaro wanted girl/azzaro-wanted-girl-img_main.jpg",
         "subtitle": "Affichez vos désirs",
         "description": "Azzaro Wanted Girl est un parfum floral oriental audacieux et gourmand. Avec ses notes de fleur d'oranger, dulce de leche et fève tonka, il célèbre la femme qui ose affirmer ses envies et sa féminité décomplexée.",
@@ -2875,7 +2875,7 @@
       {
         "id": 54,
         "name": "Black Opium",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Gourmand",
         "img_main": "/images/Black Opium/black-opium-img_main.jpg",
         "subtitle": "L'addiction assumée",
         "description": "Black Opium d'Yves Saint Laurent est un parfum oriental gourmand moderne et addictif. Avec ses notes de café noir, vanille et fleur blanche, il incarne la féminité rock, sensuelle et décomplexée de la femme nocturne.",
@@ -2929,7 +2929,7 @@
       {
         "id": 55,
         "name": "Burberry Her",
-        "type_produit": "Parfum",
+        "type_produit": "Gourmand Fruité",
         "img_main": "/images/Burberry her/burberry-her-img_main.jpg",
         "subtitle": "L'esprit de Londres",
         "description": "Burberry Her est un parfum gourmand fruité pétillant et joyeux. Avec ses notes de fruits rouges, jasmin et musc, il capture l'énergie vibrante de Londres et célèbre la féminité londonienne moderne, libre et audacieuse.",
@@ -2981,7 +2981,7 @@
       {
         "id": 56,
         "name": "Coco Mademoiselle",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental",
         "img_main": "/images/Coco Mademosseille/coco-mademoiselle-img_main.jpg",
         "subtitle": "L'esprit d'indépendance",
         "description": "Coco Mademoiselle de Chanel est un parfum oriental frais intemporel et élégant. Avec ses notes d'orange, rose, jasmin et patchouli, il incarne la femme libre, audacieuse et élégante dans l'esprit de Coco Chanel.",
@@ -3035,7 +3035,7 @@
       {
         "id": 57,
         "name": "D&G L'Impératrice",
-        "type_produit": "Parfum",
+        "type_produit": "Fruité Aquatique",
         "img_main": "/images/D and G l'imperatrice/dg-limperatrice-img_main.jpg",
         "subtitle": "La fraîcheur impériale",
         "description": "D&G L'Impératrice est un parfum fruité aquatique frais et pétillant. Avec ses notes de kiwi, pastèque et musc rose, il évoque l'exotisme rafraîchissant et la joie de vivre méditerranéenne dans toute sa splendeur.",
@@ -3088,7 +3088,7 @@
       {
         "id": 58,
         "name": "Evidence",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Boisé",
         "img_main": "/images/Evidence/evidence-img_main.jpg",
         "subtitle": "L'évidence de la féminité",
         "description": "Evidence d'Yves Rocher est un parfum oriental boisé sensuel et enveloppant. Avec ses notes de bois précieux, jasmin et musc, il révèle la féminité naturelle et magnétique de la femme qui s'assume pleinement.",
@@ -3140,7 +3140,7 @@
       {
         "id": 59,
         "name": "Hypnotic Poison",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Ambré",
         "img_main": "/images/Hypnotic poison/hypnotic-poison-img_main.jpg",
         "subtitle": "Le philtre envoûtant",
         "description": "Hypnotic Poison de Dior est un parfum oriental ambré mystérieux et captivant. Avec ses notes de vanille, amande amère, jasmin sambac et bois de santal, il ensorcelle et fascine par sa sensualité magnétique et enivrante.",
@@ -3194,7 +3194,7 @@
       {
         "id": 60,
         "name": "La Lune",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Aldéhydé",
         "img_main": "/images/La luna/la-luna-img_main.jpg",
         "subtitle": "La lumière nocturne",
         "description": "La Lune de Prada est un parfum floral aldéhydé élégant et raffiné. Inspiré par la mystique de la lune, il allie des notes de citron, mimosa et ambre gris pour créer une aura lumineuse et sophistiquée.",
@@ -3243,7 +3243,7 @@
       {
         "id": 61,
         "name": "La Vie Est Belle",
-        "type_produit": "Parfum",
+        "type_produit": "Gourmand Floral",
         "img_main": "/images/La vie est belle/la-vie-est-belle-img_main.jpg",
         "subtitle": "Choisissez le bonheur",
         "description": "La Vie Est Belle de Lancôme est un parfum gourmand floral iris luxueux et envoûtant. Avec ses notes de cassis, poire, iris, praline et vanille, il célèbre la vie et le bonheur avec une élégance gourmande irrésistible.",
@@ -3297,7 +3297,7 @@
       {
         "id": 62,
         "name": "L'Interdit",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Blanc",
         "img_main": "/images/l'interdit/linterdit-img_main.jpg",
         "subtitle": "Osez l'inattendu",
         "description": "L'Interdit de Givenchy est un parfum floral blanc audacieux et lumineux. Avec ses notes de fleur d'oranger, jasmin, tubéreuse et sésame, il célèbre la féminité qui ose défier les conventions et s'affirmer librement.",
@@ -3350,7 +3350,7 @@
       {
         "id": 63,
         "name": "Miss Dior Chérie",
-        "type_produit": "Parfum",
+        "type_produit": "Fruité Chypré",
         "img_main": "/images/Miss dior cherie/miss-dior-cherie-img_main.jpg",
         "subtitle": "La douceur pétillante",
         "description": "Miss Dior Chérie est un parfum fruité chypré pétillant et romantique. Avec ses notes de fraise, framboise, cerise, jasmin et patchouli, il capture l'esprit joyeux et insouciant de la jeunesse parisienne.",
@@ -3403,7 +3403,7 @@
       {
         "id": 64,
         "name": "Mon Paris",
-        "type_produit": "Parfum",
+        "type_produit": "Chypré Fruité Gourmand",
         "img_main": "/images/mon paris/mon-paris-img_main.jpg",
         "subtitle": "L'amour à Paris",
         "description": "Mon Paris d'Yves Saint Laurent est un parfum chypré fruité passionné et gourmand. Avec ses notes de fraise, framboise, poire, patchouli et musc blanc, il capture l'ivresse de l'amour dans la ville lumière.",
@@ -3456,7 +3456,7 @@
       {
         "id": 65,
         "name": "The One",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Floral",
         "img_main": "/images/One and only/one-and-only-img_main.jpg",
         "subtitle": "L'unique",
         "description": "The One de Dolce & Gabbana est un parfum oriental floral luxueux et enveloppant. Avec ses notes de litchi, pêche, jasmin, musc et ambre, il célèbre la féminité sophistiquée et sensuelle de la femme unique.",
@@ -3509,7 +3509,7 @@
       {
         "id": 66,
         "name": "Pure XS",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental",
         "img_main": "/images/Pur xs/pur-xs-img_main.jpg",
         "subtitle": "L'excès assumé",
         "description": "Pure XS de Paco Rabanne est un parfum oriental vanillé audacieux et addictif. Avec ses notes de gingembre, cannelle, vanille et myrrhe, il incarne la masculinité excessive, sensuelle et irrésistible.",
@@ -3562,7 +3562,7 @@
       {
         "id": 67,
         "name": "Scandal",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Gourmand",
         "img_main": "/images/Scandal/scandal-img_main.jpg",
         "subtitle": "Osez le scandale",
         "description": "Scandal de Jean Paul Gaultier est un parfum floral gourmand audacieux et addictif. Avec ses notes de miel, patchouli, gardénia et caramel, dans un flacon en forme de jambe, il incarne la féminité provocante et irrésistible.",
@@ -3615,7 +3615,7 @@
       {
         "id": 68,
         "name": "Bombshell Passion",
-        "type_produit": "Parfum",
+        "type_produit": "Fruité Floral",
         "img_main": "/images/Victoria sucret bombshell passion/victoria-secret-bombshell-passion-img_main.jpg",
         "subtitle": "La passion incarnée",
         "description": "Bombshell Passion de Victoria's Secret est un parfum fruité floral passionné et séduisant. Avec ses notes de pétales de pivoine, vanille et cerise, il capture l'essence de la féminité audacieuse et passionnée.",
@@ -3668,7 +3668,7 @@
       {
         "id": 69,
         "name": "Zara Woman",
-        "type_produit": "Parfum",
+        "type_produit": "Floral",
         "img_main": "/images/Zara/zara-img_main.jpg",
         "subtitle": "L'élégance accessible",
         "description": "Zara Woman est un parfum floral frais moderne et polyvalent. Créé pour la femme urbaine contemporaine, il offre une signature olfactive élégante et abordable pour le quotidien.",
@@ -3720,7 +3720,7 @@
       {
         "id": 70,
         "name": "Yara",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Gourmand",
         "img_main": "/images/يارا/yara-img_main.jpg",
         "subtitle": "L'élégance orientale",
         "description": "Yara de Lattafa est un parfum oriental gourmand riche et envoûtant. Inspiré des grandes fragrances de luxe, il allie vanille, orchidée et notes sucrées pour créer une signature olfactive captivante et abordable.",
@@ -3773,7 +3773,7 @@
       {
         "id": 71,
         "name": "Baccarat Rouge 540",
-        "type_produit": "Parfum",
+        "type_produit": "Ambré Floral",
         "img_main": "/images/Baccarat rouge/baccarat-rouge-img_main.jpg",
         "subtitle": "L'excellence olfactive",
         "description": "Baccarat Rouge 540 de Maison Francis Kurkdjian est un parfum ambré floral lumineux et sophistiqué. Avec ses notes de jasmin, safran, bois de cèdre et ambre gris, il incarne le luxe absolu et la créativité olfactive.",
@@ -3827,7 +3827,7 @@
       {
         "id": 72,
         "name": "Black Orchid",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Chypré",
         "img_main": "/images/Black orchid/black-orchid-img_main.jpg",
         "subtitle": "Le luxe sombre",
         "description": "Black Orchid de Tom Ford est un parfum oriental chypré luxueux et mystérieux. Avec ses notes d'orchidée noire, truffe, ylang-ylang, patchouli et chocolat noir, il incarne la sensualité sophistiquée et opulente.",
@@ -3881,7 +3881,7 @@
       {
         "id": 73,
         "name": "Chance",
-        "type_produit": "Parfum",
+        "type_produit": "Floral",
         "img_main": "/images/Chanel chance/chanel-chance-img_main.jpg",
         "subtitle": "Saisissez votre chance",
         "description": "Chance de Chanel est un parfum floral pétillant joyeux et imprévisible. Avec ses notes de pamplemousse rose, jasmin, iris et musc blanc, il célèbre la chance et les opportunités avec fraîcheur et élégance.",
@@ -3934,7 +3934,7 @@
       {
         "id": 74,
         "name": "Eros Femme",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Boisé Musqué",
         "img_main": "/images/Eros femme/eros-femme-img_main.jpg",
         "subtitle": "La déesse de l'amour",
         "description": "Eros Femme de Versace est un parfum floral boisé musqué sensuel et lumineux. Avec ses notes de citron de Sicile, jasmin sambac, pivoine et musc, il célèbre la passion amoureuse avec élégance et raffinement.",
@@ -3986,7 +3986,7 @@
       {
         "id": 75,
         "name": "Flora",
-        "type_produit": "Parfum",
+        "type_produit": "Floral",
         "img_main": "/images/Gucci Hora/gucci-flora-img_main.jpg",
         "subtitle": "Le jardin de Gucci",
         "description": "Flora de Gucci est un parfum floral moderne lumineux et joyeux. Avec ses notes de pivoine, osmanthus, rose et santal rose, il célèbre la féminité radieuse et la beauté naturelle dans un jardin florentin enchanté.",
@@ -4039,7 +4039,7 @@
       {
         "id": 76,
         "name": "La Belle",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Gourmand",
         "img_main": "/images/la belle/la-belle-img_main.jpg",
         "subtitle": "La beauté réinventée",
         "description": "La Belle de Jean Paul Gaultier est un parfum oriental gourmand audacieux et sensuel. Avec ses notes de poire, vanille, vétiver et bois de santal, dans un flacon sculpté féminin, il célèbre la beauté rebelle et affirmée.",
@@ -4092,7 +4092,7 @@
       {
         "id": 77,
         "name": "La Petite Robe Noire",
-        "type_produit": "Parfum",
+        "type_produit": "Fruité Gourmand",
         "img_main": "/images/La petite robe noire/la-petite-robe-noire-img_main.jpg",
         "subtitle": "L'audace en flacon",
         "description": "La Petite Robe Noire de Guerlain est un parfum fruité gourmand pétillant et moderne. Avec ses notes de cerise noire, amande, rose, thé et réglisse, il incarne la féminité parisienne audacieuse et rock.",
@@ -4145,7 +4145,7 @@
       {
         "id": 78,
         "name": "Light Blue Homme",
-        "type_produit": "Parfum",
+        "type_produit": "Aromatique Fruité",
         "img_main": "/images/Light blue Homme/light-blue-homme-img_main.jpg",
         "subtitle": "L'été méditerranéen masculin",
         "description": "Light Blue Homme de Dolce & Gabbana est un parfum aromatique fruité frais et vibrant. Avec ses notes de pamplemousse sicilien, genévrier, romarin et bois de rose, il incarne la virilité décontractée et l'esprit méditerranéen.",
@@ -4197,7 +4197,7 @@
       {
         "id": 79,
         "name": "My Way",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Blanc",
         "img_main": "/images/May way/may-way-img_main.jpg",
         "subtitle": "Tracez votre propre chemin",
         "description": "My Way de Giorgio Armani est un parfum floral blanc lumineux et durable. Avec ses notes de bergamote, fleur d'oranger, tubéreuse, jasmin et vanille, il célèbre les rencontres et les découvertes avec élégance et modernité.",
@@ -4250,7 +4250,7 @@
       {
         "id": 80,
         "name": "Mon Guerlain",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental",
         "img_main": "/images/Mon gurlain/mon-guerlain-img_main.jpg",
         "subtitle": "Ma femme, mon Guerlain",
         "description": "Mon Guerlain est un parfum oriental frais raffiné et envoûtant. Avec ses notes de lavande, vanille tahitensis, jasmin sambac et santal, il célèbre la féminité libre et passionnée avec élégance et sophistication.",
@@ -4303,7 +4303,7 @@
       {
         "id": 81,
         "name": "Poison Girl",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental Gourmand",
         "img_main": "/images/Poisson girl/poisson-girl-img_main.jpg",
         "subtitle": "L'arme de séduction",
         "description": "Poison Girl de Dior est un parfum oriental gourmand audacieux et addictif. Avec ses notes de fleur d'oranger amère, rose de Grasse, vanille et fève tonka, il incarne la jeune femme séductrice, spontanée et irrésistible.",
@@ -4356,7 +4356,7 @@
       {
         "id": 82,
         "name": "Sauvage",
-        "type_produit": "Parfum",
+        "type_produit": "Aromatique Fougère",
         "img_main": "/images/Sauvage/sauvage-img_main.jpg",
         "subtitle": "L'instinct sauvage",
         "description": "Sauvage de Dior est un parfum aromatique fougère frais et puissant. Avec ses notes de bergamote de Calabre, poivre de Sichuan, lavande et ambroxan, il incarne la masculinité naturelle, libre et noble.",
@@ -4410,7 +4410,7 @@
       {
         "id": 83,
         "name": "Sì Rouge",
-        "type_produit": "Parfum",
+        "type_produit": "Chypré Fruité",
         "img_main": "/images/Si rouge/si-rouge-img_main.jpg",
         "subtitle": "La passion affirmée",
         "description": "Sì Rouge de Giorgio Armani est un parfum chypré fruité intense et passionné. Avec ses notes de cassis, rose, davana et patchouli, il célèbre la féminité affirmée qui dit oui à la passion et à l'audace.",
@@ -4462,7 +4462,7 @@
       {
         "id": 84,
         "name": "Libre",
-        "type_produit": "Parfum",
+        "type_produit": "Floral Fougère",
         "img_main": "/images/ysl libre/ysl-libre-img_main.jpg",
         "subtitle": "La liberté affichée",
         "description": "Libre d'Yves Saint Laurent est un parfum floral fougère audacieux et moderne. Avec ses notes de mandarine, lavande, fleur d'oranger, jasmin et musc, il incarne la femme libre, forte et audacieuse qui vit sans compromis.",
@@ -4515,7 +4515,7 @@
       {
         "id": 85,
         "name": "Kalimat",
-        "type_produit": "Parfum",
+        "type_produit": "Oriental",
         "img_main": "/images/كلمات/kalimat-img_main.jpg",
         "subtitle": "Les mots précieux",
         "description": "Kalimat d'Arabian Oud est un parfum oriental luxueux riche et captivant. Avec ses notes de oud, rose, safran, ambre et musc, il incarne la tradition parfumée arabe dans toute sa splendeur et son raffinement.",

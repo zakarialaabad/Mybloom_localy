@@ -24,8 +24,8 @@ function productToCard(p: Product): ProductCardProps {
     secondaryImageUrl: p.images?.[1]?.image_url,
     isBestSeller:  p.is_featured,
     badge:         p.badges?.[0],
-    category:      p.category?.name,
-    productType:   p.product_type?.name === 'Parfum' ? (p.brand?.name ?? '') : (p.product_type?.name ?? ''),
+    category:      p.category?.name?.toLowerCase() === 'parfum' ? (p.product_type?.name ?? p.category?.name) : p.category?.name,
+    productType:   p.category?.name?.toLowerCase() === 'parfum' ? (p.brand?.name ?? p.product_type?.name ?? '') : (p.product_type?.name ?? ''),
   };
 }
 

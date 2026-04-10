@@ -40,8 +40,8 @@ function productToCard(p: Product) {
     reviewCount: p.review_count ?? 0,
     imageUrl: p.primary_image ?? FALLBACK_IMG,
     secondaryImageUrl: p.images?.[1]?.image_url,
-    category: p.category?.name,
-    productType: p.product_type?.name === 'Parfum' ? (p.brand?.name ?? '') : (p.product_type?.name ?? ''),
+    category: p.category?.name?.toLowerCase() === 'parfum' ? (p.product_type?.name ?? p.category?.name) : p.category?.name,
+    productType: p.category?.name?.toLowerCase() === 'parfum' ? (p.brand?.name ?? p.product_type?.name ?? '') : (p.product_type?.name ?? ''),
   };
 }
 
