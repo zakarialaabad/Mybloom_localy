@@ -41,9 +41,13 @@ class ProductJsonSeeder extends Seeder
         $products = $catalog['products'];
 
         // ════════════════════════════════════════════════════════════════
-        // STEP 1: Seed Brands
+        // STEP 1: Seed Brands — catalog brand + all unique per-product brands
         // ════════════════════════════════════════════════════════════════
-        $brandId = $this->seedBrand($catalog['brand']);
+        $catalogBrand = $catalog['brand'];
+        $this->seedBrand($catalogBrand); // ensure catalog brand exists
+
+        // Build a brand name → ID map for all unique brands in products
+        $brandMap = $this->seedAllBrands($products, $catalogBrand);
 
         // ════════════════════════════════════════════════════════════════
         // STEP 2: Seed Categories
@@ -66,7 +70,8 @@ class ProductJsonSeeder extends Seeder
         foreach ($products as $jsonProduct) {
             $this->seedProduct(
                 $jsonProduct,
-                $brandId,
+                $catalogBrand,
+                $brandMap,
                 $categoryMap,
                 $productTypeMap,
                 $ingredientMap
@@ -78,7 +83,7 @@ class ProductJsonSeeder extends Seeder
     }
 
     /**
-     * Seed brand and return its ID
+     * Seed a single brand and return its ID.
      */
     private function seedBrand(string $brandName): int
     {
@@ -96,6 +101,25 @@ class ProductJsonSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+    }
+
+    /**
+     * Seed all unique per-product brands and return a name → ID map.
+     */
+    private function seedAllBrands(array $products, string $catalogBrand): array
+    {
+        $names = [$catalogBrand => true];
+        foreach ($products as $p) {
+            if (!empty($p['brand'])) {
+                $names[$p['brand']] = true;
+            }
+        }
+
+        $map = [];
+        foreach (array_keys($names) as $name) {
+            $map[$name] = $this->seedBrand($name);
+        }
+        return $map;
     }
 
     /**
@@ -221,11 +245,15 @@ class ProductJsonSeeder extends Seeder
      */
     private function seedProduct(
         array $jsonProduct,
-        int $brandId,
+        string $catalogBrand,
+        array $brandMap,
         array $categoryMap,
         array $productTypeMap,
         array $ingredientMap
     ): void {
+        // Resolve per-product brand (fallback to catalog brand)
+        $brandName = $jsonProduct['brand'] ?? $catalogBrand;
+        $brandId   = $brandMap[$brandName] ?? ($brandMap[$catalogBrand] ?? 1);
         // Generate unique slug
         $baseSlug = Str::slug($jsonProduct['name']);
         $slug = $baseSlug;
@@ -246,7 +274,7 @@ class ProductJsonSeeder extends Seeder
         ];
         $gender = $genderMap[$jsonProduct['gender'] ?? 'unisex'] ?? 'unisex';
 
-        // Get category ID
+        // Get category ID (brand_id already resolved above)
         $categoryId = $categoryMap[$jsonProduct['category']] ?? null;
 
         // Get product type ID
@@ -281,10 +309,16 @@ class ProductJsonSeeder extends Seeder
         // Seed Product Images
         // ════════════════════════════════════════════════════════════════
         if (isset($jsonProduct['img_main'])) {
+            // Normalize image URL: ensure it starts with /images/
+            $imgMainUrl = $jsonProduct['img_main'];
+            if (!str_starts_with($imgMainUrl, '/')) {
+                $imgMainUrl = '/images/' . $imgMainUrl;
+            }
+
             // Insert main image
             DB::table('product_images')->insert([
                 'product_id' => $productId,
-                'url' => $jsonProduct['img_main'],
+                'url' => $imgMainUrl,
                 'alt' => $jsonProduct['name'] . ' - Main Image',
                 'sort_order' => 0,
                 'is_primary' => true,
@@ -292,7 +326,6 @@ class ProductJsonSeeder extends Seeder
             ]);
 
             // Scan the product folder for additional images
-            $imgMainUrl  = $jsonProduct['img_main'];                  // e.g. /images/Summer in Bali Body Butter/summer-in-bali-body-butter-img_main.png
             $folderUrl   = dirname($imgMainUrl);                       // e.g. /images/Summer in Bali Body Butter
             $mainFile    = basename($imgMainUrl);                      // e.g. summer-in-bali-body-butter-img_main.png
 

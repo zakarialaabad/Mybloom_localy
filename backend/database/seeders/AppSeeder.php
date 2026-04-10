@@ -12,6 +12,7 @@ class AppSeeder extends Seeder
             CategorySeederFrench::class,
             ProductTypeSeederFrench::class,
             IngredientSeederFrench::class,
+            BrandCompleteSeeder::class,
             ProductJsonSeeder::class,
             BrandLogoSeeder::class,
             ShippingMethodSeeder::class,

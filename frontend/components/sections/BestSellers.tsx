@@ -26,7 +26,7 @@ function productToCard(p: Product): ProductCardProps {
     isBestSeller:  p.is_featured,
     badge:         p.badges?.[0],
     category:      p.category?.name,
-    productType:   p.gender,
+    productType:   p.product_type?.name === 'Parfum' ? (p.brand?.name ?? '') : (p.product_type?.name ?? ''),
   };
 }
 

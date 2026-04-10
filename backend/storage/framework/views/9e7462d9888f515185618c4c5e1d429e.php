@@ -52,7 +52,7 @@
   /* ── Totals section ──────────────────────────────────────────────────── */
   .totals-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
   .totals-table td { padding: 8px 15px; font-size: 12px; border-bottom: 1px solid #eee; }
-  .totals-table tr:last-child td { border-bottom: none; }
+  .totals-table tr:last-child td { border-bottom: none; }                 
   .totals-table .label { color: #666; width: 50%; border-right: 1px solid #eee; }
   .totals-table .value { text-align: right; font-weight: 600; color: #666; }
   .totals-table .shipping .value { color: #da2966; }

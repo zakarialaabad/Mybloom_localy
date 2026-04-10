@@ -41,7 +41,7 @@ function productToCard(p: Product) {
     imageUrl: p.primary_image ?? FALLBACK_IMG,
     secondaryImageUrl: p.images?.[1]?.image_url,
     category: p.category?.name,
-    productType: p.gender,
+    productType: p.product_type?.name === 'Parfum' ? (p.brand?.name ?? '') : (p.product_type?.name ?? ''),
   };
 }
 

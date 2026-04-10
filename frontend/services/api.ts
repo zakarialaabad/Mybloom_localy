@@ -188,6 +188,7 @@ export interface Product {
   is_featured: boolean;
   brand: { id: number; name: string; slug: string };
   category: { id: number; name: string; slug: string };
+  product_type?: { id: number; name: string; slug: string };
   primary_image: string | null;
   images?: ProductImage[];
   sizes?: ProductSize[];
