@@ -253,9 +253,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         <LoadingSpinner />
         <Header />
         <main className="flex-grow bg-white">
-          <div className="container mx-auto px-4 py-12 max-w-7xl">
+          <div className="container mx-auto px-4 pt-6 pb-12 sm:pt-8 sm:pb-16 max-w-7xl">
             {/* Breadcrumb skeleton */}
-            <div className="flex gap-2 mb-8">
+            <div className="flex gap-2 mb-6 sm:mb-8">
               <div className="h-4 w-12 bg-gray-100 rounded animate-pulse" />
               <div className="h-4 w-4 bg-gray-100 rounded animate-pulse" />
               <div className="h-4 w-24 bg-gray-100 rounded animate-pulse" />
@@ -328,9 +328,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       {loading && <LoadingSpinner />}
 
       <main className="flex-grow bg-white">
-        <div className="container mx-auto px-4 py-12 sm:py-16 max-w-7xl scroll-smooth">
+        <div className="container mx-auto px-4 pt-6 pb-12 sm:pt-8 sm:pb-16 max-w-7xl scroll-smooth">
           {/* Breadcrumbs */}
-          <nav className="mb-8 text-sm text-gray-500">
+          <nav className="mb-6 sm:mb-8 text-sm text-gray-500">
             <Link href="/" className="hover:text-gray-900 transition-colors">Home</Link> /{' '}
             <Link href="/collection" className="hover:text-gray-900 transition-colors">{product.category?.name ?? 'Collection'}</Link> /{' '}
             <span className="text-gray-900">{product.name}</span>
