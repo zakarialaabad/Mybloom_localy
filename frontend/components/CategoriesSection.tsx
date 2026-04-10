@@ -1,40 +1,41 @@
  'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import SectionContainer from '@/components/SectionContainer';
 import { Skeleton } from '@/components/Skeleton';
 import useReferenceStore from '@/store/reference';
 
-/** Returns how many items to show per "page" based on viewport width */
-function usePerPage() {
-  const getPerPage = () => {
-    if (typeof window === 'undefined') return 6;
-    if (window.innerWidth < 640)  return 2;   // mobile  — 2 columns
-    if (window.innerWidth < 768)  return 4;   // sm      — 4 columns
-    return 6;                                  // md+     — 6 columns
-  };
-  const [perPage, setPerPage] = useState(getPerPage);
-  useEffect(() => {
-    const handler = () => setPerPage(getPerPage());
-    window.addEventListener('resize', handler);
-    return () => window.removeEventListener('resize', handler);
-  }, []);
-  return perPage;
-}
-
 export default function CategoriesSection() {
   const ingredients       = useReferenceStore((s) => s.ingredients);
   const ensureIngredients = useReferenceStore((s) => s.ensureIngredients);
-  const [page, setPage]  = useState(0);
   const [selectedIngredients, setSelectedIngredients] = useState<number[]>([]);
-  const perPage          = usePerPage();
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(false);
 
   useEffect(() => { ensureIngredients(); }, [ensureIngredients]);
 
-  // Reset to page 0 whenever perPage changes so we never land on an out-of-range page
-  useEffect(() => { setPage(0); }, [perPage]);
+  const syncArrows = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    setCanPrev(el.scrollLeft > 4);
+    setCanNext(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  };
+
+  useEffect(() => {
+    syncArrows();
+    window.addEventListener('resize', syncArrows);
+    return () => window.removeEventListener('resize', syncArrows);
+  }, [ingredients]);
+
+  const scroll = (dir: 'prev' | 'next') => {
+    const el = trackRef.current;
+    if (!el) return;
+    const scrollAmount = 300;
+    el.scrollBy({ left: dir === 'next' ? scrollAmount : -scrollAmount, behavior: 'smooth' });
+  };
 
   const toggleIngredient = (id: number) => {
     setSelectedIngredients((prev) =>
@@ -42,10 +43,6 @@ export default function CategoriesSection() {
     );
   };
 
-  const totalPages   = Math.ceil(ingredients.length / perPage);
-  const visible      = ingredients.slice(page * perPage, (page + 1) * perPage);
-  const canPrev      = page > 0;
-  const canNext      = page < totalPages - 1;
   return (
     <section className="bg-white">
       {/* ── Why Shop with us ────────────────────────────────────────────────── */}
@@ -170,41 +167,49 @@ export default function CategoriesSection() {
         </div>
 
         {/* Carousel / Grid */}
-        <div className="relative mt-12">
+        <div className="relative mt-12 px-4 md:px-12 group">
             {/* Left arrow */}
-            <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-0 md:-translate-x-4 z-10 flex">
-                <button
-                  onClick={() => setPage((p) => Math.max(0, p - 1))}
-                  disabled={!canPrev}
-                  className={`h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-opacity ${
-                    canPrev ? 'text-gray-600 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
-                  }`}
-                >
-                    ‹
-                </button>
-            </div>
+            {canPrev && (
+              <div className="absolute left-0 top-[40%] md:top-1/2 -translate-y-1/2 z-10 flex">
+                  <button
+                    onClick={() => scroll('prev')}
+                    className="h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md text-gray-600 hover:text-gray-900 transition-all opacity-0 group-hover:opacity-100 duration-300 hidden md:flex"
+                  >
+                      ‹
+                  </button>
+              </div>
+            )}
 
-            {/* 6-per-page grid */}
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 md:gap-x-8 md:gap-y-12">
+            {/* Scrollable Track */}
+            <div 
+              ref={trackRef}
+              onScroll={syncArrows}
+              className="flex gap-4 sm:gap-6 md:gap-8 overflow-x-auto scrollbar-hide pb-4 select-none"
+              style={{
+                scrollBehavior: 'smooth',
+                scrollbarWidth: 'none',
+                msOverflowStyle: 'none',
+              }}
+            >
             {ingredients.length === 0 ? (
               // Skeleton placeholders
-              Array.from({ length: perPage }).map((_, i) => (
-                <div key={i} className="flex flex-col items-center">
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="flex-none w-[120px] md:w-[160px] flex flex-col items-center">
                   <Skeleton className="w-32 h-32 md:w-40 md:h-40 rounded-full mb-3 md:mb-6" />
                   <Skeleton className="h-3 w-20 rounded" />
                 </div>
               ))
             ) : (
-              visible.map((ingredient) => {
+              ingredients.map((ingredient) => {
               const isSelected = selectedIngredients.includes(ingredient.id);
               
               return (
                 <button
                   key={ingredient.id}
                   onClick={() => toggleIngredient(ingredient.id)}
-                  className="group block text-center focus:outline-none"
+                  className="flex-none w-[120px] md:w-[160px] group/item block text-center focus:outline-none"
                 >
-                    <div className={`relative mx-auto h-32 w-32 md:h-40 md:w-40 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:scale-105 ring-2 ${
+                    <div className={`relative mx-auto h-32 w-32 md:h-40 md:w-40 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover/item:scale-105 ring-2 ${
                       isSelected ? 'ring-[#da2966]' : 'ring-transparent'
                     }`}>
                         <Image
@@ -227,33 +232,20 @@ export default function CategoriesSection() {
             </div>
 
             {/* Right arrow */}
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-0 md:translate-x-4 z-10 flex">
-                <button
-                  onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                  disabled={!canNext}
-                  className={`h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-opacity ${
-                    canNext ? 'text-gray-600 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
-                  }`}
-                >
-                    ›
-                </button>
-            </div>
+            {canNext && (
+              <div className="absolute right-0 top-[40%] md:top-1/2 -translate-y-1/2 translate-x-0 md:translate-x-4 z-10 flex">
+                  <button
+                    onClick={() => scroll('next')}
+                    className="h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-md text-gray-600 hover:text-gray-900 transition-all opacity-0 group-hover:opacity-100 duration-300 hidden md:flex"
+                  >
+                      ›
+                  </button>
+              </div>
+            )}
 
             {/* Page dots and View Collection button */}
             <div className="mt-8 flex flex-col items-center gap-6">
-              {totalPages > 1 && (
-                <div className="flex justify-center gap-2">
-                  {Array.from({ length: totalPages }).map((_, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setPage(i)}
-                      className={`h-1.5 rounded-full transition-all ${
-                        i === page ? 'w-6 bg-[#4a403a]' : 'w-1.5 bg-gray-300 hover:bg-gray-400'
-                      }`}
-                    />
-                  ))}
-                </div>
-              )}
+              {/* Dots removed for drag-scroll layout */}
               {selectedIngredients.length > 0 && (
                 <Link
                   href={`/collection?${selectedIngredients.map((id) => `ingredient=${id}`).join('&')}`}

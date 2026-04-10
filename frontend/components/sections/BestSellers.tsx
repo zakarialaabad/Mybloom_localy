@@ -62,9 +62,12 @@ export default function BestSellers() {
   const scroll = (dir: 'prev' | 'next') => {
     const el = trackRef.current;
     if (!el) return;
-    // Scroll by one card width (track width / VISIBLE)
-    const cardWidth = el.scrollWidth / (products.length || 1);
-    el.scrollBy({ left: dir === 'next' ? cardWidth : -cardWidth, behavior: 'smooth' });
+    const scrollAmount = 320; // Approximate width of 1 ProductCard + gap
+    if (dir === 'prev') {
+      el.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+    } else {
+      el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
   };
 
   return (
@@ -91,65 +94,74 @@ export default function BestSellers() {
 
       {/* Carousel */}
       <SectionContainer>
-        <div className="relative">
+        <div className="relative group">
           {/* Prev arrow */}
-          <button
-            aria-label="Previous"
-            onClick={() => scroll('prev')}
-            disabled={!canPrev}
-            className={`absolute -left-4 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2
-              items-center justify-center rounded-full border border-gray-200 bg-white
-              shadow-sm transition-opacity ${
-                canPrev ? 'text-gray-700 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
-              }`}
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
+          {canPrev && (
+            <button
+              aria-label="Previous"
+              onClick={() => scroll('prev')}
+              className="absolute left-0 top-[40%] z-20 flex w-10 h-10 -translate-y-1/2
+                items-center justify-center rounded-full border border-gray-200 bg-white
+                shadow-md text-gray-600 hover:text-gray-900 hover:bg-gray-50
+                transition-all opacity-0 group-hover:opacity-100 duration-300 hidden md:flex"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+              </svg>
+            </button>
+          )}
 
           {/* Next arrow */}
-          <button
-            aria-label="Next"
-            onClick={() => scroll('next')}
-            disabled={!canNext}
-            className={`absolute -right-4 top-1/2 z-10 flex h-10 w-10 -translate-y-1/2
-              items-center justify-center rounded-full border border-gray-200 bg-white
-              shadow-sm transition-opacity ${
-                canNext ? 'text-gray-700 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
-              }`}
-          >
-            <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+          {canNext && (
+            <button
+              aria-label="Next"
+              onClick={() => scroll('next')}
+              className="absolute right-0 top-[40%] z-20 flex w-10 h-10 -translate-y-1/2
+                items-center justify-center rounded-full border border-gray-200 bg-white
+                shadow-md text-gray-600 hover:text-gray-900 hover:bg-gray-50
+                transition-all opacity-0 group-hover:opacity-100 duration-300 hidden md:flex"
+            >
+              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
 
           {/* Scroll track */}
           <div
             ref={trackRef}
             onScroll={syncArrows}
-            className="flex gap-4 md:gap-6 overflow-x-auto md:overflow-x-hidden scroll-smooth snap-x snap-mandatory pb-6 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+            className="overflow-x-auto scrollbar-hide pb-6 md:pb-4"
+            style={{
+              scrollBehavior: 'smooth',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
           >
-            {loading || products.length === 0 ? (
-              // Skeleton placeholders
-              Array.from({ length: 5 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="flex-none snap-start w-[calc(50%-8px)] md:w-[calc(20%-19.2px)]"
-                >
-                  <ProductCardSkeleton />
-                </div>
-              ))
-            ) : (
-              products.map((product) => (
-                <div
-                  key={product.id}
-                  className="flex-none snap-start w-[calc(50%-8px)] md:w-[calc(20%-19.2px)]"
-                >
-                  <ProductCard {...product} />
-                </div>
-              ))
-            )}
+            <div className="flex gap-3 sm:gap-4 md:gap-6" style={{ minWidth: 'min-content' }}>
+              {loading || products.length === 0 ? (
+                // Skeleton placeholders
+                Array.from({ length: 5 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="flex-shrink-0 w-auto"
+                    style={{ width: '220px' }}
+                  >
+                    <ProductCardSkeleton />
+                  </div>
+                ))
+              ) : (
+                products.map((product) => (
+                  <div
+                    key={product.id}
+                    className="flex-shrink-0 w-auto"
+                    style={{ width: '220px' }}
+                  >
+                    <ProductCard {...product} />
+                  </div>
+                ))
+              )}
+            </div>
           </div>
         </div>
       </SectionContainer>

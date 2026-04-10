@@ -66,10 +66,6 @@ export default function CollectionPage() {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
 
-  // Ingredient carousel state
-  const [ingredientCarouselPage, setIngredientCarouselPage] = useState(0);
-  const [ingredientCarouselPerPage, setIngredientCarouselPerPage] = useState(6);
-
   // ── Filter state — shared with FilterModal via useFilterStore ─────────────
   const globalMin          = useFilterStore((s) => s.globalMin);
   const globalMax          = useFilterStore((s) => s.globalMax);
@@ -112,20 +108,31 @@ export default function CollectionPage() {
     }
   }, [brands.length, categories.length, ingredients.length]);
 
-  // Ingredient carousel responsive perPage
-  useEffect(() => {
-    const update = () => {
-      if (window.innerWidth < 640) setIngredientCarouselPerPage(2);
-      else if (window.innerWidth < 768) setIngredientCarouselPerPage(4);
-      else setIngredientCarouselPerPage(6);
-    };
-    update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(false);
 
-  // Reset carousel page when perPage changes
-  useEffect(() => { setIngredientCarouselPage(0); }, [ingredientCarouselPerPage]);
+  const syncArrows = () => {
+    const el = trackRef.current;
+    if (!el) return;
+    setCanPrev(el.scrollLeft > 4);
+    setCanNext(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+  };
+
+  useEffect(() => {
+    syncArrows();
+    window.addEventListener('resize', syncArrows);
+    return () => window.removeEventListener('resize', syncArrows);
+  }, [ingredients]);
+
+  const scrollIngredients = (dir: 'prev' | 'next') => {
+    const el = trackRef.current;
+    if (!el) return;
+    // Scroll by about half a screen
+    const clientWidth = el.clientWidth;
+    const scrollAmount = dir === 'next' ? clientWidth * 0.5 : -clientWidth * 0.5;
+    el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  };
 
   // Close sort dropdown on outside click
   useEffect(() => {
@@ -301,37 +308,36 @@ export default function CollectionPage() {
 
       {/* ── Ingredient Circles Carousel ──────────────────────────────────── */}
       {ingredients.length > 0 && (() => {
-        const totalIngredientPages = Math.ceil(ingredients.length / ingredientCarouselPerPage);
-        const visibleIngredients   = ingredients.slice(
-          ingredientCarouselPage * ingredientCarouselPerPage,
-          (ingredientCarouselPage + 1) * ingredientCarouselPerPage
-        );
         return (
           <div className="bg-white py-10 sm:py-12 border-b border-gray-100">
             <div className="container mx-auto px-4 max-w-7xl">
-              <div className="relative">
+              <div className="relative group">
                 {/* Left arrow */}
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-0 md:-translate-x-4 z-10">
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-0 md:-translate-x-4 z-10 flex">
                   <button
-                    onClick={() => setIngredientCarouselPage((p) => Math.max(0, p - 1))}
-                    disabled={ingredientCarouselPage === 0}
-                    className={`h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-opacity ${
-                      ingredientCarouselPage > 0 ? 'text-gray-600 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
+                    onClick={() => scrollIngredients('prev')}
+                    disabled={!canPrev}
+                    className={`h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-opacity opacity-0 group-hover:opacity-100 ${
+                      canPrev ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 cursor-default'
                     }`}
                   >‹</button>
                 </div>
 
-                {/* Ingredient circles grid */}
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 md:grid-cols-6 md:gap-x-8 md:gap-y-6">
-                  {visibleIngredients.map((ingredient) => (
+                {/* Ingredient circles track */}
+                <div
+                  ref={trackRef}
+                  onScroll={syncArrows}
+                  className="flex gap-4 sm:gap-6 md:gap-8 overflow-x-auto scroll-smooth pb-4 scrollbar-hide"
+                >
+                  {ingredients.map((ingredient) => (
                     <button
                       key={ingredient.id}
                       onClick={() => {
                         toggleIngredientSelect(ingredient.id);
                       }}
-                      className="group block text-center focus:outline-none w-full"
+                      className="flex-none w-[120px] md:w-[160px] block text-center focus:outline-none group/card"
                     >
-                        <div className={`relative mx-auto h-24 w-24 md:h-32 md:w-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover:scale-105 ring-2 ${
+                        <div className={`relative mx-auto h-24 w-24 md:h-32 md:w-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover/card:scale-105 ring-2 ${
                           Array.isArray(selectedIngredients) && selectedIngredients.includes(ingredient.id) ? 'ring-[#da2966]' : 'ring-transparent'
                         }`}>
                           <Image
@@ -339,7 +345,7 @@ export default function CollectionPage() {
                             alt={ingredient.name}
                             width={120}
                             height={120}
-                            className="h-full w-full object-cover opacity-90 mix-blend-multiply"
+                            className="h-full w-full object-cover opacity-90 mix-blend-multiply pointer-events-none"
                           />
                         </div>
                         <h3 className={`mt-3 text-xs font-serif uppercase tracking-widest transition-colors ${
@@ -352,30 +358,15 @@ export default function CollectionPage() {
                 </div>
 
                 {/* Right arrow */}
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-0 md:translate-x-4 z-10">
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-0 md:translate-x-4 z-10 flex">
                   <button
-                    onClick={() => setIngredientCarouselPage((p) => Math.min(totalIngredientPages - 1, p + 1))}
-                    disabled={ingredientCarouselPage >= totalIngredientPages - 1}
-                    className={`h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-opacity ${
-                      ingredientCarouselPage < totalIngredientPages - 1 ? 'text-gray-600 hover:text-gray-900 opacity-100' : 'text-gray-300 opacity-40 cursor-default'
+                    onClick={() => scrollIngredients('next')}
+                    disabled={!canNext}
+                    className={`h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-opacity opacity-0 group-hover:opacity-100 ${
+                      canNext ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 cursor-default'
                     }`}
                   >›</button>
                 </div>
-
-                {/* Page dots */}
-                {totalIngredientPages > 1 && (
-                  <div className="flex justify-center gap-2 mt-6">
-                    {Array.from({ length: totalIngredientPages }).map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setIngredientCarouselPage(i)}
-                        className={`h-1.5 rounded-full transition-all ${
-                          i === ingredientCarouselPage ? 'w-6 bg-[#4a403a]' : 'w-1.5 bg-gray-300 hover:bg-gray-400'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                )}
 
                 {/* Selected ingredients pills (mobile-friendly) */}
                 {Array.isArray(selectedIngredients) && selectedIngredients.length > 0 && (
