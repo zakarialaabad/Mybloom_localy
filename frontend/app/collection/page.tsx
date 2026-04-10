@@ -93,6 +93,8 @@ export default function CollectionPage() {
   const setFeaturedOnly      = useFilterStore((s) => s.setFeaturedOnly);
   const ensureAggregates     = useFilterStore((s) => s.ensureAggregates);
   const aggregatesReady      = useFilterStore((s) => s.aggregatesReady);
+  const brandCounts          = useFilterStore((s) => s.brandCounts);
+  const setBrandCounts       = useFilterStore((s) => s.setBrandCounts);
 
   // Reactive URL params — works for both fresh loads and soft navigations
   const searchParams = useSearchParams();
@@ -165,6 +167,27 @@ export default function CollectionPage() {
         .catch(() => setHeroBanner(null));
   }, [searchParams]);
 
+  // ── INITIAL FETCH (on mount, immediate, no debounce) ─────────────────────
+  // Fetch products immediately on first load to populate brand counts.
+  // This prevents counts from showing 0 while waiting for debounced filter effects.
+  useEffect(() => {
+    // Only run once when aggregates are ready and products list is still empty
+    if (products.length === 0 && aggregatesReady && !loadingProducts) {
+      setLoadingProducts(true);
+      productService
+        .list({})
+        .then((result) => {
+          setProducts(result.data);
+        })
+        .catch(() => {
+          setProducts([]);
+        })
+        .finally(() => {
+          setLoadingProducts(false);
+        });
+    }
+  }, [aggregatesReady]);
+
   // Fetch products when filters change.
   // Debounced (400 ms) so rapid slider drags don't flood the API.
   // AbortController cancels any in-flight request before issuing a new one,
@@ -218,6 +241,17 @@ export default function CollectionPage() {
 
   // Reset to page 1 whenever the product list changes (new filter applied)
   useEffect(() => { setCurrentPage(1); }, [products]);
+
+  // Calculate brand counts from current filtered products
+  useEffect(() => {
+    const counts: Record<number, number> = {};
+    products.forEach((p) => {
+      if (p.brand_id) {
+        counts[p.brand_id] = (counts[p.brand_id] ?? 0) + 1;
+      }
+    });
+    setBrandCounts(counts);
+  }, [products, setBrandCounts]);
 
   const totalPages = Math.ceil(products.length / PER_PAGE);
   const paginatedProducts = products.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
@@ -440,7 +474,10 @@ export default function CollectionPage() {
                       <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleBrand(brand.id)}>
                         {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
                       </div>
-                      <span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span>
+                      <div className="flex items-baseline gap-2">
+                        <span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span>
+                        <span className="text-[11px] text-gray-400">({brandCounts[brand.id] ?? 0})</span>
+                      </div>
                     </label>
                   ))}
                 </div>
@@ -782,7 +819,10 @@ export default function CollectionPage() {
                       <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleBrand(brand.id)}>
                         {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
                       </div>
-                      <span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span>
+                      <div className="flex items-baseline gap-2">
+                        <span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span>
+                        <span className="text-[11px] text-gray-400">({brandCounts[brand.id] ?? 0})</span>
+                      </div>
                     </label>
                   ))}
                 </div>

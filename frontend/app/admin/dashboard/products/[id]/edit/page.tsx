@@ -7,6 +7,7 @@ import ReviewFormModal, { ReviewFormSaveData } from '@/components/admin/ReviewFo
 import { AdminSelect } from '@/components/admin/AdminSelect';
 import IngredientSelectModal from '@/components/admin/IngredientSelectModal';
 import CreateIngredientModal from '@/components/admin/CreateIngredientModal';
+import ProductTypeSelector from '@/components/admin/ProductTypeSelector';
 import { adminProductService, adminCategoryService, adminProductTypeService, brandService } from '@/services/api';
 
 // === Icons ===
@@ -654,17 +655,12 @@ export default function EditProductPage() {
 
           <div className="flex flex-col gap-2 mb-6">
             <label className="text-[13px] font-bold text-[#333]">Product Type</label>
-            <div className="flex items-center gap-3">
-              {productTypes.map(t => (
-                <button
-                  key={t.id}
-                  onClick={() => setProductType(t.name)}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[14px] font-semibold transition-colors ${productType === t.name ? 'bg-[#fff0f3] text-[#da2966]' : 'border border-gray-200 bg-white text-gray-500 hover:border-gray-300'}`}
-                >
-                  <span className={productType === t.name ? 'text-[#da2966]' : 'text-gray-400'}>{TYPE_ICON_MAP[t.name] ?? <BodyIcon />}</span> {t.name}
-                </button>
-              ))}
-            </div>
+            <ProductTypeSelector
+              productTypes={productTypes}
+              selected={productType}
+              onSelect={setProductType}
+              icon={TYPE_ICON_MAP[productType] ?? <BodyIcon />}
+            />
           </div>
 
           <div className="flex flex-col gap-2 mb-6">

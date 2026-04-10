@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
+import useCartStore from '@/store/cart';
 
 export interface ProductCardProps {
   id: number;
@@ -43,7 +44,8 @@ export default function ProductCard({
 }: ProductCardProps) {
   const [wished, setWished] = useState(() => isInWishlist(id));
   const [isHovered, setIsHovered] = useState(false);
-  const [toast, setToast] = useState<{ show: boolean; message: string }>({ show: false, message: '' });
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'cart' | 'favorite' }>({ show: false, message: '', type: 'cart' });
+  const addItem = useCartStore((s) => s.addItem);
 
   const stars = [1, 2, 3, 4, 5];
   const categoryDisplay = category || productType || description;
@@ -65,8 +67,24 @@ export default function ProductCard({
       toggleWishlist(id);
       const newState = !wished;
       setWished(newState);
-      setToast({ show: true, message: newState ? 'Ajouté aux favoris' : 'Retiré des favoris' });
+      setToast({ show: true, message: newState ? 'Ajouté aux favoris' : 'Retiré des favoris', type: 'favorite' });
     }
+  };
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addItem({
+      productId:   id,
+      productName: name,
+      slug,
+      sizeId:      0,
+      sizeLabel:   null,
+      quantity:    1,
+      unitPrice:   price,
+      imageUrl,
+    });
+    setToast({ show: true, message: 'Produit ajouté au panier avec succès !', type: 'cart' });
   };
 
   return (
@@ -155,7 +173,7 @@ export default function ProductCard({
             will-change-transform
             ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
           `}>
-            <button className="flex-1 flex justify-center text-gray-600 hover:text-black transition-colors" aria-label="Add to cart">
+            <button onClick={handleAddToCart} className="flex-1 flex justify-center text-gray-600 hover:text-black transition-colors" aria-label="Add to cart">
               <svg className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
@@ -238,14 +256,24 @@ export default function ProductCard({
       </article>
     </Link>
     
-    {/* Custom Favorite Toast Notification */}
+    {/* Toast Notification — cart (brown) or favourite (pink) */}
     {toast.show && (
       <div
-        className="fixed top-4 right-4 z-[9999] flex items-center space-x-3 px-5 py-3 rounded-md shadow-lg transition-all duration-300 animate-in fade-in slide-in-from-top-4 bg-[#df4079]/90 backdrop-blur-md text-white border border-[#df4079]/50 shadow-[0_4px_20px_-4px_rgba(223,64,121,0.4)] pointer-events-none"
+        className={`fixed top-4 right-4 z-[9999] flex items-center space-x-3 px-5 py-3 rounded-md shadow-lg transition-all duration-300 animate-in fade-in slide-in-from-top-4 pointer-events-none ${
+          toast.type === 'cart'
+            ? 'bg-[#4a403a] text-white border border-[#342f2d]'
+            : 'bg-[#df4079]/90 backdrop-blur-md text-white border border-[#df4079]/50 shadow-[0_4px_20px_-4px_rgba(223,64,121,0.4)]'
+        }`}
       >
-        <svg className="w-5 h-5 text-white fill-white" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-        </svg>
+        {toast.type === 'cart' ? (
+          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+        ) : (
+          <svg className="w-5 h-5 text-white fill-white" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+          </svg>
+        )}
         <span className="font-serif text-sm md:text-base tracking-wide">{toast.message}</span>
       </div>
     )}

@@ -78,40 +78,29 @@ export function ProductTable({
       label: 'Product',
       sortable: true,
       className: 'w-[24%]',
-      render: (product: AdminProduct) => (
-        <div className="flex items-center gap-3 min-w-0">
-          <ProductThumb src={product.primary_image} />
-          <div className="min-w-0">
-            <p className="text-[14px] font-bold text-[#222] leading-tight truncate">
-              {product.name}
-            </p>
-            {product.subtitle && (
-              <p className="text-[12px] text-gray-400 mt-0.5 italic truncate">
-                {product.subtitle}
+      render: (product: AdminProduct) => {
+        // Get the first variant size for display
+        const firstVariantSize = product.variants?.[0]?.size;
+        const sizeDisplay = firstVariantSize ? `${firstVariantSize}ml` : 'N/A';
+        const typeDisplay = product.product_type?.name || 'No type';
+        
+        return (
+          <div className="flex items-center gap-3 min-w-0">
+            <ProductThumb src={product.primary_image} />
+            <div className="min-w-0">
+              <p className="text-[14px] font-bold text-[#222] leading-tight truncate">
+                {product.name}
               </p>
-            )}
-            {product.deleted_at && (
-              <span className="text-[10px] text-red-400 font-semibold">Deleted</span>
-            )}
+              <p className="text-[12px] text-gray-400 mt-0.5 truncate">
+                {typeDisplay} / Size {sizeDisplay}
+              </p>
+              {product.deleted_at && (
+                <span className="text-[10px] text-red-400 font-semibold">Deleted</span>
+              )}
+            </div>
           </div>
-        </div>
-      ),
-    },
-
-    {
-      key: 'product_type',
-      label: 'Type',
-      sortable: false,
-      className: 'w-[12%]',
-      render: (product: AdminProduct) => (
-        product.product_type ? (
-          <span className="inline-block px-3 py-1 rounded-lg text-[12px] font-bold bg-[#f5f5f5] text-[#555] uppercase tracking-wide">
-            {product.product_type.name}
-          </span>
-        ) : (
-          <span className="text-[12px] text-gray-300">—</span>
-        )
-      ),
+        );
+      },
     },
 
     {

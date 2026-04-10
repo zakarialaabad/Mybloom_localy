@@ -59,6 +59,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const categories       = useReferenceStore((s) => s.categories);
   const ensureBrands     = useReferenceStore((s) => s.ensureBrands);
   const ensureCategories = useReferenceStore((s) => s.ensureCategories);
+  const brandCounts      = useFilterStore((s) => s.brandCounts);
 
   useEffect(() => { setIsMounted(true); }, []);
 
@@ -209,7 +210,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                       {brand.name}
                     </span>
                     <span className="text-[12px] font-serif text-gray-400">
-                      ({12 + (i % 15)})
+                      ({brandCounts[brand.id] ?? 0})
                     </span>
                   </div>
                 </label>

@@ -43,6 +43,10 @@ interface FilterStore {
   promotionOnly: boolean;
   featuredOnly: boolean;
 
+  // ── Dynamic brand counts (based on current filtered products) ────────────
+  brandCounts: Record<number, number>; // brand_id -> product_count
+  setBrandCounts: (counts: Record<number, number>) => void;
+
   // ── Mutations ───────────────────────────────────────────────────────
   setSelectedMin: (v: number) => void;
   setSelectedMax: (v: number) => void;
@@ -94,6 +98,10 @@ const useFilterStore = create<FilterStore>((set, get) => ({
   selectedRating: null,
   promotionOnly: false,
   featuredOnly: false,
+
+  // ── Dynamic brand counts ──────────────────────────────────────────────────
+  brandCounts: {},
+  setBrandCounts: (counts) => set({ brandCounts: counts }),
 
   // ── Mutations ─────────────────────────────────────────────────────────────
   setSelectedMin: (v) => set({ selectedMin: v }),
