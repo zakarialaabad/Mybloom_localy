@@ -27,8 +27,9 @@ export const useOrderList = (options?: UseOrderListOptions): UseOrderListReturn 
     key,
     () => adminOrderService.list(options),
     {
-      dedupingInterval: 5 * 60 * 1000,
-      revalidateOnFocus: false,
+      dedupingInterval: 15 * 1000,      // 15 s — allow fresh data after brief navigations
+      revalidateOnFocus: true,           // refresh when admin returns to the tab
+      refreshInterval: 30 * 1000,        // poll every 30 s — picks up cron-job status advances
       errorRetryCount: 1,
     }
   );

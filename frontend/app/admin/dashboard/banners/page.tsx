@@ -2,8 +2,9 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { UploadCloud, X, Loader2, Trash2 } from 'lucide-react';
+import { UploadCloud, X, Loader2 } from 'lucide-react';
 import { adminBannerService, Banner } from '@/services/api';
+import DeleteConfirmModal from '@/components/admin/DeleteConfirmModal';
 
 // ── Slot config ───────────────────────────────────────────────────────────────
 
@@ -73,69 +74,6 @@ function UploadArea({
       <p className="text-[10px] text-gray-400 font-medium leading-snug">
         JPG · PNG · 10 Mo max
       </p>
-    </div>
-  );
-}
-
-// ── Delete confirm modal ─────────────────────────────────────────────────────
-
-function DeleteConfirmModal({
-  onConfirm,
-  onCancel,
-  deleting,
-}: {
-  onConfirm: () => void;
-  onCancel: () => void;
-  deleting: boolean;
-}) {
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onCancel(); };
-    document.addEventListener('keydown', handler);
-    return () => document.removeEventListener('keydown', handler);
-  }, [onCancel]);
-
-  return (
-    <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-[2px] flex items-center justify-center z-50 p-4"
-      onClick={onCancel}
-    >
-      <div
-        className="bg-white rounded-2xl w-full max-w-sm shadow-[0_20px_60px_rgba(0,0,0,0.2)] overflow-hidden"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="px-6 pt-7 pb-6">
-          <div className="mx-auto w-14 h-14 rounded-full bg-[#fdf0f4] flex items-center justify-center mb-5">
-            <Trash2 size={24} className="text-[#da2966]" strokeWidth={1.8} />
-          </div>
-          <h3 className="text-[17px] font-bold text-[#111] text-center mb-2">
-            Supprimer cette bannière ?
-          </h3>
-          <p className="text-[13px] text-gray-500 text-center leading-relaxed">
-            Cette action est irréversible. La bannière sera définitivement supprimée.
-          </p>
-        </div>
-        <div className="flex border-t border-gray-100">
-          <button
-            onClick={onCancel}
-            disabled={deleting}
-            className="flex-1 py-4 text-[14px] font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
-          >
-            Annuler
-          </button>
-          <div className="w-px bg-gray-100" />
-          <button
-            onClick={onConfirm}
-            disabled={deleting}
-            className="flex-1 py-4 text-[14px] font-semibold text-white bg-[#da2966] hover:bg-[#c01f54] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
-          >
-            {deleting ? (
-              <><Loader2 size={16} className="animate-spin" /> Suppression…</>
-            ) : (
-              'Supprimer'
-            )}
-          </button>
-        </div>
-      </div>
     </div>
   );
 }
@@ -403,6 +341,8 @@ export default function BannersPage() {
       {/* ─── Delete Confirmation Modal ──────────────────────────────────── */}
       {confirmTarget && (
         <DeleteConfirmModal
+          title="Supprimer cette bannière ?"
+          description="Cette action est irréversible. La bannière sera définitivement supprimée."
           onConfirm={executeDelete}
           onCancel={() => { if (!isDeleting) setConfirmTarget(null); }}
           deleting={isDeleting}

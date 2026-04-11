@@ -310,9 +310,12 @@ class ProductController extends Controller
     /**
      * DELETE /api/v1/admin/products/{product}
      * Soft-deletes the product.
+     * Uses explicit query to handle both active and already-soft-deleted products.
      */
-    public function destroy(Product $product): JsonResponse
+    public function destroy(Request $request): JsonResponse
     {
+        $id = $request->route('product');
+        $product = Product::withTrashed()->findOrFail($id);
         $product->delete();
 
         return response()->json(['message' => 'Product deleted.']);

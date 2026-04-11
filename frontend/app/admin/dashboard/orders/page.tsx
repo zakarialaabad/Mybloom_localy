@@ -135,7 +135,10 @@ export default function OrdersPage() {
       {viewingOrder && (
         <OrderDetailsSidebar
           orderId={viewingOrder.id}
-          onClose={() => setViewingOrder(null)}
+          onClose={() => {
+            setViewingOrder(null);
+            refetch(); // pick up any cron-job status changes that happened while sidebar was open
+          }}
           onStatusUpdated={() => { 
             refetch(); 
             adminOrderService.stats().then(setStats).catch(console.error);

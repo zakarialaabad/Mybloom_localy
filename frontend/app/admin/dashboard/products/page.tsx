@@ -13,6 +13,7 @@ import { useProductList } from '@/hooks/useProductList';
 import ProductTable from '@/components/ProductTable';
 import { PRODUCT_CONFIG } from '@/lib/utils';
 import { AdminSelect } from '@/components/admin/AdminSelect';
+import DeleteConfirmModal from '@/components/admin/DeleteConfirmModal';
 
 /* ═══════════════════════════════════════════════════════════════════════════
  * VIRTUAL STOCK SYSTEM
@@ -48,57 +49,6 @@ function ChevronIcon() {
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
       <path d="M4 5.5l3 3 3-3" stroke="#888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
- * DELETE MODAL
- * ═══════════════════════════════════════════════════════════════════════════ */
-
-function DeleteModal({
-  product,
-  onConfirm,
-  onCancel,
-  busy,
-}: {
-  product: AdminProduct;
-  onConfirm: () => void;
-  onCancel: () => void;
-  busy: boolean;
-}) {
-  return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" onClick={onCancel} />
-      <div className="relative bg-white rounded-t-[24px] sm:rounded-t-[24px] sm:rounded-[24px] rounded-b-none sm:rounded-b-[24px] w-full sm:w-auto rounded-b-none sm:rounded-b-[24px] w-full sm:w-auto p-7 w-full max-w-sm shadow-xl mx-4">
-        <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M8 7h8M9 7V5a2 2 0 014 0v2M7 7l1 13h8l1-13"
-              stroke="#ef4444" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-        <h3 className="text-[16px] font-bold text-center text-[#1a1a1a] mb-2">Delete Product</h3>
-        <p className="text-[13px] text-gray-500 text-center mb-6">
-          Are you sure you want to delete <span className="font-semibold text-[#1a1a1a]">{product.name}</span>?
-          This action cannot be undone.
-        </p>
-        <div className="flex gap-3">
-          <button
-            onClick={onCancel}
-            disabled={busy}
-            className="flex-1 h-10 rounded-xl border border-gray-200 text-[13px] font-semibold text-[#333] hover:bg-gray-50 transition-colors disabled:opacity-50"
-          >
-            Cancel
-          </button>
-          <button
-            onClick={onConfirm}
-            disabled={busy}
-            className="flex-1 h-10 rounded-xl bg-red-500 text-white text-[13px] font-semibold hover:bg-red-600 transition-colors disabled:opacity-50"
-          >
-            {busy ? 'Deleting…' : 'Delete'}
-          </button>
-        </div>
-      </div>
-    </div>
   );
 }
 
@@ -201,7 +151,7 @@ export default function ProductsPage() {
       setDeleteTarget(null);
       refetch();
     } catch {
-      alert('Failed to delete product. Please try again.');
+      console.error('[ProductsPage] delete failed');
     } finally {
       setDeleteBusy(false);
     }
@@ -423,11 +373,14 @@ export default function ProductsPage() {
 
       {/* DELETE MODAL */}
       {deleteTarget && (
-        <DeleteModal
-          product={deleteTarget}
+        <DeleteConfirmModal
+          title="Delete Product"
+          description={<>Are you sure you want to delete <span className="font-semibold text-[#1a1a1a]">{deleteTarget.name}</span>? This action cannot be undone.</>}
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
-          busy={deleteBusy}
+          deleting={deleteBusy}
+          confirmLabel="Delete"
+          cancelLabel="Cancel"
         />
       )}
     </div>
