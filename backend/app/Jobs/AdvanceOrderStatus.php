@@ -14,7 +14,8 @@ use Illuminate\Queue\SerializesModels;
  * Automatically advances an order to the next status after a delay.
  *
  * Dispatch chain:
- *   confirmed  --[1m]--> preparing  --[1m]--> shipped --[1m]--> delivered
+ *   confirmed  --[6h]--> preparing  --[3h]--> shipped
+ *   shipped    <-- manual only ("Mark as Delivered") --> delivered
  *
  * The job aborts silently if the order was already advanced
  * (e.g. admin manually changed status) or cancelled.
@@ -54,16 +55,10 @@ class AdvanceOrderStatus implements ShouldQueue
             $statusLabels[$this->toStatus] ?? ucfirst($this->toStatus),
         );
 
-        // Chain: if we just set "preparing", schedule the next advance to "shipped" in 1m
+        // Chain: if we just set "preparing", schedule the next advance to "shipped" in 1 minute
         if ($this->toStatus === 'preparing') {
             self::dispatch($order->id, 'preparing', 'shipped')
-                ->delay(now()->addMinute());
-        }
-
-        // Chain: if we just set "shipped", schedule the next advance to "delivered" in 1m
-        if ($this->toStatus === 'shipped') {
-            self::dispatch($order->id, 'shipped', 'delivered')
-                ->delay(now()->addMinute());
+                ->delay(now()->addMinutes(1));
         }
     }
 }
