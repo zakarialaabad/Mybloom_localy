@@ -6,6 +6,25 @@ import Link from 'next/link';
 import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
 import useCartStore from '@/store/cart';
 
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
+
+/** Sanitize an image URL: strip newlines, then percent-encode spaces and non-ASCII chars in the path portion */
+function sanitizeImageUrl(url: string | null | undefined): string {
+  if (!url || url.trim() === '') return FALLBACK_IMG;
+  // Strip any embedded newline / carriage-return chars (seeder data issue)
+  const cleaned = url.replace(/[\r\n]+/g, ' ').trim();
+  if (!cleaned) return FALLBACK_IMG;
+  // If absolute URL (http/https) return as-is — already valid
+  if (cleaned.startsWith('http://') || cleaned.startsWith('https://')) return cleaned;
+  // Encode each path segment so spaces and accented chars become valid URL parts
+  try {
+    const parts = cleaned.split('/');
+    return parts.map((seg) => encodeURIComponent(seg)).join('/');
+  } catch {
+    return FALLBACK_IMG;
+  }
+}
+
 export interface ProductCardProps {
   id: number;
   slug: string;
@@ -44,12 +63,17 @@ export default function ProductCard({
 }: ProductCardProps) {
   const [wished, setWished] = useState(() => isInWishlist(id));
   const [isHovered, setIsHovered] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'cart' | 'favorite' }>({ show: false, message: '', type: 'cart' });
   const addItem = useCartStore((s) => s.addItem);
 
+  const safeImageUrl = sanitizeImageUrl(imageUrl);
+  const safeSecondaryUrl = secondaryImageUrl ? sanitizeImageUrl(secondaryImageUrl) : undefined;
+  const finalImageUrl = imgError ? FALLBACK_IMG : safeImageUrl;
+  const hasSecondary = !imgError && !!safeSecondaryUrl;
+
   const stars = [1, 2, 3, 4, 5];
   const categoryDisplay = category || productType || description;
-  const hasSecondary = !!secondaryImageUrl;
 
   useEffect(() => {
     if (toast.show) {
@@ -134,29 +158,28 @@ export default function ProductCard({
           {/* Product image — crossfade between primary and secondary */}
           <div className="relative h-full w-full">
             {/* Primary image — fades out on hover when secondary exists */}
-            {imageUrl ? (
-              <Image
-                src={imageUrl}
-                alt={name}
-                fill
-                unoptimized
-                className={`object-cover transition-opacity duration-500 ease-in-out will-change-opacity ${
-                  hasSecondary && isHovered ? 'opacity-0' : 'opacity-100'
-                }`}
-              />
-            ) : (
-              <div className="w-full h-full bg-[#f0ebe6]" />
-            )}
+            <Image
+              src={finalImageUrl}
+              alt={name}
+              fill
+              unoptimized
+              onError={() => setImgError(true)}
+              className={`object-cover transition-opacity duration-500 ease-in-out will-change-opacity ${
+                hasSecondary && isHovered ? 'opacity-0' : 'opacity-100'
+              }`}
+              loading="lazy"
+            />
             {/* Secondary image — fades in on hover */}
-            {hasSecondary && (
+            {hasSecondary && safeSecondaryUrl && (
               <Image
-                src={secondaryImageUrl!}
+                src={safeSecondaryUrl}
                 alt={`${name} hover`}
                 fill
                 unoptimized
                 className={`object-cover absolute inset-0 transition-opacity duration-500 ease-in-out will-change-opacity ${
                   isHovered ? 'opacity-100' : 'opacity-0'
                 }`}
+                loading="lazy"
               />
             )}
           </div>

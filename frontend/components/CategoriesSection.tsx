@@ -14,6 +14,8 @@ export default function CategoriesSection() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => { ensureIngredients(); }, [ensureIngredients]);
 
@@ -22,6 +24,13 @@ export default function CategoriesSection() {
     if (!el) return;
     setCanPrev(el.scrollLeft > 4);
     setCanNext(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
+    
+    // Calculate pages for the pagination dots
+    const currentTotalPages = Math.max(1, Math.ceil(el.scrollWidth / el.clientWidth));
+    setTotalPages(currentTotalPages);
+
+    const currentPage = Math.round(el.scrollLeft / el.clientWidth);
+    setPage(currentPage);
   };
 
   useEffect(() => {
@@ -33,8 +42,14 @@ export default function CategoriesSection() {
   const scroll = (dir: 'prev' | 'next') => {
     const el = trackRef.current;
     if (!el) return;
-    const scrollAmount = 300;
+    const scrollAmount = el.clientWidth * 0.8;
     el.scrollBy({ left: dir === 'next' ? scrollAmount : -scrollAmount, behavior: 'smooth' });
+  };
+
+  const scrollToPage = (pageIndex: number) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollTo({ left: pageIndex * el.clientWidth, behavior: 'smooth' });
   };
 
   const toggleIngredient = (id: number) => {
@@ -245,7 +260,20 @@ export default function CategoriesSection() {
 
             {/* Page dots and View Collection button */}
             <div className="mt-8 flex flex-col items-center gap-6">
-              {/* Dots removed for drag-scroll layout */}
+              {totalPages > 1 && (
+                <div className="flex justify-center gap-2">
+                  {Array.from({ length: totalPages }).map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => scrollToPage(i)}
+                      className={`h-1.5 rounded-full transition-all ${
+                        i === page ? 'w-6 bg-[#4a403a]' : 'w-1.5 bg-gray-300 hover:bg-gray-400'
+                      }`}
+                      aria-label={`Go to page ${i + 1}`}
+                    />
+                  ))}
+                </div>
+              )}
               {selectedIngredients.length > 0 && (
                 <Link
                   href={`/collection?${selectedIngredients.map((id) => `ingredient=${id}`).join('&')}`}

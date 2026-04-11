@@ -27,6 +27,10 @@ const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea4779426
  * Matches UniversSection transformation for consistent styling
  */
 function productToCard(p: Product): ProductCardProps {
+  // Ensure imageUrl falls back to first image if primary_image is null
+  const imageUrl = p.primary_image || p.images?.[0]?.image_url || FALLBACK_IMG;
+  const secondaryImageUrl = p.images?.[1]?.image_url || undefined;
+  
   return {
     id:            p.id,
     slug:          p.slug,
@@ -37,8 +41,8 @@ function productToCard(p: Product): ProductCardProps {
     originalPrice: p.max_price ?? p.min_price ?? 0,
     rating:        p.avg_rating ?? 0,
     reviewCount:   p.review_count ?? 0,
-    imageUrl:      p.primary_image ?? FALLBACK_IMG,
-    secondaryImageUrl: p.images?.[1]?.image_url,
+    imageUrl,
+    secondaryImageUrl,
     isBestSeller:  p.is_featured,
     badge:         p.badges?.[0],
     category:      p.category?.name?.toLowerCase() === 'parfum' ? (p.product_type?.name ?? p.category?.name) : p.category?.name,

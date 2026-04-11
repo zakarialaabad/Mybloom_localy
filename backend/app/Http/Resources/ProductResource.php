@@ -17,6 +17,11 @@ class ProductResource extends JsonResource
     private function resolveUrl(?string $url): ?string
     {
         if (!$url) return null;
+        // Strip embedded newline / carriage-return characters that can end up in
+        // DB rows when seeders are copy-pasted from Windows text files.
+        $url = str_replace(["\r\n", "\r", "\n"], ' ', $url);
+        $url = trim($url);
+        if (!$url) return null;
         if (str_starts_with($url, 'https://')) return $url;
         if (str_starts_with($url, 'http://')) {
             $path = parse_url($url, PHP_URL_PATH) ?? '';

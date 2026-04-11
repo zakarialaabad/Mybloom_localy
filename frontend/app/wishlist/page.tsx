@@ -194,7 +194,7 @@ export default function WishlistPage() {
                       originalPrice={product.original_price ?? 0}
                       rating={product.avg_rating ?? 0}
                       reviewCount={product.review_count ?? 0}
-                      imageUrl={product.primary_image ?? FALLBACK_IMG}
+                      imageUrl={product.primary_image || product.images?.[0]?.image_url || FALLBACK_IMG}
                       secondaryImageUrl={product.images?.[1]?.image_url}
                       category={product.category?.name}
                       productType={product.gender}
@@ -273,7 +273,7 @@ export default function WishlistPage() {
                   {/* Thumbnail */}
                   <Link href={`/product/${product.slug}`} className="relative shrink-0 w-24 h-28 sm:w-28 sm:h-32 rounded-sm overflow-hidden bg-gray-50">
                     <Image
-                      src={product.primary_image ?? FALLBACK_IMG}
+                      src={product.primary_image || product.images?.[0]?.image_url || FALLBACK_IMG}
                       alt={product.name}
                       fill
                       className="object-cover transition-transform duration-300 group-hover:scale-105"

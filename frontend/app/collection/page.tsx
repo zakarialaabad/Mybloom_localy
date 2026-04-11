@@ -28,6 +28,10 @@ import PriceHistogram from '@/components/ui/PriceHistogram';
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
 function productToCard(p: Product) {
+  // Ensure imageUrl falls back to first image if primary_image is null
+  const imageUrl = p.primary_image || p.images?.[0]?.image_url || FALLBACK_IMG;
+  const secondaryImageUrl = p.images?.[1]?.image_url || undefined;
+  
   return {
     id: p.id,
     slug: p.slug,
@@ -38,8 +42,8 @@ function productToCard(p: Product) {
     originalPrice: p.min_price ?? 0,
     rating: p.avg_rating ?? 0,
     reviewCount: p.review_count ?? 0,
-    imageUrl: p.primary_image ?? FALLBACK_IMG,
-    secondaryImageUrl: p.images?.[1]?.image_url,
+    imageUrl,
+    secondaryImageUrl,
     category: p.category?.name?.toLowerCase() === 'parfum' ? (p.product_type?.name ?? p.category?.name) : p.category?.name,
     productType: p.category?.name?.toLowerCase() === 'parfum' ? (p.brand?.name ?? p.product_type?.name ?? '') : (p.product_type?.name ?? ''),
   };

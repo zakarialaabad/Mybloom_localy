@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import useCartStore from '@/store/cart';
+import { couponService, CouponValidateResult } from '@/services/api';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -18,6 +19,34 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const updateQty  = useCartStore((s) => s.updateQty);
   const subtotal   = useCartStore((s) => s.subtotal());
   const itemCount  = useCartStore((s) => s.itemCount());
+
+  // Coupon state
+  const [couponCode, setCouponCode] = useState('');
+  const [couponResult, setCouponResult] = useState<CouponValidateResult | null>(null);
+  const [couponError, setCouponError] = useState('');
+  const [couponLoading, setCouponLoading] = useState(false);
+
+  const couponDiscount = couponResult?.savings_amount ?? 0;
+  const totalWithCoupon = Math.max(0, subtotal - couponDiscount);
+
+  const handleCoupon = async () => {
+    setCouponError('');
+    setCouponResult(null);
+    if (!couponCode.trim()) return;
+    setCouponLoading(true);
+    try {
+      const result = await couponService.validate(couponCode.trim(), subtotal);
+      if (result.valid) {
+        setCouponResult(result);
+      } else {
+        setCouponError(result.message || 'Code invalide.');
+      }
+    } catch {
+      setCouponError('Code invalide ou expiré.');
+    } finally {
+      setCouponLoading(false);
+    }
+  };
 
   useEffect(() => {
     setIsMounted(true);
@@ -119,14 +148,16 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <div className="font-serif font-bold text-gray-800">Coupon</div>
                 <div className="font-serif italic text-[11px] text-gray-500 mt-0.5">Ajoutez un code promo et économisez sur votre commande.</div>
               </div>
-              <span className="font-serif font-bold italic text-gray-900">0 DH</span>
+              <span className={`font-serif font-bold italic ${couponDiscount > 0 ? 'text-[#2e7d32]' : 'text-gray-900'}`}>
+                {couponDiscount > 0 ? `- ${couponDiscount} DH` : '0 DH'}
+              </span>
             </div>
 
             <hr className="border-gray-200 my-4" />
 
             <div className="flex justify-between items-center text-base mt-2">
               <span className="font-serif font-bold text-gray-800">Total</span>
-              <span className="font-serif font-bold italic text-gray-900">{subtotal} DH</span>
+              <span className="font-serif font-bold italic text-gray-900">{totalWithCoupon} DH</span>
             </div>
           </div>
 
@@ -136,13 +167,27 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             <div className="flex gap-2">
               <input 
                 type="text" 
+                value={couponCode}
+                onChange={(e) => { setCouponCode(e.target.value); setCouponResult(null); setCouponError(''); }}
                 placeholder="Coupon code" 
-                className="flex-1 border border-dashed border-gray-300 rounded px-3 py-2.5 text-xs focus:outline-none focus:border-gray-400 bg-white font-serif"
+                disabled={couponLoading}
+                className={`flex-1 border-2 border-dashed rounded px-3 py-2.5 text-xs focus:outline-none font-serif ${
+                  couponResult ? 'border-[#2e7d32] text-[#2e7d32] bg-[#f4fbf5]' : 'border-gray-300 bg-white'
+                } disabled:bg-gray-100`}
               />
-              <button className="bg-[#4a403a] text-white px-5 py-2.5 rounded font-serif italic text-xs hover:bg-[#3a322d] transition-colors whitespace-nowrap flex items-center gap-1 group">
-                Apply coupon <span className="text-[10px] group-hover:translate-x-0.5 transition-transform">›</span>
+              <button 
+                type="button"
+                onClick={handleCoupon}
+                disabled={couponLoading || couponResult !== null}
+                className={`px-5 py-2.5 rounded font-serif italic text-xs whitespace-nowrap flex items-center gap-1 group transition-colors ${
+                  couponResult ? 'bg-[#005c2b] text-white cursor-default' : 'bg-[#4a403a] text-white hover:bg-[#3a322d]'
+                } disabled:opacity-60`}
+              >
+                {couponResult ? '✓ Validé' : couponLoading ? '…' : 'Appliquer'}
               </button>
             </div>
+            {couponResult && <p className="mt-2 text-[11px] text-[#2e7d32] font-serif">✓ {couponResult.message}</p>}
+            {couponError && <p className="mt-2 text-[11px] text-red-500 font-serif">{couponError}</p>}
           </div>
 
           {/* Action Buttons */}
