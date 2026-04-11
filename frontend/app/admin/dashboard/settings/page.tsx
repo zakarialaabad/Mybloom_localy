@@ -196,9 +196,10 @@ export default function GeneralSettingsPage() {
       </div>
 
       <div className="grid grid-cols-12 gap-5">
-        {/* ─── Profile Information Section ───────────────────────────────────── */}
-        <div className="col-span-12 lg:col-span-8 order-2 lg:order-1">
-          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] h-full">
+        {/* ─── Left Column (Profile Info & Security) ─────────────────────────── */}
+        <div className="col-span-12 lg:col-span-8 order-2 lg:order-1 flex flex-col gap-5">
+          {/* ─── Profile Information Section ───────────────────────────────────── */}
+          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)]">
             <div className="flex justify-between items-center mb-8">
               <div className="flex items-center gap-2 text-[#da2966]">
                 <Info size={22} strokeWidth={2.5} />
@@ -256,62 +257,8 @@ export default function GeneralSettingsPage() {
               </div>
             </div>
           </div>
-        </div>
 
-        {/* ─── Photo de profil Section ────────────────────────────────────────── */}
-        <div className="col-span-12 lg:col-span-4 order-1 lg:order-2">
-          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] flex flex-col items-center h-full">
-            <div className="w-full flex items-center gap-2 mb-10 text-[#da2966]">
-              <User size={22} strokeWidth={2.5} />
-              <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold">Photo de profil</h2>
-            </div>
-
-            <div className="relative group">
-              {/* Decorative dotted border overlay */}
-              <div className="absolute inset-[-15px] rounded-full border-2 border-dotted border-[#da2966] opacity-40"></div>
-              
-              <div className="relative w-[200px] h-[200px] rounded-full overflow-hidden border-4 border-white shadow-xl cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-                {imagePreview ? (
-                  <Image 
-                    src={imagePreview} 
-                    alt="Profile" 
-                    fill 
-                    className="object-cover transition-opacity group-hover:opacity-80"
-                    unoptimized // to prevent missing remote pattern errors
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-100 flex justify-center items-center text-gray-400 group-hover:bg-gray-200 transition-colors">
-                    <User size={40} />
-                  </div>
-                )}
-                
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <UploadCloud className="text-white w-10 h-10" />
-                </div>
-              </div>
-
-              {imagePreview && imagePreview !== '/public_Image/MybLoom.jpg' && (
-                <button 
-                  onClick={removeImage}
-                  className="absolute top-2 right-2 w-10 h-10 rounded-full bg-white border border-[#f2e6ea] flex items-center justify-center text-[#da2966] shadow-lg hover:scale-110 transition-transform z-10"
-                >
-                  <X size={20} strokeWidth={3} />
-                </button>
-              )}
-            </div>
-            
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              onChange={handleImageChange} 
-              accept="image/*" 
-              className="hidden" 
-            />
-          </div>
-        </div>
-
-        {/* ─── Security Section ───────────────────────────────────────────────── */}
-        <div className="col-span-12 mt-4">
+          {/* ─── Security Section ───────────────────────────────────────────────── */}
           <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)]">
             <div className="flex justify-between items-center mb-8">
               <div className="flex items-center gap-2 text-[#da2966]">
@@ -430,6 +377,59 @@ export default function GeneralSettingsPage() {
             </div>
           </div>
         </div>
+
+        {/* ─── Photo de profil Section ────────────────────────────────────────── */}
+        <div className="col-span-12 lg:col-span-4 order-1 lg:order-2">
+          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] flex flex-col items-center h-full">
+            <div className="w-full flex items-center gap-2 mb-10 text-[#da2966]">
+              <User size={22} strokeWidth={2.5} />
+              <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold">Photo de profil</h2>
+            </div>
+
+            <div className="relative group">
+              {/* Decorative dotted border overlay */}
+              <div className="absolute inset-[-15px] rounded-full border-2 border-dotted border-[#da2966] opacity-40"></div>
+              
+              <div className="relative w-[200px] h-[200px] rounded-full overflow-hidden border-4 border-white shadow-xl cursor-pointer" onClick={() => fileInputRef.current?.click()}>
+                {imagePreview ? (
+                  <Image 
+                    src={imagePreview} 
+                    alt="Profile" 
+                    fill 
+                    className="object-cover transition-opacity group-hover:opacity-80"
+                    unoptimized // to prevent missing remote pattern errors
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-100 flex justify-center items-center text-gray-400 group-hover:bg-gray-200 transition-colors">
+                    <User size={40} />
+                  </div>
+                )}
+                
+                <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <UploadCloud className="text-white w-10 h-10" />
+                </div>
+              </div>
+
+              {imagePreview && imagePreview !== '/public_Image/MybLoom.jpg' && (
+                <button 
+                  onClick={removeImage}
+                  className="absolute top-2 right-2 w-10 h-10 rounded-full bg-white border border-[#f2e6ea] flex items-center justify-center text-[#da2966] shadow-lg hover:scale-110 transition-transform z-10"
+                >
+                  <X size={20} strokeWidth={3} />
+                </button>
+              )}
+            </div>
+            
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleImageChange} 
+              accept="image/*" 
+              className="hidden" 
+            />
+          </div>
+        </div>
+
       </div>
     </div>
   );
