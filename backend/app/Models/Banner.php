@@ -39,15 +39,46 @@ class Banner extends Model
 
     /**
      * Return a fully-qualified public URL for the stored image.
-     * - Paths that already start with http(s) are returned as-is (legacy / external URLs).
-     * - Everything else is served from Laravel's public disk via asset('storage/…').
+     * Normalizes embedded newline characters and resolves relative paths to absolute URLs.
+     * 
+     * Handles:
+     *  - https://... (CDN / external) — returned as-is
+     *  - http://...  (old IP/host) — host replaced with APP_URL  
+     *  - /public_image/..., /public_Image/... (backend public assets) — prefixed with APP_URL
+     *  - /storage/... (Laravel storage disk) — prefixed with APP_URL
+     *  - Other paths — returned as-is
      */
     public function getImageUrlAttribute(): string
     {
-        if (str_starts_with($this->image_path, 'http://') || str_starts_with($this->image_path, 'https://')) {
-            return $this->image_path;
+        // Strip embedded newline characters from the stored path
+        $path = str_replace(["\r\n", "\r", "\n"], '', $this->image_path);
+        $path = trim($path);
+        
+        if (!$path) return '';
+        
+        // External HTTPS URLs — returned as-is
+        if (str_starts_with($path, 'https://')) {
+            return $path;
         }
-
-        return asset('storage/' . $this->image_path);
+        
+        // HTTP URLs — replace host with APP_URL
+        if (str_starts_with($path, 'http://')) {
+            $urlPath = parse_url($path, PHP_URL_PATH) ?? '';
+            return rtrim(config('app.url'), '/') . $urlPath;
+        }
+        
+        // Backend public assets — check case-insensitively for common directories
+        $lowerPath = strtolower($path);
+        if (str_starts_with($lowerPath, '/public_image/') || str_starts_with($path, '/storage/')) {
+            return rtrim(config('app.url'), '/') . $path;
+        }
+        
+        // If path starts with / but not recognized — assume backend asset and prefix with APP_URL
+        if (str_starts_with($path, '/')) {
+            return rtrim(config('app.url'), '/') . $path;
+        }
+        
+        // Everything else — return as-is (frontend will handle)
+        return $path;
     }
 }

@@ -24,6 +24,7 @@ import { ProductGridSkeleton, FilterSkeleton, LoadingSpinner } from '@/component
 import useReferenceStore from '@/store/reference';
 import useFilterStore from '@/store/filters';
 import PriceHistogram from '@/components/ui/PriceHistogram';
+import { sanitizeImageUrl } from '@/lib/utils';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
@@ -61,6 +62,7 @@ export default function CollectionPage() {
   const PER_PAGE = 10;
   const [products, setProducts] = useState<Product[]>([]);
   const [heroBanner, setHeroBanner] = useState<Banner | null>(null);
+  const [heroImageError, setHeroImageError] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [pageLoading, setPageLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
@@ -171,6 +173,7 @@ export default function CollectionPage() {
 
   // Fetch hero banner for the active collection (category) or global
   useEffect(() => {
+    setHeroImageError(false); // Reset image error state when banner changes
     const categoryId = searchParams.get('category');
     bannerService
         .getCollectionHero(categoryId ? Number(categoryId) : null)
@@ -257,8 +260,8 @@ export default function CollectionPage() {
   useEffect(() => {
     const counts: Record<number, number> = {};
     products.forEach((p) => {
-      if (p.brand_id) {
-        counts[p.brand_id] = (counts[p.brand_id] ?? 0) + 1;
+      if (p.brand?.id) {
+        counts[p.brand.id] = (counts[p.brand.id] ?? 0) + 1;
       }
     });
     setBrandCounts(counts);
@@ -291,20 +294,22 @@ export default function CollectionPage() {
           heroBanner.link ? (
             <a href={heroBanner.link} className="absolute inset-0">
               <Image
-                src={heroBanner.image_path}
+                src={heroImageError ? FALLBACK_IMG : sanitizeImageUrl(heroBanner.image_path)}
                 alt={heroBanner.title ?? 'Collection banner'}
                 fill
                 className="object-cover"
                 priority
+                onError={() => setHeroImageError(true)}
               />
             </a>
           ) : (
             <Image
-              src={heroBanner.image_path}
+              src={heroImageError ? FALLBACK_IMG : sanitizeImageUrl(heroBanner.image_path)}
               alt={heroBanner.title ?? 'Collection banner'}
               fill
               className="object-cover"
               priority
+              onError={() => setHeroImageError(true)}
             />
           )
         ) : null}

@@ -294,3 +294,25 @@ export const MESSAGES = {
     DUPLICATE: 'This value already exists',
   },
 } as const;
+
+/* ═══════════════════════════════════════════════════════════════════════════
+ * IMAGE UTILITIES
+ * ═══════════════════════════════════════════════════════════════════════════ */
+
+export const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
+
+/**
+ * Sanitize an image URL: strip newlines only.
+ * Do NOT percent-encode — the browser handles encoding from a raw src attribute.
+ * Encoding here causes double-encoding (%20 → %2520) which breaks image loads.
+ * 
+ * @param url The image URL to sanitize
+ * @returns Sanitized URL, or fallback if invalid
+ */
+export function sanitizeImageUrl(url: string | null | undefined): string {
+  if (!url) return FALLBACK_IMG;
+  // Strip embedded newline / carriage-return / tab chars (seeder data issue)
+  const cleaned = url.replace(/[\r\n\t]+/g, '').trim();
+  if (!cleaned) return FALLBACK_IMG;
+  return cleaned;
+}

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { bannerService, Banner } from '@/services/api';
+import { sanitizeImageUrl, FALLBACK_IMG } from '@/lib/utils';
 
 // ── Skeleton placeholder shown while banners are loading ──────────────────────
 function BannerSkeleton({ className }: { className?: string }) {
@@ -27,15 +28,21 @@ function BannerTile({
   priority?: boolean;
   className?: string;
 }) {
+  const [imgError, setImgError] = useState(false);
+  
+  const safeImageUrl = sanitizeImageUrl(banner.image_path);
+  const finalImageUrl = imgError ? FALLBACK_IMG : safeImageUrl;
+
   const img = (
     <Image
-      src={banner.image_path}
+      src={finalImageUrl}
       alt={banner.title ?? 'Promotional banner'}
       fill={fill}
       sizes="(max-width: 1024px) 100vw, 50vw"
       className={`object-cover transition-transform duration-700 group-hover:scale-[1.03] ${className}`}
       priority={priority}
       loading={priority ? undefined : 'lazy'}
+      onError={() => setImgError(true)}
     />
   );
 

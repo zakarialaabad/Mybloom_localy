@@ -16,6 +16,7 @@ import { LoadingSpinner } from '@/components/Skeleton';
 import { productService, Product, ProductVariant } from '@/services/api';
 import useCartStore from '@/store/cart';
 import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
+import { sanitizeImageUrl } from '@/lib/utils';
 import { testRecommendationCount } from '@/lib/testRecommendationCount';
 
 // ─── Status labels for order status histories ─────────────────────────────────
@@ -359,7 +360,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                     onClick={() => setMainImage(img)}
                     className="relative flex-1 w-full overflow-hidden rounded-sm border-2 transition-all border-transparent hover:border-gray-300"
                   >
-                    {img && <Image src={img} alt={`${product.name} thumbnail ${idx + 1}`} fill className="object-cover" />}
+                    {img && <Image src={sanitizeImageUrl(img)} alt={`${product.name} thumbnail ${idx + 1}`} fill unoptimized className="object-cover" />}
                   </button>
                 ))}
               </div>
@@ -408,9 +409,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                   onClick={() => setGalleryOpen(true)}
                 >
                   <Image
-                    src={mainImage}
+                    src={sanitizeImageUrl(mainImage)}
                     alt={product.name}
                     fill
+                    unoptimized
                     className="object-cover transition-transform duration-500 group-hover/zoom:scale-105"
                   />
                   {/* Zoom hint overlay */}

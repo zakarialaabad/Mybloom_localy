@@ -3,6 +3,7 @@ import { useEffect, useState, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import { sanitizeImageUrl } from '@/lib/utils';
 import { Heart, LayoutGrid, List, ChevronDown, Check, Star, ShoppingBag } from 'lucide-react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -273,9 +274,10 @@ export default function WishlistPage() {
                   {/* Thumbnail */}
                   <Link href={`/product/${product.slug}`} className="relative shrink-0 w-24 h-28 sm:w-28 sm:h-32 rounded-sm overflow-hidden bg-gray-50">
                     <Image
-                      src={product.primary_image || product.images?.[0]?.image_url || FALLBACK_IMG}
+                      src={sanitizeImageUrl(product.primary_image || product.images?.[0]?.image_url)}
                       alt={product.name}
                       fill
+                      unoptimized
                       className="object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   </Link>

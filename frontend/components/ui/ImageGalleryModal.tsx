@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Image from 'next/image';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { sanitizeImageUrl } from '@/lib/utils';
 
 export interface ImageGalleryModalProps {
   isOpen: boolean;
@@ -70,9 +71,10 @@ export default function ImageGalleryModal({
         <div className="relative w-full h-full max-w-5xl mx-auto">
           {currentImage && (
             <Image
-              src={currentImage}
+              src={sanitizeImageUrl(currentImage)}
               alt={altText}
               fill
+              unoptimized
               className="object-contain"
               quality={100}
               priority
@@ -111,7 +113,7 @@ export default function ImageGalleryModal({
                     : 'opacity-40 hover:opacity-100 ring-1 ring-white/20 hover:scale-100'
                 }`}
               >
-                <Image src={img} alt={`Gallery thumbnail ${idx + 1}`} fill className="object-cover" />
+                <Image src={sanitizeImageUrl(img)} alt={`Gallery thumbnail ${idx + 1}`} fill unoptimized className="object-cover" />
               </button>
             ))}
           </div>
