@@ -97,10 +97,11 @@ class DashboardController extends Controller
     {
         $days = collect(range(6, 0))->map(fn ($i) => Carbon::today()->subDays($i));
 
-        // Query revenue grouped by date
+        // Query revenue and order count grouped by date
         $rows = Order::select(
                 DB::raw('DATE(created_at) as day'),
-                DB::raw('SUM(total) as revenue')
+                DB::raw('SUM(total) as revenue'),
+                DB::raw('COUNT(*) as order_count')
             )
             ->where('created_at', '>=', Carbon::today()->subDays(6)->startOfDay())
             ->groupBy('day')
@@ -109,16 +110,19 @@ class DashboardController extends Controller
 
         $labels  = [];
         $values  = [];
+        $orders  = [];
 
         foreach ($days as $day) {
-            $labels[] = $day->format('D'); // Mon, Tue ...
-            $key      = $day->format('Y-m-d');
-            $values[] = isset($rows[$key]) ? (float) $rows[$key]->revenue : 0;
+            $labels[]  = $day->format('D'); // Mon, Tue ...
+            $key       = $day->format('Y-m-d');
+            $values[]  = isset($rows[$key]) ? (float) $rows[$key]->revenue : 0;
+            $orders[]  = isset($rows[$key]) ? (int) $rows[$key]->order_count : 0;
         }
 
         return [
             'labels' => $labels,
             'values' => $values,
+            'orders' => $orders,
         ];
     }
 

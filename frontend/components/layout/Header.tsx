@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import CartDrawer from '@/components/CartDrawer';
 import FilterModal from '@/components/FilterModal';
 import useCartStore from '@/store/cart';
@@ -19,6 +20,7 @@ const NAV_LINKS = [
 ];
 
 export default function Header() {
+  const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const cartItemCount = useCartStore((s) => s.itemCount());
   const [query, setQuery] = useState('');
@@ -87,18 +89,28 @@ export default function Header() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  if (query.trim()) {
+                    router.push(`/collection?search=${encodeURIComponent(query.trim())}`);
+                  }
+                }
+              }}
               placeholder="Search for brand, perfumes, colognes..."
               className="w-full rounded-full border border-gray-200 py-2 pl-10 pr-10 text-sm
-                focus:border-aura-gold focus:outline-none focus:ring-1 focus:ring-aura-gold"
+                focus:border-[#da2966] focus:outline-none focus:ring-1 focus:ring-[#da2966]"
             />
             {/* filter icon */}
             <svg
               onClick={() => setIsFilterOpen(true)}
-              className="absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 cursor-pointer text-gray-400 hover:text-gray-600 transition-colors"
-              fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              className="absolute right-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-900 transition-colors"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+              <path d="M3 8h10m4 0h4" />
+              <circle cx="15" cy="8" r="2.5" />
+              <path d="M3 16h4m4 0h10" />
+              <circle cx="9" cy="16" r="2.5" />
             </svg>
           </div>
         </div>
@@ -218,6 +230,17 @@ export default function Header() {
               </svg>
               <input 
                 type="text" 
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    if (query.trim()) {
+                      setIsMenuOpen(false);
+                      router.push(`/collection?search=${encodeURIComponent(query.trim())}`);
+                    }
+                  }
+                }}
                 placeholder="Search for a scent..." 
                 className="flex-1 bg-transparent text-sm focus:outline-none placeholder-gray-500 font-medium"
               />
@@ -226,10 +249,13 @@ export default function Header() {
                   setIsMenuOpen(false);
                   setIsFilterOpen(true);
                 }}
-                className="w-4 h-4 text-gray-400 ml-3 cursor-pointer hover:text-gray-600 transition-colors" 
-                fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                className="w-[18px] h-[18px] text-gray-500 ml-3 cursor-pointer hover:text-gray-900 transition-colors" 
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
               >
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                <path d="M3 8h10m4 0h4" />
+                <circle cx="15" cy="8" r="2.5" />
+                <path d="M3 16h4m4 0h10" />
+                <circle cx="9" cy="16" r="2.5" />
               </svg>
             </div>
           </div>

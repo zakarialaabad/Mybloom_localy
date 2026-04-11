@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
-import { UploadCloud, X, Loader2 } from 'lucide-react';
+import { UploadCloud, X, Loader2, Trash2 } from 'lucide-react';
 import { adminBannerService, Banner } from '@/services/api';
 
 // ── Slot config ───────────────────────────────────────────────────────────────
@@ -77,30 +77,80 @@ function UploadArea({
   );
 }
 
+// ── Delete confirm modal ─────────────────────────────────────────────────────
+
+function DeleteConfirmModal({
+  onConfirm,
+  onCancel,
+  deleting,
+}: {
+  onConfirm: () => void;
+  onCancel: () => void;
+  deleting: boolean;
+}) {
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onCancel(); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [onCancel]);
+
+  return (
+    <div
+      className="fixed inset-0 bg-black/50 backdrop-blur-[2px] flex items-center justify-center z-50 p-4"
+      onClick={onCancel}
+    >
+      <div
+        className="bg-white rounded-2xl w-full max-w-sm shadow-[0_20px_60px_rgba(0,0,0,0.2)] overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="px-6 pt-7 pb-6">
+          <div className="mx-auto w-14 h-14 rounded-full bg-[#fdf0f4] flex items-center justify-center mb-5">
+            <Trash2 size={24} className="text-[#da2966]" strokeWidth={1.8} />
+          </div>
+          <h3 className="text-[17px] font-bold text-[#111] text-center mb-2">
+            Supprimer cette bannière ?
+          </h3>
+          <p className="text-[13px] text-gray-500 text-center leading-relaxed">
+            Cette action est irréversible. La bannière sera définitivement supprimée.
+          </p>
+        </div>
+        <div className="flex border-t border-gray-100">
+          <button
+            onClick={onCancel}
+            disabled={deleting}
+            className="flex-1 py-4 text-[14px] font-semibold text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-colors disabled:opacity-50"
+          >
+            Annuler
+          </button>
+          <div className="w-px bg-gray-100" />
+          <button
+            onClick={onConfirm}
+            disabled={deleting}
+            className="flex-1 py-4 text-[14px] font-semibold text-white bg-[#da2966] hover:bg-[#c01f54] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+          >
+            {deleting ? (
+              <><Loader2 size={16} className="animate-spin" /> Suppression…</>
+            ) : (
+              'Supprimer'
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Filled slot component ─────────────────────────────────────────────────────
 
 function FilledSlot({
   banner,
-  onDeleted,
+  onRequestDelete,
+  deleting,
 }: {
   banner: Banner;
-  onDeleted: (id: number) => void;
+  onRequestDelete: () => void;
+  deleting?: boolean;
 }) {
-  const [deleting, setDeleting] = useState(false);
-
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!confirm('Remove this banner?')) return;
-    setDeleting(true);
-    try {
-      await adminBannerService.destroy(banner.id);
-      onDeleted(banner.id);
-    } catch (err) {
-      console.error('[BannersPage] delete failed:', err);
-      setDeleting(false);
-    }
-  };
-
   return (
     <div className="relative w-full h-full group">
       <Image
@@ -112,7 +162,7 @@ function FilledSlot({
       />
       <div className="absolute top-3 left-3 z-10">
         <button
-          onClick={handleDelete}
+          onClick={(e) => { e.stopPropagation(); onRequestDelete(); }}
           disabled={deleting}
           className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#da2966] border border-[#da2966] shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:bg-[#da2966] hover:text-white transition-colors disabled:opacity-60"
           aria-label="Remove banner"
@@ -130,6 +180,8 @@ export default function BannersPage() {
   const [homepageBanners, setHomepageBanners] = useState<Banner[]>([]);
   const [heroBanner, setHeroBanner] = useState<Banner | null>(null);
   const [loading, setLoading] = useState(true);
+  const [confirmTarget, setConfirmTarget] = useState<Banner | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // ── Hero banner upload ─────────────────────────────────────────────────────
   const heroInputRef = useRef<HTMLInputElement>(null);
@@ -156,8 +208,22 @@ export default function BannersPage() {
     });
   };
 
-  const handleHomepageDeleted = (id: number) => {
-    setHomepageBanners((prev) => prev.filter((b) => b.id !== id));
+  const executeDelete = async () => {
+    if (!confirmTarget) return;
+    setIsDeleting(true);
+    try {
+      await adminBannerService.destroy(confirmTarget.id);
+      if (confirmTarget.type === 'homepage_slot') {
+        setHomepageBanners((prev) => prev.filter((b) => b.id !== confirmTarget.id));
+      } else {
+        setHeroBanner(null);
+      }
+      setConfirmTarget(null);
+    } catch (err) {
+      console.error('[BannersPage] delete failed:', err);
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   const handleHeroUpload = async (file: File) => {
@@ -180,14 +246,8 @@ export default function BannersPage() {
     }
   };
 
-  const handleHeroDeleted = async () => {
-    if (!heroBanner || !confirm('Remove hero banner?')) return;
-    try {
-      await adminBannerService.destroy(heroBanner.id);
-      setHeroBanner(null);
-    } catch (err) {
-      console.error('[BannersPage] hero delete failed:', err);
-    }
+  const handleHeroDeleteRequest = () => {
+    if (heroBanner) setConfirmTarget(heroBanner);
   };
 
   // Helper — get homepage banner by position
@@ -224,7 +284,7 @@ export default function BannersPage() {
               {loading ? (
                 <div className="absolute inset-0 bg-gray-100 animate-pulse" />
               ) : slotBanner(1) ? (
-                <FilledSlot banner={slotBanner(1)!} onDeleted={handleHomepageDeleted} />
+                <FilledSlot banner={slotBanner(1)!} onRequestDelete={() => setConfirmTarget(slotBanner(1)!)} deleting={isDeleting && confirmTarget?.id === slotBanner(1)?.id} />
               ) : (
                 <UploadArea position={1} onUploaded={handleHomepageUploaded} />
               )}
@@ -238,7 +298,7 @@ export default function BannersPage() {
                 {loading ? (
                   <div className="absolute inset-0 bg-gray-100 animate-pulse" />
                 ) : slotBanner(2) ? (
-                  <FilledSlot banner={slotBanner(2)!} onDeleted={handleHomepageDeleted} />
+                  <FilledSlot banner={slotBanner(2)!} onRequestDelete={() => setConfirmTarget(slotBanner(2)!)} deleting={isDeleting && confirmTarget?.id === slotBanner(2)?.id} />
                 ) : (
                   <UploadArea position={2} onUploaded={handleHomepageUploaded} />
                 )}
@@ -252,7 +312,7 @@ export default function BannersPage() {
                   {loading ? (
                     <div className="absolute inset-0 bg-gray-100 animate-pulse" />
                   ) : slotBanner(3) ? (
-                    <FilledSlot banner={slotBanner(3)!} onDeleted={handleHomepageDeleted} />
+                    <FilledSlot banner={slotBanner(3)!} onRequestDelete={() => setConfirmTarget(slotBanner(3)!)} deleting={isDeleting && confirmTarget?.id === slotBanner(3)?.id} />
                   ) : (
                     <UploadArea position={3} onUploaded={handleHomepageUploaded} />
                   )}
@@ -263,7 +323,7 @@ export default function BannersPage() {
                   {loading ? (
                     <div className="absolute inset-0 bg-gray-100 animate-pulse" />
                   ) : slotBanner(4) ? (
-                    <FilledSlot banner={slotBanner(4)!} onDeleted={handleHomepageDeleted} />
+                    <FilledSlot banner={slotBanner(4)!} onRequestDelete={() => setConfirmTarget(slotBanner(4)!)} deleting={isDeleting && confirmTarget?.id === slotBanner(4)?.id} />
                   ) : (
                     <UploadArea position={4} onUploaded={handleHomepageUploaded} />
                   )}
@@ -280,7 +340,7 @@ export default function BannersPage() {
             <h2 className="text-[16px] font-bold text-[#da2966]">Collection Hero Banner</h2>
             {heroBanner && (
               <button
-                onClick={handleHeroDeleted}
+                onClick={handleHeroDeleteRequest}
                 className="text-[13px] text-red-500 hover:text-red-700 font-medium transition-colors"
               >
                 Remove
@@ -313,12 +373,7 @@ export default function BannersPage() {
                 />
                 <div className="absolute top-3 left-3 z-20 pointer-events-auto">
                   <button
-                    onClick={(e) => { 
-                      e.stopPropagation(); 
-                      if (confirm('Remove collection hero banner?')) {
-                        handleHeroDeleted();
-                      }
-                    }}
+                    onClick={(e) => { e.stopPropagation(); handleHeroDeleteRequest(); }}
                     className="w-8 h-8 rounded-full bg-white flex items-center justify-center text-[#da2966] border border-[#da2966] shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:bg-[#da2966] hover:text-white transition-colors"
                     aria-label="Remove hero banner"
                   >
@@ -344,6 +399,15 @@ export default function BannersPage() {
           </div>
         </div>
       </div>
+
+      {/* ─── Delete Confirmation Modal ──────────────────────────────────── */}
+      {confirmTarget && (
+        <DeleteConfirmModal
+          onConfirm={executeDelete}
+          onCancel={() => { if (!isDeleting) setConfirmTarget(null); }}
+          deleting={isDeleting}
+        />
+      )}
     </div>
   );
 }

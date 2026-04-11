@@ -29,8 +29,8 @@ export const useProductList = (options?: UseProductListOptions): UseProductListR
     key,
     () => adminProductService.list(options),
     {
-      dedupingInterval: 5 * 60 * 1000,
-      revalidateOnFocus: false,
+      dedupingInterval: 1000, // 1 second (was 5 minutes) - ensures fresh data on quick navigations
+      revalidateOnFocus: true, // Refetch when window regains focus
       errorRetryCount: 1,
     }
   );

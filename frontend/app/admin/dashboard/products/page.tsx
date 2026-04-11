@@ -125,6 +125,11 @@ export default function ProductsPage() {
   /* ── Fetch products with React Query ────────────────────────────────────── */
   const { products, isLoading, refetch } = useProductList({ limit: 200 });
 
+  /* ── Refetch products on page mount to ensure fresh data ─────────────────── */
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
   /* ── Fetch categories and types ─────────────────────────────────────────── */
   useEffect(() => {
     const fetchCategories = async () => {

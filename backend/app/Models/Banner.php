@@ -78,7 +78,8 @@ class Banner extends Model
             return rtrim(config('app.url'), '/') . $path;
         }
         
-        // Everything else — return as-is (frontend will handle)
-        return $path;
+        // Relative path from Laravel storage disk (e.g., "banners/filename.jpg")
+        // Stored via Storage::disk('public'), served at /storage/{path}
+        return rtrim(config('app.url'), '/') . '/storage/' . $path;
     }
 }

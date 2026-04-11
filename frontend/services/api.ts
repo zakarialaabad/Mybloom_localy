@@ -460,6 +460,7 @@ export interface DashboardSummary {
 export interface DashboardChartData {
   labels: string[];
   values: number[];
+  orders: number[];
 }
 
 export interface DashboardCustomer {

@@ -60,6 +60,14 @@ class ProductController extends Controller
             $query->whereIn('id', array_map('intval', (array) $ids));
         }
 
+        if ($request->filled('is_gift')) {
+            $query->where('is_gift', true);
+        }
+
+        if ($productType = $request->query('product_type')) {
+            $query->whereHas('productType', fn ($q) => $q->where('slug', $productType));
+        }
+
         if ($gender = $request->query('gender')) {
             $query->where('gender', $gender);
         }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
@@ -57,13 +57,16 @@ function UpArrow() {
   );
 }
 
-function UserAvatar() {
+function CustomerAvatar({ name }: { name: string }) {
+  const initials = name
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join('');
   return (
-    <div className="w-10 h-10 rounded-full bg-[#fde2e7] flex items-center justify-center shrink-0">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <circle cx="11" cy="8" r="4" fill="#da2966" opacity="0.55" />
-        <path d="M2 20c0-4 4-7 9-7s9 3 9 7" stroke="#da2966" strokeWidth="1.6" strokeLinecap="round" fill="none" opacity="0.55" />
-      </svg>
+    <div className="w-11 h-11 rounded-full bg-[#fde2e7] flex items-center justify-center shrink-0">
+      <span className="text-[13px] font-bold text-[#da2966] tracking-wide">{initials}</span>
     </div>
   );
 }
@@ -116,9 +119,14 @@ function DashboardSkeleton() {
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 function SalesChart({ chart }: { chart: DashboardChartData }) {
-  const max = Math.max(...chart.values, 1);
+  const [activeIdx, setActiveIdx] = useState<number | null>(null);
+  const wrapperRef    = useRef<HTMLDivElement>(null);
+  const dismissTimer  = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const max    = Math.max(...chart.values, 1);
   const HEIGHT = 200;
   const WIDTH  = 700;
+
   const points = chart.values.map((v, i) => ({
     x: (i / (chart.values.length - 1)) * WIDTH,
     y: HEIGHT - (v / max) * (HEIGHT * 0.85) - HEIGHT * 0.05,
@@ -134,25 +142,143 @@ function SalesChart({ chart }: { chart: DashboardChartData }) {
     })
     .join(' ');
 
-  const last = points[points.length - 1];
+  const last     = points[points.length - 1];
   const areaPath = `${linePath} L${last.x},${HEIGHT} L0,${HEIGHT} Z`;
+
+  // ── Shared: clientX → nearest data point index ──────────────────────────
+  const resolveIdx = (clientX: number): number | null => {
+    const el = wrapperRef.current;
+    if (!el) return null;
+    const { left, width } = el.getBoundingClientRect();
+    const xPct = (clientX - left) / width;
+    return Math.max(0, Math.min(chart.values.length - 1, Math.round(xPct * (chart.values.length - 1))));
+  };
+
+  // ── Mouse (desktop) ──────────────────────────────────────────────────────
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const idx = resolveIdx(e.clientX);
+    if (idx !== null) setActiveIdx(idx);
+  };
+
+  // ── Touch (mobile) ───────────────────────────────────────────────────────
+  const clearDismiss = () => {
+    if (dismissTimer.current) clearTimeout(dismissTimer.current);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    clearDismiss();
+    const idx = resolveIdx(e.touches[0]?.clientX ?? 0);
+    if (idx !== null) setActiveIdx(idx);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    clearDismiss();
+    const idx = resolveIdx(e.touches[0]?.clientX ?? 0);
+    if (idx !== null) setActiveIdx(idx);
+  };
+
+  // Keep tooltip visible for 1.5 s after finger lifts so user can read it
+  const handleTouchEnd = () => {
+    dismissTimer.current = setTimeout(() => setActiveIdx(null), 1500);
+  };
+
+  const ap       = activeIdx !== null ? points[activeIdx] : null;
+  const xPct     = ap ? (ap.x / WIDTH) * 100 : 0;
+  const flipLeft = xPct > 65;
 
   return (
     <div>
-      <div className="w-full" style={{ height: `${HEIGHT}px` }}>
-        <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} preserveAspectRatio="none" className="w-full h-full">
+      <div
+        ref={wrapperRef}
+        className="relative w-full select-none"
+        style={{ height: `${HEIGHT}px`, cursor: 'crosshair', touchAction: 'pan-y' }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={() => setActiveIdx(null)}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        <svg
+          viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
+          preserveAspectRatio="none"
+          className="w-full h-full"
+        >
           <defs>
             <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%"   stopColor="#da2966" stopOpacity="0.20" />
               <stop offset="100%" stopColor="#da2966" stopOpacity="0.01" />
             </linearGradient>
           </defs>
+
+          {/* Area fill */}
           <path d={areaPath} fill="url(#areaGrad)" />
+          {/* Line */}
           <path d={linePath} fill="none" stroke="#da2966" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+
+          {/* Vertical guide + active dot */}
+          {ap && activeIdx !== null && (
+            <>
+              <line
+                x1={ap.x} y1={0} x2={ap.x} y2={HEIGHT}
+                stroke="#da2966" strokeWidth="1.2" strokeDasharray="4 3" opacity="0.35"
+              />
+              <circle cx={ap.x} cy={ap.y} r="7"   fill="white"   />
+              <circle cx={ap.x} cy={ap.y} r="4.5" fill="#da2966" />
+              <circle cx={ap.x} cy={ap.y} r="7"   fill="none" stroke="#da2966" strokeWidth="2" />
+            </>
+          )}
         </svg>
+
+        {/* ── Tooltip card ── */}
+        {ap && activeIdx !== null && (
+          <div
+            className="absolute top-1 z-20 pointer-events-none"
+            style={{
+              left:      `${xPct}%`,
+              transform: flipLeft
+                ? 'translate(-106%, 0)'
+                : xPct < 12
+                  ? 'translate(4px, 0)'
+                  : 'translate(-50%, 0)',
+            }}
+          >
+            <div className="bg-white rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.12)] border border-gray-100 px-4 py-3 w-[136px]">
+              {/* Day label */}
+              <p className="text-[11px] font-extrabold text-[#da2966] uppercase tracking-widest mb-2">
+                {chart.labels[activeIdx]}
+              </p>
+              {/* Revenue */}
+              <p className="text-[15px] font-bold text-[#1a1a1a] leading-tight">
+                {chart.values[activeIdx].toLocaleString('fr-MA', { minimumFractionDigits: 2 })}
+                <span className="text-[11px] font-semibold text-gray-400 ml-1">Dhs</span>
+              </p>
+              {/* Orders count */}
+              <div className="flex items-center gap-1.5 mt-2 pt-2 border-t border-gray-100">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <rect x="1" y="4" width="10" height="7.5" rx="1.2" stroke="#da2966" strokeWidth="1.2" fill="none" />
+                  <path d="M4 4V3a2 2 0 014 0v1" stroke="#da2966" strokeWidth="1.2" strokeLinecap="round" fill="none" />
+                </svg>
+                <p className="text-[11px] text-gray-500 font-semibold">
+                  {(chart.orders?.[activeIdx] ?? 0)} order{(chart.orders?.[activeIdx] ?? 0) !== 1 ? 's' : ''}
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
-      <div className="flex justify-between mt-1 text-[11px] font-semibold text-gray-400 uppercase tracking-wider">
-        {chart.labels.map((l) => <span key={l}>{l}</span>)}
+
+      {/* Day labels */}
+      <div className="flex justify-between mt-2 text-[11px] font-semibold uppercase tracking-wider">
+        {chart.labels.map((l, i) => (
+          <span
+            key={l}
+            className={`transition-colors duration-150 ${
+              activeIdx === i ? 'text-[#da2966] font-extrabold' : 'text-gray-400'
+            }`}
+          >
+            {l}
+          </span>
+        ))}
       </div>
     </div>
   );
@@ -279,23 +405,25 @@ export default function AdminDashboardPage() {
 
               {/* Top Customers */}
               <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 flex flex-col">
-                <h3 className="text-[16px] font-bold text-[#1a1a1a] mb-5">Top Customers</h3>
-                <div className="space-y-4 flex-1">
+                <h3 className="text-[16px] font-bold text-[#1a1a1a] mb-4">Top Customers</h3>
+                <div className="flex-1 divide-y divide-gray-100">
                   {data.top_customers.map((c, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <UserAvatar />
+                    <div key={i} className="flex items-center gap-3 py-3.5">
+                      <CustomerAvatar name={c.name} />
                       <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-bold text-[#222] truncate">{c.phone}</p>
-                        <p className="text-[11px] text-gray-400">{c.orders} Orders</p>
+                        <p className="text-[14px] font-bold text-[#1a1a1a] truncate">{c.name}</p>
+                        <p className="text-[12px] text-gray-400 mt-0.5 truncate">{c.phone}</p>
                       </div>
-                      <span className="text-[13px] font-bold text-[#da2966] shrink-0">{c.total_spent} Dhs</span>
+                      <div className="text-right shrink-0">
+                        <p className="text-[14px] font-bold italic text-[#da2966]">{Number(c.total_spent).toLocaleString('fr-MA', { minimumFractionDigits: 2 })} Dhs</p>
+                        <p className="text-[12px] italic text-gray-400 mt-0.5">{c.orders} Orders</p>
+                      </div>
                     </div>
                   ))}
                   {data.top_customers.length === 0 && (
-                    <p className="text-[13px] text-gray-400">No customers yet.</p>
+                    <p className="text-[13px] text-gray-400 py-4">No customers yet.</p>
                   )}
                 </div>
-
               </div>
             </div>
 

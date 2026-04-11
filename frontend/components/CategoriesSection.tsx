@@ -283,7 +283,7 @@ export default function CategoriesSection() {
                 </Link>
               )}
             </div>
-        </div>
+          </div>
         </SectionContainer>
       </div>
     </section>

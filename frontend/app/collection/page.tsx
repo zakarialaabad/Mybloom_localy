@@ -216,6 +216,15 @@ export default function CollectionPage() {
       // Sort applies globally (including featuredOnly mode)
       if (sortBy !== 'newest') params['sort'] = sortBy;
 
+      const searchTerm = searchParams.get('search');
+      if (searchTerm) params['search'] = searchTerm;
+
+      const productType = searchParams.get('product_type');
+      if (productType) params['product_type'] = productType;
+
+      const isGift = searchParams.get('is_gift');
+      if (isGift === 'true' || isGift === '1') params['is_gift'] = 1;
+
       if (featuredOnly) {
         // "Best Sellers" mode — send ONLY is_featured=1 + sort.
         // Stale store values from a previous session must not interfere.
@@ -251,7 +260,19 @@ export default function CollectionPage() {
       clearTimeout(timer);
       controller.abort();
     };
-  }, [selectedBrands, selectedCategories, selectedIngredients, selectedMin, selectedMax, selectedRating, promotionOnly, featuredOnly, aggregatesReady, sortBy]);
+  }, [
+    searchParams,
+    selectedBrands,
+    selectedCategories,
+    selectedIngredients,
+    selectedMin,
+    selectedMax,
+    selectedRating,
+    promotionOnly,
+    featuredOnly,
+    aggregatesReady,
+    sortBy
+  ]);
 
   // Reset to page 1 whenever the product list changes (new filter applied)
   useEffect(() => { setCurrentPage(1); }, [products]);
