@@ -721,10 +721,17 @@ export interface AdminOrderFull {
   total: number;
   status: string;
   items_count: number;
+  customer_total_orders?: number;
   created_at: string;
   items: AdminOrderItem[];
   shipping_method?: { id: number; name: string };
   coupon?: { id: number; code: string } | null;
+  status_histories?: Array<{
+    status: string;
+    label: string;
+    location?: string;
+    created_at: string;
+  }>;
 }
 
 /**

@@ -7,7 +7,7 @@
 import React from 'react';
 import { AdminReview } from '@/services/api';
 import DataTable, { type Column } from '@/components/DataTable';
-import { Star, Edit3, Trash2, Eye, MessageSquare } from 'lucide-react';
+import { Star, Edit3, Trash2, MessageSquare } from 'lucide-react';
 
 interface ReviewTableProps {
   /** Array of reviews to display */
@@ -132,15 +132,6 @@ export function ReviewTable({
             <div className="flex sm:hidden gap-0.5 mt-1">
               <StarRating rating={review.rating} size={10} />
             </div>
-            {review.product ? (
-              <span className="inline-block text-[10px] font-bold text-[#423835] bg-[#fdf8f4] border border-[#ede0d4] px-2 py-0.5 rounded-[4px] mt-1 max-w-[160px] truncate">
-                {review.product.name}
-              </span>
-            ) : (
-              <span className="inline-block text-[10px] font-bold text-[#da2966] bg-[#fdf2f4] px-2 py-0.5 rounded-[4px] mt-1">
-                Homepage
-              </span>
-            )}
           </div>
         </div>
       ),
@@ -174,21 +165,7 @@ export function ReviewTable({
         const isActing = actionLoading === review.id;
         
         return (
-          <div className="flex items-center justify-end gap-2">
-            {onApproveToggle && (
-              <button
-                onClick={() => onApproveToggle(review)}
-                disabled={isActing}
-                title={review.is_approved ? 'Retirer approbation' : 'Approuver'}
-                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all disabled:opacity-50 ${
-                  review.is_approved
-                    ? 'bg-green-50 text-green-600 hover:bg-green-100'
-                    : 'bg-gray-100 text-gray-400 hover:bg-[#fdf2f4] hover:text-[#da2966]'
-                }`}
-              >
-                <Eye size={15} strokeWidth={2.5} />
-              </button>
-            )}
+          <div className="flex items-center justify-center gap-2">
             {onEdit && (
               <button
                 onClick={() => onEdit(review)}

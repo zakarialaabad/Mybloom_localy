@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, ListTodo, PackageCheck } from 'lucide-react';
+import { X, PackageCheck, ShoppingCart } from 'lucide-react';
 import { AdminOrderFull, adminOrderService } from '@/services/api';
 
 interface OrderDetailsSidebarProps {
@@ -185,16 +185,37 @@ export default function OrderDetailsSidebar({
 
             <div className="relative pl-3 space-y-8 before:absolute before:inset-y-0 before:left-[1.125rem] before:w-[1px] before:bg-gray-300">
               {([
-                { label: 'Order Valid' },
-                { label: 'Preparing Your Package' },
-                { label: 'Out for Delivery' },
-                { label: 'Delivered' },
-              ] as { label: string }[]).map((step, idx) => {
+                { label: 'Order Valid', statusKey: 'confirmed' },
+                { label: 'Preparing Your Package', statusKey: 'preparing' },
+                { label: 'Out for Delivery', statusKey: 'shipped' },
+                { label: 'Delivered', statusKey: 'delivered' },
+              ] as { label: string; statusKey: string }[]).map((step, idx) => {
                 const activeIdx = SIDEBAR_STATUS_RANK[order.status] ?? -1;
                 const isStepDone = activeIdx >= 0 && idx <= activeIdx;
                 const isStepActive = idx === activeIdx;
+                
+                // Find corresponding status history entry
+                const statusHistory = order.status_histories?.find(
+                  (h) => h.status === step.statusKey || h.status.toLowerCase() === step.statusKey.toLowerCase()
+                );
+                
+                const stepDate = statusHistory?.created_at
+                  ? new Date(statusHistory.created_at).toLocaleDateString('en-US', {
+                      month: 'short',
+                      day: 'numeric',
+                    })
+                  : null;
+                  
+                const stepTime = statusHistory?.created_at
+                  ? new Date(statusHistory.created_at).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true,
+                    })
+                  : null;
+                
                 return (
-                  <div key={idx} className="relative flex items-center gap-4">
+                  <div key={idx} className="relative flex items-start gap-4">
                     <div className={`relative z-10 w-4 h-4 rounded-full border flex items-center justify-center text-[9px] font-bold ring-4 ring-[#fcf9f9] transition-colors ${
                       isStepDone
                         ? 'bg-gray-800 border-gray-800 text-white'
@@ -202,11 +223,18 @@ export default function OrderDetailsSidebar({
                     }`}>
                       {idx + 1}
                     </div>
-                    <span className={`text-[15px] font-serif font-bold transition-colors ${
-                      isStepActive ? 'text-[#da2966]' : isStepDone ? 'text-[#444]' : 'text-gray-400'
-                    }`}>
-                      {step.label}
-                    </span>
+                    <div className="flex-1 pt-0.5">
+                      <span className={`text-[15px] font-serif font-bold transition-colors block ${
+                        isStepActive ? 'text-[#da2966]' : isStepDone ? 'text-[#444]' : 'text-gray-400'
+                      }`}>
+                        {step.label}
+                      </span>
+                      {(isStepDone || isStepActive) && stepDate && stepTime && (
+                        <span className="text-[12px] text-gray-500 font-medium mt-1.5 block">
+                          {stepDate} at {stepTime}
+                        </span>
+                      )}
+                    </div>
                   </div>
                 );
               })}
@@ -240,19 +268,7 @@ export default function OrderDetailsSidebar({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                  <div className="flex-1 sm:flex-none bg-[#fcf9f9] rounded-[12px] px-4 py-2 text-center shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#f5ebed]">
-                    <div className="flex items-center gap-2 mb-1 justify-center">
-                      <ListTodo size={14} className="text-[#da2966]" />
-                      <span className="text-[16px] font-serif font-bold text-[#da2966]">
-                        {order.items_count}
-                      </span>
-                    </div>
-                    <span className="text-[10px] text-gray-400 font-medium">
-                      Total Items
-                    </span>
-                  </div>
-
+                <div className="flex items-center gap-3 w-full sm:w-auto flex-wrap">
                   <div className="flex-1 sm:flex-none bg-[#fcf9f9] rounded-[12px] px-4 py-2 text-center shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#f5ebed]">
                     <div className="flex items-center gap-2 mb-1 justify-center">
                       <PackageCheck size={14} className="text-[#da2966]" />
@@ -261,7 +277,19 @@ export default function OrderDetailsSidebar({
                       </span>
                     </div>
                     <span className="text-[10px] text-gray-400 font-medium">
-                      Total Order
+                      Order Total
+                    </span>
+                  </div>
+
+                  <div className="flex-1 sm:flex-none bg-[#fcf9f9] rounded-[12px] px-4 py-2 text-center shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#f5ebed]">
+                    <div className="flex items-center gap-2 mb-1 justify-center">
+                      <ShoppingCart size={14} className="text-[#da2966]" />
+                      <span className="text-[16px] font-serif font-bold text-[#da2966]">
+                        {order.customer_total_orders || 0}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-gray-400 font-medium">
+                      Total Orders
                     </span>
                   </div>
                 </div>
@@ -286,65 +314,70 @@ export default function OrderDetailsSidebar({
               Items Ordered
             </h3>
 
-            <div className="flex">
-              <div className="flex-1 border-r-2 border-gray-800 pr-6 mr-6 max-h-[260px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] space-y-6">
-                {order.items && order.items.length > 0 ? (
-                  order.items.map((item) => {
-                    // Get primary image URL from product
-                    // Backend provides: image_url (primary) OR images array with is_primary flag
-                    const imageUrl = item.product?.image_url || 
-                                     item.product?.images?.find(img => img.is_primary)?.url || 
-                                     item.product?.images?.[0]?.url || 
-                                     null;
+            <div className="max-h-[420px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] space-y-4">
+              {order.items && order.items.length > 0 ? (
+                order.items.map((item) => {
+                  // Get primary image URL from product
+                  // Backend provides: image_url (primary) OR images array with is_primary flag
+                  const imageUrl = item.product?.image_url || 
+                                   item.product?.images?.find(img => img.is_primary)?.url || 
+                                   item.product?.images?.[0]?.url || 
+                                   null;
 
-                    return (
-                      <div key={item.id} className="flex items-center justify-between">
-                        <div className="flex items-center gap-4">
-                          {/* Product Image */}
-                          <div className="relative w-16 h-16 bg-gray-100 rounded-[12px] overflow-hidden flex-shrink-0 border border-gray-200">
-                            {imageUrl ? (
-                              <img
-                                src={imageUrl}
-                                alt={item.product?.name || 'Product'}
-                                className="w-full h-full object-cover"
-                                onError={(e) => {
-                                  // Fallback if image URL fails to load
-                                  e.currentTarget.style.display = 'none';
-                                }}
-                              />
-                            ) : null}
-                            <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-400 text-xs">
-                              {!imageUrl && 'No Image'}
-                            </div>
-
-                            {/* Quantity Badge */}
-                            <div className="absolute -top-2 -right-2 w-5 h-5 bg-gray-800 rounded-full flex items-center justify-center text-white text-[10px] font-bold z-10 border border-white">
-                              {item.quantity}
-                            </div>
+                  return (
+                    <div key={item.id} className="flex gap-4 p-4 bg-white rounded-[14px] border border-[#f5ebed] shadow-sm hover:shadow-md transition-shadow">
+                      {/* Product Image */}
+                      <div className="relative w-20 h-20 bg-gradient-to-br from-gray-50 to-gray-100 rounded-[10px] overflow-hidden flex-shrink-0 border border-gray-200 flex items-center justify-center group">
+                        {imageUrl ? (
+                          <>
+                            <img
+                              src={imageUrl}
+                              alt={item.product?.name || 'Product'}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                              onError={(e) => {
+                                // Fallback if image fails to load
+                                const container = e.currentTarget.parentElement;
+                                if (container) {
+                                  container.classList.add('bg-gradient-to-br', 'from-gray-100', 'to-gray-200');
+                                }
+                              }}
+                            />
+                            {/* Loading overlay */}
+                            <div className="absolute inset-0 bg-white/0 group-hover:bg-white/5 transition-colors" />
+                          </>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center text-gray-400 text-center px-2">
+                            <span className="text-lg">📷</span>
+                            <span className="text-[9px] mt-1 font-medium">No image</span>
                           </div>
+                        )}
 
-                          {/* Product Info */}
-                          <div className="flex-1 min-w-0">
-                            <h4 className="text-[15px] font-serif font-bold text-[#444] truncate">
-                              {item.product?.name || `Product #${item.product_id}`}
-                            </h4>
-                            <p className="text-[12px] text-gray-500 italic font-serif">
-                              {item.quantity} × {Number(item.unit_price).toFixed(2)} DH
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* Price — Using line_total from backend (NOT total_price) */}
-                        <div className="text-[16px] font-serif font-bold text-[#222] italic flex-shrink-0 pl-4">
-                          {Number(item.line_total || 0).toFixed(2)} DH
+                        {/* Quantity Badge */}
+                        <div className="absolute -top-1 -right-1 min-w-[24px] h-6 bg-[#da2966] rounded-full flex items-center justify-center text-white text-[11px] font-bold z-10 border-2 border-white shadow-sm px-1">
+                          {item.quantity}
                         </div>
                       </div>
-                    );
-                  })
-                ) : (
-                  <p className="text-[14px] text-gray-400 italic">No items found</p>
-                )}
-              </div>
+
+                      {/* Product Info */}
+                      <div className="flex-1 min-w-0 flex flex-col justify-between">
+                        <div>
+                          <h4 className="text-[14px] font-serif font-bold text-[#444] line-clamp-2 leading-tight">
+                            {item.product?.name || `Product #${item.product_id}`}
+                          </h4>
+                          <p className="text-[12px] text-gray-500 mt-1.5 font-medium">
+                            {item.quantity}× {Number(item.unit_price).toFixed(2)} DH
+                          </p>
+                        </div>
+                        <p className="text-[14px] font-serif font-bold text-[#222] italic pt-2 border-t border-gray-100">
+                          {Number(item.line_total || 0).toFixed(2)} DH
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <p className="text-[14px] text-gray-400 italic text-center py-8">No items found</p>
+              )}
             </div>
           </div>
 

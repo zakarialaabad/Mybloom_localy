@@ -12,6 +12,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,              // 1 — admins
             BrandSeeder::class,              // 2 — brands
             CategorySeeder::class,           // 3 — categories (parent before child)
+            BannerSeeder::class,             // 3 — banners (homepage + collection hero)
             ExtraCategorySeeder::class,      // 4 — 6 extra categories
             ProductTypeSeeder::class,        // 5 — product types (Visage, Corps, Parfums, Skincare, Hair)
             ProductSeeder::class,            // 6 — products (needs brand + category)

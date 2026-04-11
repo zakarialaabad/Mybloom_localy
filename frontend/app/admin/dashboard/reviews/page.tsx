@@ -378,12 +378,12 @@ export default function ReviewsPage() {
           <p className="text-[14px] text-gray-400 font-bold mb-2">Global Average</p>
           <div className="flex items-baseline gap-1">
             <h2 className="text-[38px] font-serif font-bold text-[#111] tracking-tighter">
-              {stats ? stats.average_rating.toFixed(1) : <div className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
+              {stats ? stats.average_rating.toFixed(1) : <span className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
             </h2>
             <span className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif text-[#da2966] font-bold">/5.0</span>
           </div>
           <p className="text-[12px] text-gray-400 mt-2 font-medium flex items-center h-4">
-            {stats ? `${stats.total.toLocaleString()} total reviews` : <div className="h-3 w-20 bg-gray-200 rounded animate-pulse inline-block" />}
+            {stats ? `${stats.total.toLocaleString()} total reviews` : <span className="h-3 w-20 bg-gray-200 rounded animate-pulse inline-block" />}
           </p>
         </div>
 
@@ -401,12 +401,12 @@ export default function ReviewsPage() {
           </div>
           <p className="text-[14px] text-gray-400 font-bold mb-2">Pending Moderation</p>
           <h2 className="text-[38px] font-serif font-bold text-[#111] tracking-tighter">
-            {stats ? stats.pending.toLocaleString() : <div className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
+            {stats ? stats.pending.toLocaleString() : <span className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
           <p className="text-[12px] text-gray-400 mt-2 font-medium flex items-center h-4">
             {stats
               ? `${(stats.total - stats.pending).toLocaleString()} approved`
-              : <div className="h-3 w-20 bg-gray-200 rounded animate-pulse inline-block" />}
+              : <span className="h-3 w-20 bg-gray-200 rounded animate-pulse inline-block" />}
           </p>
         </div>
 
@@ -421,12 +421,12 @@ export default function ReviewsPage() {
           <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-serif font-bold text-[#111] tracking-tight line-clamp-1 h-8 flex items-center">
             {stats
               ? (stats.most_reviewed?.product_name ?? '—')
-              : <div className="h-6 w-32 bg-gray-200 rounded animate-pulse inline-block" />}
+              : <span className="h-6 w-32 bg-gray-200 rounded animate-pulse inline-block" />}
           </h2>
           <p className="text-[12px] text-gray-400 mt-2 font-medium flex items-center h-4">
             {stats?.most_reviewed
               ? `${stats.most_reviewed.count} reviews`
-              : stats ? 'No data yet' : <div className="h-3 w-20 bg-gray-200 rounded animate-pulse inline-block" />}
+              : stats ? 'No data yet' : <span className="h-3 w-20 bg-gray-200 rounded animate-pulse inline-block" />}
           </p>
         </div>
 

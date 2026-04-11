@@ -109,8 +109,9 @@ class ReviewController extends Controller
             ];
         }
 
-        // Most-reviewed product (admin-curated reviews only)
+        // Most-reviewed product (admin-curated reviews with a product only)
         $mostReviewed = (clone $base)
+            ->whereNotNull('product_id')
             ->select('product_id', DB::raw('COUNT(*) as review_count'))
             ->with('product:id,name')
             ->groupBy('product_id')

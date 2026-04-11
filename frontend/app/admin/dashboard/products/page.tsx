@@ -146,12 +146,15 @@ export default function ProductsPage() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     setDeleteBusy(true);
+    setError(null);
     try {
       await adminProductService.destroy(deleteTarget.id);
       setDeleteTarget(null);
       refetch();
-    } catch {
-      console.error('[ProductsPage] delete failed');
+    } catch (err) {
+      const errMsg = err instanceof Error ? err.message : 'Failed to delete product. Please try again.';
+      setError(errMsg);
+      console.error('[ProductsPage] delete failed:', err);
     } finally {
       setDeleteBusy(false);
     }

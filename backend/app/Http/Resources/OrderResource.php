@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -73,6 +74,12 @@ class OrderResource extends JsonResource
                 ])
             ),
             'items_count'          => $this->whenHas('items_count'),
+            'customer_total_orders' => $this->when(
+                request()->is('*/admin/*'),
+                fn () => Order::where('customer_email', $this->customer_email)
+                    ->orWhere('customer_phone', $this->customer_phone)
+                    ->count()
+            ),
             'created_at'           => $this->created_at?->toISOString(),
         ];
     }
