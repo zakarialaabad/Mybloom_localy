@@ -112,6 +112,38 @@ class Product extends Model
         return $this->hasMany(ProductFaq::class);
     }
 
+    // ── Getters/Attributes ──────────────────────────────────────────────────
+
+    /**
+     * Get the primary image URL for the product.
+     * Logic matches ProductResource: first primary image, or just the first image.
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        $image = $this->images->firstWhere('is_primary', true) ?? $this->images->first();
+        if (!$image) return null;
+
+        $url = $image->url;
+        if (!$url) return null;
+
+        // Clean URL
+        $url = str_replace(["\r\n", "\r", "\n"], ' ', $url);
+        $url = trim($url);
+
+        if (str_starts_with($url, 'https://')) return $url;
+        
+        if (str_starts_with($url, 'http://')) {
+            $path = parse_url($url, PHP_URL_PATH) ?? '';
+            return rtrim(config('app.url'), '/') . $path;
+        }
+
+        if (str_starts_with($url, '/storage/')) {
+            return rtrim(config('app.url'), '/') . $url;
+        }
+
+        return $url;
+    }
+
     // ── Get recommended products ────────────────────────────────────────────────
     /**
      * Get all recommended products (products with is_recommended = true)

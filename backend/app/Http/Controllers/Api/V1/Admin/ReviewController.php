@@ -113,7 +113,9 @@ class ReviewController extends Controller
         $mostReviewed = (clone $base)
             ->whereNotNull('product_id')
             ->select('product_id', DB::raw('COUNT(*) as review_count'))
-            ->with('product:id,name')
+            ->with(['product' => function($query) {
+                $query->select('id', 'name')->with('images');
+            }])
             ->groupBy('product_id')
             ->orderByDesc('review_count')
             ->first();
@@ -125,6 +127,7 @@ class ReviewController extends Controller
             'distribution'   => $distribution,
             'most_reviewed'  => $mostReviewed ? [
                 'product_name' => $mostReviewed->product?->name ?? 'N/A',
+                'product_image' => $mostReviewed->product?->image_url ?? null,
                 'count'        => (int) $mostReviewed->review_count,
             ] : null,
         ]);

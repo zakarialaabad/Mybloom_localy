@@ -26,8 +26,13 @@ export default function MobileActionBar() {
       <div className="flex items-center justify-between h-full px-4">
 
         {navItem('/track-order', 'My Order', pathname === '/track-order',
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+          <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3" />
+            <circle cx="12" cy="12" r="8" />
+            <line x1="12" y1="2" x2="12" y2="4" strokeLinecap="round" />
+            <line x1="12" y1="20" x2="12" y2="22" strokeLinecap="round" />
+            <line x1="2" y1="12" x2="4" y2="12" strokeLinecap="round" />
+            <line x1="20" y1="12" x2="22" y2="12" strokeLinecap="round" />
           </svg>
         )}
 

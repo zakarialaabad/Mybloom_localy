@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback } from 'react';
 import useSWR from 'swr';
 import { adminProductService, AdminProduct, AdminProductMeta } from '@/services/api';
 
@@ -20,7 +21,7 @@ interface UseProductListReturn {
   isLoading: boolean;
   error: Error | null;
   isError: boolean;
-  refetch: () => void;
+  refetch: () => Promise<any>;  // Promise that resolves when refetch is complete
 }
 
 export const useProductList = (options?: UseProductListOptions): UseProductListReturn => {
@@ -29,8 +30,9 @@ export const useProductList = (options?: UseProductListOptions): UseProductListR
     key,
     () => adminProductService.list(options),
     {
-      dedupingInterval: 1000, // 1 second (was 5 minutes) - ensures fresh data on quick navigations
-      revalidateOnFocus: true, // Refetch when window regains focus
+      dedupingInterval: 60000,         // 60 seconds - prevent unnecessary refetches
+      revalidateOnFocus: false,        // DISABLED - do NOT refetch when user returns to tab
+      revalidateOnReconnect: false,    // DISABLED - do NOT refetch on network reconnect
       errorRetryCount: 1,
     }
   );
@@ -41,6 +43,9 @@ export const useProductList = (options?: UseProductListOptions): UseProductListR
     isLoading,
     error: error as Error | null,
     isError: !!error,
-    refetch: () => mutate(),
+    // Force fresh fetch from server by passing { revalidate: true }
+    // This bypasses the dedupingInterval cache and fetches immediately
+    // useCallback ensures stable reference — prevents infinite useEffect loops
+    refetch: useCallback(() => mutate(undefined, { revalidate: true }), [mutate]),
   };
 };

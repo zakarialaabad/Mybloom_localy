@@ -117,11 +117,11 @@ export default function Header() {
 
         {/* Icons */}
         <div className="flex w-1/4 items-center justify-end space-x-5 md:space-x-6">
-          {/* Track Order */}
+          {/* Track Order - Hidden on Mobile, Shown on Desktop */}
           <Link
             href="/track-order"
             aria-label="Track Order"
-            className="relative text-gray-600 transition-colors hover:text-aura-purple"
+            className="relative hidden md:block text-gray-600 transition-colors hover:text-aura-purple"
           >
             <svg className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth={1.5} viewBox="0 0 24 24">
               <circle cx="12" cy="12" r="3" />

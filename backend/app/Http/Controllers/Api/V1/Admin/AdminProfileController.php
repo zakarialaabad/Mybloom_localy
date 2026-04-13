@@ -27,7 +27,9 @@ class AdminProfileController extends Controller
                 'username' => $admin->username,
                 'email' => $admin->email,
                 'phone' => $admin->phone,
-                'profile_image' => $admin->profile_image ? Storage::url($admin->profile_image) : null,
+                'profile_image' => $admin->profile_image
+                    ? rtrim(config('app.url'), '/') . Storage::url($admin->profile_image)
+                    : null,
                 'last_login_at' => $admin->last_login_at,
                 'created_at' => $admin->created_at,
             ]
@@ -40,21 +42,48 @@ class AdminProfileController extends Controller
     public function update(Request $request): JsonResponse
     {
         $admin = auth('admins')->user();
-
-        $validated = $request->validate([
-            'username' => ['nullable', 'string', 'max:255'],
-            'email' => ['required', 'email', 'max:255', 'unique:admins,email,' . $admin->id],
-            'phone' => ['nullable', 'string', 'max:20'],
-            'profile_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+        
+        \Log::info('[AdminProfile.update] Request received', [
+            'hasFile' => $request->hasFile('profile_image'),
+            'username' => $request->input('username'),
+            'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
         ]);
 
+        try {
+            $validated = $request->validate([
+                'username' => ['nullable', 'string', 'max:255'],
+                'email' => ['required', 'email', 'max:255', 'unique:admins,email,' . $admin->id],
+                'phone' => ['nullable', 'string', 'max:20'],
+                'profile_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+            ]);
+            
+            \Log::info('[AdminProfile.update] Validation passed', ['validated' => $validated]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('[AdminProfile.update] Validation failed', [
+                'errors' => $e->errors(),
+            ]);
+            throw $e;
+        }
+
         if ($request->hasFile('profile_image')) {
+            \Log::info('[AdminProfile.update] File found, processing image...');
             // Delete old image if exists
             if ($admin->profile_image) {
+                \Log::info('[AdminProfile.update] Deleting old image:', ['old_path' => $admin->profile_image]);
                 Storage::disk('public')->delete($admin->profile_image);
             }
             $path = $request->file('profile_image')->store('admin_profiles', 'public');
+            \Log::info('[AdminProfile.update] Image stored:', ['path' => $path]);
             $admin->profile_image = $path;
+        } else if ($request->input('delete_profile_image') === 'true') {
+            // User explicitly requested image deletion
+            \Log::info('[AdminProfile.update] Deletion requested, removing image...');
+            if ($admin->profile_image) {
+                \Log::info('[AdminProfile.update] Deleting profile image:', ['path' => $admin->profile_image]);
+                Storage::disk('public')->delete($admin->profile_image);
+            }
+            $admin->profile_image = null;
         }
 
         if ($request->has('username')) $admin->username = $validated['username'];
@@ -62,6 +91,7 @@ class AdminProfileController extends Controller
         if ($request->has('phone')) $admin->phone = $validated['phone'];
         
         $admin->save();
+        \Log::info('[AdminProfile.update] Admin saved:', ['id' => $admin->id, 'profile_image' => $admin->profile_image]);
 
         return response()->json([
             'message' => 'Profile updated successfully',
@@ -70,7 +100,9 @@ class AdminProfileController extends Controller
                 'username' => $admin->username,
                 'email' => $admin->email,
                 'phone' => $admin->phone,
-                'profile_image' => $admin->profile_image ? Storage::url($admin->profile_image) : null,
+                'profile_image' => $admin->profile_image
+                    ? rtrim(config('app.url'), '/') . Storage::url($admin->profile_image)
+                    : null,
             ]
         ]);
     }

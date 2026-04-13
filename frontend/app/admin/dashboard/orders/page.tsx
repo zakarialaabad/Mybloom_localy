@@ -106,6 +106,11 @@ export default function OrdersPage() {
     setIsUpdating(true);
     try {
       await adminOrderService.updateStatus(editingOrder.id, newStatus);
+      // Update local state immediately to avoid UI "flicker"
+      if (orders) {
+        const idx = orders.findIndex(o => o.id === editingOrder.id);
+        if (idx !== -1) orders[idx].status = newStatus;
+      }
       setEditingOrder(null);
       setNewStatus('');
       refetch();
@@ -274,7 +279,7 @@ export default function OrdersPage() {
       </div>
 
       {/* ── Orders table area ─────────────────────────────────────────────────── */}
-      <div className="bg-white rounded-[16px] border border-[#f2e6ea] shadow-[0_2px_15px_rgba(0,0,0,0.02)] overflow-hidden">
+      <div className="bg-white rounded-[16px] border border-[#f2e6ea] shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
 
         {/* Toolbar */}
         <div className="p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-gray-100">

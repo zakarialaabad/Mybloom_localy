@@ -1027,11 +1027,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                   </button>
                 )}
               </div>
-
-              {/* Product Count Display & Verification */}
-              <div className="mt-6 text-center text-sm text-gray-500">
-                <p>Showing <span className="font-semibold text-gray-900">{recommendationCount}</span> recommended products</p>
-              </div>
             </div>
           </section>
         )}

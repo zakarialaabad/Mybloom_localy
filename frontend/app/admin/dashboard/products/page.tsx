@@ -75,11 +75,6 @@ export default function ProductsPage() {
   /* ── Fetch products with React Query ────────────────────────────────────── */
   const { products, isLoading, refetch } = useProductList({ limit: 200 });
 
-  /* ── Refetch products on page mount to ensure fresh data ─────────────────── */
-  useEffect(() => {
-    refetch();
-  }, [refetch]);
-
   /* ── Fetch categories and types ─────────────────────────────────────────── */
   useEffect(() => {
     const fetchCategories = async () => {
@@ -144,17 +139,32 @@ export default function ProductsPage() {
   /* ── Delete ─────────────────────────────────────────────────────────────── */
 
   const handleDelete = async () => {
-    if (!deleteTarget) return;
+    if (!deleteTarget || deleteBusy) return;  // Prevent double-clicks
     setDeleteBusy(true);
     setError(null);
     try {
+      console.log('[ProductsPage.handleDelete] Deleting product:', {
+        id: deleteTarget.id,
+        name: deleteTarget.name,
+      });
+      
       await adminProductService.destroy(deleteTarget.id);
+      console.log('[ProductsPage.handleDelete] Delete successful, refetching products...');
+      
+      // Force fresh fetch from server (bypass cache)
+      await refetch();
+      console.log('[ProductsPage.handleDelete] Products refetched');
+      
       setDeleteTarget(null);
-      refetch();
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : 'Failed to delete product. Please try again.';
-      setError(errMsg);
       console.error('[ProductsPage] delete failed:', err);
+      console.error('[ProductsPage] error details:', {
+        message: errMsg,
+        response: (err as any)?.response?.data,
+        status: (err as any)?.response?.status,
+      });
+      setError(errMsg);
     } finally {
       setDeleteBusy(false);
     }

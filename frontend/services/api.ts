@@ -68,7 +68,8 @@ apiClient.interceptors.response.use(
         window.location.href = '/admin/login';
       }
     }
-    return Promise.reject(error.response?.data ?? error);
+    // Always rethrow the full AxiosError so callers can access error.response
+    return Promise.reject(error);
   },
 );
 
@@ -649,12 +650,29 @@ export const adminProfileService = {
     return data.data;
   },
   updateProfile: async (formData: FormData): Promise<any> => {
-    // Note: Use POST method for FormData (Laravel supports method spoofing or just POST)
-    const { data } = await apiClient.post('/v1/admin/profile', formData, {
+    // Use raw axios (NOT apiClient) to avoid the default Content-Type: application/json
+    // which prevents the browser from setting multipart/form-data with the required boundary.
+    // Without the correct boundary, PHP $_FILES is empty and $request->hasFile() returns false.
+    const baseURL = process.env.NEXT_PUBLIC_API_URL;
+    let authToken = '';
+    if (typeof document !== 'undefined') {
+      const match = document.cookie.match(/(?:^|;\s*)admin_token=([^;]+)/);
+      if (match) authToken = decodeURIComponent(match[1]);
+    }
+    
+    console.log('[updateProfile] Sending FormData via raw axios to:', `${baseURL}/v1/admin/profile`);
+    console.log('[updateProfile] FormData entries:', Array.from(formData.entries()));
+    
+    const { data } = await axios.post(`${baseURL}/v1/admin/profile`, formData, {
+      withCredentials: true,
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${authToken}`,
+        'Accept': 'application/json',
+        // No Content-Type — browser/XHR sets multipart/form-data with boundary automatically
       },
     });
+    
+    console.log('[updateProfile] Success:', data);
     return data;
   },
   changePassword: async (payload: any): Promise<any> => {
@@ -798,7 +816,11 @@ export interface AdminReviewStats {
   total: number;
   pending: number;
   distribution: Record<number, { count: number; percentage: number }>;
-  most_reviewed: { product_name: string; count: number } | null;
+  most_reviewed: {
+    product_name: string;
+    product_image: string | null;
+    count: number;
+  } | null;
 }
 
 // ─── Admin Review service ─────────────────────────────────────────────────────

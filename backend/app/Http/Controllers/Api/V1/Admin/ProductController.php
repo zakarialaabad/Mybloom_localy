@@ -26,7 +26,6 @@ class ProductController extends Controller
     public function index(Request $request): AnonymousResourceCollection
     {
         $query = Product::with(['brand', 'category', 'productType', 'images', 'variants'])
-            ->withTrashed()
             ->orderBy('created_at', 'desc');
 
         // Full-text search across name, subtitle and category name
@@ -315,8 +314,18 @@ class ProductController extends Controller
     public function destroy(Request $request): JsonResponse
     {
         $id = $request->route('product');
-        $product = Product::withTrashed()->findOrFail($id);
+        \Log::info('[AdminProduct.destroy] Attempting to delete product', ['id' => $id, 'route_params' => $request->route()]);
+        
+        if (!$id) {
+            \Log::error('[AdminProduct.destroy] No product ID found in route');
+            return response()->json(['message' => 'Product ID not found'], 400);
+        }
+        
+        $product = Product::findOrFail($id);
+        \Log::info('[AdminProduct.destroy] Product found', ['id' => $product->id, 'name' => $product->name]);
+        
         $product->delete();
+        \Log::info('[AdminProduct.destroy] Product deleted successfully', ['id' => $product->id]);
 
         return response()->json(['message' => 'Product deleted.']);
     }

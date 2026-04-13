@@ -25,8 +25,9 @@ export default function GeneralSettingsPage() {
     phone: ''
   });
   
-  const [imagePreview, setImagePreview] = useState<string | null>('/public_Image/MybLoom.jpg');
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [shouldDeleteImage, setShouldDeleteImage] = useState(false);  // Track "remove" intent
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [passwords, setPasswords] = useState({
@@ -56,10 +57,10 @@ export default function GeneralSettingsPage() {
         phone: data.phone || ''
       });
       if (data.profile_image) {
-        const baseUrl = process.env.NEXT_PUBLIC_API_URL?.split('/api')[0] || 'http://127.0.0.1:8000';
-        setImagePreview(data.profile_image.startsWith('http') ? data.profile_image : `${baseUrl}${data.profile_image}`);
+        // Backend now returns full URL like http://localhost:8000/storage/admin_profiles/...
+        setImagePreview(data.profile_image);
       } else {
-        setImagePreview('/public_Image/MybLoom.jpg');
+        setImagePreview(null);
       }
     } catch (err) {
       console.error('Failed to load profile', err);
@@ -97,7 +98,8 @@ export default function GeneralSettingsPage() {
 
   const removeImage = () => {
     setImageFile(null);
-    setImagePreview('/public_Image/MybLoom.jpg');
+    setImagePreview(null);
+    setShouldDeleteImage(true);  // Mark for deletion on next save
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -112,14 +114,52 @@ export default function GeneralSettingsPage() {
       if (imageFile) {
         formData.append('profile_image', imageFile);
       }
+      
+      // If user clicked remove and now saving, tell backend to delete the image
+      if (shouldDeleteImage) {
+        formData.append('delete_profile_image', 'true');
+      }
 
-      await adminProfileService.updateProfile(formData);
+      // Debug logging
+      console.log('[saveProfile] FormData ready to send:', {
+        username: profile.username,
+        email: profile.email,
+        phone: profile.phone,
+        hasImageFile: !!imageFile,
+        shouldDeleteImage: shouldDeleteImage,
+        imageFileName: imageFile?.name,
+        imageFileSize: imageFile?.size,
+        imageFileType: imageFile?.type,
+      });
+
+      const response = await adminProfileService.updateProfile(formData);
+      console.log('[saveProfile] Response received:', response);
+      
+      // Refetch profile to get the backend URL for the image
+      await fetchProfile();
+      
+      // Clear the file state and removal flag — fetchProfile() has loaded the correct state
+      setImageFile(null);
+      setShouldDeleteImage(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+      
+      // Dispatch event to notify layout to refetch
+      window.dispatchEvent(new CustomEvent('profileUpdated'));
+      
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
       
       // Auto-hide message after 3s
       setTimeout(() => setMessage(null), 3000);
     } catch (err: any) {
-      setMessage({ type: 'error', text: err?.message || 'Failed to update profile' });
+      console.error('[saveProfile] Error:', {
+        message: err?.message,
+        responseData: err?.response?.data,
+        status: err?.response?.status,
+      });
+      const msg = err?.response?.data?.message || err?.message || 'Failed to update profile';
+      setMessage({ type: 'error', text: msg });
     } finally {
       setIsSavingProfile(false);
     }
@@ -195,11 +235,10 @@ export default function GeneralSettingsPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-5">
-        {/* ─── Left Column (Profile Info & Security) ─────────────────────────── */}
-        <div className="col-span-12 lg:col-span-8 order-2 lg:order-1 flex flex-col gap-5">
-          {/* ─── Profile Information Section ───────────────────────────────────── */}
-          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)]">
+      <div className="flex flex-col lg:flex-row gap-5 mb-5 items-stretch">
+        {/* ─── Profile Information Section ───────────────────────────────────── */}
+        <div className="flex-1">
+          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] h-full">
             <div className="flex justify-between items-center mb-8">
               <div className="flex items-center gap-2 text-[#da2966]">
                 <Info size={22} strokeWidth={2.5} />
@@ -232,7 +271,7 @@ export default function GeneralSettingsPage() {
               </div>
 
               {/* Email & Phone Row */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 <div>
                   <label className="block text-[13px] font-bold text-[#444] mb-3">Email Address</label>
                   <input 
@@ -257,131 +296,12 @@ export default function GeneralSettingsPage() {
               </div>
             </div>
           </div>
-
-          {/* ─── Security Section ───────────────────────────────────────────────── */}
-          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)]">
-            <div className="flex justify-between items-center mb-8">
-              <div className="flex items-center gap-2 text-[#da2966]">
-                <ShieldCheck size={22} strokeWidth={2.5} />
-                <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold">Security</h2>
-              </div>
-              <button 
-                onClick={savePassword}
-                disabled={isSavingPassword}
-                className="flex items-center gap-2 bg-[#423835] text-white px-5 py-2.5 rounded-[8px] text-[13px] font-bold shadow-sm hover:bg-[#2d2624] transition-colors italic disabled:opacity-70"
-              >
-                <Save size={16} strokeWidth={2.5} />
-                {isSavingPassword ? 'Updating...' : 'Update Password'}
-              </button>
-            </div>
-
-            <div className="space-y-6">
-              {/* Current Password */}
-              <div>
-                <label className="block text-[13px] font-bold text-[#444] mb-3">Current Password</label>
-                <div className="relative max-w-xl">
-                  <input 
-                    type={showCurrentPassword ? "text" : "password"} 
-                    name="current_password"
-                    value={passwords.current_password}
-                    onChange={handlePasswordChange}
-                    placeholder="Enter current password"
-                    className="w-full bg-[#f8f8f8] border-none rounded-[12px] px-5 py-4 text-[15px] text-gray-600 focus:ring-1 focus:ring-[#da2966] outline-none transition-all"
-                  />
-                  <button 
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    className="absolute right-5 top-1/2 -translate-y-1/2 text-[#da2966]"
-                  >
-                    {showCurrentPassword ? <EyeOff size={18} strokeWidth={2.5} /> : <Eye size={18} strokeWidth={2.5} />}
-                  </button>
-                </div>
-              </div>
-
-              {/* New Password & Confirm Row */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:p-8 items-start pt-2">
-                <div>
-                  <label className="block text-[13px] font-bold text-[#444] mb-3">New Password</label>
-                  <div className="relative">
-                    <input 
-                      type={showNewPassword ? "text" : "password"}
-                      name="new_password"
-                      value={passwords.new_password}
-                      onChange={handlePasswordChange}
-                      placeholder="Min. 8 characters"
-                      className="w-full bg-[#f8f8f8] border-none rounded-[12px] px-5 py-4 pr-12 text-[15px] text-gray-600 focus:ring-1 focus:ring-[#da2966] outline-none transition-all"
-                    />
-                    <button 
-                      onClick={() => setShowNewPassword(!showNewPassword)}
-                      className="absolute right-5 top-1/2 -translate-y-1/2 text-[#da2966]"
-                    >
-                      {showNewPassword ? <EyeOff size={18} strokeWidth={2.5} /> : <Eye size={18} strokeWidth={2.5} />}
-                    </button>
-                  </div>
-                  
-                  {/* Strength Bar */}
-                  <div className="mt-4 flex flex-col gap-2">
-                    <div className="flex gap-2 h-[3px]">
-                      {[1, 2, 3, 4, 5].map((level) => (
-                        <div 
-                          key={level} 
-                          className={`flex-1 rounded-full transition-colors ${
-                            strengthScore >= level 
-                              ? (strengthScore === 5 ? 'bg-green-500' : strengthScore >= 3 ? 'bg-[#da2966]' : 'bg-[#b09d6d]') 
-                              : 'bg-gray-100'
-                          }`}
-                        ></div>
-                      ))}
-                    </div>
-                    <div className="flex justify-between pr-1">
-                      <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">
-                        {strengthScore === 5 ? 'Strong' : strengthScore >= 3 ? 'Medium' : strengthScore > 0 ? 'Weak' : ''}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-[13px] font-bold text-[#444] mb-3">Confirm New Password</label>
-                  <div className="relative">
-                    <input 
-                      type="password"
-                      name="new_password_confirmation"
-                      value={passwords.new_password_confirmation}
-                      onChange={handlePasswordChange}
-                      placeholder="Repeat new password"
-                      className={`w-full bg-[#f8f8f8] border ${
-                        passwords.new_password_confirmation && passwords.new_password !== passwords.new_password_confirmation 
-                          ? 'border-red-300 focus:ring-red-500' 
-                          : 'border-none focus:ring-[#da2966]'
-                      } rounded-[12px] px-5 py-4 text-[15px] text-gray-600 outline-none transition-all`}
-                    />
-                  </div>
-                  {passwords.new_password_confirmation && passwords.new_password !== passwords.new_password_confirmation && (
-                    <span className="text-red-500 text-xs mt-2 block font-medium">Passwords do not match</span>
-                  )}
-                </div>
-              </div>
-              
-              {/* Password Requirement hints */}
-              {passwords.new_password && strengthScore < 5 && (
-                 <div className="mt-3 text-[12px] text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
-                    <p className="font-bold text-gray-700 mb-1">Password must contain:</p>
-                    <ul className="grid grid-cols-2 gap-1 gap-x-4">
-                      <li className={strength.length ? 'text-green-600' : ''}>✓ At least 8 characters</li>
-                      <li className={strength.upper ? 'text-green-600' : ''}>✓ Uppercase letter</li>
-                      <li className={strength.lower ? 'text-green-600' : ''}>✓ Lowercase letter</li>
-                      <li className={strength.number ? 'text-green-600' : ''}>✓ Number</li>
-                      <li className={strength.special ? 'text-green-600' : ''}>✓ Special character</li>
-                    </ul>
-                 </div>
-              )}
-            </div>
-          </div>
         </div>
 
         {/* ─── Photo de profil Section ────────────────────────────────────────── */}
-        <div className="col-span-12 lg:col-span-4 order-1 lg:order-2">
-          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] flex flex-col items-center h-full">
-            <div className="w-full flex items-center gap-2 mb-10 text-[#da2966]">
+        <div className="w-full lg:w-[400px]">
+          <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] flex flex-col items-center justify-center h-full">
+            <div className="w-full flex items-center gap-2 mb-10 text-[#da2966] mt-0">
               <User size={22} strokeWidth={2.5} />
               <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold">Photo de profil</h2>
             </div>
@@ -410,7 +330,7 @@ export default function GeneralSettingsPage() {
                 </div>
               </div>
 
-              {imagePreview && imagePreview !== '/public_Image/MybLoom.jpg' && (
+              {imagePreview && (
                 <button 
                   onClick={removeImage}
                   className="absolute top-2 right-2 w-10 h-10 rounded-full bg-white border border-[#f2e6ea] flex items-center justify-center text-[#da2966] shadow-lg hover:scale-110 transition-transform z-10"
@@ -429,7 +349,125 @@ export default function GeneralSettingsPage() {
             />
           </div>
         </div>
+      </div>
 
+      {/* ─── Security Section ───────────────────────────────────────────────── */}
+      <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.01)] mb-10">
+        <div className="flex justify-between items-center mb-8">
+          <div className="flex items-center gap-2 text-[#da2966]">
+            <ShieldCheck size={22} strokeWidth={2.5} />
+            <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold">Security</h2>
+          </div>
+          <button 
+            onClick={savePassword}
+            disabled={isSavingPassword}
+            className="flex items-center gap-2 bg-[#423835] text-white px-5 py-2.5 rounded-[8px] text-[13px] font-bold shadow-sm hover:bg-[#2d2624] transition-colors italic disabled:opacity-70"
+          >
+            <Save size={16} strokeWidth={2.5} />
+            {isSavingPassword ? 'Updating...' : 'Update Password'}
+          </button>
+        </div>
+
+        <div className="space-y-6">
+          {/* Current Password */}
+          <div>
+            <label className="block text-[13px] font-bold text-[#444] mb-3">Current Password</label>
+            <div className="relative w-full">
+              <input 
+                type={showCurrentPassword ? "text" : "password"} 
+                name="current_password"
+                value={passwords.current_password}
+                onChange={handlePasswordChange}
+                placeholder="Enter current password"
+                className="w-full bg-[#f8f8f8] border-none rounded-[12px] px-5 py-4 text-[15px] text-gray-600 focus:ring-1 focus:ring-[#da2966] outline-none transition-all"
+              />
+              <button 
+                onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                className="absolute right-5 top-1/2 -translate-y-1/2 text-[#da2966]"
+              >
+                {showCurrentPassword ? <EyeOff size={18} strokeWidth={2.5} /> : <Eye size={18} strokeWidth={2.5} />}
+              </button>
+            </div>
+          </div>
+
+          {/* New Password & Confirm Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 items-start pt-2">
+            <div>
+              <label className="block text-[13px] font-bold text-[#444] mb-3">New Password</label>
+              <div className="relative">
+                <input 
+                  type={showNewPassword ? "text" : "password"}
+                  name="new_password"
+                  value={passwords.new_password}
+                  onChange={handlePasswordChange}
+                  placeholder="Min. 8 characters"
+                  className="w-full bg-[#f8f8f8] border-none rounded-[12px] px-5 py-4 pr-12 text-[15px] text-gray-600 focus:ring-1 focus:ring-[#da2966] outline-none transition-all"
+                />
+                <button 
+                  onClick={() => setShowNewPassword(!showNewPassword)}
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-[#da2966]"
+                >
+                  {showNewPassword ? <EyeOff size={18} strokeWidth={2.5} /> : <Eye size={18} strokeWidth={2.5} />}
+                </button>
+              </div>
+              
+              {/* Strength Bar */}
+              <div className="mt-4 flex flex-col gap-2">
+                <div className="flex gap-2 h-[4px]">
+                  {[1, 2, 3, 4, 5].map((level) => (
+                    <div 
+                      key={level} 
+                      className={`flex-1 rounded-full transition-colors ${
+                        strengthScore >= level 
+                          ? (strengthScore === 5 ? 'bg-green-500' : strengthScore >= 3 ? 'bg-[#da2966]' : 'bg-[#b09d6d]') 
+                          : 'bg-gray-100'
+                      }`}
+                    ></div>
+                  ))}
+                </div>
+                <div className="flex justify-between pr-1">
+                  <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest">
+                    {strengthScore === 5 ? 'Strong' : strengthScore >= 3 ? 'Medium' : strengthScore > 0 ? 'Weak' : ''}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label className="block text-[13px] font-bold text-[#444] mb-3">Confirm New Password</label>
+              <div className="relative">
+                <input 
+                  type="password"
+                  name="new_password_confirmation"
+                  value={passwords.new_password_confirmation}
+                  onChange={handlePasswordChange}
+                  placeholder="Repeat new password"
+                  className={`w-full bg-[#f8f8f8] border ${
+                    passwords.new_password_confirmation && passwords.new_password !== passwords.new_password_confirmation 
+                      ? 'border-red-300 focus:ring-red-500' 
+                      : 'border-none focus:ring-[#da2966]'
+                  } rounded-[12px] px-5 py-4 text-[15px] text-gray-600 outline-none transition-all`}
+                />
+              </div>
+              {passwords.new_password_confirmation && passwords.new_password !== passwords.new_password_confirmation && (
+                <span className="text-red-500 text-xs mt-2 block font-medium">Passwords do not match</span>
+              )}
+            </div>
+          </div>
+          
+          {/* Password Requirement hints */}
+          {passwords.new_password && strengthScore < 5 && (
+             <div className="mt-3 text-[12px] text-gray-500 bg-gray-50 p-3 rounded-lg border border-gray-100">
+                <p className="font-bold text-gray-700 mb-1">Password must contain:</p>
+                <ul className="grid grid-cols-2 gap-1 gap-x-4">
+                  <li className={strength.length ? 'text-green-600' : ''}>✓ At least 8 characters</li>
+                  <li className={strength.upper ? 'text-green-600' : ''}>✓ Uppercase letter</li>
+                  <li className={strength.lower ? 'text-green-600' : ''}>✓ Lowercase letter</li>
+                  <li className={strength.number ? 'text-green-600' : ''}>✓ Number</li>
+                  <li className={strength.special ? 'text-green-600' : ''}>✓ Special character</li>
+                </ul>
+             </div>
+          )}
+        </div>
       </div>
     </div>
   );

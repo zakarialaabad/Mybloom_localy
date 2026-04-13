@@ -413,8 +413,16 @@ export default function ReviewsPage() {
         {/* Card 3: Most Reviewed */}
         <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-7 shadow-[0_2px_15px_rgba(0,0,0,0.01)]">
           <div className="flex justify-between items-start mb-6">
-            <div className="w-[56px] h-[56px] rounded-full bg-[#fdf2f4] flex items-center justify-center text-[#da2966]">
-              <MessageSquare size={24} strokeWidth={2.5} />
+            <div className="w-[56px] h-[56px] rounded-full bg-[#fdf2f4] flex items-center justify-center text-[#da2966] overflow-hidden border border-[#f2e6ea]">
+              {stats?.most_reviewed?.product_image ? (
+                <img 
+                  src={stats.most_reviewed.product_image} 
+                  alt={stats.most_reviewed.product_name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <MessageSquare size={24} strokeWidth={2.5} />
+              )}
             </div>
           </div>
           <p className="text-[14px] text-gray-400 font-bold mb-2">Most Reviewed</p>

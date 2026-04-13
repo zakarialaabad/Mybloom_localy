@@ -33,8 +33,43 @@ export default function AdminDashboardLayout({
     last_login_at: string | null;
   } | null>(null);
 
+  const fetchAdminProfile = async () => {
+    try {
+      const data = await adminProfileService.getProfile();
+      setAdminProfile(data);
+    } catch (err) {
+      console.error('Failed to fetch admin profile', err);
+    }
+  };
+
   useEffect(() => {
-    adminProfileService.getProfile().then(setAdminProfile).catch(() => {});
+    fetchAdminProfile();
+
+    // Set up polling: refetch every 30 seconds
+    const interval = setInterval(fetchAdminProfile, 30 * 1000);
+
+    // Refetch when window becomes visible/focused
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchAdminProfile();
+      }
+    };
+    
+    // Listen for profile update event from settings page
+    const handleProfileUpdated = () => {
+      fetchAdminProfile();
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', fetchAdminProfile);
+    window.addEventListener('profileUpdated', handleProfileUpdated);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', fetchAdminProfile);
+      window.removeEventListener('profileUpdated', handleProfileUpdated);
+    };
   }, []);
 
   const formatLastLogin = (iso: string | null | undefined): string => {
