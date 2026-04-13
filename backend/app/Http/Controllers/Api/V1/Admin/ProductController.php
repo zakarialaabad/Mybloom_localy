@@ -138,7 +138,7 @@ class ProductController extends Controller
 
             \Illuminate\Support\Facades\DB::commit();
 
-            return response()->json(['data' => new ProductDetailResource($product->load(['brand', 'category', 'images', 'sizes', 'variants']))], 201);
+            return response()->json(['data' => new ProductDetailResource($product->load(['brand', 'category', 'images', 'sizes', 'variants', 'reviews.images', 'allReviews.images']))], 201);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
             return response()->json(['message' => 'Failed to create product.', 'error' => $e->getMessage()], 500);
@@ -297,7 +297,7 @@ class ProductController extends Controller
 
             \Illuminate\Support\Facades\DB::commit();
 
-            $product->load(['brand', 'category', 'images', 'sizes', 'variants', 'allReviews.images', 'ingredientItems', 'faqs', 'productType']);
+            $product->load(['brand', 'category', 'images', 'sizes', 'variants', 'reviews.images', 'allReviews.images', 'ingredientItems', 'faqs', 'productType']);
             return response()->json(['data' => new ProductDetailResource($product)]);
 
         } catch (\Exception $e) {

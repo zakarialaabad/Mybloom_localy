@@ -59,7 +59,7 @@ export default function CollectionPage() {
   const ensureCategories = useReferenceStore((s) => s.ensureCategories);
   const ensureIngredients = useReferenceStore((s) => s.ensureIngredients);
 
-  const PER_PAGE = 10;
+  const [perPage, setPerPage] = useState(10);
   const [products, setProducts] = useState<Product[]>([]);
   const [heroBanner, setHeroBanner] = useState<Banner | null>(null);
   const [heroImageError, setHeroImageError] = useState(false);
@@ -139,6 +139,16 @@ export default function CollectionPage() {
     const scrollAmount = dir === 'next' ? clientWidth * 0.5 : -clientWidth * 0.5;
     el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
   };
+
+  // ── Responsive products per page: 16 on desktop, 10 on mobile ────────────
+  useEffect(() => {
+    const updatePerPage = () => {
+      setPerPage(window.innerWidth >= 768 ? 16 : 10);
+    };
+    updatePerPage();
+    window.addEventListener('resize', updatePerPage);
+    return () => window.removeEventListener('resize', updatePerPage);
+  }, []);
 
   // Close sort dropdown on outside click
   useEffect(() => {
@@ -288,8 +298,8 @@ export default function CollectionPage() {
     setBrandCounts(counts);
   }, [products, setBrandCounts]);
 
-  const totalPages = Math.ceil(products.length / PER_PAGE);
-  const paginatedProducts = products.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+  const totalPages = Math.ceil(products.length / perPage);
+  const paginatedProducts = products.slice((currentPage - 1) * perPage, currentPage * perPage);
 
   // Build page number array with ellipsis: e.g. [1, '…', 4, 5, 6, '…', 12]
   function buildPages(current: number, total: number): (number | '…')[] {

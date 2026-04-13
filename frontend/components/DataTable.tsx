@@ -112,12 +112,16 @@ export function DataTable<T extends { id: number }>({
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={`px-6 py-4 text-left font-semibold text-gray-600 uppercase tracking-wider text-[12px] ${
+                className={`px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[12px] ${
                   col.responsive || ''
-                } ${col.sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
+                } ${col.sortable ? 'cursor-pointer hover:bg-gray-100' : ''} ${
+                  col.className?.includes('text-center') ? 'text-center' : 'text-left'
+                }`}
                 onClick={() => col.sortable && handleHeaderClick(col.key)}
               >
-                <div className="flex items-center gap-2 select-none">
+                <div className={`flex items-center gap-2 select-none ${
+                  col.className?.includes('text-center') ? 'justify-center' : 'justify-start'
+                }`}>
                   <span>{col.label}</span>
                   {col.sortable && sortBy === col.key && (
                     <div className="flex flex-col gap-0">

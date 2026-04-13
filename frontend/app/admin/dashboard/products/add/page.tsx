@@ -379,7 +379,19 @@ export default function AddProductPage() {
       const validVariants = variants.filter(v => v.size && v.price);
         data.append('variants', JSON.stringify(validVariants));
         data.append('faqs', JSON.stringify(faqs));
-        data.append('reviews_array', JSON.stringify(reviews));
+        // Strip non-serializable File objects before encoding reviews to JSON
+        data.append('reviews_array', JSON.stringify(reviews.map((r) => ({
+          reviewer_name: r.reviewer_name,
+          rating: r.rating,
+          date: r.date,
+          comment: r.comment || '',
+        }))));
+        // Append each review's photo file as review_photos_{i} — backend reads this key
+        reviews.forEach((review, i) => {
+          if (review.photoFile instanceof File) {
+            data.append(`review_photos_${i}`, review.photoFile);
+          }
+        });
         const processedIngredients = ingredients.map((ing) => ({ name: ing.name }));
         data.append('manual_ingredients', JSON.stringify(processedIngredients));
         ingredients.forEach((ing, i) => {

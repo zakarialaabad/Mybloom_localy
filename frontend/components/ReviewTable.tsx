@@ -7,7 +7,7 @@
 import React from 'react';
 import { AdminReview } from '@/services/api';
 import DataTable, { type Column } from '@/components/DataTable';
-import { Star, Edit3, Trash2, MessageSquare } from 'lucide-react';
+import { Star, Edit3, Trash2 } from 'lucide-react';
 
 interface ReviewTableProps {
   /** Array of reviews to display */
@@ -91,26 +91,23 @@ export function ReviewTable({
       key: 'conversation',
       label: 'Conversation',
       sortable: false,
-      className: 'w-[15%]',
+      className: 'w-[15%] text-center px-4',
       render: (review: AdminReview) => (
-        <div className="w-[72px] h-[72px] rounded-[10px] overflow-hidden flex-shrink-0 border border-gray-100">
-          {review.images && review.images.length > 0 ? (
-            <>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={review.images[0].image_url}
-                alt="review"
-                className="w-full h-full object-cover"
-              />
-            </>
-          ) : (
-            <div className="w-full h-full flex flex-col items-center justify-center gap-1 bg-[#fdf8f6] text-[#da2966]">
-              <MessageSquare size={22} strokeWidth={1.5} />
-              <span className="text-[9px] font-bold text-gray-300 uppercase tracking-wider">
-                Avis
-              </span>
-            </div>
-          )}
+        <div className="flex justify-center">
+          <div className="w-[72px] h-[72px] rounded-[10px] overflow-hidden flex-shrink-0 border border-gray-100">
+            {review.images && review.images.length > 0 ? (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={review.images[0].image_url}
+                  alt="review"
+                  className="w-full h-full object-cover"
+                />
+              </>
+            ) : (
+              <div className="w-full h-full bg-gray-50" />
+            )}
+          </div>
         </div>
       ),
     },
@@ -119,7 +116,7 @@ export function ReviewTable({
       key: 'reviewer_name',
       label: 'Client',
       sortable: true,
-      className: 'w-[35%]',
+      className: 'w-[35%] px-4',
       render: (review: AdminReview) => (
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-[#fdf2f4] text-[#da2966] flex items-center justify-center text-[12px] font-bold flex-shrink-0">
@@ -141,17 +138,21 @@ export function ReviewTable({
       key: 'rating',
       label: 'Note',
       sortable: true,
-      className: 'w-[12%]',
-      render: (review: AdminReview) => <StarRating rating={review.rating} size={14} />,
+      className: 'w-[12%] text-center px-4',
+      render: (review: AdminReview) => (
+        <div className="flex justify-center">
+          <StarRating rating={review.rating} size={14} />
+        </div>
+      ),
     },
 
     {
       key: 'created_at',
       label: 'Date',
       sortable: true,
-      className: 'w-[15%]',
+      className: 'w-[15%] text-center px-4',
       render: (review: AdminReview) => (
-        <span className="text-[13px] text-gray-500">
+        <span className="text-[13px] text-gray-500 block">
           {formatDate(review.created_at)}
         </span>
       ),
@@ -160,7 +161,7 @@ export function ReviewTable({
     {
       key: 'actions',
       label: 'Actions',
-      className: 'w-[23%]',
+      className: 'w-[23%] text-center px-4',
       render: (review: AdminReview) => {
         const isActing = actionLoading === review.id;
         
@@ -219,12 +220,7 @@ export function ReviewTable({
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center gap-1 bg-[#fdf8f6] text-[#da2966]">
-                  <MessageSquare size={22} strokeWidth={1.5} />
-                  <span className="text-[10px] font-bold text-gray-300 uppercase tracking-wider">
-                    Avis
-                  </span>
-                </div>
+                <div className="w-full h-full bg-gray-50" />
               )}
             </div>
 
