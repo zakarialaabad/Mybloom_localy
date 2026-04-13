@@ -486,6 +486,9 @@ export default function AddProductPage() {
           <p className="text-[13px] sm:text-[15px] text-gray-400 mt-1">Create a new listing for your luxury collection</p>
         </div>
         <div className="flex items-center gap-3 sm:mt-8 shrink-0">
+          <button className="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl border border-gray-200 bg-white text-[13px] sm:text-[14px] font-semibold text-[#333] hover:bg-gray-50 shadow-sm transition-colors">
+            Discard
+          </button>
           <button onClick={handleSubmit} disabled={isSubmitting} className={`flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#da2966] text-white text-[13px] sm:text-[14px] font-semibold flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(218,41,102,0.25)] transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#c22158]'}`}>
             <SaveIcon /> {isSubmitting ? 'Saving...' : 'Save Product'}
           </button>

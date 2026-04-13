@@ -72,14 +72,16 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const [isReviewsOpen,      setIsReviewsOpen]      = useState(true);
   const [isFaqOpen,          setIsFaqOpen]          = useState(true);
   const [openFaqIndex,       setOpenFaqIndex]       = useState<number | null>(0);
-  const [reviewPage,         setReviewPage]         = useState(0);
   const [ingredientPage,     setIngredientPage]     = useState(0);
   const [recommendations,    setRecommendations]    = useState<ProductCardProps[]>([]);
   const [recommendationPage, setRecommendationPage] = useState(0);
   const [recommendationCount, setRecommendationCount] = useState(0);
   const [isGalleryOpen, setGalleryOpen] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [galleryStartImage, setGalleryStartImage] = useState('');
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' | 'favorite' }>({ show: false, message: '', type: 'success' });
   const carouselRef = useRef<HTMLDivElement>(null);
+  const reviewsCarouselRef = useRef<HTMLDivElement>(null);
 
   const addItem = useCartStore((s) => s.addItem);
 
@@ -406,7 +408,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 {/* Image Carousel */}
                 <div 
                   className="relative w-full h-full cursor-zoom-in group/zoom bg-white"
-                  onClick={() => setGalleryOpen(true)}
+                  onClick={() => {
+                    setGalleryImages(images);
+                    setGalleryStartImage(mainImage);
+                    setGalleryOpen(true);
+                  }}
                 >
                   <Image
                     src={sanitizeImageUrl(mainImage)}
@@ -861,42 +867,68 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
                     {/* ── Reviews Carousel ── */}
                     {(() => {
-                      const CARD_W   = 248;
-                      const GAP      = 16;
-                      const maxPage  = Math.max(0, product.reviews!.length - 1);
+                      // Use real scrolling like recommendations carousel
                       return (
-                        <div className="relative px-6">
-                          {/* Left arrow */}
-                          <button
-                            onClick={() => setReviewPage((p) => Math.max(0, p - 1))}
-                            disabled={reviewPage === 0}
-                            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 disabled:opacity-25 transition-opacity"
-                          >
-                            <ChevronLeft className="h-4 w-4" />
-                          </button>
-
-                          {/* Track */}
-                          <div className="overflow-hidden">
-                            <div
-                              className="flex gap-4 transition-transform duration-300 ease-in-out"
-                              style={{ transform: `translateX(-${reviewPage * (CARD_W + GAP)}px)` }}
+                        <div className="relative group">
+                          {/* Left arrow button — only show when more than 1 review */}
+                          {product.reviews!.length > 1 && (
+                            <button
+                              onClick={() => {
+                                if (reviewsCarouselRef.current) {
+                                  reviewsCarouselRef.current.scrollBy({ left: -280, behavior: 'smooth' });
+                                }
+                              }}
+                              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 opacity-0 group-hover:opacity-100 transition-opacity"
                             >
+                              <ChevronLeft className="h-4 w-4" />
+                            </button>
+                          )}
+
+                          {/* Horizontal Scrollable Container */}
+                          <div
+                            ref={reviewsCarouselRef}
+                            className="overflow-x-auto scrollbar-hide px-6"
+                            style={{
+                              scrollBehavior: 'smooth',
+                              scrollbarWidth: 'none',
+                              msOverflowStyle: 'none',
+                            }}
+                          >
+                            <div className="flex gap-4 pb-4" style={{ minWidth: 'min-content' }}>
                               {product.reviews!.map((review) => (
                                 <div
                                   key={review.id}
                                   className="shrink-0 rounded-2xl border border-gray-100 overflow-hidden bg-white flex flex-col"
-                                  style={{ width: CARD_W }}
+                                  style={{ width: 248 }}
                                 >
                                   {/* Image */}
                                   {review.images?.[0] ? (
-                                    <div className="relative bg-gray-50" style={{ height: 180 }}>
+                                    <div
+                                      className="relative bg-gray-50 cursor-pointer hover:shadow-lg transition-shadow group/image"
+                                      style={{ height: 180 }}
+                                      onClick={() => {
+                                        const allReviewImages = product.reviews?.flatMap(review => review.images?.map(img => img.image_url) || []) || [];
+                                        setGalleryImages(allReviewImages);
+                                        setGalleryStartImage(review.images?.[0]?.image_url || '');
+                                        setGalleryOpen(true);
+                                      }}
+                                    >
                                       <Image
                                         src={review.images[0].image_url}
                                         alt="Review"
                                         fill
                                         unoptimized
-                                        className="object-cover"
+                                        className="object-cover group-hover/image:scale-105 transition-transform duration-300"
                                       />
+                                      {/* Zoom hint overlay */}
+                                      <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/10 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover/image:opacity-100">
+                                        <span className="bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-1.5 flex items-center gap-1.5 rounded-full text-xs font-medium shadow-sm">
+                                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
+                                          </svg>
+                                          Agrandir
+                                        </span>
+                                      </div>
                                     </div>
                                   ) : (
                                     <div className="bg-gray-50" style={{ height: 48 }} />
@@ -926,14 +958,19 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                             </div>
                           </div>
 
-                          {/* Right arrow */}
-                          <button
-                            onClick={() => setReviewPage((p) => Math.min(maxPage, p + 1))}
-                            disabled={reviewPage >= maxPage}
-                            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 disabled:opacity-25 transition-opacity"
-                          >
-                            <ChevronRight className="h-4 w-4" />
-                          </button>
+                          {/* Right arrow button — only show when more than 1 review */}
+                          {product.reviews!.length > 1 && (
+                            <button
+                              onClick={() => {
+                                if (reviewsCarouselRef.current) {
+                                  reviewsCarouselRef.current.scrollBy({ left: 280, behavior: 'smooth' });
+                                }
+                              }}
+                              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <ChevronRight className="h-4 w-4" />
+                            </button>
+                          )}
                         </div>
                       );
                     })()}
@@ -1032,13 +1069,16 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         )}
         </div>
 
-        {/* ── Fullscreen Image Gallery Modal ── */}
+        {/* ── Fullscreen Image Gallery Modal (for both product images and review images) ── */}
         <ImageGalleryModal
           isOpen={isGalleryOpen}
-          onClose={() => setGalleryOpen(false)}
-          images={images}
-          currentImage={mainImage}
-          onImageChange={setMainImage}
+          onClose={() => {
+            setGalleryOpen(false);
+            setGalleryImages([]);
+          }}
+          images={galleryImages.length > 0 ? galleryImages : images}
+          currentImage={galleryStartImage || mainImage}
+          onImageChange={setGalleryStartImage}
           altText={product.name}
         />
 

@@ -266,6 +266,7 @@ class ProductJsonSeeder extends Seeder
         // ── Skip if product with this name already exists (idempotent) ──────
         $existing = DB::table('products')->where('name', $jsonProduct['name'])->first();
         if ($existing) {
+            $productId = $existing->id;
             // Still update product_type_id if it was missing
             if (!$existing->product_type_id) {
                 $typeProduit = $jsonProduct['type_produit'] ?? null;
@@ -279,71 +280,74 @@ class ProductJsonSeeder extends Seeder
                     ]);
                 }
             }
-            return;
+            // Continue to process images for existing products (don't return early)
+        } else {
+            // Resolve per-product brand (fallback to catalog brand)
+            $brandName = $jsonProduct['brand'] ?? $catalogBrand;
+            $brandId   = $brandMap[$brandName] ?? ($brandMap[$catalogBrand] ?? 1);
+            // Generate unique slug
+            $baseSlug = Str::slug($jsonProduct['name']);
+            $slug = $baseSlug;
+            $counter = 1;
+
+            while (DB::table('products')->where('slug', $slug)->exists()) {
+                $slug = "{$baseSlug}-{$counter}";
+                $counter++;
+            }
+
+            // Map gender value
+            $genderMap = [
+                'women' => 'women',
+                'male' => 'men',
+                'men' => 'men',
+                'female' => 'women',
+                'unisex' => 'unisex',
+            ];
+            $gender = $genderMap[$jsonProduct['gender'] ?? 'unisex'] ?? 'unisex';
+
+            // Get category ID (brand_id already resolved above)
+            $categoryId = $categoryMap[$jsonProduct['category']] ?? null;
+
+            // Get product type ID
+            $typeProduit   = $jsonProduct['type_produit'] ?? null;
+            $productTypeId = ($typeProduit && isset($productTypeMap[$typeProduit]))
+                ? $productTypeMap[$typeProduit]
+                : null;
+
+            if ($typeProduit && !$productTypeId) {
+                $this->command->warn("  ⚠ No product_type_id resolved for type '{$typeProduit}' (product: {$jsonProduct['name']})");
+            }
+
+            // Create product
+            $productId = DB::table('products')->insertGetId([
+                'brand_id' => $brandId,
+                'category_id' => $categoryId,
+                'product_type_id' => $productTypeId,
+                'name' => $jsonProduct['name'],
+                'slug' => $slug,
+                'subtitle' => $jsonProduct['subtitle'] ?? null,
+                'description' => $jsonProduct['description'] ?? null,
+                'ingredients' => null, // Will be populated via ingredient_product relationship
+                'gender' => $gender,
+                'price' => $jsonProduct['price'] ?? 0,
+                'original_price' => $jsonProduct['original_price'],
+                'stock' => $jsonProduct['stock'] ?? 0,
+                'is_active' => true,
+                'is_featured' => false,
+                'is_best_seller' => $jsonProduct['is_best_seller'] ?? false,
+                'is_gift' => $jsonProduct['is_gift'] ?? false,
+                'is_recommended' => $jsonProduct['is_recommended'] ?? false,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
-
-        // Resolve per-product brand (fallback to catalog brand)
-        $brandName = $jsonProduct['brand'] ?? $catalogBrand;
-        $brandId   = $brandMap[$brandName] ?? ($brandMap[$catalogBrand] ?? 1);
-        // Generate unique slug
-        $baseSlug = Str::slug($jsonProduct['name']);
-        $slug = $baseSlug;
-        $counter = 1;
-
-        while (DB::table('products')->where('slug', $slug)->exists()) {
-            $slug = "{$baseSlug}-{$counter}";
-            $counter++;
-        }
-
-        // Map gender value
-        $genderMap = [
-            'women' => 'women',
-            'male' => 'men',
-            'men' => 'men',
-            'female' => 'women',
-            'unisex' => 'unisex',
-        ];
-        $gender = $genderMap[$jsonProduct['gender'] ?? 'unisex'] ?? 'unisex';
-
-        // Get category ID (brand_id already resolved above)
-        $categoryId = $categoryMap[$jsonProduct['category']] ?? null;
-
-        // Get product type ID
-        $typeProduit   = $jsonProduct['type_produit'] ?? null;
-        $productTypeId = ($typeProduit && isset($productTypeMap[$typeProduit]))
-            ? $productTypeMap[$typeProduit]
-            : null;
-
-        if ($typeProduit && !$productTypeId) {
-            $this->command->warn("  ⚠ No product_type_id resolved for type '{$typeProduit}' (product: {$jsonProduct['name']})");
-        }
-
-        // Create product
-        $productId = DB::table('products')->insertGetId([
-            'brand_id' => $brandId,
-            'category_id' => $categoryId,
-            'product_type_id' => $productTypeId,
-            'name' => $jsonProduct['name'],
-            'slug' => $slug,
-            'subtitle' => $jsonProduct['subtitle'] ?? null,
-            'description' => $jsonProduct['description'] ?? null,
-            'ingredients' => null, // Will be populated via ingredient_product relationship
-            'gender' => $gender,
-            'price' => $jsonProduct['price'] ?? 0,
-            'original_price' => $jsonProduct['original_price'],
-            'stock' => $jsonProduct['stock'] ?? 0,
-            'is_active' => true,
-            'is_featured' => false,
-            'is_best_seller' => $jsonProduct['is_best_seller'] ?? false,
-            'is_gift' => $jsonProduct['is_gift'] ?? false,
-            'is_recommended' => $jsonProduct['is_recommended'] ?? false,
-            'created_at' => now(),
-            'updated_at' => now(),
-        ]);
 
         // ════════════════════════════════════════════════════════════════
         // Seed Product Images
         // ════════════════════════════════════════════════════════════════
+        // Delete existing images (so we start fresh with only folder images)
+        DB::table('product_images')->where('product_id', $productId)->delete();
+        
         if (isset($jsonProduct['img_main'])) {
             // Normalize image URL: ensure it starts with /images/
             $imgMainUrl = $jsonProduct['img_main'];
@@ -370,6 +374,8 @@ class ProductJsonSeeder extends Seeder
             if (is_dir($folderFs)) {
                 $allowed  = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
                 $sortOrder = 1;
+                $additionalImagesCount = 0; // Limit: max 3 additional images (1 primary + 3 = 4 total)
+                $maxAdditionalImages = 3;
 
                 foreach (scandir($folderFs) as $file) {
                     if ($file === '.' || $file === '..' || $file === $mainFile) {
@@ -377,6 +383,11 @@ class ProductJsonSeeder extends Seeder
                     }
                     if (!in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $allowed)) {
                         continue;
+                    }
+                    
+                    // Stop if we've reached the maximum number of additional images
+                    if ($additionalImagesCount >= $maxAdditionalImages) {
+                        break;
                     }
 
                     DB::table('product_images')->insert([
@@ -388,6 +399,7 @@ class ProductJsonSeeder extends Seeder
                         'created_at' => now(),
                     ]);
                     $sortOrder++;
+                    $additionalImagesCount++;
                 }
             }
         }
@@ -395,6 +407,9 @@ class ProductJsonSeeder extends Seeder
         // ════════════════════════════════════════════════════════════════
         // Seed Product Variants
         // ════════════════════════════════════════════════════════════════
+        // Delete existing variants (so we start fresh)
+        DB::table('product_variants')->where('product_id', $productId)->delete();
+        
         if (isset($jsonProduct['variants']) && is_array($jsonProduct['variants'])) {
             $sortOrder = 0;
             foreach ($jsonProduct['variants'] as $variant) {
@@ -414,6 +429,9 @@ class ProductJsonSeeder extends Seeder
         // ════════════════════════════════════════════════════════════════
         // Seed Product FAQs
         // ════════════════════════════════════════════════════════════════
+        // Delete existing FAQs (so we start fresh)
+        DB::table('product_faqs')->where('product_id', $productId)->delete();
+        
         if (isset($jsonProduct['faqs']) && is_array($jsonProduct['faqs'])) {
             foreach ($jsonProduct['faqs'] as $faq) {
                 DB::table('product_faqs')->insert([
@@ -429,6 +447,9 @@ class ProductJsonSeeder extends Seeder
         // ════════════════════════════════════════════════════════════════
         // Seed Ingredient Relationships
         // ════════════════════════════════════════════════════════════════
+        // Delete existing ingredient relationships (so we start fresh)
+        DB::table('ingredient_product')->where('product_id', $productId)->delete();
+        
         if (isset($jsonProduct['ingredients']) && is_array($jsonProduct['ingredients'])) {
             $pivotData = [];
             foreach ($jsonProduct['ingredients'] as $ingredient) {

@@ -148,7 +148,7 @@ class ProductController extends Controller
             'brand',
             'category',
             'productType',
-            'images',
+            'images' => fn ($q) => $q->orderBy('sort_order')->limit(4),
             'sizes',
             'variants',
             'ingredientItems',
