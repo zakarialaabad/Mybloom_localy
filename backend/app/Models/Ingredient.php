@@ -13,4 +13,29 @@ class Ingredient extends Model
     {
         return $this->belongsToMany(Product::class);
     }
+
+    /**
+     * Get the full image URL with app domain prepended
+     */
+    public function getImageUrlAttribute(?string $value): ?string
+    {
+        if (!$value) return null;
+
+        // Clean URL
+        $value = str_replace(["\r\n", "\r", "\n"], ' ', $value);
+        $value = trim($value);
+
+        if (str_starts_with($value, 'https://')) return $value;
+
+        if (str_starts_with($value, 'http://')) {
+            $path = parse_url($value, PHP_URL_PATH) ?? '';
+            return rtrim(config('app.url'), '/') . $path;
+        }
+
+        if (str_starts_with($value, '/storage/')) {
+            return rtrim(config('app.url'), '/') . $value;
+        }
+
+        return $value;
+    }
 }

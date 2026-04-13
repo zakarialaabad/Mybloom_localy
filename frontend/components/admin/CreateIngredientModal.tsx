@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import axios from 'axios';
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 const LeafIcon = () => (
@@ -51,37 +52,33 @@ export default function CreateIngredientModal({ isOpen, onClose, onCreated }: Cr
     setError(null);
     setIsSaving(true);
     try {
-      const fd = new FormData();
-      fd.append('name', name.trim());
-      if (file) fd.append('image', file);
+      const formData = new FormData();
+      formData.append('name', name.trim());
+      if (file) formData.append('image', file);
 
-      const match = typeof document !== 'undefined'
-        ? document.cookie.match(/(?:^|;\s*)admin_token=([^;]+)/)
-        : null;
-      const token = match ? decodeURIComponent(match[1]) : '';
-      const apiBase = (process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api').replace(/\/$/, '');
-
-      const res = await fetch(`${apiBase}/v1/admin/ingredients`, {
-        method: 'POST',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: fd,
-      });
-
-      if (!res.ok) {
-        const body = await res.json().catch(() => null);
-        throw new Error(body?.message ?? `Server error ${res.status}`);
+      // Get token from cookie (same pattern as updateProfile)
+      let authToken = '';
+      if (typeof document !== 'undefined') {
+        const match = document.cookie.match(/(?:^|;\s*)admin_token=([^;]+)/);
+        if (match) authToken = decodeURIComponent(match[1]);
       }
 
-      const body = await res.json();
-      onCreated(body.data as IngredientOption);
+      const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+      const { data } = await axios.post(`${baseURL}/v1/admin/ingredients`, formData, {
+        withCredentials: true,
+        headers: {
+          'Authorization': `Bearer ${authToken}`,
+          'Accept': 'application/json',
+          // No Content-Type — browser/XHR sets multipart/form-data with boundary automatically
+        },
+      });
+
+      onCreated(data.data as IngredientOption);
       reset();
       onClose();
     } catch (err: any) {
-      setError(err.message ?? 'Something went wrong.');
+      const message = err.response?.data?.message ?? err.message ?? 'Something went wrong.';
+      setError(message);
     } finally {
       setIsSaving(false);
     }

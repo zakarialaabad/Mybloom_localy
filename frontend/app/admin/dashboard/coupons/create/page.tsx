@@ -85,12 +85,6 @@ export default function CreateCouponPage() {
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
-            <Link
-              href="/admin/dashboard/coupons"
-              className="px-6 py-2.5 rounded-full border border-gray-200 text-[#555] font-medium text-[14px] hover:bg-gray-50 transition-all font-serif italic text-center w-full sm:w-auto"
-            >
-              Discard
-            </Link>
             <button
               onClick={handleSave}
               disabled={isSaving}

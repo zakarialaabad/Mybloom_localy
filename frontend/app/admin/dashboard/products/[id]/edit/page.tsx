@@ -372,7 +372,18 @@ export default function EditProductPage() {
   const handleIngredientCreated = (ingredient: { id: number; name: string; image_url: string | null }) => {
     setAvailableIngredients(prev => [...prev, ingredient]);
     const thumb = ingredient.image_url ?? `https://placehold.co/150x150?text=${encodeURIComponent(ingredient.name)}`;
-    setIngredients(prev => [...prev, { name: ingredient.name, thumb, file: undefined }]);
+    
+    if (editingIngredientSlot !== null && editingIngredientSlot < 3) {
+      // Place in the specific slot that was being edited
+      const updated = [...ingredients];
+      while (updated.length <= editingIngredientSlot) updated.push(null);
+      updated[editingIngredientSlot] = { name: ingredient.name, thumb, file: undefined };
+      setIngredients(updated);
+      setEditingIngredientSlot(null);
+    } else {
+      // Fallback: append (shouldn't happen if button logic is correct)
+      setIngredients(prev => [...prev, { name: ingredient.name, thumb, file: undefined }]);
+    }
   };
 
   // -- Review handlers -------------------------------------------------------
@@ -577,9 +588,6 @@ export default function EditProductPage() {
           <p className="text-[13px] sm:text-[15px] text-gray-400 mt-1">Update the details for this listing</p>
         </div>
         <div className="flex items-center gap-3 sm:mt-8 shrink-0">
-          <Link href="/admin/dashboard/products" className="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl border border-gray-200 bg-white text-[13px] sm:text-[14px] font-semibold text-[#333] hover:bg-gray-50 shadow-sm transition-colors text-center">
-            Discard
-          </Link>
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
@@ -593,7 +601,7 @@ export default function EditProductPage() {
       {/* SEC 1: Details & Media */}
       <div className="flex flex-col lg:grid lg:grid-cols-[1.4fr_1fr] gap-4 sm:p-6">
         <Card title="Product Details" icon={<DetailsIcon />}>
-          <div className="flex flex-col sm:grid sm:grid-cols-2 gap-4 sm:p-6 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
             <div className="flex flex-col gap-2">
               <label className="text-[13px] font-bold text-[#333]">Category</label>
               <AdminSelect
@@ -860,7 +868,7 @@ export default function EditProductPage() {
           </div>
         </Card>
 
-        <Card title="Ingredients" icon={<LeafIcon />} action={<button onClick={() => setIsCreateIngredientModalOpen(true)} className="text-[#da2966] text-[13px] font-bold hover:underline">+ New Ingredient</button>}>
+        <Card title="Ingredients" icon={<LeafIcon />} action={<button onClick={() => { const emptySlot = ingredients.findIndex((ing, i) => i < 3 && !ing); if (emptySlot < 3) { setEditingIngredientSlot(emptySlot); setIsCreateIngredientModalOpen(true); } else { showToast('Maximum 3 ingredients allowed.'); } }} className="text-[#da2966] text-[13px] font-bold hover:underline">+ New Ingredient</button>}>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:p-6 mt-2 w-full">
             {[0, 1, 2].map((slot) => {
               const ing = ingredients[slot];
@@ -1052,7 +1060,7 @@ export default function EditProductPage() {
       {/* 2. Create Custom Ingredient Modal */}
       <CreateIngredientModal
         isOpen={isCreateIngredientModalOpen}
-        onClose={() => setIsCreateIngredientModalOpen(false)}
+        onClose={() => { setIsCreateIngredientModalOpen(false); setEditingIngredientSlot(null); }}
         onCreated={handleIngredientCreated}
       />
 
