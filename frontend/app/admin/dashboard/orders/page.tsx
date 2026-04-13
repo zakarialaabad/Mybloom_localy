@@ -200,10 +200,10 @@ export default function OrdersPage() {
       {/* ── Page header ──────────────────────────────────────────────────────── */}
       <div className="mb-8 border-b border-gray-100 pb-6">
         <h1 className="text-3xl font-serif font-bold text-[#111] tracking-tight mb-2">
-          Order Management
+          Gestion des commandes
         </h1>
         <p className="text-[14px] text-gray-500">
-          Manage and track customer orders across all channels. Prioritize pending shipments and review delivered items.
+          Gérez et suivez les commandes des clients sur tous les canaux. Priorisez les livraisons en attente et revérifiez les articles livrés.
         </p>
       </div>
 
@@ -225,11 +225,11 @@ export default function OrdersPage() {
               {formatTrend(stats?.total.trend ?? 0)}
             </div>
           </div>
-          <p className="text-[14px] text-gray-500 font-medium mb-1">All Orders</p>
+          <p className="text-[14px] text-gray-500 font-medium mb-1">Toutes les commandes</p>
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
             {stats ? stats.total.count.toLocaleString() : <div className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
-          <p className="text-[12px] text-gray-400 mt-2">vs. last month</p>
+          <p className="text-[12px] text-gray-400 mt-2">vs mois dernier</p>
         </div>
 
         {/* Card — Confirmed */}
@@ -247,7 +247,7 @@ export default function OrdersPage() {
               {formatTrend(stats?.confirmed.trend ?? 0)}
             </div>
           </div>
-          <p className="text-[14px] text-gray-500 font-medium mb-1">Confirmed</p>
+          <p className="text-[14px] text-gray-500 font-medium mb-1">Confirmé</p>
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
             {stats ? stats.confirmed.count.toLocaleString() : <div className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>

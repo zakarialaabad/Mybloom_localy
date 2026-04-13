@@ -84,16 +84,16 @@ export default function OrderSuccessPage() {
 
                 {/* Headings */}
                 <div className="text-center mb-8">
-                  <h1 className="text-xl md:text-2xl font-bold text-gray-800 mb-2 tracking-wide uppercase">ORDER RECEIVED</h1>
+                  <h1 className="text-xl md:text-2xl font-bold text-gray-800 mb-2 tracking-wide uppercase">COMMANDE REÇUE</h1>
                   <p className="text-gray-500 text-[13px] md:text-sm leading-relaxed">
-                    Thank you for your purchase. Your fragrance<br />journey begins now.
+                    Merci pour votre achat. Votre voyage parfumé commence maintenant.<br />journey begins now.
                   </p>
                 </div>
 
                 {/* Order Info Table */}
                 <div className="space-y-5 border-t border-gray-50 py-6 mb-2">
                   <div className="flex justify-between items-center text-[13px]">
-                    <span className="text-gray-400 tracking-wider uppercase">ORDER ID</span>
+                    <span className="text-gray-400 tracking-wider uppercase">NUMÉRO DE COMMANDE</span>
                     <span className="font-bold text-gray-900">#{order || 'LX-8921-Q'}</span>
                   </div>
                   <div className="flex justify-between items-center text-[13px]">
@@ -101,14 +101,14 @@ export default function OrderSuccessPage() {
                     <span className="font-bold text-gray-900">{new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                   </div>
                   <div className="flex justify-between items-start text-[13px]">
-                    <span className="text-gray-400 tracking-wider uppercase mt-1">DELIVERY TO</span>
+                    <span className="text-gray-400 tracking-wider uppercase mt-1">LIVRAISON À</span>
                     <div className="text-right">
                       <div className="font-bold text-gray-900">{name || 'Client Name'}</div>
                       <div className="text-gray-500 mt-1 max-w-[180px] leading-relaxed text-[11px]">{city ? `N° 10, Rue XYZ, Appt 3\n${city}, MAROC` : 'Casablanca, MAROC'}</div>
                     </div>
                   </div>
                   <div className="flex justify-between items-center text-[13px] pt-4 mt-2">
-                    <span className="font-bold text-gray-900 tracking-wider uppercase">TOTAL AMOUNT</span>
+                    <span className="font-bold text-gray-900 tracking-wider uppercase">MONTANT TOTAL</span>
                     <span className="font-bold text-gray-900 text-lg">{total ? `${Number(total).toFixed(2)} DH` : '720.00 DH'}</span>
                   </div>
                 </div>
@@ -117,10 +117,10 @@ export default function OrderSuccessPage() {
                 <div className="bg-[#fff5f7] rounded-lg p-5 mb-8">
                   <div className="flex items-center gap-2 mb-2">
                     <Headphones className="w-4 h-4 text-[#da2966]" />
-                    <span className="text-[#da2966] font-bold text-[10px] tracking-widest uppercase">CONFIRMATION CALL</span>
+                    <span className="text-[#da2966] font-bold text-[10px] tracking-widest uppercase">APPEL DE CONFIRMATION</span>
                   </div>
                   <p className="text-gray-500 text-[11px] leading-relaxed">
-                    Our concierge will contact you shortly at <strong className="text-gray-800">{phone || '+212 6 XX XX XX XX'}</strong> to confirm your delivery preferences
+                    Notre concierge vous contactera bientôt à <strong className="text-gray-800">{phone || '+212 6 XX XX XX XX'}</strong> pour confirmer vos préférences de livraison
                   </p>
                 </div>
 
@@ -130,18 +130,18 @@ export default function OrderSuccessPage() {
                     href="/" 
                     className="flex-1 bg-[#4b3d37] text-white py-3.5 rounded-[4px] italic text-[13px] hover:bg-[#3a322d] transition-colors text-center shadow-md font-bold"
                   >
-                    Buy It Now ›
+                    Acheter maintenant ›
                   </Link>
                   <Link
                     href={`/order-status?order=${encodeURIComponent(order)}&phone=${encodeURIComponent(phone)}`}
                     className="flex-1 bg-white text-[#4a403a] border border-gray-200 py-3.5 rounded-[4px] italic text-[13px] hover:bg-gray-50 transition-colors text-center font-bold shadow-sm"
                   >
-                    Track My Order
+                    Suivre ma commande
                   </Link>
                 </div>
                 {/* Support Link */}
                 <div className="text-center text-[11px] text-gray-400">
-                  Need assistance ? <Link href="/contact" className="text-[#da2966] underline decoration-[#da2966] underline-offset-2 hover:text-[#b82256] transition-colors">Contact Support</Link>
+                  Besoin d'aide ? <Link href="/contact" className="text-[#da2966] underline decoration-[#da2966] underline-offset-2 hover:text-[#b82256] transition-colors">Contacter le support</Link>
                 </div>
 
               </div>

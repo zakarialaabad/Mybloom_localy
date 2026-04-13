@@ -81,7 +81,7 @@ export default function CategoriesSection() {
               {/* Flex container ensures perfect logo alignment with title text */}
               <div className="flex items-center gap-2 md:gap-3 flex-wrap">
                 <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#3a3a3a] font-serif">
-                  Why Shop with <span className="text-[#df4079] italic font-light ml-1" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>My Bloom</span>
+                  Pourquoi choisir <span className="text-[#df4079] italic font-light ml-1" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>MyBloom</span>
                 </h2>
               </div>
             </div>
@@ -98,8 +98,8 @@ export default function CategoriesSection() {
                   className="object-contain md:w-20 md:h-20"
                 />
               </div>
-              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">100% Authentic Products</h3>
-              <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">Sourced from Authorized<br />Suppliers.</p>
+              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">100% Authentique</h3>
+              <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">Sourcs des fournisseurs<br />autorisés.</p>
             </div>
 
             {/* 2. Pricing */}
@@ -113,8 +113,8 @@ export default function CategoriesSection() {
                   className="object-contain md:w-20 md:h-20"
                 />
               </div>
-              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Competitive Pricing</h3>
-              <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">Best Prices, Guaranteed<br />Savings!</p>
+              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Prix Compétitifs</h3>
+              <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">Les meilleurs prix,<br />Économies garanties !</p>
             </div>
 
             {/* 3. Support */}
@@ -128,8 +128,8 @@ export default function CategoriesSection() {
                   className="object-contain md:w-20 md:h-20"
                 />
               </div>
-              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Customer Support</h3>
-              <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">We’re here whenever<br />you need us.</p>
+              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Service Client</h3>
+              <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">Nous sommes là pour<br />vous aider.</p>
             </div>
 
             {/* 4. COD */}
@@ -143,8 +143,8 @@ export default function CategoriesSection() {
                   className="object-contain md:w-20 md:h-20"
                 />
               </div>
-              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Cash on Delivery</h3>
-              <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">Pay when you<br />receive.</p>
+              <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Paiement à la livraison</h3>
+              <p className="mt-1 md:mt-2 text-xs md:text-sm text-gray-500 font-light text-center">Payez à la<br />réception.</p>
             </div>
           </div>
         </div>
@@ -157,10 +157,10 @@ export default function CategoriesSection() {
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end md:gap-4">
           <div className="max-w-2xl">
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#4a403a] font-serif">
-              Discover by <span className="text-[#e63a6c] italic font-light ml-1 text-4xl md:text-5xl" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>Notes</span>
+              Découvrez par <span className="text-[#e63a6c] italic font-light ml-1 text-4xl md:text-5xl" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>Notes</span>
             </h2>
             <p className="mt-3 md:mt-4 text-xs md:text-base text-gray-700 max-w-xl leading-relaxed">
-              Explore fragrances by their unique scent notes and discover the perfect blend of floral, woody, citrus, and spicy perfumes that suits your style.
+              Explorez les fragrances par leurs notes olfactives uniques et découvrez le mélange parfait floral, boisé, citronné et épicé qui correspond à votre style.
             </p>
             {/* Mobile button under text */}
             <div className="mt-6 md:hidden">
@@ -168,7 +168,7 @@ export default function CategoriesSection() {
                 href="/collection" 
                 className="inline-flex items-center justify-center bg-[#4a403a] px-6 py-2.5 text-sm font-bold text-white shadow-md hover:bg-[#3a322d] transition-colors rounded-md font-serif italic"
               >
-                Shop all notes ›
+              Découvrir tous les notes ›
               </Link>
             </div>
           </div>
@@ -177,7 +177,7 @@ export default function CategoriesSection() {
             href="/collection" 
             className="hidden md:inline-flex items-center justify-center bg-[#4a403a] px-8 py-3 text-sm font-bold text-white shadow-md hover:bg-[#3a322d] transition-colors rounded-md font-serif italic"
           >
-            Shop all notes ›
+            Voir tous les notes ›
           </Link>
         </div>
 

@@ -90,10 +90,10 @@ export default function FeedbackPage() {
 
   const getRatingLabel = (rating: number) => {
     if (rating >= 5) return 'Excellent';
-    if (rating >= 4) return 'Good';
-    if (rating >= 3) return 'Average';
-    if (rating >= 2) return 'Poor';
-    return 'Bad';
+    if (rating >= 4) return 'Bon';
+    if (rating >= 3) return 'Moyen';
+    if (rating >= 2) return 'Mauvais';
+    return 'Très mauvais';
   };
 
   return (
@@ -131,17 +131,17 @@ export default function FeedbackPage() {
               </div>
             </div>
             
-            <h1 className="text-xl font-bold text-gray-800 tracking-widest mb-3 uppercase font-serif">YOUR FEEDBACK</h1>
+            <h1 className="text-xl font-bold text-gray-800 tracking-widest mb-3 uppercase font-serif">VOTRE AVIS</h1>
             <p className="text-[13px] text-gray-500 text-center leading-relaxed font-serif">
-              Select a star rating for each product.<br />
-              Your feedback helps others and improves our products.
+              Sélectionnez une note pour chaque produit.<br />
+              Votre avis aide les autres et améliore nos produits.
             </p>
           </div>
 
           {/* Section Header - Collapsible Style */}
           <div className="bg-[#f9f9f9] px-5 py-3 flex items-center justify-between border-y border-gray-100">
             <span className="text-[14px] text-gray-600 font-serif">
-              Rating Contents ( {orderData?.items.length ?? 0} items )
+              Contenu de l'évaluation ( {orderData?.items.length ?? 0} articles )
             </span>
             <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               <path d="M5 15l7-7 7 7" strokeLinecap="round" strokeLinejoin="round" />

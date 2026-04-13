@@ -62,10 +62,10 @@ export default function AdminLoginPage() {
 
           <div className="mb-10">
             <h1 className="text-[22px] font-serif font-bold text-[#3a3a3a] tracking-wide mb-2">
-              Admin Portal
+              Portail Admin
             </h1>
             <p className="text-[13px] font-serif text-gray-500">
-              Welcome back . Please enter your credentials
+              Bienvenue. Veuillez entrer vos identifiants
             </p>
           </div>
 
@@ -74,7 +74,7 @@ export default function AdminLoginPage() {
             {/* Username/Email Field */}
             <div>
               <label className="block text-[12px] font-serif text-[#4a4a4a] mb-2 font-medium">
-                Username
+                Nom d'utilisateur
               </label>
               <div className="flex items-center gap-3 border border-[#da2966] px-3 py-3 bg-white focus-within:ring-1 focus-within:ring-[#da2966] transition-all">
                 <User className="w-4 h-4 text-[#da2966] shrink-0" strokeWidth={2.5} />
@@ -132,7 +132,7 @@ export default function AdminLoginPage() {
                 disabled={loading}
                 className="flex items-center justify-center gap-2.5 bg-[#4b3d37] text-white text-[12px] font-serif italic py-3 px-8 rounded-sm hover:bg-[#3a2f2a] transition-all disabled:opacity-50 shadow-sm"
               >
-                {loading ? 'Authenticating…' : 'Access Dashboard'}
+                {loading ? 'Authentification…' : 'Accéder au tableau de bord'}
                 <ChevronRight className="w-3 h-3" />
               </button>
             </div>
@@ -141,7 +141,7 @@ export default function AdminLoginPage() {
           {/* Footer inside the box */}
           <div className="mt-16 text-center">
             <p className="text-[10px] text-gray-500 font-serif">
-              © 2026 Bloom Parfum. All Rights Reserved.
+              © 2026 Bloom Parfum. Tous droits réservés.
             </p>
           </div>
         </div>

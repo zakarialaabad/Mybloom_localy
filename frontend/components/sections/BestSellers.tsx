@@ -81,17 +81,17 @@ export default function BestSellers() {
         <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between md:gap-8">
           <div className="max-w-3xl">
             <h2 className="mb-4 font-serif text-4xl font-bold text-gray-900 tracking-tight">
-              Best <span className="text-[#df4079] italic font-light ml-1" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>Sellers</span>
+              Meilleures <span className="text-[#df4079] italic font-light ml-1" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>Ventes</span>
             </h2>
             <p className="text-[11px] md:text-sm leading-relaxed text-gray-800">
-              Explore our diverse collection of best-selling perfumes for men and women. Discover a variety of affordable luxury fragrances in your desired price range, perfect for any occasion. Get ready to be excited and intrigued at Fragrance Market.
+              Découvrez notre vaste collection de parfums les plus vendus pour femme et homme. Trouvez une variété de fragrances luxe abordables dans votre gamme de prix, parfaites pour chaque occasion. Laissez-vous séduire chez MyBloom.
             </p>
           </div>
           <Link
             href="/collection?featured=1"
             className="mt-2 md:mt-0 inline-flex items-center justify-center bg-[#4a403a] px-6 md:px-8 py-2.5 md:py-3 text-sm font-bold text-white shadow-md hover:bg-[#3a322d] transition-colors rounded-md font-serif italic whitespace-nowrap"
           >
-            Shop Best Sellers ›
+            Découvrir nos meilleures ventes ›
           </Link>
         </div>
       </SectionContainer>

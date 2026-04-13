@@ -11,12 +11,12 @@ import { getWishlist } from '@/lib/wishlist';
 
 
 const NAV_LINKS = [
-  { label: 'GIFTS',       href: '/collection?is_gift=true' },
+  { label: 'CADEAUX',     href: '/collection?is_gift=true' },
   { label: 'VISAGE',      href: '/collection?product_type=visage' },
   { label: 'CORPS',       href: '/collection?product_type=corps' },
   { label: 'PARFUMS',     href: '/collection?product_type=parfums' },
-  { label: 'SKINCARE',    href: '/collection?product_type=skincare' },
-  { label: 'HAIR',        href: '/collection?product_type=hair' },
+  { label: 'BEAUTÉ',      href: '/collection?product_type=skincare' },
+  { label: 'CHEVEUX',     href: '/collection?product_type=hair' },
 ];
 
 export default function Header() {
@@ -97,7 +97,7 @@ export default function Header() {
                   }
                 }
               }}
-              placeholder="Search for brand, perfumes, colognes..."
+              placeholder="Rechercher par marque, parfum..."
               className="w-full rounded-full border border-gray-200 py-2 pl-10 pr-10 text-sm
                 focus:border-[#da2966] focus:outline-none focus:ring-1 focus:ring-[#da2966]"
             />
@@ -241,7 +241,7 @@ export default function Header() {
                     }
                   }
                 }}
-                placeholder="Search for a scent..." 
+                placeholder="Rechercher un parfum..." 
                 className="flex-1 bg-transparent text-sm focus:outline-none placeholder-gray-500 font-medium"
               />
               <svg 

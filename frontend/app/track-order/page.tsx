@@ -22,7 +22,7 @@ export default function TrackOrderPage() {
 
     const trimmed = orderNumber.trim().replace(/^#/, '');
     if (!trimmed || !phone.trim()) {
-      setError('Please enter your Order ID and phone number.');
+      setError('Veuillez entrer votre numéro de commande et votre numéro de téléphone.');
       return;
     }
 
@@ -33,7 +33,7 @@ export default function TrackOrderPage() {
       });
       router.push(`/order-status?order=${encodeURIComponent(trimmed)}&phone=${encodeURIComponent(phone.trim())}`);
     } catch {
-      setError('Order not found. Please check your Order ID and phone number.');
+      setError('Commande non trouvée. Veuillez vérifier votre numéro de commande et votre numéro de téléphone.');
     } finally {
       setLoading(false);
     }
@@ -97,9 +97,9 @@ export default function TrackOrderPage() {
 
               {/* Headings */}
               <div className="text-center mb-5 md:mb-10">
-                <h1 className="text-[18px] md:text-2xl font-serif font-bold text-[#3a3a3a] mb-1 tracking-wide">TRACK YOUR ORDER</h1>
+                <h1 className="text-[18px] md:text-2xl font-serif font-bold text-[#3a3a3a] mb-1 tracking-wide">SUIVRE VOTRE COMMANDE</h1>
                 <p className="text-[#888] font-serif text-[11px] md:text-xs leading-snug px-4">
-                  Enter your order details below to check the status of your delivery
+                  Entrez vos détails de commande ci-dessous pour vérifier le statut de votre livraison
                 </p>
               </div>
 
@@ -107,13 +107,13 @@ export default function TrackOrderPage() {
               <form className="space-y-4 md:space-y-8" onSubmit={handleSubmit}>
                 {/* Order ID Field */}
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-500 mb-2 tracking-wider font-serif uppercase">ORDER ID</label>
+                  <label className="block text-[10px] font-bold text-gray-500 mb-2 tracking-wider font-serif uppercase">NUMÉRO DE COMMANDE</label>
                   <div className="relative border-b border-gray-200 pb-[6px] focus-within:border-gray-400 transition-colors flex items-center gap-2.5">
                     <Package className="w-5 h-5 text-[#4a4a4a] mb-0.5" />
                     <div className="w-[1px] h-[18px] bg-gray-300"></div>
                     <input 
                       type="text" 
-                      placeholder="e.g. #ORD-89302"
+                      placeholder="ex. #ORD-89302"
                       value={orderNumber}
                       onChange={(e) => setOrderNumber(e.target.value)}
                       required
@@ -123,14 +123,14 @@ export default function TrackOrderPage() {
                   <div className="flex items-start gap-1.5 mt-1.5">
                      <svg className="w-[10px] h-[10px] text-[#555] mt-[2px] shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
                      <p className="text-[9px] text-[#777] font-serif leading-tight">
-                       Our support team will send you your Order ID when your order is confirmed.
+                       Notre équipe d'assistance vous enverra votre numéro de commande lorsque votre commande sera confirmée.
                      </p>
                   </div>
                 </div>
 
                 {/* Phone Number Field */}
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-500 mb-2 tracking-wider font-serif uppercase">PHONE NUMBER</label>
+                  <label className="block text-[10px] font-bold text-gray-500 mb-2 tracking-wider font-serif uppercase">NUMÉRO DE TÉLÉPHONE</label>
                   <div className="relative border-b border-gray-200 pb-[6px] focus-within:border-gray-400 transition-colors flex items-center gap-2">
                     <div className="flex items-center gap-1 shrink-0 text-[#4a4a4a] cursor-pointer">
                       <span className="text-[15px] font-serif">MAR</span>
@@ -158,15 +158,15 @@ export default function TrackOrderPage() {
                   disabled={loading}
                   className="block w-full text-center bg-[#4b3d37] text-white py-[12px] md:py-[15px] mt-2 md:mt-6 rounded-[5px] font-serif italic text-[14px] md:text-[15px] hover:bg-[#382d29] transition-transform active:scale-[0.98] disabled:opacity-50"
                 >
-                  {loading ? 'Searching…' : 'Track Order ›'}
+                  {loading ? 'Recherche…' : 'Suivre commande ›'}
                 </button>
               </form>
 
               {/* Footer Link */}
               <div className="text-center mt-5 md:mt-12 text-xs font-serif text-gray-500">
-                Need assistance ? {' '}
+                Besoin d'aide ? {' '}
                 <Link href="#" className="text-[#da2966] underline decoration-[#da2966] hover:text-[#b1184e] transition-colors underline-offset-[3px]">
-                  Contact Support
+                  Contacter le support
                 </Link>
               </div>
 

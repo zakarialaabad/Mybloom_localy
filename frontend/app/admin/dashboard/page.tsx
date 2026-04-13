@@ -299,15 +299,15 @@ export default function AdminDashboardPage() {
       {/* ── HEADER ────────────────────────────────────────────────────────── */}
       <header className="sticky top-[64px] lg:top-0 z-30 bg-[#fefbfb]/90 backdrop-blur-md px-4 sm:px-8 py-3 sm:py-5 flex items-center justify-between border-b border-gray-100 gap-3">
         <div className="min-w-0">
-          <h2 className="text-[17px] sm:text-[20px] lg:text-[24px] font-bold text-[#111] leading-tight">Dashboard Overview</h2>
-          <p className="text-[12px] sm:text-[13px] text-gray-400 mt-0.5 hidden sm:block">Welcome back, here&apos;s what&apos;s happening today.</p>
+          <h2 className="text-[17px] sm:text-[20px] lg:text-[24px] font-bold text-[#111] leading-tight">Aperçu du tableau de bord</h2>
+          <p className="text-[12px] sm:text-[13px] text-gray-400 mt-0.5 hidden sm:block">Bienvenue, voici ce qui se passe aujourd'hui.</p>
         </div>
         <div className="flex items-center gap-2 sm:gap-4 shrink-0 flex-1 justify-end">
           <div className="relative w-full max-w-[160px] sm:max-w-[220px] lg:max-w-[288px]">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Search…"
+              placeholder="Rechercher…"
               className="w-full h-9 sm:h-10 pl-8 sm:pl-10 pr-3 sm:pr-4 rounded-full bg-white border border-gray-200 text-[12px] sm:text-[13px] focus:outline-none focus:border-[#da2966]/30 shadow-sm placeholder:text-gray-400"
             />
           </div>
@@ -320,12 +320,12 @@ export default function AdminDashboardPage() {
         {/* Error */}
         {isError && error && (
           <div className="bg-red-50 border border-red-200 text-red-600 text-[13px] px-5 py-4 rounded-xl flex items-center justify-between gap-4">
-            <span>Failed to load dashboard data. {error}</span>
+            <span>Échec du chargement des données du tableau de bord. {error}</span>
             <button
               onClick={() => refetch()}
               className="shrink-0 px-4 py-1.5 rounded-lg bg-red-600 text-white text-[12px] font-semibold hover:bg-red-700 transition-colors"
             >
-              Retry
+              Réessayer
             </button>
           </div>
         )}
@@ -347,11 +347,11 @@ export default function AdminDashboardPage() {
                     <UpArrow /> {s!.revenue_trend}%
                   </span>
                 </div>
-                <p className="text-[13px] font-medium text-gray-400 mb-1">Total Revenue</p>
+                <p className="text-[13px] font-medium text-gray-400 mb-1">Chiffre d'affaires total</p>
                 <h3 className="text-[26px] font-serif font-extrabold text-[#1a1a1a] leading-tight">
                   {Number(s!.total_revenue).toLocaleString('fr-MA', { minimumFractionDigits: 2 })} Dhs
                 </h3>
-                <p className="text-[12px] text-gray-400 mt-1">vs. last month</p>
+                <p className="text-[12px] text-gray-400 mt-1">vs mois dernier</p>
               </div>
 
               {/* Total Orders */}
@@ -362,11 +362,11 @@ export default function AdminDashboardPage() {
                     <UpArrow /> {s!.orders_trend}%
                   </span>
                 </div>
-                <p className="text-[13px] font-medium text-gray-400 mb-1">Total Orders</p>
+                <p className="text-[13px] font-medium text-gray-400 mb-1">Commandes totales</p>
                 <h3 className="text-[26px] font-serif font-extrabold text-[#1a1a1a] leading-tight">
                   {s!.total_orders.toLocaleString()}
                 </h3>
-                <p className="text-[12px] text-gray-400 mt-1">vs. last month</p>
+                <p className="text-[12px] text-gray-400 mt-1">vs mois dernier</p>
               </div>
 
               {/* Top-Selling Product */}
@@ -377,11 +377,11 @@ export default function AdminDashboardPage() {
                     <UpArrow /> Top
                   </span>
                 </div>
-                <p className="text-[13px] font-medium text-gray-400 mb-1">Total Selling Product</p>
+                <p className="text-[13px] font-medium text-gray-400 mb-1">Produit le plus vendu</p>
                 <h3 className="text-[26px] font-serif font-extrabold text-[#1a1a1a] leading-tight truncate">
                   {s!.top_product.name}
                 </h3>
-                <p className="text-[12px] text-gray-400 mt-1">{s!.top_product.units_sold} Units sold</p>
+                <p className="text-[12px] text-gray-400 mt-1">{s!.top_product.units_sold} unités vendues</p>
               </div>
             </div>
 
@@ -392,8 +392,8 @@ export default function AdminDashboardPage() {
               <div className="lg:col-span-2 bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-[16px] font-bold text-[#1a1a1a]">Sales Analytics</h3>
-                    <p className="text-[12px] text-gray-400 mt-0.5">Revenue over the last 7 days</p>
+                    <h3 className="text-[16px] font-bold text-[#1a1a1a]">Analyse des ventes</h3>
+                    <p className="text-[12px] text-gray-400 mt-0.5">Chiffre d'affaires des 7 derniers jours</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#da2966] shrink-0"></span>

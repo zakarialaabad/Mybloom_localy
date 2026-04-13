@@ -5,15 +5,21 @@ import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   title: {
-    template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME ?? 'Parfum'}`,
-    default: process.env.NEXT_PUBLIC_APP_NAME ?? 'Parfum',
+    template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME ?? 'MyBloom'}`,
+    default: 'Parfum Maroc - Fragrances Luxe Pas Cher | MyBloom',
   },
-  description: 'Parfum — Your premium fragrance destination.',
+  description: 'Découvrez les plus beaux parfums au Maroc. Fragrances originales pour femme et homme. Livraison gratuite à partir de 590 DH. 100% authentique.',
+  keywords: ['parfum', 'maroc', 'femme', 'homme', 'pas cher', 'original', 'luxe', 'parfum maroc', 'acheter parfum en ligne'],
+  openGraph: {
+    title: 'Parfum Maroc - Fragrances Luxe Pas Cher | MyBloom',
+    description: 'Découvrez les plus beaux parfums au Maroc. Fragrances originales pour femme et homme. Livraison gratuite à partir de 590 DH. 100% authentique.',
+    locale: 'fr_MA',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="fr" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

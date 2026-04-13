@@ -272,7 +272,7 @@ export default function ReviewsPage() {
         >
           <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-4 sm:p-6 w-full max-w-[360px]">
             <div className="flex items-center justify-between mb-4">
-              <h3 id="delete-dialog-title" className="text-[16px] font-bold text-[#111]">Delete Review</h3>
+              <h3 id="delete-dialog-title" className="text-[16px] font-bold text-[#111]">Supprimer l'avis</h3>
               <button 
                 onClick={() => setDeletingId(null)} 
                 className="text-gray-400 hover:text-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-[#da2966] rounded-full p-1"
@@ -282,7 +282,7 @@ export default function ReviewsPage() {
               </button>
             </div>
             <p className="text-[14px] text-gray-500 mb-6">
-              This review will be permanently deleted. This action cannot be undone.
+              Cet avis sera définitivement supprimé. Cette action ne peut pas être annulée.
             </p>
             <div className="flex items-center gap-3">
               <button
@@ -290,14 +290,14 @@ export default function ReviewsPage() {
                 onClick={() => setDeletingId(null)}
                 className="flex-1 py-2.5 rounded-[8px] border border-gray-200 text-[14px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors"
               >
-                Cancel
+                Annuler
               </button>
               <button
                 onClick={confirmDelete}
                 disabled={isDeleting}
                 className="flex-1 py-2.5 rounded-[8px] bg-red-500 text-white text-[14px] font-semibold hover:bg-red-600 transition-colors disabled:opacity-60"
               >
-                {isDeleting ? 'Deleting…' : 'Delete'}
+                {isDeleting ? 'Suppression…' : 'Supprimer'}
               </button>
             </div>
           </div>

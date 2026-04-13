@@ -93,10 +93,10 @@ export default function ContactPage() {
         {/* Page Header */}
         <div className="bg-[#fff9f9] border-b border-[#f5eedf] pt-16 pb-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto text-center">
-            <h1 className="text-3xl md:text-4xl font-serif text-[#403531] mb-4">Contact Us</h1>
+            <h1 className="text-3xl md:text-4xl font-serif text-[#403531] mb-4">Nous Contacter</h1>
             <div className="w-12 h-[2px] bg-[#da2966] mx-auto mb-6"></div>
             <p className="text-[#888] font-serif text-[15px] italic">
-              We would love to hear from you.
+              Nous aimerions avoir de vos nouvelles.
             </p>
           </div>
         </div>
@@ -105,9 +105,9 @@ export default function ContactPage() {
         <div className="bg-white border-b border-gray-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
             <div className="flex items-center gap-2 text-[12px] font-serif text-gray-400">
-              <Link href="/" className="hover:text-[#da2966] transition-colors">Home</Link>
+              <Link href="/" className="hover:text-[#da2966] transition-colors">Accueil</Link>
               <ChevronRight className="w-3 h-3" />
-              <span className="text-[#403531]">Contact Us</span>
+              <span className="text-[#403531]">Nous Contacter</span>
             </div>
           </div>
         </div>
@@ -118,10 +118,9 @@ export default function ContactPage() {
             
             {/* Contact Information */}
             <div className="font-serif text-[#555]">
-              <h2 className="text-2xl text-[#4a403a] mb-8 font-bold tracking-wide">Get In Touch</h2>
+              <h2 className="text-2xl text-[#4a403a] mb-8 font-bold tracking-wide">Nous Contacter</h2>
               <p className="mb-10 text-[15px] leading-relaxed">
-                Have questions about our perfumes, an existing order, or just want to say hello? 
-                Fill out the form, and our customer service team will get back to you within 24 hours.
+                Avez-vous des questions sur nos parfums, une commande existante, ou voulez-vous simplement dire bonjour ? Remplissez le formulaire et notre équipe de service client vous répondra dans les 24 heures.
               </p>
 
               <div className="space-y-8">
@@ -130,7 +129,7 @@ export default function ContactPage() {
                     <Mail className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-[16px] font-bold text-[#403531] mb-1">Email</h3>
+                    <h3 className="text-[16px] font-bold text-[#403531] mb-1">E-mail</h3>
                     <p className="text-[14px] text-[#888]">{loading ? '—' : (adminInfo.email || 'contact@mybloom.ma')}</p>
                   </div>
                 </div>
@@ -140,7 +139,7 @@ export default function ContactPage() {
                     <Phone className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-[16px] font-bold text-[#403531] mb-1">Phone</h3>
+                    <h3 className="text-[16px] font-bold text-[#403531] mb-1">Téléphone</h3>
                     <p className="text-[14px] text-[#888]">{loading ? '—' : (adminInfo.phone || '+212 5XX XX XX XX')}</p>
                   </div>
                 </div>
@@ -150,7 +149,7 @@ export default function ContactPage() {
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-[16px] font-bold text-[#403531] mb-1">Address</h3>
+                    <h3 className="text-[16px] font-bold text-[#403531] mb-1">Adresse</h3>
                     <p className="text-[14px] text-[#888]">123 Luxury Avenue, Casablanca, Morocco</p>
                   </div>
                 </div>
@@ -160,8 +159,8 @@ export default function ContactPage() {
                     <Clock className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-[16px] font-bold text-[#403531] mb-1">Business Hours</h3>
-                    <p className="text-[14px] text-[#888]">Monday - Friday: 9am - 6pm</p>
+                    <h3 className="text-[16px] font-bold text-[#403531] mb-1">Heures d'ouverture</h3>
+                    <p className="text-[14px] text-[#888]">Lundi - Vendredi : 9h - 18h</p>
                   </div>
                 </div>
               </div>
@@ -183,7 +182,7 @@ export default function ContactPage() {
                 )}
 
                 <div>
-                  <label htmlFor="name" className="block text-[13px] font-sans text-[#888] uppercase tracking-wider mb-2">Full Name</label>
+                  <label htmlFor="name" className="block text-[13px] font-sans text-[#888] uppercase tracking-wider mb-2">Nom complet</label>
                   <input 
                     type="text" 
                     id="name" 
@@ -196,7 +195,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="phone" className="block text-[13px] font-sans text-[#888] uppercase tracking-wider mb-2">Phone Number</label>
+                  <label htmlFor="phone" className="block text-[13px] font-sans text-[#888] uppercase tracking-wider mb-2">Numéro de téléphone</label>
                   <input 
                     type="tel" 
                     id="phone" 
@@ -209,7 +208,7 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="block text-[13px] font-sans text-[#888] uppercase tracking-wider mb-2">Subject</label>
+                  <label htmlFor="subject" className="block text-[13px] font-sans text-[#888] uppercase tracking-wider mb-2">Sujet</label>
                   <input 
                     type="text" 
                     id="subject" 
@@ -217,7 +216,7 @@ export default function ContactPage() {
                     onChange={handleInputChange}
                     required
                     className="w-full border border-gray-200 rounded-[3px] px-4 py-3 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-colors font-sans text-[14px]"
-                    placeholder="Order Inquiry"
+                    placeholder="Demande de commande"
                   />
                 </div>
 
@@ -230,7 +229,7 @@ export default function ContactPage() {
                     onChange={handleInputChange}
                     required
                     className="w-full border border-gray-200 rounded-[3px] px-4 py-3 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-colors font-sans text-[14px] resize-none"
-                    placeholder="How can we help you?"
+                    placeholder="Comment pouvons-nous vous aider ?"
                   ></textarea>
                 </div>
 
@@ -240,7 +239,7 @@ export default function ContactPage() {
                   className="w-full bg-[#403531] text-white px-6 py-4 rounded-[3px] text-[14px] font-sans uppercase tracking-widest hover:bg-[#da2966] transition-colors duration-300 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {submitting && <Loader className="w-4 h-4 animate-spin" />}
-                  {submitting ? 'Sending...' : 'Send Message'}
+                  {submitting ? 'Envoi…' : 'Envoyer le message'}
                 </button>
               </form>
             </div>

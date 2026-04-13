@@ -30,13 +30,13 @@ export default function OrderStatusPage() {
   }, [orderNumber, phone]);
 
   const STATUS_LABELS: Record<string, string> = {
-    pending:    'Order Received',
-    confirmed:  'Order Confirmed',
-    preparing:  'Preparing Your Package',
-    dispatched: 'Out for Delivery',
-    shipped:    'Out for Delivery',
-    delivered:  'Package Delivered',
-    cancelled:  'Cancelled',
+    pending:    'Commande reçue',
+    confirmed:  'Commande confirmée',
+    preparing:  'Préparation de votre colis',
+    dispatched: 'En cours de livraison',
+    shipped:    'En cours de livraison',
+    delivered:  'Colis livré',
+    cancelled:  'Annulée',
   };
 
   const currentStatus = trackData?.status ?? '';
@@ -48,7 +48,7 @@ export default function OrderStatusPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
           {/* Breadcrumb */}
           <div className="text-sm text-gray-500 mb-8 font-serif">
-            <Link href="/" className="hover:text-gray-800">Home</Link> / <Link href="/cart" className="hover:text-gray-800">Panier</Link> / <Link href="/checkout" className="hover:text-gray-800">Shipping</Link> / <span className="text-gray-800">Order</span>
+            <Link href="/" className="hover:text-gray-800">Accueil</Link> / <Link href="/cart" className="hover:text-gray-800">Panier</Link> / <Link href="/checkout" className="hover:text-gray-800">Livraison</Link> / <span className="text-gray-800">Commande</span>
           </div>
 
           {loading && <p className="font-serif italic text-gray-400 text-sm py-12 text-center">Chargement…</p>}
@@ -60,7 +60,7 @@ export default function OrderStatusPage() {
             <div className="flex-1 lg:w-[60%]">
               <div className="flex justify-between items-start mb-8">
                 <div>
-                  <p className="text-gray-500 font-serif text-[13px] mb-2 uppercase tracking-wider">ORDER #{orderNumber || 'LX-8921-Q'}</p>
+                  <p className="text-gray-500 font-serif text-[13px] mb-2 uppercase tracking-wider">COMMANDE #{orderNumber || 'LX-8921-Q'}</p>
                   <h1 className="text-[32px] md:text-[38px] font-serif text-gray-800 tracking-tight leading-none mb-1">
                     {STATUS_LABELS[currentStatus] ?? 'Package Delivered'}
                   </h1>
@@ -83,9 +83,9 @@ export default function OrderStatusPage() {
                   <CheckCircle2 className="w-[18px] h-[18px]" fill="#c72864" stroke="white" strokeWidth={3} />
                 </div>
                 <div>
-                  <h3 className="text-[#c72864] font-serif font-bold text-[17px] mb-1.5">Order Confirmed</h3>
+                  <h3 className="text-[#c72864] font-serif font-bold text-[17px] mb-1.5">Commande confirmée</h3>
                   <p className="text-[#888] text-[12.5px] font-serif leading-[1.6]">
-                    Your order has been successfully received and carefully verified by our team. We are now preparing your selected fragrances and beauty products with the highest attention to detail, ensuring authenticity, quality control, and secure processing before moving to the next stage.
+                    Votre commande a été reçue avec succès et vérifiée avec soin par notre équipe. Nous préparons maintenant vos parfums et produits de beauté sélectionnés avec la plus grande attention aux détails, en assurant l'authenticité, le contrôle de qualité et un traitement sécurisé avant de passer à l'étape suivante.
                   </p>
                 </div>
               </div>
@@ -94,10 +94,10 @@ export default function OrderStatusPage() {
               <div className="relative pl-3 md:pl-5 mb-14">
                 {(() => {
                   const DISPLAY_STEPS = [
-                    { key: 'confirmed',  label: 'Order Valid' },
-                    { key: 'preparing',  label: 'Preparing Your Package' },
-                    { key: 'shipped',    label: 'Out for Delivery' },
-                    { key: 'delivered',  label: 'Delivered' },
+                    { key: 'confirmed',  label: 'Commande validée' },
+                    { key: 'preparing',  label: 'Préparation de votre colis' },
+                    { key: 'shipped',    label: 'En cours de livraison' },
+                    { key: 'delivered',  label: 'Livrée' },
                   ];
 
                   const historyDates: Record<string, string> = {};
@@ -173,7 +173,7 @@ export default function OrderStatusPage() {
                       href={`/feedback?order=${encodeURIComponent(orderNumber)}&phone=${encodeURIComponent(phone)}`}
                       className="block w-full bg-[#403531] text-white py-[14px] rounded-[5px] font-serif italic text-[14px] hover:bg-[#2d2522] transition-colors text-center shadow-sm"
                     >
-                      Leave a Review ›
+                      Laisser un avis ›
                     </Link>
                   ) : (
                     <button
@@ -181,15 +181,15 @@ export default function OrderStatusPage() {
                       disabled
                       className="w-full bg-gray-300 text-gray-500 py-[14px] rounded-[5px] font-serif italic text-[14px] cursor-not-allowed shadow-sm opacity-60 transition-opacity hover:opacity-70"
                     >
-                      Leave a Review ›
+                      Laisser un avis ›
                     </button>
                   )}
                   
                   {/* Tooltip - Shows when not delivered and hovering */}
                   {currentStatus !== 'delivered' && showReviewTooltip && (
                     <div className="absolute -top-24 left-1/2 transform -translate-x-1/2 w-max px-4 py-3 bg-[#da2966] text-white rounded-[6px] text-[12px] font-serif shadow-xl z-50 pointer-events-none">
-                      <p className="font-bold tracking-wide whitespace-nowrap">Reviews Available After Delivery</p>
-                      <p className="text-[11px] opacity-95 mt-1.5 whitespace-normal max-w-[220px]">This button activates once your order is delivered</p>
+                      <p className="font-bold tracking-wide whitespace-nowrap">Avis disponibles après la livraison</p>
+                      <p className="text-[11px] opacity-95 mt-1.5 whitespace-normal max-w-[220px]">Ce bouton s'active une fois que votre commande est livrée</p>
                       {/* Arrow pointer */}
                       <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#da2966]"></div>
                     </div>
@@ -197,7 +197,7 @@ export default function OrderStatusPage() {
                 </div>
 
                 <Link href="/contact" className="flex-1 bg-white text-[#333] border border-gray-200 py-[14px] rounded-[5px] font-serif italic text-[14px] hover:bg-gray-50 transition-colors shadow-sm text-center">
-                  Need Help ?
+                  Besoin d'aide ?
                 </Link>
               </div>
             </div>
@@ -211,7 +211,7 @@ export default function OrderStatusPage() {
               >
                 <div className="flex items-center gap-2.5">
                   <h2 className="text-[13px] md:text-lg font-serif text-[#4a4a4a] tracking-wide">
-                    Shipment Contents ( {trackData?.items.length || 0} items )
+                    Contenu de l'envoi ( {trackData?.items.length || 0} articles )
                   </h2>
                   <ChevronUp className={`w-3.5 h-3.5 text-[#4a4a4a] transition-transform lg:hidden ${isContentsOpen ? '' : 'rotate-180'}`} />
                 </div>

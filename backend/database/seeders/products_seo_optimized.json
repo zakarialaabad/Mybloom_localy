@@ -1,0 +1,627 @@
+{
+  "catalog": {
+    "brand": "My Bloom",
+    "total_products": 82,
+    "categories": [
+      "beurre corps",
+      "gommage corps",
+      "maquillage visage",
+      "parfum",
+      "hygiène corporelle"
+    ],
+    "products": [
+      {
+        "id": 1,
+        "name": "Summer in Bali",
+        "type_produit": "Body Butter",
+        "img_main": "/images/Summer in Bali Body Butter/summer-in-bali-body-butter-img_main.jpg",
+        "subtitle": "Plongez dans la chaleur d'une sérénité tropicale",
+        "description": "Découvrez notre beurre corporel Summer in Bali, une formule 100% naturelle enrichie en huile de sésame et huile de pépins de raisin. Idéal pour unifier votre teint et atténuer les taches pigmentaires tout en bénéficiant d'une hydratation profonde. Livraison rapide au Maroc, produit 100% original. Parfait pour un usage quotidien ou en cadeau.",
+        "price": 80,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "beurre corps",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Summer in Bali Maroc",
+          "related_keywords": [
+            "beurre corporel maroc",
+            "beurre corps naturel",
+            "produit beauté maroc",
+            "soin peau maroc",
+            "acheter beurre corps maroc"
+          ]
+        }
+      },
+      {
+        "id": 2,
+        "name": "Summer in Bali",
+        "type_produit": "Body Scrub",
+        "img_main": "/images/Summer in Bali Body Scrub/summer-in-bali-body-scrub-img_main.jpg",
+        "subtitle": "Une exfoliation luxueuse inspirée de Bali pour révéler une peau douce, éclatante et parfaitement unifiée",
+        "description": "Transformez votre routine beauté avec notre gommage corporel Summer in Bali 100% naturel. Enrichi en huile de pépins de raisin et huile de sésame, il élimine efficacement les cellules mortes pour une peau douce, lisse et lumineuse. Unifie le teint naturellement. Livraison au Maroc, produit authentique. Résultats visibles dès la première utilisation.",
+        "price": 80,
+        "original_price": null,
+        "stock": 10,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "gommage corps",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Gommage Summer in Bali Maroc",
+          "related_keywords": [
+            "gommage corporel maroc",
+            "exfoliant corps naturel",
+            "soin beauté maroc",
+            "gommage peau maroc",
+            "acheter gommage maroc"
+          ]
+        }
+      },
+      {
+        "id": 3,
+        "name": "A Lot of Love",
+        "type_produit": "Body Scrub",
+        "img_main": "/images/A lot of love Body Scrub/a-lot-of-love-body-scrub-img_main.jpg",
+        "subtitle": "L'élixir gommant qui révèle la douceur naturelle de votre peau",
+        "description": "Le gommage corporel A Lot of Love combine la puissance purifiante de l'huile d'arbre à thé et la douceur nourrissante de l'huile de jojoba. Exfolie en douceur, traite la peau de poule et laisse votre peau soyeuse et lumineuse. 100% naturel, approuvé pour tous les types de peau. Livraison gratuite au Maroc. Cadeau parfait pour vos proches.",
+        "price": 80,
+        "original_price": null,
+        "stock": 0,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "gommage corps",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "A Lot of Love Maroc",
+          "related_keywords": [
+            "gommage naturel maroc",
+            "traitement peau maroc",
+            "produit corps maroc",
+            "exfoliant naturel",
+            "acheter gommage maroc"
+          ]
+        }
+      },
+      {
+        "id": 4,
+        "name": "A Lot of Love",
+        "type_produit": "Body Butter",
+        "img_main": "/images/A lot of Love -- Body Butter/a-lot-of-love-body-butter-img_main.jpg",
+        "subtitle": "Enveloppez votre peau d'un charme fruité irrésistible",
+        "description": "Notre beurre corporel A Lot of Love 100% naturel, enrichi en huile d'arbre à thé et huile de jojoba, est spécialement formulé pour traiter la peau de poulet (keratosis pilaris). Il lisse progressivement, adoucit l'épiderme et restaure une texture soyeuse. Résultats visibles en 2-3 semaines. Produit original livré rapidement au Maroc.",
+        "price": 80,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "beurre corps",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Beurre A Lot of Love Maroc",
+          "related_keywords": [
+            "beurre corps maroc",
+            "soin peau de poule",
+            "cosmétique naturel maroc",
+            "produit beauté maroc",
+            "acheter beurre maroc"
+          ]
+        }
+      },
+      {
+        "id": 5,
+        "name": "Sugar Pop",
+        "type_produit": "Body Scrub",
+        "img_main": "/images/Sugar Pop Body Scrub/sugar-pop-body-scrub-img_main.jpg",
+        "subtitle": "La douceur sucrée qui transforme votre peau dès la première utilisation",
+        "description": "Découvrez le gommage corporel Sugar Pop 100% naturel, une délicieuse fusion d'huile d'amande douce et huile de noix de coco. Exfolie délicatement tout en traitant les boutons du corps. Peut être utilisé comme gel douche pour plus de polyvalence. Peau douce et lisse garantie. Livraison express au Maroc disponible.",
+        "price": 80,
+        "original_price": null,
+        "stock": 0,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "gommage corps",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Sugar Pop Maroc",
+          "related_keywords": [
+            "gommage sucré maroc",
+            "gommage corps maroc",
+            "traitement acné maroc",
+            "produit naturel maroc",
+            "acheter gommage maroc"
+          ]
+        }
+      },
+      {
+        "id": 6,
+        "name": "Sugar Pop",
+        "type_produit": "Body Butter",
+        "img_main": "/images/Sugar Pop -- Body Butter/sugar-pop-body-butter-img_main.jpg",
+        "subtitle": "Douceur sucrée et peau de soie dès la première application",
+        "description": "Le beurre corporel Sugar Pop conjugue l'huile d'amande douce, l'huile de coco, le beurre de karité, le beurre de cacao et la vitamine E pour un traitement complet. Élimine les imperfections cutanées tout en hydratant profondément la peau. Texture riche et non grasse. Produit 100% original livré rapidement au Maroc.",
+        "price": 80,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "beurre corps",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Beurre Sugar Pop Maroc",
+          "related_keywords": [
+            "beurre naturel maroc",
+            "soin hydratant maroc",
+            "cosmétique corps maroc",
+            "produit beauté maroc",
+            "acheter beurre corps maroc"
+          ]
+        }
+      },
+      {
+        "id": 7,
+        "name": "Cherry Tint",
+        "type_produit": "Tint Visage",
+        "img_main": "/images/Cherry Tint/cherry-tint-img_main.jpg",
+        "subtitle": "L'éclat naturel à portée de main",
+        "description": "Le Tint Visage Cherry Tint apporte une teinte fraîche et naturelle aux joues et lèvres. Enrichi en eau de rose distillée et aloe vera, il offre une hydratation délicate qui persiste toute la journée. Teinte cerise subtile et universelle. Formule douce et sûre pour tous les types de peau. Commandez votre tint visage au Maroc dès maintenant.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "maquillage visage",
+        "type": "visage",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Cherry Tint Maroc",
+          "related_keywords": [
+            "tint visage maroc",
+            "maquillage naturel maroc",
+            "produit beauté maroc",
+            "tint joues maroc",
+            "acheter maquillage maroc"
+          ]
+        }
+      },
+      {
+        "id": 8,
+        "name": "Sexy Bloom Hair Mist",
+        "type_produit": "Hair Mist",
+        "img_main": "/images/Sexy Bloom Hair Mist/sexy-bloom-hair-mist-img_main.jpg",
+        "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
+        "description": "La brume capillaire Sexy Bloom apporte un parfum féminin captivant enrichi en eau de rose distillée et vitamine E. Sublime vos cheveux d'une fragrance délicate qui persiste toute la journée sans alourdir. Idéal pour parfumer cheveux et corps. Livraison rapide au Maroc, produit 100% authentique. Cadeau parfait pour la femme marocaine.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "cheveux",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Sexy Bloom Hair Mist Maroc",
+          "related_keywords": [
+            "brume capillaire maroc",
+            "parfum cheveux maroc",
+            "produit cheveux maroc",
+            "fragrance maroc",
+            "acheter parfum maroc"
+          ]
+        }
+      },
+      {
+        "id": 9,
+        "name": "The Secret Hair Mist",
+        "type_produit": "Hair Mist",
+        "img_main": "/images/Thes sucret Hair Mist/the-secret-hair-mist-img_main.jpg",
+        "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
+        "description": "Découvrez The Secret Hair Mist, une brume capillaire délicate enrichie en eau de rose distillée et vitamine E. Elle sublime vos cheveux d'une fragrance féminin captivante qui persiste toute la journée sans alourdir. Polyvalente pour cheveux et corps. Produit original livré rapidement au Maroc. Parfait pour tous les jours.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "cheveux",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "The Secret Hair Mist Maroc",
+          "related_keywords": [
+            "brume cheveux maroc",
+            "parfum naturel maroc",
+            "produit coiffure maroc",
+            "fragrance cheveux",
+            "acheter brume maroc"
+          ]
+        }
+      },
+      {
+        "id": 10,
+        "name": "Paradis Adress Hair Mist",
+        "type_produit": "Hair Mist",
+        "img_main": "/images/Paradis Adresse Hair Mist/paradis-adress-hair-mist-img_main.jpg",
+        "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
+        "description": "La brume capillaire Paradis Adress enrichie en eau de rose distillée et vitamine E envelope vos cheveux d'une fragrance féminine captivante. Persistance toute la journée sans alourdir la chevelure. Utilisable aussi sur le corps pour une fragrance complète. Produit 100% original livré rapidement au Maroc. Choix des femmes marocaines.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "cheveux",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Paradis Adress Hair Mist Maroc",
+          "related_keywords": [
+            "brume paradis maroc",
+            "parfum cheveux maroc",
+            "produit fragrance maroc",
+            "brume corps maroc",
+            "acheter parfum maroc"
+          ]
+        }
+      },
+      {
+        "id": 11,
+        "name": "Heartbeat Body Mist",
+        "type_produit": "Body Mist",
+        "img_main": "/images/Heartbeat Body Mist/heart-rate-body-mist-img_main.jpg",
+        "subtitle": "Chaque battement raconte une histoire d'amour",
+        "description": "La brume corporelle Heartbeat Body Mist envoûtante enrichie en eau de rose distillée envelope la peau d'un parfum frais et captivant. Garnissez-vous d'un voile subtil de reflets scintillants pour un effet glamour. Persistance longue durée. Produit 100% authentique livré rapidement au Maroc. Idéal pour les occasions spéciales.",
+        "price": 75,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Heartbeat Body Mist Maroc",
+          "related_keywords": [
+            "brume corps maroc",
+            "parfum spécial maroc",
+            "produit prestige maroc",
+            "fragrance luxe maroc",
+            "acheter brume maroc"
+          ]
+        }
+      },
+      {
+        "id": 12,
+        "name": "Over Dose Body Mist",
+        "type_produit": "Body Mist",
+        "img_main": "/images/Over Dose Body Mist/over-dose-body-mist-img_main.jpg",
+        "subtitle": "Chaque battement raconte une histoire d'amour",
+        "description": "La brume corporelle Over Dose Body Mist envoûtante enrichie en eau de rose distillée crée un voile subtil de reflets scintillants sur la peau. Parfum frais et captivant à persistance longue durée. Transforme votre présence naturellement. Produit 100% original livré rapidement au Maroc. Parfait pour chaque moment de la journée.",
+        "price": 75,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Over Dose Body Mist Maroc",
+          "related_keywords": [
+            "brume corps maroc",
+            "parfum maroc",
+            "produit fragrance maroc",
+            "brume glamour maroc",
+            "acheter brume corps maroc"
+          ]
+        }
+      },
+      {
+        "id": 13,
+        "name": "Remember Body Mist",
+        "type_produit": "Body Mist",
+        "img_main": "/images/Remember Body Mist/remember-body-mist-img_main.jpg",
+        "subtitle": "Chaque battement raconte une histoire d'amour",
+        "description": "Remember Body Mist, une brume corporelle envoûtante enrichie en eau de rose distillée, envelope la peau d'un parfum frais et captivant. Voile subtil de reflets scintillants pour un effet de prestige. Persistance toute la journée. Produit 100% authentique livré rapidement au Maroc. Témoignage de vos plus beaux souvenirs.",
+        "price": 75,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Remember Body Mist Maroc",
+          "related_keywords": [
+            "brume souvenir maroc",
+            "parfum corps maroc",
+            "produit fragrance maroc",
+            "brume luxe maroc",
+            "acheter parfum maroc"
+          ]
+        }
+      },
+      {
+        "id": 14,
+        "name": "Deo Roll-On Femme",
+        "type_produit": "Déodorant",
+        "img_main": "/images/Deo Roll Femme/deo-roll-on-femme-img_main.jpg",
+        "subtitle": "Fraîcheur naturelle et douceur au quotidien",
+        "description": "Le déodorant roll-on Deo Roll-On Femme protège 48h naturellement avec sa formule 100% sûre. Enrichi en gel d'aloe vera et oliban, sans sels d'aluminium ni sulfates. Unifie progressivement le teint des aisselles pour une finition parfaite. Idéal pour la femme marocaine. Livraison rapide au Maroc. Dermatologiquement testé.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "female",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "hygiène corporelle",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Deo Roll-On Femme Maroc",
+          "related_keywords": [
+            "déodorant femme maroc",
+            "déodorant naturel",
+            "produit hygiène maroc",
+            "anti-transpirant maroc",
+            "acheter déodorant maroc"
+          ]
+        }
+      },
+      {
+        "id": 15,
+        "name": "Deo Roll-On Homme",
+        "type_produit": "Déodorant",
+        "img_main": "/images/Deo Roll Homme/deo-roll-on-homme-img_main.jpg",
+        "subtitle": "Protection efficace et fraîcheur masculine toute la journée",
+        "description": "Le déodorant Deo Roll-On Homme offre une protection 48h naturelle conçue pour l'homme marocain actif. Formule 100% sûre enrichie en gel d'aloe vera et oliban, sans sels d'aluminium. Fraîcheur masculine longue durée. Produit original livré rapidement au Maroc. Confiance et protection garanties tous les jours.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "male",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "hygiène corporelle",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Deo Roll-On Homme Maroc",
+          "related_keywords": [
+            "déodorant homme maroc",
+            "déodorant naturel homme",
+            "produit hygiène maroc",
+            "fraîcheur masculine maroc",
+            "acheter déodorant maroc"
+          ]
+        }
+      },
+      {
+        "id": 16,
+        "name": "La Luna Crème Parfumée",
+        "type_produit": "Crème Parfumée",
+        "img_main": "/images/La Luna Crème Parfumée/la-luna-creme-parfumee-img_main.jpg",
+        "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+        "description": "La crème parfumée La Luna conjugue l'élégance olfactive avec le soin du corps. Enrichie en huile de coco et huile d'amande douce, elle sublime corps et cheveux d'un parfum féminin captivant. Texture onctueuse sans film gras. Persistance toute la journée. Produit 100% original livré rapidement au Maroc. Soin et fragrance en un.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "La Luna Crème Parfumée Maroc",
+          "related_keywords": [
+            "crème parfumée maroc",
+            "parfum corps maroc",
+            "soin fragrance maroc",
+            "crème luxe maroc",
+            "acheter crème maroc"
+          ]
+        }
+      },
+      {
+        "id": 17,
+        "name": "Imperial Valley Crème Parfumée",
+        "type_produit": "Crème Parfumée",
+        "img_main": "/images/Imperial Valley Crème Parfumée/imperial-valley-creme-parfumee-img_main.jpg",
+        "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+        "description": "La crème parfumée Imperial Valley allie prestige et soin. Enrichie en huile de coco et huile d'amande douce, elle sublime corps et cheveux d'une fragrance féminine de prestige. Texture riche et douce sans résidu gras. Parfum captivant longue durée. Produit 100% authentique livré rapidement au Maroc. Cadeau luxe pour femme.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Imperial Valley Crème Parfumée Maroc",
+          "related_keywords": [
+            "crème parfumée luxe maroc",
+            "soin corps maroc",
+            "fragrance prestige maroc",
+            "crème corps maroc",
+            "acheter crème parfumée maroc"
+          ]
+        }
+      },
+      {
+        "id": 18,
+        "name": "Bombshel Passion Crème Parfumée",
+        "type_produit": "Crème Parfumée",
+        "img_main": "/images/Bombshel Passion Crème Parfumée/bombshel-passion-creme-parfumee-img_main.jpg",
+        "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+        "description": "Bombshel Passion Crème Parfumée, une formule luxueuse enrichie en huile de coco et huile d'amande douce qui sublime corps et cheveux. Fragrance captivante avec une touche de passion. Texture onctueuse sans film gras. Persistance longue durée. Produit 100% original livré rapidement au Maroc. Pour la femme confiante et élégante.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [],
+        "ingredients": [],
+        "faqs": [],
+        "brand": "My Bloom",
+        "seo": {
+          "focus_keyword": "Bombshel Passion Crème Parfumée Maroc",
+          "related_keywords": [
+            "crème passion maroc",
+            "fragrance femme maroc",
+            "soin parfumé maroc",
+            "crème prestige maroc",
+            "acheter crème maroc"
+          ]
+        }
+      }
+    ]
+  }
+}

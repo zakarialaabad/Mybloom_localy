@@ -319,10 +319,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const FAQ = (product.faqs && product.faqs.length > 0)
     ? product.faqs.map((f) => ({ q: f.question, a: f.answer }))
     : [
-        { q: 'Is this product suitable for all skin types?',   a: 'Yes, suitable for all skin types including sensitive skin.' },
-        { q: 'How do I apply this fragrance?',                  a: 'Apply to pulse points: wrists, neck, and behind the ears.' },
-        { q: 'How long does the scent last?',                   a: 'Typically 6–12 hours depending on skin type and conditions.' },
-        { q: 'Does it leave a greasy feeling?',                 a: 'No, our formula absorbs cleanly without residue.' },
+        { q: 'Ce produit convient-il à tous les types de peau ?',   a: 'Oui, convient à tous les types de peau y compris sensibles.' },
+        { q: 'Comment appliquer ce parfum ?',                  a: 'Appliquez sur les points de pulsation : poignets, cou et derrière les oreilles.' },
+        { q: 'Quelle est la durée de la senteur ?',                   a: 'Typiquement 6–12 heures selon le type de peau et les conditions.' },
+        { q: 'Laisse-t-il une sensation grasse ?',                 a: 'Non, notre formule s\u0027absorbe proprement sans résidu.' },
       ];
 
   return (
@@ -336,7 +336,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         <div className="container mx-auto px-4 pt-6 pb-12 sm:pt-8 sm:pb-16 max-w-7xl scroll-smooth">
           {/* Breadcrumbs */}
           <nav className="mb-6 sm:mb-8 text-sm text-gray-500">
-            <Link href="/" className="hover:text-gray-900 transition-colors">Home</Link> /{' '}
+            <Link href="/" className="hover:text-gray-900 transition-colors">Accueil</Link> /{' '}
             <Link href="/collection" className="hover:text-gray-900 transition-colors">{product.category?.name ?? 'Collection'}</Link> /{' '}
             <span className="text-gray-900">{product.name}</span>
           </nav>
@@ -555,7 +555,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                     : 'bg-[#4a403a] text-white hover:bg-[#342f2d]'
                 }`}
               >
-                <span className="font-serif italic text-base md:text-lg tracking-wide">Buy It Now &rsaquo;</span>
+                <span className="font-serif italic text-base md:text-lg tracking-wide">Acheter maintenant &rsaquo;</span>
               </button>
 
               {/* Cart Icon: Fixed square */}
@@ -782,16 +782,16 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             {/* Accordion: Delivery & Returns (static) */}
             <div className="border-t border-gray-200 pt-6 mt-6">
               <button onClick={() => setIsDeliveryOpen(!isDeliveryOpen)} className="flex w-full items-center justify-between text-left group">
-                <span className="font-serif text-2xl italic text-gray-900 group-hover:text-[#4a403a] transition-colors">Delivery & Returns</span>
+                <span className="font-serif text-2xl italic text-gray-900 group-hover:text-[#4a403a] transition-colors">Livraison et retours</span>
                 {isDeliveryOpen ? <ChevronUp className="h-6 w-6 text-gray-500" /> : <ChevronDown className="h-6 w-6 text-gray-500" />}
               </button>
               {isDeliveryOpen && (
                 <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-8">
                   {[
-                    { icon: <Truck className="h-6 w-6" />,    title: 'Fast Dispatch',      desc: 'Orders dispatched within 24 hours.' },
-                    { icon: <Clock className="h-6 w-6" />,    title: 'Delivery Time',      desc: 'Delivered within 1–3 business days.' },
-                    { icon: <Banknote className="h-6 w-6" />, title: 'Cash on Delivery',   desc: 'Pay conveniently upon delivery.' },
-                    { icon: <Package className="h-6 w-6" />,  title: 'Returns & Refunds',  desc: 'Refund or replacement if damaged.' },
+                    { icon: <Truck className="h-6 w-6" />,    title: 'Expédition rapide',      desc: 'Les commandes sont expédiées dans les 24 heures.' },
+                    { icon: <Clock className="h-6 w-6" />,    title: 'Temps de livraison',      desc: 'Livré dans 1–3 jours ouvrés.' },
+                    { icon: <Banknote className="h-6 w-6" />, title: 'Paiement à la livraison',   desc: 'Payez commodement à la livraison.' },
+                    { icon: <Package className="h-6 w-6" />,  title: 'Retours et remboursements',  desc: 'Remboursement ou remplacement en cas de dommage.' },
                   ].map(({ icon, title, desc }) => (
                     <div key={title} className="flex items-start gap-4">
                       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-gray-50 text-gray-700">{icon}</div>

@@ -7,14 +7,14 @@ import { useSearchParams } from 'next/navigation';
 import { ChevronDown, ChevronUp, Search, Grid, List, SlidersHorizontal, X, Check } from 'lucide-react';
 
 const SORT_OPTIONS = [
-  { value: 'newest',      label: 'Relevance (Default)' },
-  { value: 'price_asc',   label: 'Price: Low to High' },
-  { value: 'price_desc',  label: 'Price: High to Low' },
-  { value: 'popular',     label: 'Most Popular' },
-  { value: 'brand_az',    label: 'Brand: A–Z' },
-  { value: 'last_7_days', label: 'Added in Last 7 Days' },
-  { value: 'last_30_days',label: 'Added in Last 30 Days' },
-  { value: 'this_month',  label: 'Added This Month' },
+  { value: 'newest',      label: 'Pertinence (Par défaut)' },
+  { value: 'price_asc',   label: 'Prix : Du moins au plus cher' },
+  { value: 'price_desc',  label: 'Prix : Du plus au moins cher' },
+  { value: 'popular',     label: 'Plus populaire' },
+  { value: 'brand_az',    label: 'Marque : A–Z' },
+  { value: 'last_7_days', label: 'Ajouté ces 7 derniers jours' },
+  { value: 'last_30_days',label: 'Ajouté ces 30 derniers jours' },
+  { value: 'this_month',  label: 'Ajouté ce mois-ci' },
 ];
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
@@ -437,7 +437,7 @@ export default function CollectionPage() {
       <main className="flex-grow container mx-auto px-4 py-8 max-w-7xl">
         {/* Breadcrumbs */}
         <div className="text-sm text-gray-400 mb-8 font-serif italic">
-          <Link href="/">Home</Link> / <span className="text-gray-900">Collection</span>
+          <Link href="/">Accueil</Link> / <span className="text-gray-900">Collection</span>
         </div>
 
         {/* ─── Mobile Toolbar ─────────────────────────────────────────────── */}
@@ -487,17 +487,17 @@ export default function CollectionPage() {
               <FilterSkeleton />
             ) : (
             <div className="bg-[#fcfcfc] p-6 rounded-sm">
-              <h2 className="font-serif text-gray-500 mb-6">Filter</h2>
+            <h2 className="font-serif text-gray-500 mb-6">Filtrer</h2>
 
               {/* Brand Filter */}
               <div className="mb-6">
                 <div className="flex justify-between items-center mb-4 cursor-pointer">
-                  <h3 className="font-serif text-gray-700">Brand</h3>
+                  <h3 className="font-serif text-gray-700">Marque</h3>
                   <ChevronUp className="h-4 w-4 text-gray-400" />
                 </div>
                 <div className="relative mb-4">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
-                  <input type="text" placeholder="Search brand..." className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" />
+                  <input type="text" placeholder="Rechercher une marque..." className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" />
                 </div>
                 <div className="space-y-3">
                   {brands.map(brand => (

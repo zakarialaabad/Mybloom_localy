@@ -117,33 +117,33 @@ export default function CheckoutPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
           {/* Breadcrumb */}
           <div className="text-sm text-gray-400 mb-8 font-serif">
-            <Link href="/" className="hover:text-gray-800">Home</Link> /{' '}
-            <Link href="/collection" className="hover:text-gray-800">Collection</Link> /{' '}
-            <span className="text-gray-800">Checkout</span>
+            <Link href="/" className="hover:text-gray-800">Accueil</Link> /{
+            <Link href="/collection" className="hover:text-gray-800">Collection</Link> /{
+            <span className="text-gray-800">Paiement</span>
           </div>
 
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col-reverse lg:flex-row gap-8 lg:gap-12">
               {/* ── Left: Shipping Form ─────────────────────────────── */}
               <div className="flex-1 lg:w-1/2">
-                <h1 className="text-2xl font-serif font-bold text-gray-800 mb-8">Shipping Address</h1>
+                <h1 className="text-2xl font-serif font-bold text-gray-800 mb-8">Adresse de livraison</h1>
 
                 <div className="space-y-6">
                   {/* Name */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">First Name *</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Prénom *</label>
                       <input required value={firstName} onChange={(e) => setFirstName(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif" />
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Last Name *</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Nom de famille *</label>
                       <input required value={lastName} onChange={(e) => setLastName(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif" />
                     </div>
                   </div>
 
                   {/* Phone */}
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Phone number *</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Numéro de téléphone *</label>
                     <div className={`flex border rounded-sm focus-within:border-[#b89b72] ${
                       phone && !/^\+212[567]\d{8}$/.test(phone) 
                         ? 'border-red-400' 
@@ -160,7 +160,7 @@ export default function CheckoutPage() {
                   {/* City / Quartier / Zip */}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">City *</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Ville *</label>
                       <input required value={city} onChange={(e) => setCity(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600" />
                     </div>
                     <div>
@@ -168,14 +168,14 @@ export default function CheckoutPage() {
                       <input required value={quartier} onChange={(e) => setQuartier(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600" />
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Zip Code</label>
+                      <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Code postal</label>
                       <input value={zip} onChange={(e) => setZip(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600" />
                     </div>
                   </div>
 
                   {/* Address */}
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Address *</label>
+                    <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Adresse *</label>
                     <input required value={address} onChange={(e) => setAddress(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600" />
                   </div>
 

@@ -188,26 +188,26 @@ export default function ProductsPage() {
       {/* PAGE HEADER */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-[28px] font-bold text-[#1a1a1a] leading-tight">Product Management</h1>
+          <h1 className="text-[28px] font-bold text-[#1a1a1a] leading-tight">Gestion des produits</h1>
           <p className="text-[14px] text-gray-400 mt-1">
-            Manage your luxury inventory and collection listings
+            Gérez votre inventaire de luxe et les listes de collection
           </p>
         </div>
         <Link 
           href="/admin/dashboard/products/add" 
           className="flex items-center gap-2 px-5 py-3 bg-[#2b2b2b] text-white text-[14px] font-semibold rounded-xl hover:bg-[#1a1a1a] transition-colors shadow-sm"
         >
-          + Add Product
+          + Ajouter un produit
         </Link>
       </div>
 
       {/* STATS BAR */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
           {[
-            { label: 'Total Products', value: stats.total,     color: 'text-[#1a1a1a]' },
-            { label: 'Active',         value: stats.active,    color: 'text-green-600'  },
-            { label: 'Low Stock',      value: stats.low_stock, color: 'text-orange-500' },
-            { label: 'Inactive',       value: stats.inactive,  color: 'text-gray-400'   },
+            { label: 'Produits totaux', value: stats.total,     color: 'text-[#1a1a1a]' },
+            { label: 'Actif',         value: stats.active,    color: 'text-green-600'  },
+            { label: 'Stock bas',      value: stats.low_stock, color: 'text-orange-500' },
+            { label: 'Inactif',       value: stats.inactive,  color: 'text-gray-400'   },
           ].map(({ label, value, color }) => (
             <div key={label} className="bg-white rounded-t-[24px] sm:rounded-t-[24px] sm:rounded-[24px] rounded-b-none sm:rounded-b-[24px] w-full sm:w-auto rounded-b-none sm:rounded-b-[24px] w-full sm:w-auto border border-gray-100 px-4 py-4 md:px-5 shadow-sm flex flex-col sm:flex-row items-center justify-between text-center sm:text-left gap-2 sm:gap-0">
               <span className="text-[12px] sm:text-[13px] font-medium text-gray-400 leading-tight">{label}</span>
@@ -234,7 +234,7 @@ export default function ProductsPage() {
             </span>
             <input
               type="text"
-              placeholder="Search by product name or collection ..."
+              placeholder="Rechercher par nom de produit ou collection..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full h-11 pl-10 pr-4 rounded-xl border border-gray-200 bg-white text-[13px] text-gray-700 placeholder:text-gray-400 focus:outline-none focus:border-[#da2966]/40 shadow-sm"
@@ -249,7 +249,7 @@ export default function ProductsPage() {
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
             >
-              <option value="">All Categories</option>
+              <option value="">Toutes les catégories</option>
               {categories.map((c) => (
                 <option key={c.id} value={String(c.id)}>{c.name}</option>
               ))}
@@ -262,7 +262,7 @@ export default function ProductsPage() {
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
             >
-              <option value="">All Types</option>
+              <option value="">Tous les types</option>
               {productTypes.map((t) => (
                 <option key={t.id} value={String(t.id)}>{t.name}</option>
               ))}
@@ -275,18 +275,18 @@ export default function ProductsPage() {
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
-              <option value="">All Statuses</option>
-              <option value="active">Active</option>
-              <option value="low_stock">Low Stock</option>
-              <option value="inactive">Inactive</option>
+              <option value="">Tous les statuts</option>
+              <option value="active">Actif</option>
+              <option value="low_stock">Stock bas</option>
+              <option value="inactive">Inactif</option>
             </AdminSelect>
           </div>
 
           {!isLoading && (
             <span className="text-[13px] text-gray-400 sm:ml-auto whitespace-nowrap">
               {filtered.length === products.length
-                ? `${products.length} products`
-                : `${filtered.length} of ${products.length} products`}
+                ? `${products.length} produits`
+                : `${filtered.length} sur ${products.length} produits`}
             </span>
           )}
         </div>

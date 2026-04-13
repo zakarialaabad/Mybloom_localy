@@ -82,7 +82,7 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4">
               {[
-                { label: 'Gifts', href: '/collection?is_gift=true' },
+                { label: 'Cadeaux', href: '/collection?is_gift=true' },
                 { label: 'Parfums', href: '/collection?product_type=parfums' },
               ].map(({ label, href }) => (
                 <li key={label}>
@@ -105,7 +105,7 @@ export default function Footer() {
             <ul className="space-y-4">
               {[
                 { label: 'Corps', href: '/collection?product_type=corps' },
-                { label: 'Hair', href: '/collection?product_type=hair' },
+                { label: 'Cheveux', href: '/collection?product_type=hair' },
                 { label: 'Visage', href: '/collection?product_type=visage' },
               ].map(({ label, href }) => (
                 <li key={label}>
@@ -162,15 +162,15 @@ export default function Footer() {
       <div className="border-t border-gray-100">
         <div className="container mx-auto px-4 py-5 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
           <p className="text-[12px] text-gray-400 text-center">
-            © 2026 MyBloom. All Rights Reserved.
+            © 2026 MyBloom. Tous droits réservés.
           </p>
           <div className="flex items-center gap-3">
             <Link href="/privacy" className="text-[12px] text-gray-400 hover:text-gray-900 transition-colors">
-              Privacy Policy
+              Politique de confidentialité
             </Link>
             <span className="text-gray-300 text-[12px]">|</span>
             <Link href="/terms" className="text-[12px] text-gray-400 hover:text-gray-900 transition-colors">
-              Terms &amp; Conditions
+              Conditions générales
             </Link>
           </div>
         </div>
