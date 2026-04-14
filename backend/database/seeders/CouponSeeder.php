@@ -14,6 +14,8 @@ class CouponSeeder extends Seeder
                 // Valid — 10% off, no minimum, unlimited, no expiry
                 'id'               => 1,
                 'code'             => 'BLOOM10',
+                'company_name'     => 'Bloom Luxury',
+                'promo_type'       => 'Influencers',
                 'type'             => 'percent',
                 'value'            => 10.00,
                 'min_order_amount' => 0.00,
@@ -28,6 +30,8 @@ class CouponSeeder extends Seeder
                 // Valid — 50 MAD fixed, requires ≥ 200 MAD cart
                 'id'               => 2,
                 'code'             => 'BIENVENUE50',
+                'company_name'     => 'Welcome Collections',
+                'promo_type'       => 'Top Client',
                 'type'             => 'fixed',
                 'value'            => 50.00,
                 'min_order_amount' => 200.00,
@@ -42,6 +46,8 @@ class CouponSeeder extends Seeder
                 // Exhausted — used_count equals usage_limit → "coupon exhausted" error
                 'id'               => 3,
                 'code'             => 'FLASH20',
+                'company_name'     => 'Flash Deals Inc.',
+                'promo_type'       => 'Influencers',
                 'type'             => 'percent',
                 'value'            => 20.00,
                 'min_order_amount' => 300.00,
@@ -56,6 +62,8 @@ class CouponSeeder extends Seeder
                 // Expired — expires_at is in the past → "coupon expired" error
                 'id'               => 4,
                 'code'             => 'ETE2024',
+                'company_name'     => 'Summer Brands',
+                'promo_type'       => 'Top Client',
                 'type'             => 'percent',
                 'value'            => 15.00,
                 'min_order_amount' => 0.00,

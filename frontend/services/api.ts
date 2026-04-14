@@ -247,6 +247,8 @@ export interface CouponValidateResult {
 export interface AdminCoupon {
   id: number;
   code: string;
+  company_name: string | null;
+  promo_type: string;
   type: 'percent' | 'fixed';
   value: number;
   min_order_amount: number;

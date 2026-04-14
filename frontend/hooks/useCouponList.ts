@@ -27,7 +27,7 @@ export const useCouponList = (options?: UseCouponListOptions): UseCouponListRetu
     key,
     () => adminCouponService.list(options),
     {
-      dedupingInterval: 5 * 60 * 1000,
+      dedupingInterval: 0,
       revalidateOnFocus: false,
       errorRetryCount: 1,
     }

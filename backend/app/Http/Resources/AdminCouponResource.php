@@ -12,6 +12,8 @@ class AdminCouponResource extends JsonResource
         return [
             'id'               => $this->id,
             'code'             => $this->code,
+            'company_name'     => $this->company_name,
+            'promo_type'       => $this->promo_type,
             'type'             => $this->type,
             'value'            => (float) $this->value,
             'min_order_amount' => (float) $this->min_order_amount,

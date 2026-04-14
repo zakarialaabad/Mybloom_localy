@@ -211,9 +211,9 @@ export default function CouponsPage() {
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
             {stats ? stats.active.toLocaleString() : <div className='h-9 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
-          <p className="text-[12px] text-gray-400 mt-2">
+          <div className="text-[12px] text-gray-400 mt-2">
             {stats ? `${stats.total.toLocaleString()} total` : <div className='h-3 w-20 bg-gray-200 rounded animate-pulse inline-block' />}
-          </p>
+          </div>
         </div>
 
         {/* Total Redemptions */}
@@ -227,7 +227,7 @@ export default function CouponsPage() {
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
             {stats ? stats.total_redemptions.toLocaleString() : <div className='h-9 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
-          <p className="text-[12px] text-gray-400 mt-2">Across all coupons</p>
+          <div className="text-[12px] text-gray-400 mt-2">Across all coupons</div>
         </div>
 
         {/* Expiring Soon */}
@@ -246,7 +246,7 @@ export default function CouponsPage() {
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
             {stats ? stats.expiring_soon.toLocaleString() : <div className='h-9 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
-          <p className="text-[12px] text-gray-400 mt-2">Within next 7 days</p>
+          <div className="text-[12px] text-gray-400 mt-2">Within next 7 days</div>
         </div>
 
       </div>

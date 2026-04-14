@@ -112,7 +112,7 @@ export function DataTable<T extends { id: number }>({
             {columns.map((col) => (
               <th
                 key={col.key}
-                className={`px-6 py-4 font-semibold text-gray-600 uppercase tracking-wider text-[12px] ${
+                className={`px-6 py-4 align-middle font-semibold text-gray-600 uppercase tracking-wider text-[12px] ${
                   col.responsive || ''
                 } ${col.sortable ? 'cursor-pointer hover:bg-gray-100' : ''} ${
                   col.className?.includes('text-center') ? 'text-center' : 'text-left'
@@ -166,7 +166,7 @@ export function DataTable<T extends { id: number }>({
                 {columns.map((col) => (
                   <td
                     key={`${item.id}-${col.key}`}
-                    className={`px-6 py-4 ${col.responsive || ''} ${
+                    className={`px-6 py-4 align-middle ${col.responsive || ''} ${
                       col.className || ''
                     }`}
                   >

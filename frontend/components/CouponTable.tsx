@@ -82,19 +82,33 @@ export function CouponTable({
     },
 
     {
+      key: 'company_name',
+      label: 'Company',
+      sortable: true,
+      className: 'w-[13%]',
+      render: (coupon: AdminCoupon) => (
+        <span className="text-[13px] text-gray-600 font-medium">
+          {coupon.company_name || '—'}
+        </span>
+      ),
+    },
+
+    {
       key: 'type',
       label: 'Type',
       sortable: false,
       className: 'w-[12%]',
       render: (coupon: AdminCoupon) => (
         <span
-          className={`px-3 py-1.5 rounded-full text-[12px] font-bold ${
-            coupon.type === 'percent'
-              ? 'bg-blue-100 text-blue-600'
-              : 'bg-purple-100 text-purple-600'
+          className={`px-3 py-1.5 rounded-full text-[12px] font-bold whitespace-nowrap ${
+            coupon.promo_type === 'Influencers'
+              ? 'bg-purple-100 text-purple-600'
+              : coupon.promo_type === 'Top Client'
+              ? 'bg-amber-100 text-amber-600'
+              : 'bg-gray-100 text-gray-600'
           }`}
         >
-          {coupon.type === 'percent' ? 'Percent' : 'Fixed'}
+          {coupon.promo_type}
         </span>
       ),
     },
@@ -107,18 +121,6 @@ export function CouponTable({
       render: (coupon: AdminCoupon) => (
         <span className="text-[14px] font-bold text-[#111]">
           {coupon.type === 'percent' ? `${coupon.value}%` : `${coupon.value} DH`}
-        </span>
-      ),
-    },
-
-    {
-      key: 'min_order_amount',
-      label: 'Min Order',
-      sortable: false,
-      className: 'w-[12%]',
-      render: (coupon: AdminCoupon) => (
-        <span className="text-[13px] text-gray-500">
-          {coupon.min_order_amount > 0 ? `${coupon.min_order_amount} DH` : '—'}
         </span>
       ),
     },
@@ -253,13 +255,18 @@ export function CouponTable({
           <div className="flex flex-col gap-3 p-4 bg-white rounded-xl mb-3 border border-gray-100 shadow-sm relative overflow-hidden group">
             {/* Header: Code & Status */}
             <div className="flex justify-between items-start">
-              <div className="flex items-center gap-2">
-                 <div className="w-8 h-8 rounded-lg bg-[#fdf2f4] text-[#da2966] flex items-center justify-center flex-shrink-0">
-                    <Ticket size={16} strokeWidth={2} />
-                 </div>
-                 <span className="bg-[#f4f6fa] text-[#111] font-extrabold text-[14px] px-2.5 py-1 rounded-[6px] tracking-wide font-mono border border-gray-200 shadow-sm">
-                  {coupon.code}
-                 </span>
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-2">
+                   <div className="w-8 h-8 rounded-lg bg-[#fdf2f4] text-[#da2966] flex items-center justify-center flex-shrink-0">
+                      <Ticket size={16} strokeWidth={2} />
+                   </div>
+                   <span className="bg-[#f4f6fa] text-[#111] font-extrabold text-[14px] px-2.5 py-1 rounded-[6px] tracking-wide font-mono border border-gray-200 shadow-sm">
+                    {coupon.code}
+                   </span>
+                </div>
+                <span className="text-[12px] text-gray-500 font-medium ml-10">
+                  {coupon.company_name || '—'}
+                </span>
               </div>
                <span className={`inline-flex items-center px-2 py-1 rounded-md text-[10px] font-bold ${getStatusBadge(status, 'coupon').replace('rounded-full', 'rounded-md')}`}>
                 {getStatusLabel(status, 'coupon')}
@@ -274,7 +281,7 @@ export function CouponTable({
                    {coupon.type === 'percent' ? `${coupon.value}%` : `${coupon.value} DH`}
                 </span>
                 <span className="ml-2 inline-block px-1.5 py-0.5 rounded text-[10px] font-bold bg-white border border-gray-200 text-gray-600">
-                  {coupon.type === 'percent' ? 'Percent' : 'Fixed'}
+                  {coupon.promo_type}
                 </span>
               </div>
               
@@ -289,14 +296,6 @@ export function CouponTable({
                     </span>
                   )}
               </div>
-
-               {/* Min Order */}
-               <div>
-                  <span className="block text-[11px] text-gray-500 font-medium mb-0.5">Min Order</span>
-                   <span className="text-[13px] font-semibold text-[#111]">
-                    {coupon.min_order_amount > 0 ? `${coupon.min_order_amount} DH` : 'None'}
-                  </span>
-               </div>
 
                 {/* Usage */}
                 <div className="flex flex-col justify-center">

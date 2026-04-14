@@ -78,11 +78,13 @@ class CouponController extends Controller
     {
         $data = $request->validate([
             'code'             => ['required', 'string', 'max:50', 'unique:coupons,code'],
+            'company_name'     => ['nullable', 'string', 'max:100'],
+            'promo_type'       => ['required', 'string', 'max:50'],
             'type'             => ['required', Rule::in(['percent', 'fixed'])],
             'value'            => ['required', 'numeric', 'min:0'],
             'min_order_amount' => ['nullable', 'numeric', 'min:0'],
             'usage_limit'      => ['nullable', 'integer', 'min:1'],
-            'expires_at'       => ['nullable', 'date', 'after:now'],
+            'expires_at'       => ['nullable', 'date_format:Y-m-d'],
             'is_active'        => ['nullable', 'boolean'],
         ]);
 
@@ -107,11 +109,13 @@ class CouponController extends Controller
     {
         $data = $request->validate([
             'code'             => ['sometimes', 'string', 'max:50', Rule::unique('coupons', 'code')->ignore($coupon->id)],
+            'company_name'     => ['nullable', 'string', 'max:100'],
+            'promo_type'       => ['sometimes', 'string', 'max:50'],
             'type'             => ['sometimes', Rule::in(['percent', 'fixed'])],
             'value'            => ['sometimes', 'numeric', 'min:0'],
             'min_order_amount' => ['nullable', 'numeric', 'min:0'],
             'usage_limit'      => ['nullable', 'integer', 'min:1'],
-            'expires_at'       => ['nullable', 'date'],
+            'expires_at'       => ['nullable', 'date_format:Y-m-d'],
             'is_active'        => ['nullable', 'boolean'],
         ]);
 

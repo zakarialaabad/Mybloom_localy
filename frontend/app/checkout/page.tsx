@@ -75,14 +75,14 @@ export default function CheckoutPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMethodId || items.length === 0) return;
-    
-    // Validate phone format: +212 followed by 5-7 or 6, then 8 digits
+
+    // Validate phone format: +212 followed by 5, 6 or 7, then 8 digits
     const phoneRegex = /^\+212[567]\d{8}$/;
     if (!phoneRegex.test(phone)) {
       setSubmitError('Veuillez entrer un numéro de téléphone valide au format +212XXXXXXXXX');
       return;
     }
-    
+
     setSubmitError('');
     setSubmitting(true);
     try {
@@ -115,15 +115,19 @@ export default function CheckoutPage() {
       <Header />
       <main className="min-h-screen bg-white pb-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
-          {/* Breadcrumb */}
+
+          {/* ✅ Breadcrumb — FIXED */}
           <div className="text-sm text-gray-400 mb-8 font-serif">
-            <Link href="/" className="hover:text-gray-800">Accueil</Link> /{
-            <Link href="/collection" className="hover:text-gray-800">Collection</Link> /{
+            <Link href="/" className="hover:text-gray-800">Accueil</Link>
+            {' / '}
+            <Link href="/collection" className="hover:text-gray-800">Collection</Link>
+            {' / '}
             <span className="text-gray-800">Paiement</span>
           </div>
 
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col-reverse lg:flex-row gap-8 lg:gap-12">
+
               {/* ── Left: Shipping Form ─────────────────────────────── */}
               <div className="flex-1 lg:w-1/2">
                 <h1 className="text-2xl font-serif font-bold text-gray-800 mb-8">Adresse de livraison</h1>
@@ -145,8 +149,8 @@ export default function CheckoutPage() {
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Numéro de téléphone *</label>
                     <div className={`flex border rounded-sm focus-within:border-[#b89b72] ${
-                      phone && !/^\+212[567]\d{8}$/.test(phone) 
-                        ? 'border-red-400' 
+                      phone && !/^\+212[567]\d{8}$/.test(phone)
+                        ? 'border-red-400'
                         : 'border-gray-200'
                     }`}>
                       <span className="bg-gray-50 border-r border-gray-200 px-4 py-3 font-serif text-gray-700 text-sm">MAR</span>
@@ -306,6 +310,7 @@ export default function CheckoutPage() {
                   {submitting ? 'Traitement…' : 'Acheter maintenant ›'}
                 </button>
               </div>
+
             </div>
           </form>
         </div>

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useSWRConfig } from 'swr';
 import {
   ArrowLeft,
   Save,
@@ -17,10 +18,11 @@ import { ErrorAlert } from '@/components/ErrorAlert';
 
 export default function CreateCouponPage() {
   const router = useRouter();
+  const { mutate } = useSWRConfig();
 
   // Form state
   const [code, setCode] = useState('');
-  const [campaign, setCampaign] = useState('');
+  const [companyName, setCompanyName] = useState('');
   const [promoType, setPromoType] = useState('Influencers');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -49,12 +51,17 @@ export default function CreateCouponPage() {
 
       await adminCouponService.create({
         code: code.toUpperCase().trim(),
+        company_name: companyName.trim() || null,
+        promo_type: promoType,
         type: discountType,
         value: parseFloat(discountValue),
         usage_limit: maxUses ? parseInt(maxUses) : undefined,
         expires_at: endDate || null,
         is_active: true,
       });
+
+      // Invalidate + revalidate SWR cache so the list page refetches fresh data
+      await mutate(() => true, undefined, { revalidate: true });
 
       router.push('/admin/dashboard/coupons');
     } catch (err: unknown) {
@@ -122,10 +129,10 @@ export default function CreateCouponPage() {
               </div>
               <div>
                 <TextInput
-                  label="Campaign Name"
-                  placeholder="e.g. summer 2026"
-                  value={campaign}
-                  onChange={(e) => setCampaign(e.target.value)}
+                  label="Company Name"
+                  placeholder="e.g. Luxury Brands Inc."
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
                 />
               </div>
               <div>

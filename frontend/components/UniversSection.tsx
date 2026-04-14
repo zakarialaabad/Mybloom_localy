@@ -47,7 +47,7 @@ export default function UniversSection() {
   }, []);
 
   return (
-    <section className="mt-12 py-20 bg-white">
+    <section className="pb-20 bg-white">
       <SectionContainer>
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">

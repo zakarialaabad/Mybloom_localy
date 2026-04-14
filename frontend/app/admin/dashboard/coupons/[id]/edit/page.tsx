@@ -4,6 +4,7 @@ import { AdminSelect } from '@/components/admin/AdminSelect';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
+import { useSWRConfig } from 'swr';
 import {
   ArrowLeft,
   Save,
@@ -17,11 +18,12 @@ import { adminCouponService } from '@/services/api';
 export default function EditCouponPage() {
   const router = useRouter();
   const params = useParams();
+  const { mutate } = useSWRConfig();
   const idValue = params?.id;
   const couponId = idValue ? parseInt(idValue as string, 10) : null;
 
   const [code, setCode] = useState('');
-  const [campaign, setCampaign] = useState('');
+  const [companyName, setCompanyName] = useState('');
   const [promoType, setPromoType] = useState('Influencers');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -40,6 +42,8 @@ export default function EditCouponPage() {
     adminCouponService.get(couponId)
       .then((data) => {
         setCode(data.code || '');
+        setCompanyName(data.company_name || '');
+        setPromoType(data.promo_type || 'Influencers');
         setDiscountType(data.type === 'fixed' ? 'fixed' : 'percent');
         setDiscountValue(data.value?.toString() || '');
         setMaxUses(data.usage_limit?.toString() || '');
@@ -47,8 +51,6 @@ export default function EditCouponPage() {
           setEndDate(new Date(data.expires_at).toISOString().split('T')[0]);
         }
         setIsActive(!!data.is_active);
-        // Note: we don't have campaign/promoType/startDate natively in the current db column, 
-        // they are mocked to 'Influencers' or blank for now.
         setIsReady(true);
       })
       .catch((err: unknown) => {
@@ -77,12 +79,17 @@ export default function EditCouponPage() {
 
       await adminCouponService.update(couponId, {
         code: code.toUpperCase().trim(),
+        company_name: companyName.trim() || null,
+        promo_type: promoType,
         type: discountType,
         value: parseFloat(discountValue),
         usage_limit: maxUses ? parseInt(maxUses) : undefined,
         expires_at: endDate || null,
         is_active: isActive,
       });
+
+      // Invalidate + revalidate SWR cache so the list page refetches fresh data
+      await mutate(() => true, undefined, { revalidate: true });
 
       router.push('/admin/dashboard/coupons');
     } catch (err: unknown) {
@@ -162,12 +169,12 @@ export default function EditCouponPage() {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-[#444] mb-2">Campaign Name</label>
+                <label className="block text-[11px] font-bold text-[#444] mb-2">Company Name</label>
                 <input
                   type="text"
-                  placeholder="e.g. summer 2026"
-                  value={campaign}
-                  onChange={(e) => setCampaign(e.target.value)}
+                  placeholder="e.g. Luxury Brands Inc."
+                  value={companyName}
+                  onChange={(e) => setCompanyName(e.target.value)}
                   className="w-full px-4 py-3 bg-[#f8f9fa] border-transparent rounded-[8px] text-[13px] text-[#333] focus:bg-white focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all outline-none"
                 />
               </div>
