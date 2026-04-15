@@ -32,6 +32,14 @@ export default function CreateCouponPage() {
 
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState('');
+  const [toastMsg, setToastMsg] = useState('');
+  const [toastVisible, setToastVisible] = useState(false);
+
+  const showToast = (message: string) => {
+    setToastMsg(message);
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 3200);
+  };
 
   const handleSave = async () => {
     try {
@@ -39,12 +47,12 @@ export default function CreateCouponPage() {
       setError('');
 
       if (!code.trim()) {
-        setError('Coupon Code is required.');
+        showToast('Coupon Code is required.');
         setIsSaving(false);
         return;
       }
       if (!discountValue) {
-        setError('Discount Value is required.');
+        showToast('Discount Value is required.');
         setIsSaving(false);
         return;
       }
@@ -63,16 +71,34 @@ export default function CreateCouponPage() {
       // Invalidate + revalidate SWR cache so the list page refetches fresh data
       await mutate(() => true, undefined, { revalidate: true });
 
-      router.push('/admin/dashboard/coupons');
+      showToast('Coupon created successfully!');
+      setTimeout(() => router.push('/admin/dashboard/coupons'), 1200);
     } catch (err: unknown) {
       const errorMsg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
-      setError(errorMsg || 'Failed to create coupon.');
+      showToast(errorMsg || 'Failed to create coupon.');
       setIsSaving(false);
     }
   };
 
   return (
     <div className="min-h-screen bg-[#f8f9fa] pb-20">
+      <style>{`
+        @keyframes toastIn {
+          from { opacity: 0; transform: translateX(-50%) translateY(-16px); }
+          to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+      `}</style>
+
+      {toastVisible && (
+        <div
+          style={{ position: 'fixed', top: '24px', left: '50%', transform: 'translateX(-50%)', zIndex: 200, animation: 'toastIn 0.3s ease-out' }}
+          className="flex items-center gap-3 bg-white border border-[#da2966] text-[#da2966] px-5 py-3.5 rounded-t-[24px] sm:rounded-[24px] rounded-b-none sm:rounded-b-[24px] w-full sm:w-auto shadow-[0_8px_32px_rgba(218,41,102,0.2)] text-[14px] font-bold whitespace-nowrap pointer-events-none"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M12 8v4M12 16h.01" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
+          {toastMsg}
+        </div>
+      )}
+
       {/* Header Container */}
       <div className="bg-white border-b border-gray-100">
         <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-24 max-w-[1400px] mx-auto py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
@@ -106,7 +132,6 @@ export default function CreateCouponPage() {
 
       {/* Main Content */}
       <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-24 max-w-[1400px] mx-auto py-8">
-        {error && <ErrorAlert message={error} onClose={() => setError('')} title="Error" />}
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 items-start">
           

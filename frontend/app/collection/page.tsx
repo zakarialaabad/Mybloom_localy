@@ -339,10 +339,12 @@ export default function CollectionPage() {
       <Header />
       {/* ── Scrollable page body ─────────────────────────────────────────── */}
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden">
-      {/* Collection Hero Banner — dynamic from API, falls back to a solid color block */}
-      <div className="w-full relative h-[200px] md:h-[300px] bg-[#5a1818]">
-        {heroBanner ? (
-          heroBanner.link ? (
+      {/* Collection Hero Banner — dynamic from API, falls back to skeleton loading */}
+      {heroBanner === null ? (
+        <div className="w-full h-[200px] md:h-[300px] bg-gray-100 animate-pulse" />
+      ) : (
+        <div className="w-full relative h-[200px] md:h-[300px] bg-[#5a1818]">
+          {heroBanner.link ? (
             <a href={heroBanner.link} className="absolute inset-0">
               <Image
                 src={heroImageError ? FALLBACK_IMG : sanitizeImageUrl(heroBanner.image_path)}
@@ -362,9 +364,9 @@ export default function CollectionPage() {
               priority
               onError={() => setHeroImageError(true)}
             />
-          )
-        ) : null}
-      </div>
+          )}
+        </div>
+      )}
 
       {/* ── Ingredient Circles Carousel ──────────────────────────────────── */}
       {ingredients.length > 0 && (() => {
