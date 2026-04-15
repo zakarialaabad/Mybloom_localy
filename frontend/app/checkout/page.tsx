@@ -35,6 +35,7 @@ export default function CheckoutPage() {
   const [firstName, setFirstName] = useState('');
   const [lastName,  setLastName]  = useState('');
   const [phone,     setPhone]     = useState('');
+  const [phoneTouched, setPhoneTouched] = useState(false);
   const [city,      setCity]      = useState('');
   const [quartier,  setQuartier]  = useState('');
   const [zip,       setZip]       = useState('');
@@ -72,23 +73,70 @@ export default function CheckoutPage() {
   const [submitting,   setSubmitting]   = useState(false);
   const [submitError,  setSubmitError]  = useState('');
 
+  // Format phone number with spaces as user types
+  const formatPhoneDisplay = (value: string): string => {
+    // Remove all non-digits and special chars (keep only digits and +)
+    const cleaned = value.replace(/[^\d+]/g, '');
+    
+    // If it starts with +212 or 0, format it nicely
+    if (cleaned.startsWith('+212')) {
+      // +212 6 12 34 56 78
+      const parts = cleaned.slice(4); // Remove +212
+      return '+212 ' + parts.match(/.{1,2}/g)?.join(' ') || parts;
+    } else if (cleaned.startsWith('0')) {
+      // 06 12 34 56 78
+      return cleaned.match(/.{1,2}/g)?.join(' ') || cleaned;
+    } else if (cleaned.startsWith('212')) {
+      // Auto-convert 212 to +212
+      const parts = cleaned.slice(3);
+      return '+212 ' + parts.match(/.{1,2}/g)?.join(' ') || parts;
+    } else {
+      // Treat as local number starting with 6, 5, or 7
+      return cleaned.match(/.{1,2}/g)?.join(' ') || cleaned;
+    }
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const formatted = formatPhoneDisplay(e.target.value);
+    setPhone(formatted);
+  }
+
+  // Normalize Moroccan phone numbers
+  const normalizePhone = (value: string): string => {
+    // Remove all spaces and hyphens
+    let normalized = value.replace(/[\s\-]/g, '');
+    
+    // If starts with 0, convert to +212
+    if (normalized.startsWith('0')) {
+      normalized = '+212' + normalized.slice(1);
+    }
+    
+    return normalized;
+  };
+
+  const isValidPhone = (value: string): boolean => {
+    const normalized = normalizePhone(value);
+    // Accept +212 followed by 5, 6 or 7, then 8 digits
+    return /^\+212[567]\d{8}$/.test(normalized);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedMethodId || items.length === 0) return;
 
-    // Validate phone format: +212 followed by 5, 6 or 7, then 8 digits
-    const phoneRegex = /^\+212[567]\d{8}$/;
-    if (!phoneRegex.test(phone)) {
-      setSubmitError('Veuillez entrer un numéro de téléphone valide au format +212XXXXXXXXX');
+    setPhoneTouched(true);
+    if (!isValidPhone(phone)) {
+      setSubmitError('Veuillez entrer un numéro valide: 0612345678 ou +212612345678');
       return;
     }
 
+    const normalizedPhone = normalizePhone(phone);
     setSubmitError('');
     setSubmitting(true);
     try {
       const result = await orderService.place({
         customer_name: `${firstName} ${lastName}`.trim(),
-        customer_phone: phone,
+        customer_phone: normalizedPhone,
         shipping_address: { city, quartier, zip, address },
         shipping_method_id: selectedMethodId,
         coupon_code: couponResult ? couponCode : undefined,
@@ -149,15 +197,15 @@ export default function CheckoutPage() {
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Numéro de téléphone *</label>
                     <div className={`flex border rounded-sm focus-within:border-[#b89b72] ${
-                      phone && !/^\+212[567]\d{8}$/.test(phone)
+                      phoneTouched && phone && !isValidPhone(phone)
                         ? 'border-red-400'
                         : 'border-gray-200'
                     }`}>
                       <span className="bg-gray-50 border-r border-gray-200 px-4 py-3 font-serif text-gray-700 text-sm">MAR</span>
-                      <input required value={phone} onChange={(e) => setPhone(e.target.value)} type="tel" placeholder="+212 6 XX XX XX XX" className="flex-1 px-4 py-3 focus:outline-none font-serif text-gray-600" />
+                      <input required value={phone} onChange={handlePhoneChange} onBlur={() => setPhoneTouched(true)} type="tel" placeholder="06 12 34 56 78" className="flex-1 px-4 py-3 focus:outline-none font-serif text-gray-600" />
                     </div>
-                    {phone && !/^\+212[567]\d{8}$/.test(phone) && (
-                      <p className="mt-1 text-xs text-red-600 font-serif">Format invalide. Utilisez +212XXXXXXXXX (ex: +212612345678)</p>
+                    {phoneTouched && phone && !isValidPhone(phone) && (
+                      <p className="mt-1 text-xs text-red-600 font-serif">Numéro invalide. Entrez 06XXXXXXXX ou +212612345678</p>
                     )}
                   </div>
 
