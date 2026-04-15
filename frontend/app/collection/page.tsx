@@ -71,6 +71,24 @@ export default function CollectionPage() {
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const sortRef = useRef<HTMLDivElement>(null);
+  const productScrollRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // ── Accordion state for sidebar filters ─────────────────────────────────
+  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+    brand: true,
+    price: true,
+    category: true,
+    notes: true,
+    promotions: true,
+  });
+
+  const toggleSection = (section: string) => {
+    setExpandedSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
 
   // ── Filter state — shared with FilterModal via useFilterStore ─────────────
   const globalMin          = useFilterStore((s) => s.globalMin);
@@ -315,10 +333,12 @@ export default function CollectionPage() {
 
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="h-screen overflow-hidden flex flex-col bg-white">
       {/* Loading Overlay — always renders behind spinner, same pattern as admin dashboard */}
       {(pageLoading || loadingProducts) && <LoadingSpinner />}
       <Header />
+      {/* ── Scrollable page body ─────────────────────────────────────────── */}
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden">
       {/* Collection Hero Banner — dynamic from API, falls back to a solid color block */}
       <div className="w-full relative h-[200px] md:h-[300px] bg-[#5a1818]">
         {heroBanner ? (
@@ -434,7 +454,7 @@ export default function CollectionPage() {
         );
       })()}
 
-      <main className="flex-grow container mx-auto px-4 py-8 max-w-7xl">
+      <main className="container mx-auto px-4 pt-8 max-w-7xl">
         {/* Breadcrumbs */}
         <div className="text-sm text-gray-400 mb-8 font-serif italic">
           <Link href="/">Accueil</Link> / <span className="text-gray-900">Collection</span>
@@ -480,9 +500,9 @@ export default function CollectionPage() {
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex flex-col md:flex-row gap-8 items-start">
           {/* Sidebar */}
-          <aside className="hidden md:block w-64 shrink-0">
+          <aside className="hidden md:block w-64 shrink-0 self-start sticky top-0">
             {brands.length === 0 || categories.length === 0 || !aggregatesReady ? (
               <FilterSkeleton />
             ) : (
@@ -491,94 +511,123 @@ export default function CollectionPage() {
 
               {/* Brand Filter */}
               <div className="mb-6">
-                <div className="flex justify-between items-center mb-4 cursor-pointer">
+                <div 
+                  className="flex justify-between items-center mb-4 cursor-pointer hover:opacity-70 transition-opacity"
+                  onClick={() => toggleSection('brand')}
+                >
                   <h3 className="font-serif text-gray-700">Marque</h3>
-                  <ChevronUp className="h-4 w-4 text-gray-400" />
+                  <ChevronUp className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedSections.brand ? 'rotate-0' : 'rotate-180'}`} />
                 </div>
-                <div className="relative mb-4">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
-                  <input type="text" placeholder="Rechercher une marque..." className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" />
-                </div>
-                <div className="space-y-3">
-                  {brands.map(brand => (
-                    <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
-                      <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleBrand(brand.id)}>
-                        {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span>
-                        <span className="text-[11px] text-gray-400">({brandCounts[brand.id] ?? 0})</span>
-                      </div>
-                    </label>
-                  ))}
-                </div>
+                {expandedSections.brand && (
+                  <>
+                    <div className="relative mb-4">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
+                      <input type="text" placeholder="Rechercher une marque..." className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" />
+                    </div>
+                    <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
+                      {brands.map(brand => (
+                        <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
+                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleBrand(brand.id)}>
+                            {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
+                          </div>
+                          <div className="flex items-baseline gap-2">
+                            <span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span>
+                            <span className="text-[11px] text-gray-400">({brandCounts[brand.id] ?? 0})</span>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
 
               {/* Price Filter */}
               <div className="mb-6 border-t border-gray-100 pt-6">
-                <div className="flex justify-between items-center mb-4 cursor-pointer">
+                <div 
+                  className="flex justify-between items-center mb-4 cursor-pointer hover:opacity-70 transition-opacity"
+                  onClick={() => toggleSection('price')}
+                >
                   <h3 className="font-serif text-gray-700">Price</h3>
-                  <ChevronUp className="h-4 w-4 text-gray-400" />
+                  <ChevronUp className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedSections.price ? 'rotate-0' : 'rotate-180'}`} />
                 </div>
 
-                {/* Unified histogram + range slider (shared PriceHistogram component) */}
-                <PriceHistogram
-                  globalMin={globalMin}
-                  globalMax={globalMax}
-                  selectedMin={selectedMin}
-                  selectedMax={selectedMax}
-                  onMinChange={setSelectedMin}
-                  onMaxChange={setSelectedMax}
-                />
+                {expandedSections.price && (
+                  <>
+                    {/* Unified histogram + range slider (shared PriceHistogram component) */}
+                    <PriceHistogram
+                      globalMin={globalMin}
+                      globalMax={globalMax}
+                      selectedMin={selectedMin}
+                      selectedMax={selectedMax}
+                      onMinChange={setSelectedMin}
+                      onMaxChange={setSelectedMax}
+                    />
+                  </>
+                )}
               </div>
 
               {/* Category Filter */}
               <div className="mb-6 border-t border-gray-100 pt-6">
-                <div className="flex justify-between items-center mb-4 cursor-pointer">
+                <div 
+                  className="flex justify-between items-center mb-4 cursor-pointer hover:opacity-70 transition-opacity"
+                  onClick={() => toggleSection('category')}
+                >
                   <h3 className="font-serif text-gray-700">Category</h3>
-                  <ChevronUp className="h-4 w-4 text-gray-400" />
+                  <ChevronUp className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedSections.category ? 'rotate-0' : 'rotate-180'}`} />
                 </div>
-                <div className="space-y-3">
-                  {categories.map(cat => (
-                    <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
-                      <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedCategories.includes(cat.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleCategory(cat.id)}>
-                        {selectedCategories.includes(cat.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
-                      </div>
-                      <span className={`text-xs ${selectedCategories.includes(cat.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{cat.name}</span>
-                    </label>
-                  ))}
-                </div>
+                {expandedSections.category && (
+                  <div className="space-y-3">
+                    {categories.map(cat => (
+                      <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
+                        <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedCategories.includes(cat.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleCategory(cat.id)}>
+                          {selectedCategories.includes(cat.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
+                        </div>
+                        <span className={`text-xs ${selectedCategories.includes(cat.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{cat.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Notes Filter */}
               <div className="mb-6 border-t border-gray-100 pt-6">
-                <div className="flex justify-between items-center mb-4 cursor-pointer">
+                <div 
+                  className="flex justify-between items-center mb-4 cursor-pointer hover:opacity-70 transition-opacity"
+                  onClick={() => toggleSection('notes')}
+                >
                   <h3 className="font-serif text-gray-700">Notes</h3>
-                  <ChevronUp className="h-4 w-4 text-gray-400" />
+                  <ChevronUp className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedSections.notes ? 'rotate-0' : 'rotate-180'}`} />
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <button onClick={() => setSelectedRating(null)} className={`px-3 py-1 rounded-sm text-xs font-medium ${selectedRating === null ? 'bg-[#fdf6e3] text-[#b8860b]' : 'bg-gray-100 text-gray-600'}`}>Tout</button>
-                  <button onClick={() => setSelectedRating(5)} className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 5 ? 'bg-[#fdf6e3] text-[#b8860b]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 5.0</button>
-                  <button onClick={() => setSelectedRating(4)} className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 4 ? 'bg-[#fdf6e3] text-[#b8860b]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 4.0</button>
-                </div>
+                {expandedSections.notes && (
+                  <div className="flex flex-wrap gap-2">
+                    <button onClick={() => setSelectedRating(null)} className={`px-3 py-1 rounded-sm text-xs font-medium ${selectedRating === null ? 'bg-[#fdf6e3] text-[#b8860b]' : 'bg-gray-100 text-gray-600'}`}>Tout</button>
+                    <button onClick={() => setSelectedRating(5)} className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 5 ? 'bg-[#fdf6e3] text-[#b8860b]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 5.0</button>
+                    <button onClick={() => setSelectedRating(4)} className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 4 ? 'bg-[#fdf6e3] text-[#b8860b]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 4.0</button>
+                  </div>
+                )}
               </div>
 
               {/* Promotions Filter */}
               <div className="border-t border-gray-100 pt-6">
-                <div className="flex justify-between items-center mb-4 cursor-pointer">
+                <div 
+                  className="flex justify-between items-center mb-4 cursor-pointer hover:opacity-70 transition-opacity"
+                  onClick={() => toggleSection('promotions')}
+                >
                   <h3 className="font-serif text-gray-700">Promotions</h3>
-                  <ChevronUp className="h-4 w-4 text-gray-400" />
+                  <ChevronUp className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedSections.promotions ? 'rotate-0' : 'rotate-180'}`} />
                 </div>
-                <div className="space-y-3">
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <input type="checkbox" checked={promotionOnly} onChange={(e) => setPromotionOnly(e.target.checked)} className="w-3.5 h-3.5" />
-                    <span className="text-xs text-gray-500">Offre Speciales</span>
-                  </label>
-                  <label className="flex items-center gap-3 cursor-pointer group">
-                    <input type="checkbox" checked={featuredOnly} onChange={(e) => setFeaturedOnly(e.target.checked)} className="w-3.5 h-3.5" />
-                    <span className="text-xs text-gray-500">Best Sellers</span>
-                  </label>
-                </div>
+                {expandedSections.promotions && (
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                      <input type="checkbox" checked={promotionOnly} onChange={(e) => setPromotionOnly(e.target.checked)} className="w-3.5 h-3.5" />
+                      <span className="text-xs text-gray-500">Offre Speciales</span>
+                    </label>
+                    <label className="flex items-center gap-3 cursor-pointer group">
+                      <input type="checkbox" checked={featuredOnly} onChange={(e) => setFeaturedOnly(e.target.checked)} className="w-3.5 h-3.5" />
+                      <span className="text-xs text-gray-500">Best Sellers</span>
+                    </label>
+                  </div>
+                )}
               </div>
 
             </div>
@@ -586,9 +635,9 @@ export default function CollectionPage() {
           </aside>
 
           {/* Main Content */}
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             {/* Top Bar */}
-            <div className="hidden md:flex justify-between items-center mb-6">
+            <div className="hidden md:flex justify-between items-center sticky top-0 z-20 bg-white py-3 mb-3 border-b border-gray-100">
               <div className="text-xs text-gray-400 font-serif italic">
                 {products.length} Produit{products.length !== 1 ? 's' : ''}
                 {totalPages > 1 && <span className="ml-1 text-gray-300">— page {currentPage}/{totalPages}</span>}
@@ -757,7 +806,7 @@ export default function CollectionPage() {
                   <div className="flex items-center justify-center gap-1.5 mt-12 mb-4">
                     {/* Prev */}
                     <button
-                      onClick={() => { setCurrentPage(p => p - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                      onClick={() => { setCurrentPage(p => p - 1); scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' }); }}
                       disabled={currentPage === 1}
                       className={`w-9 h-9 flex items-center justify-center rounded-sm border text-sm transition-all ${
                         currentPage === 1
@@ -778,7 +827,7 @@ export default function CollectionPage() {
                       ) : (
                         <button
                           key={p}
-                          onClick={() => { setCurrentPage(p as number); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                          onClick={() => { setCurrentPage(p as number); scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' }); }}
                           className={`w-9 h-9 flex items-center justify-center rounded-sm border text-xs font-medium transition-all ${
                             currentPage === p
                               ? 'bg-[#4a403a] border-[#4a403a] text-white shadow-sm'
@@ -792,7 +841,7 @@ export default function CollectionPage() {
 
                     {/* Next */}
                     <button
-                      onClick={() => { setCurrentPage(p => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                      onClick={() => { setCurrentPage(p => p + 1); scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' }); }}
                       disabled={currentPage === totalPages}
                       className={`w-9 h-9 flex items-center justify-center rounded-sm border text-sm transition-all ${
                         currentPage === totalPages
@@ -915,6 +964,7 @@ export default function CollectionPage() {
       )}
 
       <Footer />
+      </div>{/* end scroll wrapper */}
     </div>
   );
 }
