@@ -9,12 +9,21 @@ use App\Http\Resources\ProductDetailResource;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Services\ImageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
+    private ImageService $imageService;
+
+    public function __construct(ImageService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
     /**
      * GET /api/v1/admin/products
      *
@@ -91,15 +100,18 @@ class ProductController extends Controller
                             'is_approved' => true,
                             'approved_at' => now(),
                         ]);
-                        // Handle review photo upload
-                        $fileKey = "review_photos_{$i}";
-                        if ($request->hasFile($fileKey)) {
-                            $file = $request->file($fileKey);
-                            $path = $file->store('reviews', 'public');
-                            $createdReview->images()->create([
-                                'url' => '/storage/' . $path,
-                            ]);
-                        }
+                        // Review photo upload using ImageService
+                            $fileKey = "review_photos_{$i}";
+                            if ($request->hasFile($fileKey)) {
+                                try {
+                                    $result = $this->imageService->process($request->file($fileKey), 'reviews');
+                                    $createdReview->images()->create([
+                                        'url' => $result->relativePath,
+                                    ]);
+                                } catch (\Exception $e) {
+                                    \Illuminate\Support\Facades\Log::error('Failed to process review image', ['error' => $e->getMessage()]);
+                                }
+                            }
                     }
                 }
             }
@@ -107,13 +119,17 @@ class ProductController extends Controller
             // Images
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $i => $file) {
-                    $path = $file->store('products', 'public');
-                    $product->images()->create([
-                        'url' => '/storage/' . $path,
-                        'alt' => $product->name,
-                        'sort_order' => $i,
-                        'is_primary' => $i === 0
-                    ]);
+                    try {
+                        $result = $this->imageService->process($file, 'products');
+                        $product->images()->create([
+                            'url' => $result->relativePath,
+                            'alt' => $product->name,
+                            'sort_order' => $i,
+                            'is_primary' => $i === 0
+                        ]);
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('Failed to process product image', ['error' => $e->getMessage()]);
+                    }
                 }
             }
             
@@ -124,8 +140,12 @@ class ProductController extends Controller
                     foreach ($manualIngredients as $i => $ing) {
                         $imageUrl = null;
                         if ($request->hasFile("ingredient_images_{$i}")) {
-                            $path = $request->file("ingredient_images_{$i}")->store('ingredients', 'public');
-                            $imageUrl = '/storage/' . $path;
+                            try {
+                                $result = $this->imageService->process($request->file("ingredient_images_{$i}"), 'ingredients');
+                                $imageUrl = $result->relativePath;
+                            } catch (\Exception $e) {
+                                \Illuminate\Support\Facades\Log::error('Failed to process ingredient image', ['error' => $e->getMessage()]);
+                            }
                         }
                         $ingredient = \App\Models\Ingredient::firstOrCreate(
                             ['name' => $ing['name']],
@@ -137,6 +157,9 @@ class ProductController extends Controller
             }
 
             \Illuminate\Support\Facades\DB::commit();
+
+            // New product — bust recommendations carousel so it can appear there
+            Cache::forget('recommendations:carousel');
 
             return response()->json(['data' => new ProductDetailResource($product->load(['brand', 'category', 'images', 'sizes', 'variants', 'reviews.images', 'allReviews.images']))], 201);
         } catch (\Exception $e) {
@@ -221,14 +244,17 @@ class ProductController extends Controller
                                 'is_approved'   => true,
                                 'approved_at'   => now(),
                             ]);
-                            // Handle review photo upload
+                            // Handle review photo upload using ImageService
                             $fileKey = "review_photos_{$i}";
                             if ($request->hasFile($fileKey)) {
-                                $file = $request->file($fileKey);
-                                $path = $file->store('reviews', 'public');
-                                $createdReview->images()->create([
-                                    'url' => '/storage/' . $path,
-                                ]);
+                                try {
+                                    $result = $this->imageService->process($request->file($fileKey), 'reviews');
+                                    $createdReview->images()->create([
+                                        'url' => $result->relativePath,
+                                    ]);
+                                } catch (\Exception $e) {
+                                    \Illuminate\Support\Facades\Log::error('Failed to process review image', ['error' => $e->getMessage()]);
+                                }
                             }
                         }
                     }
@@ -253,14 +279,18 @@ class ProductController extends Controller
             if ($request->hasFile('images')) {
                 $maxSort = (int) $product->images()->max('sort_order');
                 foreach ($request->file('images') as $i => $file) {
-                    $path     = $file->store('products', 'public');
-                    $noPrimary = $product->images()->count() === 0 && $i === 0;
-                    $product->images()->create([
-                        'url'        => '/storage/' . $path,
-                        'alt'        => $product->name,
-                        'sort_order' => $maxSort + $i + 1,
-                        'is_primary'  => $noPrimary,
-                    ]);
+                    try {
+                        $result = $this->imageService->process($file, 'products');
+                        $noPrimary = $product->images()->count() === 0 && $i === 0;
+                        $product->images()->create([
+                            'url'        => $result->relativePath,
+                            'alt'        => $product->name,
+                            'sort_order' => $maxSort + $i + 1,
+                            'is_primary'  => $noPrimary,
+                        ]);
+                    } catch (\Exception $e) {
+                        \Illuminate\Support\Facades\Log::error('Failed to process product image', ['error' => $e->getMessage()]);
+                    }
                 }
             }
 
@@ -280,8 +310,12 @@ class ProductController extends Controller
                     foreach ($manualIngredients as $i => $ing) {
                         $imageUrl = null;
                         if ($request->hasFile("ingredient_images_{$i}")) {
-                            $path     = $request->file("ingredient_images_{$i}")->store('ingredients', 'public');
-                            $imageUrl = '/storage/' . $path;
+                            try {
+                                $result = $this->imageService->process($request->file("ingredient_images_{$i}"), 'ingredients');
+                                $imageUrl = $result->relativePath;
+                            } catch (\Exception $e) {
+                                \Illuminate\Support\Facades\Log::error('Failed to process ingredient image', ['error' => $e->getMessage()]);
+                            }
                         }
                         $ingredient = \App\Models\Ingredient::firstOrCreate(
                             ['name' => $ing['name']],
@@ -296,6 +330,10 @@ class ProductController extends Controller
             }
 
             \Illuminate\Support\Facades\DB::commit();
+
+            // Bust the cached product detail so next public visit gets fresh data
+            Cache::forget('product:' . $product->slug);
+            Cache::forget('recommendations:carousel');
 
             $product->load(['brand', 'category', 'images', 'sizes', 'variants', 'reviews.images', 'allReviews.images', 'ingredientItems', 'faqs', 'productType']);
             return response()->json(['data' => new ProductDetailResource($product)]);
@@ -326,6 +364,10 @@ class ProductController extends Controller
         
         $product->delete();
         \Log::info('[AdminProduct.destroy] Product deleted successfully', ['id' => $product->id]);
+
+        // Bust the cached product detail for this slug so 404 serves immediately
+        Cache::forget('product:' . $product->slug);
+        Cache::forget('recommendations:carousel');
 
         return response()->json(['message' => 'Product deleted.']);
     }

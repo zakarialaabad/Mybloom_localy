@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Services\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -11,6 +12,13 @@ use Illuminate\Http\JsonResponse;
 
 class AdminProfileController extends Controller
 {
+    private ImageService $imageService;
+
+    public function __construct(ImageService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
     /**
      * GET /api/v1/admin/profile
      */
@@ -71,17 +79,22 @@ class AdminProfileController extends Controller
             // Delete old image if exists
             if ($admin->profile_image) {
                 \Log::info('[AdminProfile.update] Deleting old image:', ['old_path' => $admin->profile_image]);
-                Storage::disk('public')->delete($admin->profile_image);
+                $this->imageService->delete($admin->profile_image);
             }
-            $path = $request->file('profile_image')->store('admin_profiles', 'public');
-            \Log::info('[AdminProfile.update] Image stored:', ['path' => $path]);
-            $admin->profile_image = $path;
+            try {
+                $result = $this->imageService->process($request->file('profile_image'), 'admin_profiles');
+                $admin->profile_image = $result->relativePath;
+                \Log::info('[AdminProfile.update] Image processed:', ['path' => $result->relativePath]);
+            } catch (\Exception $e) {
+                \Log::error('[AdminProfile.update] Image processing failed:', ['error' => $e->getMessage()]);
+                throw new \Exception('Failed to process profile image: ' . $e->getMessage());
+            }
         } else if ($request->input('delete_profile_image') === 'true') {
             // User explicitly requested image deletion
             \Log::info('[AdminProfile.update] Deletion requested, removing image...');
             if ($admin->profile_image) {
                 \Log::info('[AdminProfile.update] Deleting profile image:', ['path' => $admin->profile_image]);
-                Storage::disk('public')->delete($admin->profile_image);
+                $this->imageService->delete($admin->profile_image);
             }
             $admin->profile_image = null;
         }

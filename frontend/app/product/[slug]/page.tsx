@@ -15,6 +15,7 @@ import ImageGalleryModal from '@/components/ui/ImageGalleryModal';
 import { LoadingSpinner } from '@/components/Skeleton';
 import { productService, Product, ProductVariant } from '@/services/api';
 import useCartStore from '@/store/cart';
+import useCatalogStore from '@/store/catalog';
 import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
 import { sanitizeImageUrl } from '@/lib/utils';
 import { testRecommendationCount } from '@/lib/testRecommendationCount';
@@ -84,6 +85,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const reviewsCarouselRef = useRef<HTMLDivElement>(null);
 
   const addItem = useCartStore((s) => s.addItem);
+  
+  // ── Call hooks at top level (required by React rules) ──
+  const findProductBySlug = useCatalogStore((s) => s.findProductBySlug);
+  const getAllCachedProducts = useCatalogStore((s) => s.getAllCachedProducts);
 
   // Auto-hide toast after 3 seconds
   useEffect(() => {
@@ -103,7 +108,33 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     setLoading(true);
     setFetchError(false);
 
-    console.log('[ProductPage] Fetching product with slug:', slug);
+    console.log('[ProductPage] Loading product with slug:', slug);
+
+    // ── Phase 1: Check catalog cache first (from collection page navigation) ──
+    const cachedProduct = findProductBySlug(slug);
+    
+    if (cachedProduct) {
+      console.log('[ProductPage] 🚀 Found product in catalog cache, skipping API call');
+      if (!mounted) return;
+      
+      // Use cached product
+      setProduct(cachedProduct);
+      const primary = cachedProduct.images?.find((i) => i.is_primary)?.image_url ?? cachedProduct.images?.[0]?.image_url ?? cachedProduct.primary_image ?? 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800';
+      setMainImage(primary);
+      
+      // Set variant selection from cached product
+      selectVariantFromProduct(cachedProduct);
+      setWished(isInWishlist(cachedProduct.id));
+      
+      // Fetch recommendations from cached product or generate from catalog
+      handleRecommendations(cachedProduct, getAllCachedProducts());
+      
+      setLoading(false);
+      return;
+    }
+
+    // ── Phase 2: Fallback to API call if not in cache ──
+    console.log('[ProductPage] Product not in cache, fetching from API...');
     productService.show(slug)
       .then((data) => {
         console.log('[ProductPage] Product fetched successfully:', data);
@@ -112,67 +143,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         const primary = data.images?.find((i) => i.is_primary)?.image_url ?? data.images?.[0]?.image_url ?? data.primary_image ?? 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800';
         setMainImage(primary);
         
-        // ── Variant Selection Strategy ──
-        // Priority: First available variant → First in-stock variant → First variant → Virtual default
-        if (data.variants && data.variants.length > 0) {
-          // Strategy: Select first available (in-stock) variant; fallback to first variant if all out-of-stock
-          const firstAvailable = data.variants.find((v) => v.stock_quantity && v.stock_quantity > 0);
-          const selected = firstAvailable ?? data.variants[0];
-          setSelectedSize(selected);
-        } else if (data.sizes && data.sizes.length > 0) {
-          // Backward-compat: old product_sizes table
-          // Strategy: Select first available (in-stock) size; fallback to first size if all out-of-stock
-          const firstAvailable = data.sizes.find((s) => s.stock_quantity && s.stock_quantity > 0);
-          const inStock = firstAvailable ?? data.sizes[0];
-          setSelectedSize({
-            id:                inStock.id,
-            size:              inStock.volume_ml,
-            price:             inStock.original_price ?? inStock.price,
-            final_price:       inStock.price,
-            original_price:    inStock.original_price,
-            promotion_percent: 0,
-            is_default:        true,
-            stock_quantity:    inStock.stock_quantity ?? 0,
-          });
-        } else {
-          // No variants at all — virtual default so buttons are never disabled
-          setSelectedSize({
-            id:                0,
-            size:              0,
-            price:             data.min_price ?? 0,
-            final_price:       data.min_price ?? 0,
-            original_price:    data.original_price ?? null,
-            promotion_percent: 0,
-            is_default:        true,
-            stock_quantity:    data.stock ?? 0,
-          });
-        }
+        selectVariantFromProduct(data);
         setWished(isInWishlist(data.id));
-        
-        // ── Set recommendation products from API response ──
-        // ✅ Only display true recommended products (is_recommended = true from database)
-        // Transform using productToCard to match UniversSection styling
-        if (data.recommendations && data.recommendations.length > 0) {
-          const transformedRecs = data.recommendations.map(productToCard);
-          setRecommendations(transformedRecs);
-          setRecommendationCount(transformedRecs.length);
-          
-          // ✅ Test & Verify: Log recommendation data for database verification
-          const verification = testRecommendationCount.logRecommendationData(
-            data.id,
-            transformedRecs.length,
-            data.recommendations
-          );
-          
-          if (!verification.passed) {
-            console.warn('⚠️ Recommendation count mismatch detected!', verification);
-          }
-        } else {
-          // No recommendations = display empty state (don't show fake data)
-          setRecommendations([]);
-          setRecommendationCount(0);
-          console.log('ℹ️ No recommended products for this product');
-        }
+        handleRecommendations(data, []);
       })
       .catch((err) => { 
         console.error('[ProductPage] Error fetching product:', err);
@@ -182,6 +155,62 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
     return () => { mounted = false; };
   }, [slug]);
+
+  // Helper: Set variant selection from product data
+  const selectVariantFromProduct = (data: Product) => {
+    if (data.variants && data.variants.length > 0) {
+      const firstAvailable = data.variants.find((v) => v.stock_quantity && v.stock_quantity > 0);
+      const selected = firstAvailable ?? data.variants[0];
+      setSelectedSize(selected);
+    } else if (data.sizes && data.sizes.length > 0) {
+      const firstAvailable = data.sizes.find((s) => s.stock_quantity && s.stock_quantity > 0);
+      const inStock = firstAvailable ?? data.sizes[0];
+      setSelectedSize({
+        id:                inStock.id,
+        size:              inStock.volume_ml,
+        price:             inStock.original_price ?? inStock.price,
+        final_price:       inStock.price,
+        original_price:    inStock.original_price,
+        promotion_percent: 0,
+        is_default:        true,
+        stock_quantity:    inStock.stock_quantity ?? 0,
+      });
+    } else {
+      setSelectedSize({
+        id:                0,
+        size:              0,
+        price:             data.min_price ?? 0,
+        final_price:       data.min_price ?? 0,
+        original_price:    data.original_price ?? null,
+        promotion_percent: 0,
+        is_default:        true,
+        stock_quantity:    data.stock ?? 0,
+      });
+    }
+  };
+
+  // Helper: Handle recommendation logic
+  const handleRecommendations = (product: Product, allCachedProducts: Product[]) => {
+    if (product.recommendations && product.recommendations.length > 0) {
+      const transformedRecs = product.recommendations.map(productToCard);
+      setRecommendations(transformedRecs);
+      setRecommendationCount(transformedRecs.length);
+      
+      const verification = testRecommendationCount.logRecommendationData(
+        product.id,
+        transformedRecs.length,
+        product.recommendations
+      );
+      
+      if (!verification.passed) {
+        console.warn('⚠️ Recommendation count mismatch detected!', verification);
+      }
+    } else {
+      setRecommendations([]);
+      setRecommendationCount(0);
+      console.log('ℹ️ No recommended products for this product');
+    }
+  };
 
   // ─── Wishlist toggle ────────────────────────────────────────────────────────
   const handleWishlist = () => {
@@ -736,12 +765,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                           <div key={ing.id} className="flex flex-col items-center gap-3 w-20 sm:w-24 shrink-0">
                             <div className="relative h-20 w-20 sm:h-24 sm:w-24 rounded-full overflow-hidden bg-[#f5f0eb] border border-gray-100">
                               {ing.image_url ? (
-                                <Image
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
                                   src={ing.image_url}
                                   alt={ing.name}
-                                  fill
-                                  unoptimized
-                                  className="object-cover"
+                                  className="object-cover w-full h-full"
                                 />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center">

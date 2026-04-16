@@ -18,11 +18,12 @@ const SORT_OPTIONS = [
 ];
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
-import { productService, Product, bannerService, Banner } from '@/services/api';
+import { Product, bannerService, Banner } from '@/services/api';
 import ProductCard from '@/components/ui/ProductCard';
 import { ProductGridSkeleton, FilterSkeleton, LoadingSpinner } from '@/components/Skeleton';
 import useReferenceStore from '@/store/reference';
 import useFilterStore from '@/store/filters';
+import useCatalogStore from '@/store/catalog';
 import PriceHistogram from '@/components/ui/PriceHistogram';
 import { sanitizeImageUrl } from '@/lib/utils';
 
@@ -115,6 +116,9 @@ export default function CollectionPage() {
   const aggregatesReady      = useFilterStore((s) => s.aggregatesReady);
   const brandCounts          = useFilterStore((s) => s.brandCounts);
   const setBrandCounts       = useFilterStore((s) => s.setBrandCounts);
+
+  // ── Catalog cache for product deduplication ──────────────────────────
+  const ensureProductsCache = useCatalogStore((s) => s.ensureProducts);
 
   // Reactive URL params — works for both fresh loads and soft navigations
   const searchParams = useSearchParams();
@@ -209,31 +213,15 @@ export default function CollectionPage() {
         .catch(() => setHeroBanner(null));
   }, [searchParams]);
 
-  // ── INITIAL FETCH (on mount, immediate, no debounce) ─────────────────────
-  // Fetch products immediately on first load to populate brand counts.
-  // This prevents counts from showing 0 while waiting for debounced filter effects.
-  useEffect(() => {
-    // Only run once when aggregates are ready and products list is still empty
-    if (products.length === 0 && aggregatesReady && !loadingProducts) {
-      setLoadingProducts(true);
-      productService
-        .list({})
-        .then((result) => {
-          setProducts(result.data);
-        })
-        .catch(() => {
-          setProducts([]);
-        })
-        .finally(() => {
-          setLoadingProducts(false);
-        });
-    }
-  }, [aggregatesReady]);
+  // ── INITIAL FETCH removed — the debounced filter useEffect below handles this ──
+  // Previously: a separate immediate fetch ran on mount when aggregatesReady,
+  // causing TWO overlapping API calls (one immediate + one debounced 400ms later).
+  // The debounced effect already fires on mount (when deps first run), so this
+  // duplicate was redundant and was racing against the debounced one.
 
   // Fetch products when filters change.
   // Debounced (400 ms) so rapid slider drags don't flood the API.
-  // AbortController cancels any in-flight request before issuing a new one,
-  // preventing stale responses from overwriting fresher results (race condition).
+  // Uses catalog cache to avoid refetching when navigating between pages.
   useEffect(() => {
     const controller = new AbortController();
 
@@ -255,14 +243,11 @@ export default function CollectionPage() {
 
       if (featuredOnly) {
         // "Best Sellers" mode — send ONLY is_featured=1 + sort.
-        // Stale store values from a previous session must not interfere.
         params['is_featured'] = 1;
       } else {
         if (selectedBrands.length > 0) params['brand_ids[]'] = selectedBrands;
         if (selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
         if (selectedIngredients.length > 0) params['ingredient_ids[]'] = selectedIngredients;
-        // Only apply price filter once real bounds are known — avoids the default
-        // 0-100 range silently wiping out products before aggregates load.
         if (aggregatesReady) {
           params['price_min'] = selectedMin;
           params['price_max'] = selectedMax;
@@ -270,9 +255,15 @@ export default function CollectionPage() {
         if (selectedRating !== null) params['min_rating'] = selectedRating;
         if (promotionOnly) params['on_promotion'] = 1;
       }
+
       try {
-        const result = await productService.list(params, controller.signal);
-        setProducts(result.data);
+        // Build cache key from filters to ensure same filter set reuses cached data
+        const cacheKey = `collection:${JSON.stringify(params)}`;
+        
+        // Use catalog cache with 15-min TTL
+        // If this exact filter combo was just applied, we get instant results
+        const data = await ensureProductsCache(cacheKey, params);
+        setProducts(data);
       } catch (err: unknown) {
         // Ignore AbortError — it means a newer request superseded this one
         if (err instanceof Error && err.name !== 'AbortError' && err.name !== 'CanceledError') {
@@ -299,7 +290,8 @@ export default function CollectionPage() {
     promotionOnly,
     featuredOnly,
     aggregatesReady,
-    sortBy
+    sortBy,
+    ensureProductsCache
   ]);
 
   // Reset to page 1 whenever the product list changes (new filter applied)
@@ -402,11 +394,10 @@ export default function CollectionPage() {
                         <div className={`relative mx-auto h-24 w-24 md:h-32 md:w-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover/card:scale-105 ring-2 ${
                           Array.isArray(selectedIngredients) && selectedIngredients.includes(ingredient.id) ? 'ring-[#da2966]' : 'ring-transparent'
                         }`}>
-                          <Image
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
                             src={ingredient.image_url ?? 'https://images.unsplash.com/photo-1598007264887-acc47d519b88?auto=format&fit=crop&q=80&w=200'}
                             alt={ingredient.name}
-                            width={120}
-                            height={120}
                             className="h-full w-full object-cover opacity-90 mix-blend-multiply pointer-events-none"
                           />
                         </div>

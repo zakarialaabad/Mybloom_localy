@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\ImageService;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
@@ -11,7 +12,10 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        // Register ImageService as singleton
+        $this->app->singleton(ImageService::class, function ($app) {
+            return new ImageService();
+        });
     }
 
     public function boot(): void

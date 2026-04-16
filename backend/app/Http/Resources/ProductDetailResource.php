@@ -154,28 +154,27 @@ class ProductDetailResource extends JsonResource
                     'answer'   => $f->answer,
                 ])
             ),
-            // ── Recommended products (all products with is_recommended = true) ──
+            // ── Recommended products — pre-cached by controller, limited to 8 ──
+            // Previously this fired a raw DB query for 74+ products inside toArray().
+            // Now we use the preloaded cachedRecommendations relation set by the controller.
             'recommendations' => $this->getRecommendations(),
             'created_at'     => $this->created_at?->toISOString(),
         ];
     }
 
     /**
-     * Get all recommended products for carousel display
-     * Only returns products with is_recommended = true and is_active = true
-     * Returns data in same Product interface format as /api/v1/products list endpoint
+     * Serialize the pre-cached recommendations collection that was injected
+     * by the controller via $product->setRelation('cachedRecommendations', ...).
+     *
+     * This replaces the old raw DB query that ran inside toArray() on every request
+     * and fetched 74+ products with all their images every single time.
      */
     private function getRecommendations(): array
     {
-        $recommendedProducts = \App\Models\Product::where('is_recommended', true)
-            ->where('is_active', true)
-            ->with(['brand', 'images' => fn ($q) => $q->orderBy('sort_order')])
-            ->withAvg('reviews as avg_rating', 'rating')
-            ->withCount('reviews as review_count')
-            ->orderBy('id')
-            ->get();
+        $items = $this->resource->getRelation('cachedRecommendations')
+            ?? collect(); // Fallback to empty if relation not set
 
-        return $recommendedProducts->map(fn ($product) => [
+        return $items->map(fn ($product) => [
             'id'              => $product->id,
             'name'            => $product->name,
             'slug'            => $product->slug,
@@ -192,11 +191,13 @@ class ProductDetailResource extends JsonResource
             'is_recommended'  => (bool) $product->is_recommended,
             'avg_rating'      => round((float) ($product->avg_rating ?? 0), 1),
             'review_count'    => (int) ($product->review_count ?? 0),
-            'primary_image'   => $this->resolveUrl($product->images->firstWhere('is_primary', true)?->url ?? $product->images->first()?->url),
+            'primary_image'   => $this->resolveUrl(
+                $product->images->firstWhere('is_primary', true)?->url ?? $product->images->first()?->url
+            ),
             'images'          => $product->images->map(fn ($img) => [
                 'id'         => $img->id,
                 'image_url'  => $this->resolveUrl($img->url),
-                'alt'        => $img->alt,
+                'alt'        => $img->alt ?? null,
                 'sort_order' => $img->sort_order,
                 'is_primary' => $img->is_primary,
             ]),

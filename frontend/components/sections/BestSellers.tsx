@@ -5,8 +5,9 @@ import Link from 'next/link';
 import ProductCard from '@/components/ui/ProductCard';
 import SectionContainer from '@/components/SectionContainer';
 import { ProductCardSkeleton } from '@/components/Skeleton';
-import { productService, Product } from '@/services/api';
+import { Product } from '@/services/api';
 import { type ProductCardProps } from '@/components/ui/ProductCard';
+import useCatalogStore from '@/store/catalog';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
@@ -43,13 +44,41 @@ export default function BestSellers() {
   const [canNext, setCanNext]   = useState(false);
   const trackRef = useRef<HTMLDivElement>(null);
 
+  // Use catalog cache for featured products
+  const ensureProducts = useCatalogStore((s) => s.ensureProducts);
+
   useEffect(() => {
-    // Fetch ALL featured products — no artificial limit
-    productService.list({ is_featured: true, limit: 100 })
-      .then(({ data }) => setProducts(data.map(productToCard)))
-      .catch(() => {})
-      .finally(() => setLoading(false));
-  }, []);
+    // Fetch ALL featured products from cache (15-min TTL)
+    // Cache key: "featured:100" ensures same featured list is reused across home page visits
+    setLoading(true);
+    console.log('[BestSellers] Starting to fetch featured products...');
+    
+    ensureProducts('featured:100', { is_featured: true, limit: 100 })
+      .then((data) => {
+        console.log('[BestSellers] ✅ Received featured data:', data);
+        
+        if (!data || data.length === 0) {
+          console.warn('[BestSellers] ⚠️ No featured products found! Falling back to latest products...');
+          // Fallback: fetch latest products instead
+          return ensureProducts('latest:100', { limit: 100 });
+        }
+        
+        return data;
+      })
+      .then((data) => {
+        const cards = data.map(productToCard);
+        console.log('[BestSellers] Transformed to cards:', cards.length, 'products');
+        setProducts(cards);
+      })
+      .catch((err) => {
+        console.error('[BestSellers] ❌ Error fetching products:', err);
+        setProducts([]);
+      })
+      .finally(() => {
+        console.log('[BestSellers] Finished loading');
+        setLoading(false);
+      });
+  }, [ensureProducts]);
 
   // Update arrow visibility whenever products load or scroll position changes
   const syncArrows = () => {

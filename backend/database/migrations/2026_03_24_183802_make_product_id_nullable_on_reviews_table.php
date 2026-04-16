@@ -24,10 +24,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('reviews', function (Blueprint $table) {
-            $table->dropForeign(['product_id']);
-            $table->unsignedBigInteger('product_id')->nullable(false)->change();
-            $table->foreign('product_id')->references('id')->on('products')->cascadeOnDelete();
-        });
+        // Safe no-op: reverting nullable back to required is unsafe when data exists.
+        // The column remains nullable on rollback to prevent data loss.
     }
 };

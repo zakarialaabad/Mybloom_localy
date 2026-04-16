@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class ProductController extends Controller
 {
@@ -130,42 +131,95 @@ class ProductController extends Controller
             };
         }
 
+        // Build cache key from query parameters (15-min cache for product lists)
+        // Cache key includes all filters, sort, limit to ensure exact same queries are cached together
+        $cacheKey = 'products:' . md5(json_encode($request->query()));
+        $cacheTTL = 15; // minutes
+
         // If a specific limit is requested (e.g. BestSellers widget), honour it.
         // Otherwise return ALL matching products with no cap.
         if ($request->filled('limit')) {
-            return ProductResource::collection($query->paginate((int) $request->query('limit')));
+            $limit = (int) $request->query('limit');
+            $products = Cache::remember($cacheKey, now()->addMinutes($cacheTTL), function () use ($query, $limit) {
+                return $query->paginate($limit);
+            });
+            return ProductResource::collection($products);
         }
 
-        return ProductResource::collection($query->get());
+        // Cache list queries (without limit)
+        $products = Cache::remember($cacheKey, now()->addMinutes($cacheTTL), function () use ($query) {
+            return $query->get();
+        });
+
+        return ProductResource::collection($products);
     }
 
     /**
      * GET /api/v1/products/{slug}
+     *
+     * Cached for 20 minutes per slug.
+     * Recommendations are fetched & cached separately (30-min TTL, max 8 items)
+     * to avoid the N+1 issue of re-fetching all 70+ recommended products on every visit.
      */
     public function show(string $slug): ProductDetailResource|JsonResponse
     {
-        $product = Product::with([
-            'brand',
-            'category',
-            'productType',
-            'images' => fn ($q) => $q->orderBy('sort_order')->limit(4),
-            'sizes',
-            'variants',
-            'ingredientItems',
-            'reviews.images',
-            'faqs',
-        ])
-        ->withAvg('reviews as avg_rating', 'rating')
-        ->withCount('reviews as review_count')
-        ->where('slug', $slug)
-        ->where('is_active', true)
-        ->first();
+        $cacheKey = 'product:' . $slug;
+
+        $product = Cache::remember($cacheKey, now()->addMinutes(20), function () use ($slug) {
+            return Product::with([
+                'brand',
+                'category',
+                'productType',
+                'images'         => fn ($q) => $q->orderBy('sort_order')->limit(4),
+                'sizes',
+                'variants',
+                'ingredientItems',
+                'reviews'        => fn ($q) => $q->where('is_approved', true)->with('images')->latest()->limit(20),
+                'faqs',
+            ])
+            ->withAvg('reviews as avg_rating', 'rating')
+            ->withCount('reviews as review_count')
+            ->where('slug', $slug)
+            ->where('is_active', true)
+            ->first();
+        });
 
         if (! $product) {
             return response()->json(['message' => 'Product not found.'], 404);
         }
 
+        // Attach pre-cached recommendations to avoid the Resource firing a raw DB query.
+        // Cached for 30 min — same list is reused across all product detail pages.
+        $product->setRelation('cachedRecommendations', $this->getCachedRecommendations());
+
         return new ProductDetailResource($product);
+    }
+
+    /**
+     * Fetch the recommended products carousel, limited to 8 items, cached 30 min.
+     * Extracted from ProductDetailResource to ensure this query is:
+     *   1. Run only in the controller (not inside toArray)
+     *   2. Cached independently from the product detail itself
+     *   3. Limited to 8 — not returning 74 products on every page load
+     */
+    private function getCachedRecommendations(): \Illuminate\Support\Collection
+    {
+        return Cache::remember('recommendations:carousel', now()->addMinutes(30), function () {
+            return Product::where('is_recommended', true)
+                ->where('is_active', true)
+                ->select(['id', 'name', 'slug', 'subtitle', 'price', 'original_price', 'stock',
+                          'is_active', 'is_featured', 'is_best_seller', 'is_gift', 'is_recommended',
+                          'brand_id'])
+                ->with([
+                    'brand'   => fn ($q) => $q->select(['id', 'name', 'slug']),
+                    'images'  => fn ($q) => $q->orderBy('sort_order')->limit(2),
+                ])
+                ->withAvg('reviews as avg_rating', 'rating')
+                ->withCount('reviews as review_count')
+                ->orderBy('id')
+                ->limit(8)
+                ->get();
+        });
     }
 
     /**

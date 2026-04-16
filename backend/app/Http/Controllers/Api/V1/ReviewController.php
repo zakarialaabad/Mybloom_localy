@@ -9,13 +9,22 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\ReviewImage;
+use App\Services\ImageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 
 class ReviewController extends Controller
 {
+    private ImageService $imageService;
+
+    public function __construct(ImageService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
     /**
      * GET /api/v1/reviews
      *
@@ -34,77 +43,78 @@ class ReviewController extends Controller
             'limit'      => ['nullable', 'integer', 'min:1'],
         ]);
 
+        // Cache per unique combination of request params (5-minute TTL).
+        // Key is md5 of sorted query params so ?featured=1&product_id=3 and
+        // ?product_id=3&featured=1 hit the same cache entry.
+        $params = $request->only(['product_id', 'source', 'featured', 'limit']);
+        ksort($params);
+        $cacheKey = 'reviews:' . md5(json_encode($params));
+
+        $result = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($request) {
+            return $this->buildReviewsResponse($request);
+        });
+
+        // $result is [collection_data, rating_summary, paginated] — re-wrap in resource
+        return ReviewResource::collection($result['collection'])
+            ->additional(['rating_summary' => $result['rating_summary']]);
+    }
+
+    /**
+     * Inner query builder extracted so it can be wrapped by Cache::remember cleanly.
+     */
+    private function buildReviewsResponse(Request $request): array
+    {
         $baseQuery = Review::where('is_approved', true);
 
         if ($request->filled('product_id')) {
             $baseQuery->where('product_id', $request->integer('product_id'));
         }
 
-        // Source filter:
-        //   source=admin  → admin-curated reviews only (order_number IS NULL)
-        //   source=client → client-submitted feedback (order_number IS NOT NULL)
-        //   (default)     → when no product_id, only show admin-curated on homepage
         $source = $request->query('source');
         if ($source === 'client') {
             $baseQuery->whereNotNull('order_number');
         } elseif ($source === 'admin' || ! $request->filled('product_id')) {
-            // Homepage (no product_id) defaults to admin-curated testimonials only
             $baseQuery->whereNull('order_number');
         }
 
-        // ── Rating summary aggregation ────────────────────────────────────────
-        $total = (clone $baseQuery)->count();
-        $average = $total > 0
-            ? round((clone $baseQuery)->avg('rating'), 1)
-            : 0;
+        // ── Collapse 3 separate COUNT/AVG queries into 1 aggregate query ──
+        $agg = (clone $baseQuery)
+            ->selectRaw('COUNT(*) as total, AVG(rating) as average,
+                SUM(rating = 5) as r5, SUM(rating = 4) as r4,
+                SUM(rating = 3) as r3, SUM(rating = 2) as r2,
+                SUM(rating = 1) as r1')
+            ->first();
+
+        $total   = (int) ($agg->total   ?? 0);
+        $average = $total > 0 ? round((float) $agg->average, 1) : 0;
 
         $distribution = [];
-        if ($total > 0) {
-            $counts = (clone $baseQuery)
-                ->selectRaw('rating, COUNT(*) as count')
-                ->groupBy('rating')
-                ->pluck('count', 'rating');
-
-            for ($star = 5; $star >= 1; $star--) {
-                $count = $counts->get($star, 0);
-                $distribution[$star] = [
-                    'count'      => (int) $count,
-                    'percentage' => $total > 0 ? round(($count / $total) * 100) : 0,
-                ];
-            }
-        } else {
-            for ($star = 5; $star >= 1; $star--) {
-                $distribution[$star] = ['count' => 0, 'percentage' => 0];
-            }
+        for ($star = 5; $star >= 1; $star--) {
+            $col   = 'r' . $star;
+            $count = (int) ($agg->$col ?? 0);
+            $distribution[$star] = [
+                'count'      => $count,
+                'percentage' => $total > 0 ? round(($count / $total) * 100) : 0,
+            ];
         }
 
-        $ratingSummary = [
-            'average'      => $average,
-            'total'        => $total,
-            'distribution' => $distribution,
-        ];
-        // ─────────────────────────────────────────────────────────────────────
+        $ratingSummary = ['average' => $average, 'total' => $total, 'distribution' => $distribution];
 
         $query = (clone $baseQuery)->with('images');
 
-        // When featured=true, surface reviews that have photos first
         if (filter_var($request->query('featured'), FILTER_VALIDATE_BOOLEAN)) {
             $query->orderByRaw(
                 'EXISTS(SELECT 1 FROM review_images WHERE review_images.review_id = reviews.id) DESC'
             );
         }
 
-        // Primary sort: highest rating first; secondary: newest first
         $query->orderBy('rating', 'desc')->latest();
 
-        // When no limit is requested, return every matching review
-        if (! $request->filled('limit')) {
-            return ReviewResource::collection($query->get())
-                ->additional(['rating_summary' => $ratingSummary]);
-        }
+        $collection = $request->filled('limit')
+            ? $query->paginate($request->integer('limit'))
+            : $query->get();
 
-        return ReviewResource::collection($query->paginate($request->integer('limit')))
-            ->additional(['rating_summary' => $ratingSummary]);
+        return ['collection' => $collection, 'rating_summary' => $ratingSummary];
     }
 
     /**
@@ -139,16 +149,38 @@ class ReviewController extends Controller
             'is_approved'   => true,
         ]);
 
-        // Persist each uploaded photo and link it to the review
+        // Persist each uploaded photo and link it to the review using ImageService
         foreach ($uploadedFiles as $file) {
-            $path = $file->store('review-images', 'public');
-            ReviewImage::create([
-                'review_id' => $review->id,
-                'url'       => Storage::disk('public')->url($path),
-            ]);
+            try {
+                $result = $this->imageService->process($file, 'review-images');
+                ReviewImage::create([
+                    'review_id' => $review->id,
+                    'url'       => $result->relativePath,
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to process review image', ['error' => $e->getMessage()]);
+            }
         }
 
         $review->load('images');
+
+        // Bust the product's review cache so the new review appears within 5 min.
+        // We recompute the likely cache keys the frontend would request for this product.
+        $productId = $review->product_id;
+        foreach (['client', 'admin', null] as $src) {
+            foreach ([null, '1'] as $featured) {
+                $params = array_filter([
+                    'product_id' => $productId,
+                    'source'     => $src,
+                    'featured'   => $featured,
+                    'limit'      => null,
+                ], fn ($v) => $v !== null);
+                ksort($params);
+                Cache::forget('reviews:' . md5(json_encode($params)));
+            }
+        }
+        // Also bust the product detail cache so avg_rating / review_count refresh
+        Cache::forget('product:' . ($review->product->slug ?? ''));
 
         return response()->json([
             'message' => 'Review submitted and pending approval.',

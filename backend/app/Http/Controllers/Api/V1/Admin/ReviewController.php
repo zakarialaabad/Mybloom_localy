@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use App\Models\ReviewImage;
+use App\Services\ImageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -14,6 +15,13 @@ use Illuminate\Support\Facades\Storage;
 
 class ReviewController extends Controller
 {
+    private ImageService $imageService;
+
+    public function __construct(ImageService $imageService)
+    {
+        $this->imageService = $imageService;
+    }
+
     /**
      * GET /api/v1/admin/reviews
      *
@@ -214,11 +222,15 @@ class ReviewController extends Controller
         ]);
 
         foreach ($request->file('images', []) as $file) {
-            $path = $file->store('review-images', 'public');
-            ReviewImage::create([
-                'review_id' => $review->id,
-                'url'       => Storage::disk('public')->url($path),
-            ]);
+            try {
+                $result = $this->imageService->process($file, 'review-images');
+                ReviewImage::create([
+                    'review_id' => $review->id,
+                    'url'       => $result->relativePath,
+                ]);
+            } catch (\Exception $e) {
+                \Illuminate\Support\Facades\Log::error('Failed to process review image', ['error' => $e->getMessage()]);
+            }
         }
 
         return response()->json([

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Order;
+use App\Utilities\ImageUrlResolver;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -43,16 +44,18 @@ class OrderResource extends JsonResource
                         'id'        => $item->product->id,
                         'name'      => $item->product->name,
                         'slug'      => $item->product->slug,
-                        // Primary image URL (prioritized)
+                        // Primary image URL (prioritized) using ImageUrlResolver
                         'image_url' => $item->product->relationLoaded('images')
-                            ? ($item->product->images?->firstWhere('is_primary', true)?->url 
-                               ?? $item->product->images?->first()?->url 
-                               ?? null)
+                            ? ImageUrlResolver::resolve(
+                                $item->product->images?->firstWhere('is_primary', true)?->url 
+                                ?? $item->product->images?->first()?->url 
+                                ?? null
+                            )
                             : null,
-                        // All images array for fallback
+                        // All images array for fallback with resolved URLs
                         'images'    => $item->product->relationLoaded('images')
                             ? $item->product->images?->map(fn ($img) => [
-                                'url'        => $img->url,
+                                'url'        => ImageUrlResolver::resolve($img->url),
                                 'alt'        => $img->alt,
                                 'is_primary' => (bool) $img->is_primary,
                                 'sort_order' => $img->sort_order,

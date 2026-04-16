@@ -8,6 +8,7 @@ use App\Models\Admin;
 use App\Models\ContactSubmission;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\ValidationException;
 
 class StoreController extends Controller
@@ -18,14 +19,15 @@ class StoreController extends Controller
      */
     public function contact(): JsonResponse
     {
-        $admin = Admin::select('email', 'phone')->first();
-
-        return response()->json([
-            'data' => [
+        $data = Cache::remember('store.contact', now()->addHours(1), function () {
+            $admin = Admin::select('email', 'phone')->first();
+            return [
                 'email' => $admin?->email ?? null,
                 'phone' => $admin?->phone ?? null,
-            ]
-        ]);
+            ];
+        });
+
+        return response()->json(['data' => $data]);
     }
 
     /**
