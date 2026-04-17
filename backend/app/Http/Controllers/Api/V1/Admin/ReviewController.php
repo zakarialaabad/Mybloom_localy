@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
 
 class ReviewController extends Controller
 {
@@ -20,6 +21,20 @@ class ReviewController extends Controller
     public function __construct(ImageService $imageService)
     {
         $this->imageService = $imageService;
+    }
+
+    /**
+     * Invalidate the public homepage reviews cache.
+     * Called after any admin mutation (approve/reject/create/update/delete).
+     */
+    private function bustHomepageCache(): void
+    {
+        // Matches the cache key built in the public ReviewController::index()
+        // for the frontend call: reviewService.list({ source: 'admin' })
+        // only(['product_id','source','featured','limit']) → ['source' => 'admin']
+        $params = ['source' => 'admin'];
+        ksort($params);
+        Cache::forget('reviews:' . md5(json_encode($params)));
     }
 
     /**
@@ -156,6 +171,8 @@ class ReviewController extends Controller
 
         $review->update($validated);
 
+        $this->bustHomepageCache();
+
         return response()->json([
             'message' => 'Review updated.',
             'data'    => new ReviewResource($review->fresh(['product', 'images'])),
@@ -172,6 +189,8 @@ class ReviewController extends Controller
             'approved_at' => now(),
         ]);
 
+        $this->bustHomepageCache();
+
         return response()->json(['message' => 'Review approved.', 'data' => new ReviewResource($review)]);
     }
 
@@ -185,6 +204,8 @@ class ReviewController extends Controller
             'approved_at' => null,
         ]);
 
+        $this->bustHomepageCache();
+
         return response()->json(['message' => 'Review rejected.']);
     }
 
@@ -194,6 +215,8 @@ class ReviewController extends Controller
     public function destroy(Review $review): JsonResponse
     {
         $review->delete();
+
+        $this->bustHomepageCache();
 
         return response()->json(['message' => 'Review deleted.']);
     }
@@ -232,6 +255,8 @@ class ReviewController extends Controller
                 \Illuminate\Support\Facades\Log::error('Failed to process review image', ['error' => $e->getMessage()]);
             }
         }
+
+        $this->bustHomepageCache();
 
         return response()->json([
             'message' => 'Review created.',

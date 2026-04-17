@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Banner;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
@@ -15,24 +16,30 @@ class BannerService
 
     public function getHomepageBanners(): \Illuminate\Database\Eloquent\Collection
     {
-        return Banner::where('type', 'homepage_slot')
-            ->where('is_active', true)
-            ->orderBy('position')
-            ->limit(self::MAX_HOMEPAGE_SLOTS)
-            ->get();
+        return Cache::remember('banners.homepage', now()->addHours(2), function () {
+            return Banner::where('type', 'homepage_slot')
+                ->where('is_active', true)
+                ->orderBy('position')
+                ->limit(self::MAX_HOMEPAGE_SLOTS)
+                ->get();
+        });
     }
 
     public function getCollectionHero(?int $collectionId = null): ?Banner
     {
-        $query = Banner::where('type', 'collection_hero')->where('is_active', true);
+        $cacheKey = 'banners.collection_hero.' . ($collectionId ?? 'global');
 
-        if ($collectionId) {
-            $query->where('collection_id', $collectionId);
-        } else {
-            $query->whereNull('collection_id');
-        }
+        return Cache::remember($cacheKey, now()->addHours(2), function () use ($collectionId) {
+            $query = Banner::where('type', 'collection_hero')->where('is_active', true);
 
-        return $query->first();
+            if ($collectionId) {
+                $query->where('collection_id', $collectionId);
+            } else {
+                $query->whereNull('collection_id');
+            }
+
+            return $query->first();
+        });
     }
 
     // ── Mutations ──────────────────────────────────────────────────────────────

@@ -582,7 +582,7 @@ export const adminProductTypeService = {
   },
 };
 
-// â”€â”€â”€ Banner types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Banner types ─────────────────────────────────────────────────────────────
 
 export interface Banner {
   id: number;
@@ -593,6 +593,19 @@ export interface Banner {
   type?: 'homepage_slot' | 'collection_hero';
   collection_id?: number | null;
   is_active?: boolean;
+}
+
+// ─── Hero video types ─────────────────────────────────────────────────────────
+
+export interface HeroVideo {
+  id: number;
+  url: string;
+  path: string;
+  type: 'desktop' | 'mobile';
+  display_order: number;
+  is_active: boolean;
+  is_legacy: boolean;
+  created_at: string | null;
 }
 
 // â”€â”€â”€ Banner service (public) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -641,6 +654,34 @@ export const adminBannerService = {
 
   destroy: async (id: number): Promise<void> => {
     await apiClient.delete(`/v1/admin/banners/${id}`);
+  },
+};
+
+// ─── Admin video service ──────────────────────────────────────────────────────
+
+export const adminVideoService = {
+  list: async (): Promise<HeroVideo[]> => {
+    const { data } = await apiClient.get<{ data: HeroVideo[] }>('/v1/admin/videos');
+    return data.data;
+  },
+
+  store: async (formData: FormData): Promise<HeroVideo> => {
+    const { data } = await apiClient.post<{ data: HeroVideo }>('/v1/admin/videos', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data.data;
+  },
+
+  update: async (
+    id: number,
+    payload: { display_order?: number; is_active?: boolean; type?: 'desktop' | 'mobile' },
+  ): Promise<HeroVideo> => {
+    const { data } = await apiClient.patch<{ data: HeroVideo }>(`/v1/admin/videos/${id}`, payload);
+    return data.data;
+  },
+
+  destroy: async (id: number): Promise<void> => {
+    await apiClient.delete(`/v1/admin/videos/${id}`);
   },
 };
 

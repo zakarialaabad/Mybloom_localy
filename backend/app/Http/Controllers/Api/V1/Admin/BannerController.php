@@ -7,6 +7,7 @@ use App\Models\Banner;
 use App\Services\BannerService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class BannerController extends Controller
 {
@@ -51,6 +52,8 @@ class BannerController extends Controller
 
         $banner = $this->service->store($data, $request->file('image'));
 
+        Cache::forget('banners.homepage');
+
         return response()->json([
             'data' => [
                 'id'            => $banner->id,
@@ -83,6 +86,9 @@ class BannerController extends Controller
 
         $banner = $this->service->update($banner, $data, $request->file('image'));
 
+        Cache::forget('banners.homepage');
+        Cache::forget('banners.collection_hero.' . ($banner->collection_id ?? 'global'));
+
         return response()->json([
             'data' => [
                 'id'            => $banner->id,
@@ -102,6 +108,9 @@ class BannerController extends Controller
      */
     public function destroy(Banner $banner): JsonResponse
     {
+        Cache::forget('banners.homepage');
+        Cache::forget('banners.collection_hero.' . ($banner->collection_id ?? 'global'));
+
         $this->service->destroy($banner);
 
         return response()->json(null, 204);

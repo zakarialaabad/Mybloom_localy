@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { bannerService, Banner } from '@/services/api';
+import { Banner } from '@/services/api';
 import { sanitizeImageUrl, FALLBACK_IMG } from '@/lib/utils';
+import useReferenceStore from '@/store/reference';
 
 // ── Skeleton placeholder shown while banners are loading ──────────────────────
 function BannerSkeleton({ className }: { className?: string }) {
@@ -58,20 +59,13 @@ function BannerTile({
 }
 
 export default function ValentinesSection() {
-  const [banners, setBanners] = useState<Banner[]>([]);
-  const [loading, setLoading] = useState(true);
+  const banners       = useReferenceStore((s) => s.banners);
+  const bannersReady  = useReferenceStore((s) => s.bannersReady);
+  const ensureBanners = useReferenceStore((s) => s.ensureBanners);
 
-  useEffect(() => {
-    bannerService
-      .getHomepage()
-      .then((data) => {
-        setBanners(data);
-      })
-      .catch((err) => {
-        console.error('[ValentinesSection] failed to fetch banners:', err);
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  useEffect(() => { ensureBanners(); }, [ensureBanners]);
+
+  const loading = !bannersReady;
 
   // Slots indexed by position (1-based). Pad to 4 with undefined.
   const slots: (Banner | undefined)[] = [1, 2, 3, 4].map(

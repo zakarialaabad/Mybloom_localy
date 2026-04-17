@@ -111,29 +111,47 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     console.log('[ProductPage] Loading product with slug:', slug);
 
     // ── Phase 1: Check catalog cache first (from collection page navigation) ──
+    // The catalog cache comes from ProductResource (list API) which does NOT include
+    // ingredientItems, reviews, faqs, or recommendations. We use it only for the
+    // instant initial render, then always fire a background fetch for the full detail.
     const cachedProduct = findProductBySlug(slug);
-    
+
     if (cachedProduct) {
-      console.log('[ProductPage] 🚀 Found product in catalog cache, skipping API call');
+      console.log('[ProductPage] 🚀 Found product in catalog cache — rendering instantly, enriching in background');
       if (!mounted) return;
-      
-      // Use cached product
+
+      // Render immediately from cache so the page feels instant
       setProduct(cachedProduct);
       const primary = cachedProduct.images?.find((i) => i.is_primary)?.image_url ?? cachedProduct.images?.[0]?.image_url ?? cachedProduct.primary_image ?? 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800';
       setMainImage(primary);
-      
-      // Set variant selection from cached product
       selectVariantFromProduct(cachedProduct);
       setWished(isInWishlist(cachedProduct.id));
-      
-      // Fetch recommendations from cached product or generate from catalog
       handleRecommendations(cachedProduct, getAllCachedProducts());
-      
       setLoading(false);
-      return;
+
+      // Background enrich: fetch full detail (ingredients, reviews, faqs, etc.)
+      // Updates product state silently — no loading spinner shown to the user.
+      productService.show(slug)
+        .then((fullData) => {
+          if (!mounted) return;
+          console.log('[ProductPage] 📦 Background enrich complete — ingredients/reviews updated');
+          setProduct(fullData);
+          // Only update mainImage if it's a better quality URL from the detail API
+          if (fullData.images?.length) {
+            const detailPrimary = fullData.images.find((i) => i.is_primary)?.image_url ?? fullData.images[0]?.image_url;
+            if (detailPrimary) setMainImage(detailPrimary);
+          }
+          handleRecommendations(fullData, []);
+        })
+        .catch(() => {
+          // Silent failure — cached data already displayed, don't show error
+          console.warn('[ProductPage] Background enrich failed — using cached data only');
+        });
+
+      return () => { mounted = false; };
     }
 
-    // ── Phase 2: Fallback to API call if not in cache ──
+    // ── Phase 2: No cache — full blocking fetch ──
     console.log('[ProductPage] Product not in cache, fetching from API...');
     productService.show(slug)
       .then((data) => {
@@ -142,14 +160,14 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         setProduct(data);
         const primary = data.images?.find((i) => i.is_primary)?.image_url ?? data.images?.[0]?.image_url ?? data.primary_image ?? 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800';
         setMainImage(primary);
-        
+
         selectVariantFromProduct(data);
         setWished(isInWishlist(data.id));
         handleRecommendations(data, []);
       })
-      .catch((err) => { 
+      .catch((err) => {
         console.error('[ProductPage] Error fetching product:', err);
-        if (mounted) setFetchError(true); 
+        if (mounted) setFetchError(true);
       })
       .finally(() => { if (mounted) setLoading(false); });
 

@@ -30,7 +30,7 @@
  */
 
 import { create } from 'zustand';
-import { brandService, categoryService, ingredientService, Brand, Category, Ingredient } from '@/services/api';
+import { bannerService, brandService, categoryService, ingredientService, reviewService, Banner, Brand, Category, Ingredient, ReviewItem, RatingSummary } from '@/services/api';
 
 interface ReferenceStore {
   // ── Brands ──────────────────────────────────────────────────────────────────
@@ -51,6 +51,19 @@ interface ReferenceStore {
   ingredientsReady: boolean;
   ingredientsLoading: boolean;
   ensureIngredients: () => void;  // idempotent
+
+  // ── Homepage banners ─────────────────────────────────────────────────────
+  banners: Banner[];
+  bannersReady: boolean;
+  bannersLoading: boolean;
+  ensureBanners: () => void;      // idempotent
+
+  // ── Homepage reviews ─────────────────────────────────────────────────────
+  reviews: ReviewItem[];
+  reviewSummary: RatingSummary;
+  reviewsReady: boolean;
+  reviewsLoading: boolean;
+  ensureReviews: () => void;      // idempotent
 }
 
 const useReferenceStore = create<ReferenceStore>((set, get) => ({
@@ -105,6 +118,43 @@ const useReferenceStore = create<ReferenceStore>((set, get) => ({
       .then((data) => set({ ingredients: data, ingredientsReady: true }))
       .catch(() => {})
       .finally(() => set({ ingredientsLoading: false }));
+  },
+
+  // ── Homepage banners ─────────────────────────────────────────────────────
+  banners: [],
+  bannersReady: false,
+  bannersLoading: false,
+
+  ensureBanners: () => {
+    if (get().bannersReady || get().bannersLoading) return;
+    set({ bannersLoading: true });
+    bannerService
+      .getHomepage()
+      .then((data) => set({ banners: data, bannersReady: true }))
+      .catch(() => {})
+      .finally(() => set({ bannersLoading: false }));
+  },
+
+  // ── Homepage reviews ─────────────────────────────────────────────────────
+  reviews: [],
+  reviewSummary: {
+    average: 0,
+    total: 0,
+    distribution: { 5: { count: 0, percentage: 0 }, 4: { count: 0, percentage: 0 }, 3: { count: 0, percentage: 0 }, 2: { count: 0, percentage: 0 }, 1: { count: 0, percentage: 0 } },
+  },
+  reviewsReady: false,
+  reviewsLoading: false,
+
+  ensureReviews: () => {
+    if (get().reviewsReady || get().reviewsLoading) return;
+    set({ reviewsLoading: true });
+    reviewService
+      .list({ source: 'admin' })
+      .then(({ data, rating_summary }) =>
+        set({ reviews: data, reviewSummary: rating_summary, reviewsReady: true })
+      )
+      .catch(() => {})
+      .finally(() => set({ reviewsLoading: false }));
   },
 }));
 

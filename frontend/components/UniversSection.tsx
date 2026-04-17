@@ -5,7 +5,8 @@ import Link from 'next/link';
 import SectionContainer from '@/components/SectionContainer';
 import ProductCard, { type ProductCardProps } from '@/components/ui/ProductCard';
 import { ProductGridSkeleton } from '@/components/Skeleton';
-import { productService, Product } from '@/services/api';
+import useCatalogStore from '@/store/catalog';
+import { type Product } from '@/services/api';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
@@ -37,14 +38,15 @@ export default function UniversSection() {
   const [products, setProducts] = useState<ProductCardProps[]>([]);
   const [loading, setLoading]   = useState(true);
 
+  const ensureProducts = useCatalogStore((s) => s.ensureProducts);
+
   useEffect(() => {
-    // is_featured=0 → exclude Best Seller products; show only normal products
-    productService
-      .list({ limit: 10, sort: 'newest', is_featured: 0 })
-      .then(({ data }) => setProducts(data.map(productToCard)))
+    // Use shared catalog cache (15-min TTL) — avoids a redundant API call on every page visit
+    ensureProducts('normal:10', { limit: 10, sort: 'newest', is_featured: 0 })
+      .then((data) => setProducts(data.map(productToCard)))
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [ensureProducts]);
 
   return (
     <section className="pb-20 bg-white">

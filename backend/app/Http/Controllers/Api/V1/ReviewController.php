@@ -50,7 +50,13 @@ class ReviewController extends Controller
         ksort($params);
         $cacheKey = 'reviews:' . md5(json_encode($params));
 
-        $result = Cache::remember($cacheKey, now()->addMinutes(5), function () use ($request) {
+        // Homepage reviews (admin-curated, no product_id) change rarely → 30-min TTL.
+        // Product-scoped reviews can update when a customer submits → 5-min TTL.
+        $ttl = $request->filled('product_id')
+            ? now()->addMinutes(5)
+            : now()->addMinutes(30);
+
+        $result = Cache::remember($cacheKey, $ttl, function () use ($request) {
             return $this->buildReviewsResponse($request);
         });
 

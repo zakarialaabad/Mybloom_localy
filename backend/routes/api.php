@@ -20,7 +20,10 @@ use App\Http\Controllers\Api\V1\Admin\ReviewController as AdminReviewController;
 use App\Http\Controllers\Api\V1\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Api\V1\Admin\AdminProfileController;
 use App\Http\Controllers\Api\V1\BannerController;
+use App\Http\Controllers\Api\V1\VideoController;
+use App\Http\Controllers\Api\V1\VideoStreamController;
 use App\Http\Controllers\Api\V1\Admin\BannerController as AdminBannerController;
+use App\Http\Controllers\Api\V1\Admin\VideoController as AdminVideoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -70,6 +73,11 @@ Route::prefix('api')->group(function () {
             // Banners — public read-only
             Route::get('/banners/homepage',            [BannerController::class, 'homepage']);
             Route::get('/banners/collection/{id?}',    [BannerController::class, 'collectionHero']);
+
+            // Hero videos — public read-only (DB-managed, backward-compatible)
+            Route::get('/videos/hero',                 [VideoController::class, 'hero']);
+            // Streaming endpoint: serves non-legacy videos with HTTP Range support.
+            Route::get('/videos/stream/{video}',       VideoStreamController::class);
 
             // Store — public contact info
             Route::get('/store/contact',               [StoreController::class, 'contact']);
@@ -138,6 +146,12 @@ Route::prefix('api')->group(function () {
                 Route::post('banners',                     [AdminBannerController::class, 'store']);
                 Route::put('banners/{banner}',             [AdminBannerController::class, 'update']);
                 Route::delete('banners/{banner}',          [AdminBannerController::class, 'destroy']);
+
+                // Hero videos
+                Route::get('videos',                       [AdminVideoController::class, 'index']);
+                Route::post('videos',                      [AdminVideoController::class, 'store']);
+                Route::patch('videos/{video}',             [AdminVideoController::class, 'update']);
+                Route::delete('videos/{video}',            [AdminVideoController::class, 'destroy']);
             });
     });
 });

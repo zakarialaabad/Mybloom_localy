@@ -66,7 +66,6 @@ class ProductDetailResource extends JsonResource
             'slug'           => $this->slug,
             'subtitle'       => $this->subtitle,
             'description'    => $this->description,
-            'ingredients'    => $this->ingredients,
             'gender'         => $this->gender,
             'price'          => (float) $this->price,
             'original_price' => $this->original_price ? (float) $this->original_price : null,

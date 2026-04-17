@@ -2,7 +2,8 @@
 import { useEffect, useRef, useState } from 'react';
 import SectionContainer from '@/components/SectionContainer';
 import ImageGalleryModal from '@/components/ui/ImageGalleryModal';
-import { reviewService, ReviewItem, RatingSummary } from '@/services/api';
+import { ReviewItem, RatingSummary } from '@/services/api';
+import useReferenceStore from '@/store/reference';
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -16,15 +17,10 @@ function StarRating({ rating }: { rating: number }) {
   );
 }
 
-const DEFAULT_SUMMARY: RatingSummary = {
-  average: 0,
-  total: 0,
-  distribution: { 5: { count: 0, percentage: 0 }, 4: { count: 0, percentage: 0 }, 3: { count: 0, percentage: 0 }, 2: { count: 0, percentage: 0 }, 1: { count: 0, percentage: 0 } },
-};
-
 export default function CustomerReviewsSection() {
-  const [reviews, setReviews] = useState<ReviewItem[]>([]);
-  const [summary, setSummary] = useState<RatingSummary>(DEFAULT_SUMMARY);
+  const reviews       = useReferenceStore((s) => s.reviews);
+  const summary       = useReferenceStore((s) => s.reviewSummary);
+  const ensureReviews = useReferenceStore((s) => s.ensureReviews);
   const trackRef = useRef<HTMLDivElement>(null);
   const [canLeft,  setCanLeft]  = useState(false);
   const [canRight, setCanRight] = useState(false);
@@ -33,6 +29,9 @@ export default function CustomerReviewsSection() {
   const [isGalleryOpen, setGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [currentImage, setCurrentImage] = useState('');
+
+  // Fetch once per session — idempotent
+  useEffect(() => { ensureReviews(); }, [ensureReviews]);
 
   const openGallery = (clickedImageUrl: string) => {
     const allImages = reviews.flatMap(r => r.images.map(img => img.image_url));
@@ -54,23 +53,15 @@ export default function CustomerReviewsSection() {
     const el = trackRef.current;
     if (!el) return;
     const cardWidth = el.querySelector(':first-child')?.clientWidth ?? 300;
-    // Advance 2 cards at a time (card width Ã— 2 + gap Ã— 2)
+    // Advance 2 cards at a time (card width × 2 + gap × 2)
     const step = (cardWidth + 24) * 2;
     el.scrollBy({ left: dir === 'left' ? -step : step, behavior: 'smooth' });
   };
 
+  // Sync scroll arrows whenever reviews load
   useEffect(() => {
-    // Fetch admin-curated reviews (Avis publiés) controlled by the dashboard
-    // No featured filter — show all approved admin testimonials to match dashboard total
-    reviewService.list({ approved: true, source: 'admin' })
-      .then(({ data, rating_summary }) => {
-        setReviews(data);
-        if (rating_summary) setSummary(rating_summary);
-        // wait for DOM to paint before measuring
-        setTimeout(updateArrows, 50);
-      })
-      .catch(() => {});
-  }, []);
+    if (reviews.length > 0) setTimeout(updateArrows, 50);
+  }, [reviews.length]);
 
   // Format average to French locale (4,5 instead of 4.5)
   const displayAverage = summary.average > 0

@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 type HeroVideos = {
   desktop: string[];
@@ -17,20 +17,37 @@ function VideoPlayer({
   className: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const videoRefs    = useRef<(HTMLVideoElement | null)[]>([]);
+  // Track which indexes have already had .load() triggered to avoid redundant calls.
+  const preloadedSet = useRef<Set<number>>(new Set());
 
+  // Reset preload tracking and start playing when the active video changes.
   useEffect(() => {
-    // Play the active video immediately
+    preloadedSet.current.clear();
+
     if (videos.length > 0 && videoRefs.current[activeIndex]) {
       videoRefs.current[activeIndex]?.play().catch(() => {});
     }
-
-    // Preload the next video in sequence
-    const nextIndex = (activeIndex + 1) % videos.length;
-    if (videos.length > 1 && videoRefs.current[nextIndex]) {
-      videoRefs.current[nextIndex]?.load();
-    }
   }, [activeIndex, videos]);
+
+  // Called by onTimeUpdate on the active <video>: when the current video is 70%
+  // through, start loading the next one so it's buffered in time for the switch.
+  const handleTimeUpdate = useCallback(
+    (index: number) => {
+      const vid = videoRefs.current[index];
+      if (!vid || !vid.duration) return;
+
+      const progress = vid.currentTime / vid.duration;
+      if (progress < 0.7) return;
+
+      const nextIndex = (index + 1) % videos.length;
+      if (!preloadedSet.current.has(nextIndex)) {
+        preloadedSet.current.add(nextIndex);
+        videoRefs.current[nextIndex]?.load();
+      }
+    },
+    [videos.length],
+  );
 
   if (videos.length === 0) {
     return (
@@ -62,6 +79,9 @@ function VideoPlayer({
             }`}
             muted
             playsInline
+            preload="none"
+            poster="/background.jpeg"
+            onTimeUpdate={isActive ? () => handleTimeUpdate(index) : undefined}
             onEnded={() => {
               // Once ended, reset this video's current time to 0 for next time
               if (videoRefs.current[index]) {
