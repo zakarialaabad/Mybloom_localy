@@ -2,11 +2,32 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import useCartStore from '@/store/cart';
 
 export default function MobileActionBar() {
   const pathname = usePathname();
+  const [hidden, setHidden] = useState(false);
+  const cartItemCount = useCartStore((s) => s.itemCount());
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      setHidden((e as CustomEvent<{ isOpen: boolean }>).detail.isOpen);
+    };
+    window.addEventListener('mobile-menu-change', handler);
+    return () => window.removeEventListener('mobile-menu-change', handler);
+  }, []);
 
   if (pathname?.startsWith('/admin')) {
+    return null;
+  }
+
+  if (hidden) {
     return null;
   }
 
@@ -36,7 +57,10 @@ export default function MobileActionBar() {
           </svg>
         )}
 
-        <button className="relative flex flex-col items-center justify-center gap-1 text-gray-400 flex-1 h-full">
+        <button 
+          onClick={() => window.dispatchEvent(new CustomEvent('trigger-mobile-search'))}
+          className="relative flex flex-col items-center justify-center gap-1 text-gray-400 flex-1 h-full"
+        >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -55,10 +79,21 @@ export default function MobileActionBar() {
           </svg>
         )}
 
-        <button className="relative flex flex-col items-center justify-center gap-1 text-gray-400 flex-1 h-full">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-          </svg>
+        <button 
+          onClick={() => window.dispatchEvent(new CustomEvent('trigger-cart'))}
+          className="relative flex flex-col items-center justify-center gap-1 text-gray-400 flex-1 h-full"
+        >
+          <div className="relative">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            {isMounted && cartItemCount > 0 && (
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center
+                rounded-full bg-red-500 text-[9px] text-white">
+                {cartItemCount}
+              </span>
+            )}
+          </div>
           <span className="text-[10px] font-medium">Panier</span>
         </button>
 

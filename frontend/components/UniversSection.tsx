@@ -87,7 +87,8 @@ export default function UniversSection() {
         </div>
 
         {/* Centered Button below the products grid on desktop, responsive on mobile */}
-        <div className="flex justify-center mt-12 md:mt-16 relative z-20">
+        {/* mb-16 on mobile to add space before the Banners section as requested */}
+        <div className="flex justify-center mt-12 md:mt-16 mb-16 md:mb-0 relative z-20">
           <Link href="/collection" className="inline-flex items-center justify-center bg-[#4a403a] px-6 md:px-8 py-2.5 md:py-3 text-sm font-bold text-white shadow-lg hover:bg-[#3a322d] transition-colors rounded-md font-serif italic whitespace-nowrap">
             Voir toute la collection ›
           </Link>

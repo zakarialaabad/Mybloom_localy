@@ -32,6 +32,7 @@ interface FilterModalProps {
 export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const [isMounted, setIsMounted]     = useState(false);
   const [brandSearch, setBrandSearch] = useState('');
+  const [ingredientSearch, setIngredientSearch] = useState('');
 
   // ── Shared filter state ────────────────────────────────────────────────
   const globalMin          = useFilterStore((s) => s.globalMin);
@@ -40,6 +41,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const selectedMax        = useFilterStore((s) => s.selectedMax);
   const selectedBrands     = useFilterStore((s) => s.selectedBrands);
   const selectedCategories = useFilterStore((s) => s.selectedCategories);
+  const selectedIngredients = useFilterStore((s) => s.selectedIngredients);
   const selectedRating     = useFilterStore((s) => s.selectedRating);
   const promotionOnly      = useFilterStore((s) => s.promotionOnly);
   const featuredOnly       = useFilterStore((s) => s.featuredOnly);
@@ -48,18 +50,22 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const setSelectedMax    = useFilterStore((s) => s.setSelectedMax);
   const toggleBrand       = useFilterStore((s) => s.toggleBrand);
   const toggleCategory    = useFilterStore((s) => s.toggleCategory);
+  const toggleIngredient  = useFilterStore((s) => s.toggleIngredient);
   const setSelectedRating = useFilterStore((s) => s.setSelectedRating);
   const setPromotionOnly  = useFilterStore((s) => s.setPromotionOnly);
   const setFeaturedOnly   = useFilterStore((s) => s.setFeaturedOnly);
   const resetFilters      = useFilterStore((s) => s.resetFilters);
   const ensureAggregates  = useFilterStore((s) => s.ensureAggregates);
 
-  // ── Reference data (brands + categories) ─────────────────────────────
+  // ── Reference data (brands + categories + ingredients) ─────────────────────────────
   const brands           = useReferenceStore((s) => s.brands);
   const categories       = useReferenceStore((s) => s.categories);
+  const ingredients      = useReferenceStore((s) => s.ingredients);
   const ensureBrands     = useReferenceStore((s) => s.ensureBrands);
   const ensureCategories = useReferenceStore((s) => s.ensureCategories);
+  const ensureIngredients = useReferenceStore((s) => s.ensureIngredients);
   const brandCounts      = useFilterStore((s) => s.brandCounts);
+  const ingredientCounts = useFilterStore((s) => s.ingredientCounts);
 
   useEffect(() => { setIsMounted(true); }, []);
 
@@ -68,14 +74,16 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     if (isOpen) {
       ensureBrands();
       ensureCategories();
+      ensureIngredients();
       ensureAggregates();
     }
-  }, [isOpen, ensureBrands, ensureCategories, ensureAggregates]);
+  }, [isOpen, ensureBrands, ensureCategories, ensureIngredients, ensureAggregates]);
 
   // Count active filters for the badge
   const activeFilterCount =
     selectedBrands.length +
     selectedCategories.length +
+    selectedIngredients.length +
     (selectedRating !== null ? 1 : 0) +
     (promotionOnly ? 1 : 0) +
     (featuredOnly ? 1 : 0) +
@@ -84,6 +92,10 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const visibleBrands = brandSearch.trim()
     ? brands.filter((b) => b.name.toLowerCase().includes(brandSearch.toLowerCase()))
     : brands;
+
+  const visibleIngredients = ingredientSearch.trim()
+    ? ingredients.filter((i) => i.name.toLowerCase().includes(ingredientSearch.toLowerCase()))
+    : ingredients;
 
   if (!isMounted) return null;
 
@@ -211,6 +223,59 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                     </span>
                     <span className="text-[12px] font-serif text-gray-400">
                       ({brandCounts[brand.id] ?? 0})
+                    </span>
+                  </div>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {/* Ingredients Section */}
+          <div className="bg-white p-6 pt-5">
+            <div className="flex justify-between items-center mb-5">
+              <h3 className="font-serif text-[17px] text-gray-500">Ingrédients</h3>
+              <ChevronUp className="w-4 h-4 text-gray-800" />
+            </div>
+
+            <div className="bg-[#f8f8f8] p-3 flex items-center gap-3 mb-6">
+              <Search className="w-[14px] h-[14px] text-gray-400 shrink-0" />
+              <input
+                type="text"
+                value={ingredientSearch}
+                onChange={(e) => setIngredientSearch(e.target.value)}
+                placeholder="Search ingredient...."
+                className="bg-transparent border-none focus:outline-none text-[14px] w-full placeholder:text-gray-400 text-gray-700 font-serif"
+              />
+            </div>
+
+            <div className="space-y-[18px] max-h-64 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
+              {visibleIngredients.length === 0 && (
+                <p className="text-[13px] text-gray-400 font-serif italic">No ingredients found.</p>
+              )}
+              {visibleIngredients.map((ingredient) => (
+                <label key={ingredient.id} className="flex items-center gap-4 cursor-pointer group">
+                  <div
+                    className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
+                      selectedIngredients.includes(ingredient.id)
+                        ? 'border-[#333]'
+                        : 'border-gray-200 group-hover:border-gray-300'
+                    }`}
+                    onClick={() => toggleIngredient(ingredient.id)}
+                  >
+                    {selectedIngredients.includes(ingredient.id) && (
+                      <div className="w-2.5 h-2.5 bg-[#333] rounded-full" />
+                    )}
+                  </div>
+                  <div className="flex items-baseline gap-2">
+                    <span
+                      className={`font-serif text-[15px] ${
+                        selectedIngredients.includes(ingredient.id) ? 'text-[#333]' : 'text-[#444]'
+                      }`}
+                    >
+                      {ingredient.name}
+                    </span>
+                    <span className="text-[12px] font-serif text-gray-400">
+                      ({ingredientCounts[ingredient.id] ?? 0})
                     </span>
                   </div>
                 </label>
