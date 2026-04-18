@@ -15,7 +15,7 @@ export default function BrandLogos() {
   const duplicatedBrands = [...brands, ...brands, ...brands, ...brands];
 
   return (
-    <section className="border-b border-gray-100 py-12">
+    <section className="pb-10 pt-12 md:pb-8">
       <div className="container mx-auto px-4">
         {/* We use a flex container for the seamless animation */}
         <div className="overflow-hidden flex">

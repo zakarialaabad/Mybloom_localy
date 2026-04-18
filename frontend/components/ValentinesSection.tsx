@@ -73,7 +73,7 @@ export default function ValentinesSection() {
   );
 
   return (
-    <section className="mt-8 mb-12 py-8 w-full" data-purpose="valentines-promotion">
+    <section className="pt-8 pb-16 md:pt-24 md:pb-24 w-full" data-purpose="valentines-promotion">
       {/* 
         Full width container instead of constrained SectionContainer 
         to perfectly match the edge-to-edge reference layout

@@ -104,13 +104,13 @@ export default function BestSellers() {
   };
 
   return (
-    <section id="best-sellers" className="pb-24 pt-16">
+    <section id="best-sellers" className="pb-16 md:pb-24 pt-4 md:pt-12">
       {/* Section header */}
       <SectionContainer className="mb-8 md:mb-10">
         <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between md:gap-8">
           <div className="max-w-3xl">
-            <h2 className="mb-4 font-serif text-4xl font-bold text-gray-900 tracking-tight">
-              Meilleures <span className="text-[#df4079] italic font-light ml-1" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>Ventes</span>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#4a403a] font-serif mb-4">
+              Meilleures <span className="text-[#e63a6c] italic font-light ml-1 text-4xl md:text-5xl" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>Ventes</span>
             </h2>
             <p className="text-[11px] md:text-sm leading-relaxed text-gray-800">
               Découvrez notre vaste collection de parfums les plus vendus pour femme et homme. Trouvez une variété de fragrances luxe abordables dans votre gamme de prix, parfaites pour chaque occasion. Laissez-vous séduire chez MyBloom.

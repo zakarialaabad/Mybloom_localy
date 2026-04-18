@@ -42,10 +42,20 @@ export default function Header() {
       <header className="sticky top-0 z-50 bg-white shadow-sm">
       {/* ── Announcement Bar ─────────────────────────────────────────────── */}
       <div className="overflow-hidden bg-black py-2 text-[10px] font-medium uppercase tracking-widest text-white">
-        <div className="flex items-center justify-center">
+        {/* Desktop: Static centered text */}
+        <div className="hidden md:flex items-center justify-center">
           <span>
             PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%
           </span>
+        </div>
+        {/* Mobile: Infinite scroll marquee */}
+        <div className="md:hidden flex">
+          <div className="flex w-max animate-[scrollAnnounce_20s_linear_infinite] gap-8">
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+          </div>
         </div>
       </div>
 
