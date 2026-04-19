@@ -11,6 +11,7 @@ import { LoadingSpinner } from '@/components/Skeleton';
 import { productService, Product } from '@/services/api';
 import { getWishlist, removeFromWishlist } from '@/lib/wishlist';
 import ProductCard from '@/components/ui/ProductCard';
+import useCartStore from '@/store/cart';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
@@ -45,7 +46,9 @@ export default function WishlistPage() {
   const [sortBy, setSortBy]       = useState<SortKey>('relevance');
   const [viewMode, setViewMode]   = useState<ViewMode>('grid');
   const [sortOpen, setSortOpen]   = useState(false);
+  const [toast, setToast] = useState<{ show: boolean; message: string; type: 'cart' | 'favorite' }>({ show: false, message: '', type: 'cart' });
   const sortRef = useRef<HTMLDivElement>(null);
+  const { addItem } = useCartStore();
 
   useEffect(() => {
     const ids = getWishlist();
@@ -65,9 +68,32 @@ export default function WishlistPage() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
+  /* Auto-hide toast after 3 seconds */
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => setToast({ ...toast, show: false }), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast.show]);
+
   const handleRemove = (productId: number) => {
     removeFromWishlist(productId);
     setProducts(prev => prev.filter(p => p.id !== productId));
+  };
+
+  const handleAddToCart = (product: Product) => {
+    addItem({
+      productId: product.id,
+      productName: product.name,
+      slug: product.slug,
+      sizeId: 0,
+      sizeLabel: null,
+      quantity: 1,
+      unitPrice: product.min_price || 0,
+      originalPrice: (product.original_price && product.original_price > (product.min_price || 0)) ? product.original_price : undefined,
+      imageUrl: sanitizeImageUrl(product.image_url) || FALLBACK_IMG,
+    });
+    setToast({ show: true, message: 'Produit ajouté au panier avec succès !', type: 'cart' });
   };
 
   const sorted = useMemo(() => sortProducts(products, sortBy), [products, sortBy]);
@@ -203,10 +229,10 @@ export default function WishlistPage() {
                     />
                   </div>
                   <button
-                    onClick={() => router.push(`/product/${product.slug}`)}
+                    onClick={() => handleAddToCart(product)}
                     className="w-full bg-[#3d342f] text-white py-3 rounded-sm font-serif italic text-sm hover:bg-[#2d2622] transition-colors mt-3 active:scale-[0.98] shadow-sm opacity-0 group-hover:opacity-100"
                   >
-                    Add to Bag ›
+                    Ajouter au panier ›
                   </button>
                 </div>
               ))}
@@ -319,11 +345,11 @@ export default function WishlistPage() {
                     </div>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => router.push(`/product/${product.slug}`)}
+                        onClick={() => handleAddToCart(product)}
                         className="flex items-center gap-1.5 bg-[#3d342f] text-white text-xs font-serif italic px-4 py-2 rounded-sm hover:bg-[#2d2622] active:scale-[0.97] transition-all shadow-sm"
                       >
                         <ShoppingBag className="h-3.5 w-3.5" />
-                        Add to Bag
+                        Ajouter au panier
                       </button>
                       <button
                         onClick={() => handleRemove(product.id)}
@@ -393,6 +419,18 @@ export default function WishlistPage() {
       </main>
 
       <Footer />
+
+      {/* Toast Notification */}
+      {toast.show && (
+        <div
+          className="fixed top-4 right-4 z-[9999] flex items-center space-x-3 px-5 py-3 rounded-md shadow-lg transition-all duration-300 animate-in fade-in slide-in-from-top-4 pointer-events-none bg-[#4a403a] text-white border border-[#342f2d]"
+        >
+          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+          </svg>
+          <span className="font-serif text-sm md:text-base tracking-wide">{toast.message}</span>
+        </div>
+      )}
     </div>
   );
 }
