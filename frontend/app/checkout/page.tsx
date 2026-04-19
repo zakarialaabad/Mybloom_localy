@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -72,6 +72,8 @@ export default function CheckoutPage() {
   /* ── Submit ───────────────────────────────────────────────────── */
   const [submitting,   setSubmitting]   = useState(false);
   const [submitError,  setSubmitError]  = useState('');
+  // Imperative lock — prevents double-submit when React state update hasn't re-rendered yet
+  const submittingRef = useRef(false);
 
   // Format phone number with spaces as user types
   const formatPhoneDisplay = (value: string): string => {
@@ -122,7 +124,7 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedMethodId || items.length === 0) return;
+    if (submittingRef.current || !selectedMethodId || items.length === 0) return;
 
     setPhoneTouched(true);
     if (!isValidPhone(phone)) {
@@ -132,6 +134,7 @@ export default function CheckoutPage() {
 
     const normalizedPhone = normalizePhone(phone);
     setSubmitError('');
+    submittingRef.current = true;
     setSubmitting(true);
     try {
       const result = await orderService.place({
@@ -153,7 +156,7 @@ export default function CheckoutPage() {
           order: result.order_number,
           total: result.total,
           name: `${firstName} ${lastName}`,
-          phone,
+          phone: normalizedPhone, // must match DB value (e.g. +212622443311)
           city,
         }));
       }
@@ -162,6 +165,7 @@ export default function CheckoutPage() {
       const msg = (err as { message?: string })?.message;
       setSubmitError(msg ?? 'Une erreur est survenue. Réessayez.');
     } finally {
+      submittingRef.current = false;
       setSubmitting(false);
     }
   };

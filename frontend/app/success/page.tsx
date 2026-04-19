@@ -35,14 +35,27 @@ export default function OrderSuccessPage() {
 
   useEffect(() => {
     if (!order || !phone) return;
-    // Auto-download invoice PDF after a short delay so the page renders first
-    const timer = setTimeout(() => {
-      const link = document.createElement('a');
-      link.href = `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${order}/download?phone=${encodeURIComponent(phone)}`;
-      link.download = `invoice-${order}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    // Auto-download invoice PDF via fetch so the blob URL is same-origin.
+    // Using a raw <a download> with a cross-origin href is silently ignored by
+    // browsers (security policy), which causes navigation to the API URL instead.
+    const timer = setTimeout(async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${order}/download?phone=${encodeURIComponent(phone)}`
+        );
+        if (!res.ok) return; // invoice not ready yet — fail silently
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = `invoice-${order}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(blobUrl);
+      } catch {
+        // Non-critical — invoice download failure must never affect the success page
+      }
     }, 1500);
     return () => clearTimeout(timer);
   }, [order, phone]);
