@@ -103,6 +103,25 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     setToast({ show: true, message, type });
   };
 
+<<<<<<< HEAD
+=======
+  // ─── Mobile fixed action bar — slide-up on mount ──────────────────────────
+  useEffect(() => {
+    if (product) {
+      const t = setTimeout(() => setMobileBarReady(true), 100);
+      return () => clearTimeout(t);
+    }
+  }, [product]);
+
+  // ─── Hide bottom nav & sticky bar when gallery is open on mobile ──────────
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    if (window.innerWidth <= 768) {
+      window.dispatchEvent(new CustomEvent('mobile-menu-change', { detail: { isOpen: isGalleryOpen } }));
+    }
+  }, [isGalleryOpen]);
+
+>>>>>>> 7db2a54 (Hide bottom navigation bar on mobile when opening product image in fullscreen for a more immersive user experience)
   // ─── Fetch product ──────────────────────────────────────────────────────────
   useEffect(() => {
     let mounted = true;
@@ -1146,6 +1165,69 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           </div>
         )}
       </main>
+<<<<<<< HEAD
+=======
+
+      {/* ── Fixed Mobile Action Bar — always visible above bottom nav ────────── */}
+      {product && !isGalleryOpen && (
+        <div
+          className={`fixed left-0 right-0 z-[90] md:hidden transition-transform duration-300 ease-in-out ${
+            mobileBarReady ? 'translate-y-0' : 'translate-y-full'
+          }`}
+          style={{ bottom: '64px', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+        >
+          <div
+            className="bg-white px-4 flex items-center justify-between gap-3"
+            style={{
+              height: '75px',
+              borderRadius: '16px 16px 0 0',
+              boxShadow: '0 -2px 10px rgba(0,0,0,0.08)',
+            }}
+          >
+            {/* Quantity */}
+            <div className="flex h-[42px] w-[96px] items-center rounded-[7px] border-2 border-[#969292] bg-white overflow-hidden shrink-0">
+              <button
+                onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                className="flex-1 h-full flex items-center justify-center text-gray-500 active:bg-gray-100 text-lg font-light"
+              >-</button>
+              <span className="flex-1 h-full flex items-center justify-center font-serif font-bold tabular-nums text-[17px]">{quantity}</span>
+              <button
+                onClick={() => {
+                  const max = selectedSize?.stock_quantity ?? product?.stock ?? 99;
+                  setQuantity((q) => Math.min(max, q + 1));
+                }}
+                className="flex-1 h-full flex items-center justify-center text-gray-500 active:bg-gray-100 text-lg font-light"
+              >+</button>
+            </div>
+
+            {/* Buy Now */}
+            <button
+              onClick={handleBuyNow}
+              className={`flex h-[42px] flex-1 items-center justify-center rounded-[7px] px-3 transition-all active:scale-[0.97] ${
+                !selectedSize || selectedSize.stock_quantity === 0
+                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                  : 'bg-[#4a403a] text-white active:bg-[#342f2d]'
+              }`}
+            >
+              <span className="font-serif italic text-[15px] tracking-wide whitespace-nowrap">Acheter maintenant &rsaquo;</span>
+            </button>
+
+            {/* Cart */}
+            <button
+              onClick={handleAddToCart}
+              className={`flex h-[42px] w-[42px] items-center justify-center rounded-[7px] border-2 shrink-0 transition-colors active:scale-[0.95] ${
+                !selectedSize || selectedSize.stock_quantity === 0
+                  ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-white border-[#969292] text-gray-700 active:bg-gray-50'
+              }`}
+            >
+              <ShoppingCart className="h-[21px] w-[21px]" strokeWidth={1.5} />
+            </button>
+          </div>
+        </div>
+      )}
+
+>>>>>>> 7db2a54 (Hide bottom navigation bar on mobile when opening product image in fullscreen for a more immersive user experience)
       <Footer />
     </div>
   );
