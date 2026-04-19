@@ -517,7 +517,8 @@ export default function Header() {
                 COLLECTION HIGHLIGHTS
               </h3>
               <Link
-                href="#"
+                href="/collection"
+                onClick={closeMenu}
                 className="text-[#C9527A]"
                 style={{ fontFamily: "'Akhbar MT', 'Amiri', serif", fontSize: 16 }}
               >
@@ -526,15 +527,15 @@ export default function Header() {
             </div>
             
             <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <Link href="/collection?is_best_seller=true" className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
-                <Image src="https://images.unsplash.com/photo-1615397323214-cb9192415d86?auto=format&fit=crop&q=80&w=400" alt="Best Sellers" fill className="object-cover transition-transform group-hover:scale-105" />
+              <Link href="/collection?featured=1" onClick={closeMenu} className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
+                <Image src="/Best Sellers.jpg" alt="Best Sellers" fill className="object-cover transition-transform group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent p-4 flex flex-col justify-end">
                   <h4 className="font-serif font-bold text-white text-xl drop-shadow">Best Sellers</h4>
                   <p className="text-[11px] text-white/80 mt-1 font-medium">Shop Now</p>
                 </div>
               </Link>
-              <Link href="/collection?is_gift=true" className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
-                <Image src="https://images.unsplash.com/photo-1595425970377-c9703bc48b4d?auto=format&fit=crop&q=80&w=400" alt="Gift Sets" fill className="object-cover transition-transform group-hover:scale-105" />
+              <Link href="/collection?is_gift=true" onClick={closeMenu} className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
+                <Image src="/Gift Sets.jpg" alt="Gift Sets" fill className="object-cover transition-transform group-hover:scale-105" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent p-4 flex flex-col justify-end">
                   <h4 className="font-serif font-bold text-white text-xl drop-shadow">Gift Sets</h4>
                   <p className="text-[11px] text-white/80 mt-1 font-medium">Discover</p>
