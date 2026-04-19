@@ -339,7 +339,7 @@ export default function Header() {
 
       {/* ── Main Navigation ─────────────────────────────────────────────── */}
       <nav className="hidden md:block container mx-auto px-4 pb-4">
-        <ul className="flex justify-center space-x-10 text-sm font-semibold tracking-widest text-gray-700">
+        <ul className="flex justify-center space-x-10 text-[16px] tracking-widest text-gray-700" style={{ fontFamily: "'Sitka Banner', serif", fontWeight: 'bold' }}>
           {NAV_LINKS.map(({ label, href }) => (
             <li key={label}>
               <Link
@@ -495,8 +495,9 @@ export default function Header() {
                 onClick={closeMenu}
                 className="uppercase transition-colors"
                 style={{
-                  fontFamily: "'Gabriola', serif",
-                  fontSize: 32,
+                  fontFamily: "'Sitka Banner', serif",
+                  fontSize: 24,
+                  fontWeight: 'bold',
                   color: highlight ? '#C9527A' : '#111827',
                   lineHeight: 1.2,
                 }}

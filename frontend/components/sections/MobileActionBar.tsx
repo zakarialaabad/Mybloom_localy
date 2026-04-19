@@ -38,7 +38,7 @@ export default function MobileActionBar() {
     >
       {children}
       <span className={`text-[10px] ${isActive ? 'font-bold' : 'font-medium'}`}>{label}</span>
-      {isActive && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-0.5 bg-gray-900 rounded-full" />}
+      {isActive && <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-10 h-1 bg-gray-900 rounded-full" />}
     </Link>
   );
 

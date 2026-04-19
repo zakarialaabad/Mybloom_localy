@@ -51,8 +51,8 @@ export default function Footer() {
                 className="object-contain h-[36px] w-auto"
               />
             </Link>
-            <p className="text-[12px] text-gray-500 leading-loose mb-8 md:max-w-[320px]">
-              Notre objectif : vous offrir des produits qui allient qualité, performance<br className="hidden xl:block"/> et satisfaction.
+            <p className="text-[12px] text-gray-500 leading-loose mb-8 md:max-w-none">
+              Notre objectif : vous offrir des produits qui allient<br className="hidden md:block"/> qualité, performance et satisfaction.
             </p>
             <div className="flex items-center gap-3">
               {[
