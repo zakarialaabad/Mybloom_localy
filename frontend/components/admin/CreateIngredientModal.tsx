@@ -56,13 +56,13 @@ export default function CreateIngredientModal({ isOpen, onClose, onCreated }: Cr
       formData.append('name', name.trim());
       if (file) formData.append('image', file);
 
-      const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+      const baseURL = process.env.NEXT_PUBLIC_API_URL;
+      const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
       const { data } = await axios.post(`${baseURL}/v1/admin/ingredients`, formData, {
-        withCredentials: true,
         headers: {
           'Accept': 'application/json',
-          // No Content-Type — browser/XHR sets multipart/form-data with boundary automatically
-          // No Authorization — HttpOnly admin_token cookie is sent automatically via withCredentials
+          // No Content-Type — browser sets multipart/form-data with boundary automatically
+          ...(token ? { Authorization: 'Bearer ' + token } : {}),
         },
       });
 

@@ -105,7 +105,7 @@ export default function Footer() {
             <ul className="space-y-4">
               {[
                 { label: 'Corps', href: '/collection?product_type=corps' },
-                { label: 'Cheveux', href: '/collection?product_type=hair' },
+                { label: 'Cheveux', href: '/collection?product_type=cheveux' },
                 { label: 'Visage', href: '/collection?product_type=visage' },
               ].map(({ label, href }) => (
                 <li key={label}>

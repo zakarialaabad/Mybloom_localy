@@ -44,7 +44,16 @@ const apiClient = axios.create({
 // it as Authorization: Bearer on every request. This replaces the fragile
 // server-side InjectAdminTokenFromCookie middleware that crashed PHP on Windows.
 
-apiClient.interceptors.request.use((config) => config);
+apiClient.interceptors.request.use((config) => {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('admin_token');
+    if (token) {
+      config.headers = config.headers ?? {};
+      config.headers['Authorization'] = 'Bearer ' + token;
+    }
+  }
+  return config;
+});
 
 // â”€â”€â”€ Response interceptor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // 401 â†’ redirect to /admin/login. No retry. No token refresh.
@@ -54,6 +63,7 @@ apiClient.interceptors.response.use(
   (error: AxiosError<ApiValidationError>) => {
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
+        localStorage.removeItem('admin_token');
         document.cookie = 'admin_logged_in=; path=/; max-age=0; SameSite=Lax';
         window.location.href = '/admin/login';
       }
@@ -68,9 +78,10 @@ apiClient.interceptors.response.use(
 export const adminAuthService = {
   login: async (payload: AdminLoginPayload): Promise<AdminLoginResponse> => {
     const { data } = await apiClient.post<AdminLoginResponse>('/v1/admin/auth/login', payload);
-    // Set a non-sensitive flag cookie so Next.js middleware can gate admin routes.
-    // The actual token is in an HttpOnly cookie set by the backend response.
-    if (typeof document !== 'undefined' && data.token) {
+    if (typeof window !== 'undefined' && data.token) {
+      // Persist token for request interceptor injection (reliable cross-origin)
+      localStorage.setItem('admin_token', data.token);
+      // Flag cookie so Next.js middleware can gate /admin/* routes server-side
       const maxAge = 60 * 60 * 24; // 24 h
       document.cookie = `admin_logged_in=1; path=/; max-age=${maxAge}; SameSite=Lax`;
     }
@@ -79,7 +90,8 @@ export const adminAuthService = {
 
   logout: async (): Promise<void> => {
     await apiClient.post('/v1/admin/auth/logout');
-    if (typeof document !== 'undefined') {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('admin_token');
       document.cookie = 'admin_logged_in=; path=/; max-age=0; SameSite=Lax';
     }
   },
@@ -686,13 +698,13 @@ export const adminProfileService = {
     // which prevents the browser from setting multipart/form-data with the required boundary.
     // Without the correct boundary, PHP $_FILES is empty and $request->hasFile() returns false.
     const baseURL = process.env.NEXT_PUBLIC_API_URL;
+    const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
     
     const { data } = await axios.post(`${baseURL}/v1/admin/profile`, formData, {
-      withCredentials: true,
       headers: {
         'Accept': 'application/json',
-        // No Content-Type — browser/XHR sets multipart/form-data with boundary automatically
-        // No Authorization — HttpOnly admin_token cookie is sent automatically via withCredentials
+        // No Content-Type — browser sets multipart/form-data with boundary automatically
+        ...(token ? { Authorization: 'Bearer ' + token } : {}),
       },
     });
     

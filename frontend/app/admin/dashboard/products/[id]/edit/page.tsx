@@ -39,10 +39,10 @@ const WomenIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="no
 const MenIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="10" cy="14" r="6" stroke="currentColor" strokeWidth="1.5"/><path d="M14.24 9.76L20 4M20 4h-5M20 4v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 
 const TYPE_ICON_MAP: Record<string, JSX.Element> = {
-  Face: <FaceIcon />,
-  Hair: <HairIcon />,
-  Body: <BodyIcon />,
-  Home: <HomeIcon />,
+  Visage: <FaceIcon />,
+  Cheveux: <HairIcon />,
+  Corps: <BodyIcon />,
+  'Soins Visage': <FaceIcon />,
 };
 
 const Card = ({ title, icon, action, children, className = '' }: any) => (
@@ -115,7 +115,7 @@ export default function EditProductPage() {
   const [categories, setCategories] = useState<any[]>([]);
   const [brands, setBrands] = useState<any[]>([]);
   const [productTypes, setProductTypes] = useState<any[]>([]);
-  const [productType, setProductType] = useState('Body');
+  const [productType, setProductType] = useState('Corps');
   const [gender, setGender] = useState('Women');
 
   // --- Status Settings ---
@@ -174,12 +174,15 @@ export default function EditProductPage() {
   // -- Load select data + product data on mount ------------------------------
   useEffect(() => {
     const fetchAll = async () => {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+      const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+      const authHeaders: Record<string, string> = { Accept: 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) };
       try {
         const [cats, brnds, types, ingrData] = await Promise.all([
           adminCategoryService.list(),
           brandService.list(),
           adminProductTypeService.list(),
-          fetch('http://localhost:8000/api/v1/ingredients').then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] })),
+          fetch(`${apiBase}/v1/ingredients`, { headers: authHeaders }).then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] })),
         ]);
 
         setCategories(cats);
@@ -500,13 +503,11 @@ export default function EditProductPage() {
       });
 
       const apiBase = process.env.NEXT_PUBLIC_API_URL;
+      const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
 
       const res = await fetch(`${apiBase}/v1/admin/products/${productId}`, {
         method: 'POST',
-        credentials: 'include',
-        headers: {
-          Accept: 'application/json',
-        },
+        headers: { Accept: 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
         body: data,
       });
 

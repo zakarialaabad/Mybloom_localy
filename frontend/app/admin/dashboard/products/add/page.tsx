@@ -39,10 +39,10 @@ const WomenIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="no
 const MenIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="10" cy="14" r="6" stroke="currentColor" strokeWidth="1.5"/><path d="M14.24 9.76L20 4M20 4h-5M20 4v5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 
 const TYPE_ICON_MAP: Record<string, JSX.Element> = {
-  Face: <FaceIcon />,
-  Hair: <HairIcon />,
-  Body: <BodyIcon />,
-  Home: <HomeIcon />,
+  Visage: <FaceIcon />,
+  Cheveux: <HairIcon />,
+  Corps: <BodyIcon />,
+  'Soins Visage': <FaceIcon />,
 };
 
 const Card = ({ title, icon, action, children, className = '' }: any) => (
@@ -119,7 +119,7 @@ export default function AddProductPage() {
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
   const [productTypes, setProductTypes] = useState<any[]>([]);
-  const [productType, setProductType] = useState('Body');
+  const [productType, setProductType] = useState('Corps');
   const [gender, setGender] = useState('Women');
 
   // --- Phase 5: Status Settings ---
@@ -157,11 +157,14 @@ export default function AddProductPage() {
   useEffect(() => {
     // Fetch categories and brands from API on mount
     const fetchSelectData = async () => {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+      const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+      const authHeaders: Record<string, string> = { Accept: 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) };
       try {
-        const catRes = await fetch('http://localhost:8000/api/v1/categories');
-        const brandRes = await fetch('http://localhost:8000/api/v1/brands');
-        const typeRes = await fetch('http://localhost:8000/api/v1/product-types');
-        const ingrRes = await fetch('http://localhost:8000/api/v1/ingredients');
+        const catRes = await fetch(`${apiBase}/v1/categories`, { headers: authHeaders });
+        const brandRes = await fetch(`${apiBase}/v1/brands`, { headers: authHeaders });
+        const typeRes = await fetch(`${apiBase}/v1/product-types`, { headers: authHeaders });
+        const ingrRes = await fetch(`${apiBase}/v1/ingredients`, { headers: authHeaders });
         
         if (catRes.ok) {
           const catData = await catRes.json();
@@ -175,7 +178,7 @@ export default function AddProductPage() {
           const typeData = await typeRes.json();
           const types = typeData.data || [];
           setProductTypes(types);
-          if (types.length > 0) setProductType(types.find((t: any) => t.name === 'Body')?.name || types[0].name);
+          if (types.length > 0) setProductType(types.find((t: any) => t.name === 'Corps')?.name || types[0].name);
         }
         if (ingrRes.ok) {
           const ingrData = await ingrRes.json();
@@ -421,11 +424,12 @@ export default function AddProductPage() {
           data.append('price', '0');
           data.append('stock', '0');
         }
-      const res = await fetch('http://localhost:8000/api/v1/admin/products', {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+      const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+      const res = await fetch(`${apiBase}/v1/admin/products`, {
         method: 'POST',
-        credentials: 'include',
-        headers: { 'Accept': 'application/json' },
-        body: data
+        headers: { Accept: 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
+        body: data,
       });
       const jsonData = await res.json();
       if (!res.ok) {
