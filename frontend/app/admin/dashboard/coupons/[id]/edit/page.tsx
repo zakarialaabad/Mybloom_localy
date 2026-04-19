@@ -190,10 +190,10 @@ export default function EditCouponPage() {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-[#444] mb-2">Company Name</label>
+                <label className="block text-[11px] font-bold text-[#444] mb-2">Campaign Name</label>
                 <input
                   type="text"
-                  placeholder="e.g. Luxury Brands Inc."
+                  placeholder="e.g. Ramadan 2026"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   className="w-full px-4 py-3 bg-[#f8f9fa] border-transparent rounded-[8px] text-[13px] text-[#333] focus:bg-white focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all outline-none"
