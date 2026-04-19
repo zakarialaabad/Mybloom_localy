@@ -29,7 +29,6 @@ const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea4779426
  * Matches UniversSection transformation for consistent styling
  */
 function productToCard(p: Product): ProductCardProps {
-  // Ensure imageUrl falls back to first image if primary_image is null
   const imageUrl = p.primary_image || p.images?.[0]?.image_url || FALLBACK_IMG;
   const secondaryImageUrl = p.images?.[1]?.image_url || undefined;
   
@@ -87,7 +86,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
   const addItem = useCartStore((s) => s.addItem);
   
-  // ── Call hooks at top level (required by React rules) ──
   const findProductBySlug = useCatalogStore((s) => s.findProductBySlug);
   const getProductDetailBySlug = useCatalogStore((s) => s.getProductDetailBySlug);
   const cacheProductDetail = useCatalogStore((s) => s.cacheProductDetail);
@@ -198,7 +196,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       return () => { mounted = false; };
     }
 
-    // ── Phase 2: No cache — full blocking fetch ──
     console.log('[ProductPage] Product not in cache, fetching from API...');
     productService.show(slug)
       .then((data) => {
@@ -226,7 +223,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     return () => { mounted = false; };
   }, [slug, findProductBySlug, getProductDetailBySlug, cacheProductDetail, getAllCachedProducts]);
 
-  // Helper: Set variant selection from product data
   const selectVariantFromProduct = (data: Product) => {
     if (data.variants && data.variants.length > 0) {
       const firstAvailable = data.variants.find((v) => v.stock_quantity && v.stock_quantity > 0);
@@ -259,7 +255,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     }
   };
 
-  // Helper: Handle recommendation logic
   const handleRecommendations = (product: Product, allCachedProducts: Product[]) => {
     if (product.recommendations && product.recommendations.length > 0) {
       const transformedRecs = product.recommendations.map(productToCard);
@@ -294,7 +289,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   // ─── Carousel scroll handlers ───────────────────────────────────────────────
   const scrollCarousel = (direction: 'left' | 'right') => {
     if (!carouselRef.current) return;
-    const scrollAmount = 320; // Approximate width of 1 ProductCard + gap
+    const scrollAmount = 320;
     if (direction === 'left') {
       carouselRef.current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
     } else {
@@ -309,7 +304,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       showToast('Ce produit est actuellement épuisé.', 'error');
       return;
     }
-    // size === 0 means it's a virtual placeholder (no real variant)
     const sizeLabel = selectedSize.size > 0
       ? `${selectedSize.size}ml`
       : null;
@@ -351,16 +345,14 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     }, 1000);
   };
 
-  // ─── Loading skeleton — renders the page layout (behind the spinner overlay) ──
+  // ─── Loading skeleton ───────────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col bg-white">
-        {/* Spinner overlay sits on top of the skeleton layout below */}
         <LoadingSpinner />
         <Header />
         <main className="flex-grow bg-white">
           <div className="container mx-auto px-4 pt-6 pb-12 sm:pt-8 sm:pb-16 max-w-7xl">
-            {/* Breadcrumb skeleton */}
             <div className="flex gap-2 mb-6 sm:mb-8">
               <div className="h-4 w-12 bg-gray-100 rounded animate-pulse" />
               <div className="h-4 w-4 bg-gray-100 rounded animate-pulse" />
@@ -368,16 +360,13 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               <div className="h-4 w-4 bg-gray-100 rounded animate-pulse" />
               <div className="h-4 w-32 bg-gray-100 rounded animate-pulse" />
             </div>
-            {/* Product layout skeleton */}
             <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
-              {/* Left: image */}
               <div className="w-full md:w-1/2 space-y-4">
                 <div className="w-full aspect-square md:aspect-[4/5] bg-gray-100 rounded-sm animate-pulse" />
                 <div className="flex gap-3">
                   {[1,2,3,4].map(i => <div key={i} className="h-20 w-20 bg-gray-100 rounded-sm animate-pulse" />)}
                 </div>
               </div>
-              {/* Right: info */}
               <div className="w-full md:w-1/2 space-y-5">
                 <div className="h-4 w-24 bg-gray-100 rounded animate-pulse" />
                 <div className="h-9 w-3/4 bg-gray-100 rounded animate-pulse" />
@@ -436,11 +425,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             <span className="text-gray-900">{product.name}</span>
           </nav>
 
-          {/* ══════════════════════════════════════════════════════════════════════ */}
-          {/* STICKY SECTIONS: Media + Product Info (Fixed Height on Desktop) */}
-          {/* ══════════════════════════════════════════════════════════════════════ */}
-          
-          {/* Product Layout — Sticky Section Container */}
+          {/* Product Layout */}
           <div className="flex flex-col md:flex-row gap-8 lg:gap-12">
             
             {/* ── Media Column (Left, Sticky on Desktop) ── */}
@@ -485,7 +470,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 {/* Share Button (Right Side - Top) */}
                 <button 
                   onClick={(e) => {
-                    e.stopPropagation(); // Prevents zooming the gallery when clicking Share
+                    e.stopPropagation();
                     if (typeof window !== 'undefined' && product) {
                       const productUrl = `${window.location.origin}/product/${product.slug}`;
                       const message = `${product.name}\n\n${product.description ||  product.subtitle || 'Premium fragrance'}\n\nPrice: ${product.min_price} DH\n\n${productUrl}`;
@@ -618,34 +603,30 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                   )}
                 </div>
               </div>
-              
-              {/* Description (Desktop Only) */}
-              {product.description && (
-                <p className="mt-6 text-gray-500 leading-relaxed text-[15px] font-serif">{product.description}</p>
-              )}
+              {/* ✅ FIX 1: Description block above button REMOVED */}
             </div>
 
             <hr className="hidden md:block mb-8 border-gray-200" />
 
             {/* Actions Section */}
             <div className="mb-8 flex items-center gap-3 md:gap-4 lg:gap-5 w-full h-12 md:max-w-2xl">
-              {/* Quantity Selector: Fixed square-like proportions matching reference */}
-              <div className="flex h-11 w-[100px] md:h-12 md:w-[120px] items-center justify-between rounded-md border border-gray-300 px-2 shrink-0 bg-white shadow-sm">
-                <button 
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))} 
-                  className="text-gray-500 hover:text-gray-900 text-xl font-light w-8 h-full flex justify-center items-center fallback-touch"
+              {/* Quantity selector — equal thirds, perfectly centred */}
+              <div className="flex h-11 w-[100px] md:h-12 md:w-[120px] items-center rounded-md border border-gray-300 shrink-0 bg-white shadow-sm overflow-hidden">
+                <button
+                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                  className="flex-1 h-full flex items-center justify-center text-gray-500 hover:text-gray-900 text-xl font-light fallback-touch"
                 >-</button>
-                <span className="font-serif text-base font-medium">{quantity}</span>
+                <span className="flex-1 h-full flex items-center justify-center font-serif font-medium tabular-nums" style={{ fontSize: '28px' }}>{quantity}</span>
                 <button
                   onClick={() => {
                     const max = selectedSize?.stock_quantity ?? product?.stock ?? 99;
                     setQuantity((q) => Math.min(max, q + 1));
                   }}
-                  className="text-gray-500 hover:text-gray-900 text-xl font-light w-8 h-full flex justify-center items-center fallback-touch"
+                  className="flex-1 h-full flex items-center justify-center text-gray-500 hover:text-gray-900 text-xl font-light fallback-touch"
                 >+</button>
               </div>
 
-              {/* Buy Now: Dominant wide button */}
+              {/* Buy Now */}
               <button
                 onClick={handleBuyNow}
                 className={`flex h-11 md:h-12 flex-1 items-center justify-center rounded-md px-4 shadow-sm transition-all active:scale-[0.98] ${
@@ -657,7 +638,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 <span className="font-serif italic text-base md:text-lg tracking-wide">Acheter maintenant &rsaquo;</span>
               </button>
 
-              {/* Cart Icon: Fixed square */}
+              {/* Cart Icon */}
               <button
                 onClick={handleAddToCart}
                 className={`flex h-11 w-11 md:h-12 md:w-12 items-center justify-center rounded-md border shrink-0 shadow-sm active:scale-[0.98] transition-colors ${
@@ -669,7 +650,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 <ShoppingCart className="h-5 w-5 md:h-6 md:w-6" strokeWidth={1.5} />
               </button>
 
-              {/* Wishlist Link: Fixed square (Only on desktop) */}
+              {/* Wishlist (Desktop only) */}
               <button
                 onClick={handleWishlist}
                 className={`hidden md:flex h-12 w-12 items-center justify-center rounded-md border shrink-0 shadow-sm active:scale-[0.98] transition-colors ${
@@ -683,9 +664,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             </div>
 
             {/* ── Size Variant Cards ─────────────────────────────────────────────── */}
-            {/* Priority: new product_variants system → fall back to old product_sizes */}
+            {/* ✅ FIX 3: border-[4px] + bg-[#FFFDF6] for selected state */}
             {product.variants && product.variants.length > 0 ? (
-              <div className={`mb-12 grid gap-4 ${
+              <div className={`mb-0 grid gap-4 ${
                 product.variants.length === 1 ? 'grid-cols-1' :
                 product.variants.length === 2 ? 'grid-cols-2' :
                 'grid-cols-3'
@@ -698,11 +679,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                       key={variant.id}
                       disabled={outOfStock}
                       onClick={() => !outOfStock && setSelectedSize(variant)}
-                      className={`relative flex flex-col items-center justify-center rounded-sm border-2 py-4 transition-colors ${
+                      className={`relative flex flex-col items-center justify-center rounded-sm border-[4px] py-4 transition-colors ${
                         outOfStock
                           ? 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200'
                           : isSelected
-                          ? 'border-[#4a403a] bg-white'
+                          ? 'border-[#4a403a] bg-[#FFFDF6]'
                           : 'border-gray-200 hover:border-gray-300 bg-white'
                       }`}
                     >
@@ -722,7 +703,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 })}
               </div>
             ) : product.sizes && product.sizes.length > 0 ? (
-              <div className={`mb-12 grid gap-4 ${
+              <div className={`mb-0 grid gap-4 ${
                 product.sizes.length === 1 ? 'grid-cols-1' :
                 product.sizes.length === 2 ? 'grid-cols-2' :
                 'grid-cols-3'
@@ -744,11 +725,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                         is_default:        true,
                         stock_quantity:    size.stock_quantity ?? 0,
                       })}
-                      className={`relative flex flex-col items-center justify-center rounded-sm border-2 py-4 transition-colors ${
+                      className={`relative flex flex-col items-center justify-center rounded-sm border-[4px] py-4 transition-colors ${
                         outOfStock
                           ? 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200'
                           : isSelected
-                          ? 'border-[#4a403a] bg-white'
+                          ? 'border-[#4a403a] bg-[#FFFDF6]'
                           : 'border-gray-200 hover:border-gray-300 bg-white'
                       }`}
                     >
@@ -785,7 +766,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               )}
             </div>
 
-            {/* Accordion: Ingrédients — data from backend via ingredient_product pivot */}
+            {/* Accordion: Ingrédients */}
             {product.ingredients && product.ingredients.length > 0 && (() => {
               const PER_PAGE   = 5;
               const totalPages = Math.ceil(product.ingredients.length / PER_PAGE);
@@ -812,8 +793,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
                   {isIngredientsOpen && (
                     <div className="mt-8 relative px-8">
-
-                      {/* Left arrow */}
                       <button
                         onClick={() => setIngredientPage((p) => Math.max(0, p - 1))}
                         disabled={!canPrevIng}
@@ -823,7 +802,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                         <ChevronLeft className="h-4 w-4" />
                       </button>
 
-                      {/* Items row — single row, 5 items max */}
                       <div className="flex justify-center gap-6 sm:gap-8">
                         {visible.map((ing) => (
                           <div key={ing.id} className="flex flex-col items-center gap-3 w-20 sm:w-24 shrink-0">
@@ -846,7 +824,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                         ))}
                       </div>
 
-                      {/* Right arrow */}
                       <button
                         onClick={() => setIngredientPage((p) => Math.min(totalPages - 1, p + 1))}
                         disabled={!canNextIng}
@@ -856,7 +833,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                         <ChevronRight className="h-4 w-4" />
                       </button>
 
-                      {/* Page dots — only shown when more than 1 page */}
                       {totalPages > 1 && (
                         <div className="flex justify-center gap-1.5 mt-6">
                           {Array.from({ length: totalPages }).map((_, i) => (
@@ -870,14 +846,13 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                           ))}
                         </div>
                       )}
-
                     </div>
                   )}
                 </div>
               );
             })()}
 
-            {/* Accordion: Delivery & Returns (static) */}
+            {/* Accordion: Delivery & Returns */}
             <div className="border-t border-gray-200 pt-6 mt-6">
               <button onClick={() => setIsDeliveryOpen(!isDeliveryOpen)} className="flex w-full items-center justify-between text-left group">
                 <span className="font-serif text-2xl italic text-gray-900 group-hover:text-[#4a403a] transition-colors">Livraison et retours</span>
@@ -906,7 +881,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             {/* Accordion: Reviews */}
             {product.reviews && product.reviews.length > 0 && (
               <div className="border-t border-gray-200 pt-6 mt-6">
-                {/* ── Header ── */}
                 <button onClick={() => setIsReviewsOpen(!isReviewsOpen)} className="flex w-full items-center justify-between text-left group">
                   <span className="font-serif text-2xl italic text-gray-900 group-hover:text-[#4a403a] transition-colors">Reviews</span>
                   {isReviewsOpen ? <ChevronUp className="h-6 w-6 text-gray-500" /> : <ChevronDown className="h-6 w-6 text-gray-500" />}
@@ -914,165 +888,146 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
                 {isReviewsOpen && (
                   <div className="mt-8">
-
-                    {/* ── Quote ── */}
-                    <p className="text-center font-serif italic text-gray-500 text-sm mb-8 px-2 leading-relaxed">
-                      &ldquo;Nous croyons que l&rsquo;excellence ne se revendique pas, elle se constate.&rdquo;
-                    </p>
-
-                    {/* ── Rating summary: big score left + bars right ── */}
-                    <div className="flex items-center gap-6 mb-10 px-2">
-                      {/* Big score */}
-                      <div className="text-center shrink-0 w-28">
-                        <div className="font-serif italic leading-none text-gray-900" style={{ fontSize: '4.5rem' }}>
-                          {product.avg_rating.toFixed(1)}
+                    {/* Rating summary — matches CustomerReviewsSection layout */}
+                    <div className="flex flex-col sm:flex-row items-center gap-8 sm:gap-12 mb-10 justify-center">
+                      {/* Score */}
+                      <div className="flex flex-col items-center space-y-3 shrink-0">
+                        <div className="text-7xl font-serif font-light text-[#2c2c2c] tracking-tight">
+                          {product.avg_rating.toFixed(1).replace('.', ',')}
                         </div>
-                        <div className="flex justify-center gap-0.5 my-2">
+                        <div className="flex justify-center gap-1">
                           {[1,2,3,4,5].map((s) => (
-                            <svg key={s} className={`h-4 w-4 fill-current ${s <= Math.round(product.avg_rating) ? 'text-[#d4af37]' : 'text-gray-200'}`} viewBox="0 0 20 20">
+                            <svg key={s} className={`w-5 h-5 fill-current ${s > Math.round(product.avg_rating) ? 'text-gray-300' : 'text-[#d4af37]'}`} viewBox="0 0 20 20">
                               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                             </svg>
                           ))}
                         </div>
-                        <p className="text-xs text-gray-400">{product.review_count} au total</p>
+                        <div className="text-xs text-gray-400 uppercase tracking-widest font-light">{product.review_count} Avis</div>
                       </div>
 
-                      {/* Star distribution bars */}
-                      <div className="flex-1 space-y-2">
+                      {/* Distribution bars */}
+                      <div className="w-full sm:w-auto sm:min-w-[200px] space-y-2.5">
                         {[5,4,3,2,1].map((star) => {
                           const count = product.reviews!.filter((r) => Math.round(r.rating) === star).length;
                           const pct   = product.reviews!.length > 0 ? (count / product.reviews!.length) * 100 : 0;
                           return (
-                            <div key={star} className="flex items-center gap-2">
-                              <span className="text-xs text-gray-400 w-3 shrink-0 text-right">{star}</span>
-                              <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div
-                                  className="h-full bg-[#d4af37] rounded-full transition-all duration-500"
-                                  style={{ width: `${pct}%` }}
-                                />
+                            <div key={star} className="flex items-center gap-3">
+                              <span className="text-xs font-serif text-gray-600 w-3">{star}</span>
+                              <div className="flex-1 bg-gray-100 h-1 rounded-full overflow-hidden">
+                                <div className="bg-[#d4af37] h-full rounded-full transition-all duration-700" style={{ width: `${pct}%` }} />
                               </div>
+                              <span className="text-xs text-gray-400 w-10 text-right">{pct.toFixed(0)}%</span>
                             </div>
                           );
                         })}
                       </div>
                     </div>
 
-                    {/* ── Reviews Carousel ── */}
-                    {(() => {
-                      // Use real scrolling like recommendations carousel
-                      return (
-                        <div className="relative group">
-                          {/* Left arrow button — only show when more than 1 review */}
-                          {product.reviews!.length > 1 && (
-                            <button
-                              onClick={() => {
-                                if (reviewsCarouselRef.current) {
-                                  reviewsCarouselRef.current.scrollBy({ left: -280, behavior: 'smooth' });
-                                }
-                              }}
-                              className="absolute left-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 opacity-0 group-hover:opacity-100 transition-opacity"
+                    {/* Quote */}
+                    <p className="text-center font-serif italic text-[#4a403a] text-sm mb-8 px-2 leading-relaxed">
+                      &ldquo;Nous croyons que l&rsquo;excellence ne se revendique pas, elle se constate.&rdquo;
+                    </p>
+
+                    {/* Carousel — matches CustomerReviewsSection card style */}
+                    <div className="relative">
+                      <div
+                        ref={reviewsCarouselRef}
+                        onScroll={() => {
+                          const el = reviewsCarouselRef.current;
+                          if (!el) return;
+                        }}
+                        className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden items-stretch pb-4"
+                      >
+                        {product.reviews!.map((review) => {
+                          const initials = review.reviewer_name
+                            .split(' ').map((n: string) => n[0]).join('').toUpperCase().substring(0, 2);
+                          return (
+                            <div
+                              key={review.id}
+                              className="flex-none w-[calc(100%-16px)] sm:w-[calc(50%-12px)] snap-start bg-white rounded-[16px] border-[0.5px] border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col p-4 text-left"
                             >
-                              <ChevronLeft className="h-4 w-4" />
-                            </button>
-                          )}
-
-                          {/* Horizontal Scrollable Container */}
-                          <div
-                            ref={reviewsCarouselRef}
-                            className="overflow-x-auto scrollbar-hide px-6"
-                            style={{
-                              scrollBehavior: 'smooth',
-                              scrollbarWidth: 'none',
-                              msOverflowStyle: 'none',
-                            }}
-                          >
-                            <div className="flex gap-4 pb-4" style={{ minWidth: 'min-content' }}>
-                              {product.reviews!.map((review) => (
-                                <div
-                                  key={review.id}
-                                  className="shrink-0 rounded-2xl border border-gray-100 overflow-hidden bg-white flex flex-col"
-                                  style={{ width: 248 }}
-                                >
-                                  {/* Image */}
-                                  {review.images?.[0] ? (
-                                    <div
-                                      className="relative bg-gray-50 cursor-pointer hover:shadow-lg transition-shadow group/image"
-                                      style={{ height: 180 }}
-                                      onClick={() => {
-                                        const allReviewImages = product.reviews?.flatMap(review => review.images?.map(img => img.image_url) || []) || [];
-                                        setGalleryImages(allReviewImages);
-                                        setGalleryStartImage(review.images?.[0]?.image_url || '');
-                                        setGalleryOpen(true);
-                                      }}
-                                    >
-                                      <Image
-                                        src={review.images[0].image_url}
-                                        alt="Review"
-                                        fill
-                                        unoptimized
-                                        className="object-cover group-hover/image:scale-105 transition-transform duration-300"
-                                      />
-                                      {/* Zoom hint overlay */}
-                                      <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/10 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover/image:opacity-100">
-                                        <span className="bg-white/90 backdrop-blur-sm text-gray-900 px-3 py-1.5 flex items-center gap-1.5 rounded-full text-xs font-medium shadow-sm">
-                                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
-                                          </svg>
-                                          Agrandir
-                                        </span>
-                                      </div>
-                                    </div>
-                                  ) : (
-                                    <div className="bg-gray-50" style={{ height: 48 }} />
-                                  )}
-
-                                  {/* Body */}
-                                  <div className="p-4 flex flex-col flex-grow">
-                                    {review.body && (
-                                      <p className="text-xs text-gray-500 leading-relaxed mb-3 line-clamp-3 flex-grow">
-                                        {review.body}
-                                      </p>
-                                    )}
-                                    <div className="text-center border-t border-gray-100 pt-3 mt-auto">
-                                      <h5 className="font-serif font-bold text-gray-900 text-sm">{review.reviewer_name}</h5>
-                                      <div className="flex justify-center gap-0.5 my-1.5">
-                                        {[1,2,3,4,5].map((s) => (
-                                          <svg key={s} className={`h-3 w-3 fill-current ${s <= review.rating ? 'text-[#d4af37]' : 'text-gray-200'}`} viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                          </svg>
-                                        ))}
-                                      </div>
-                                      <p className="text-xs text-gray-400">{new Date(review.created_at).toLocaleDateString('fr-MA')}</p>
-                                    </div>
+                              {/* Card Header: Avatar + Info */}
+                              <div className="flex items-center gap-2.5 mb-2.5">
+                                <div className="w-9 h-9 rounded-full bg-[#f5e6ea] text-[#C9527A] flex items-center justify-center text-[13px] font-medium shrink-0">
+                                  {initials}
+                                </div>
+                                <div className="flex flex-col min-w-0">
+                                  <span className="text-[13px] font-medium text-gray-900 truncate">{review.reviewer_name}</span>
+                                  <div className="flex items-center gap-1.5">
+                                    <span className="text-[11px] text-gray-400">{new Date(review.created_at).toLocaleDateString('fr-MA')}</span>
+                                    <span className="text-[10px] font-medium text-[#2ecc71] flex items-center gap-0.5">
+                                      <svg className="w-2.5 h-2.5 fill-current" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                      </svg>
+                                      Vérifié
+                                    </span>
                                   </div>
                                 </div>
-                              ))}
+                              </div>
+
+                              {/* Stars */}
+                              <div className="flex gap-0.5 mb-2">
+                                {[1,2,3,4,5].map((s) => (
+                                  <svg key={s} className={`w-3.5 h-3.5 fill-current ${s <= review.rating ? 'text-[#D4A847]' : 'text-gray-200'}`} viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                  </svg>
+                                ))}
+                              </div>
+
+                              {/* Body */}
+                              {review.body && (
+                                <p className="text-[12px] text-gray-600 leading-relaxed mb-4 line-clamp-3 italic opacity-90">{review.body}</p>
+                              )}
+
+                              {/* Image */}
+                              {review.images?.[0] ? (
+                                <div
+                                  className="relative w-full h-[200px] bg-gray-50 cursor-pointer group overflow-hidden mt-auto rounded-[10px]"
+                                  onClick={() => {
+                                    const allReviewImages = product.reviews?.flatMap(r => r.images?.map((img: { image_url: string }) => img.image_url) || []) || [];
+                                    setGalleryImages(allReviewImages);
+                                    setGalleryStartImage(review.images![0].image_url);
+                                    setGalleryOpen(true);
+                                  }}
+                                >
+                                  <img
+                                    src={review.images[0].image_url}
+                                    alt="Review"
+                                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                                  />
+                                </div>
+                              ) : (
+                                <div className="bg-gray-50 w-full h-[200px] mt-auto rounded-[10px]" />
+                              )}
                             </div>
-                          </div>
+                          );
+                        })}
+                      </div>
 
-                          {/* Right arrow button — only show when more than 1 review */}
-                          {product.reviews!.length > 1 && (
-                            <button
-                              onClick={() => {
-                                if (reviewsCarouselRef.current) {
-                                  reviewsCarouselRef.current.scrollBy({ left: 280, behavior: 'smooth' });
-                                }
-                              }}
-                              className="absolute right-0 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-white border border-gray-200 shadow-sm flex items-center justify-center text-gray-500 hover:text-gray-900 opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <ChevronRight className="h-4 w-4" />
-                            </button>
-                          )}
-                        </div>
-                      );
-                    })()}
-
+                      {/* Navigation Arrows */}
+                      {product.reviews!.length > 1 && (
+                        <>
+                          <button
+                            onClick={() => reviewsCarouselRef.current?.scrollBy({ left: -320, behavior: 'smooth' })}
+                            className="absolute left-0 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-white/90 border border-gray-100 rounded-full w-10 h-10 flex items-center justify-center shadow-lg text-gray-400 hover:text-[#e63a6c] transition-all duration-200 z-30"
+                          >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15 19l-7-7 7-7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" /></svg>
+                          </button>
+                          <button
+                            onClick={() => reviewsCarouselRef.current?.scrollBy({ left: 320, behavior: 'smooth' })}
+                            className="absolute right-0 top-1/2 translate-x-1/2 -translate-y-1/2 bg-white/90 border border-gray-100 rounded-full w-10 h-10 flex items-center justify-center shadow-lg text-gray-800 hover:text-[#e63a6c] transition-all duration-200 z-30"
+                          >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" /></svg>
+                          </button>
+                        </>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Accordion: FAQ (static) */}
+            {/* Accordion: FAQ */}
             <div className="border-t border-gray-200 pt-6 mt-6">
               <button onClick={() => setIsFaqOpen(!isFaqOpen)} className="flex w-full items-center justify-between text-left group">
                 <span className="font-serif text-2xl italic text-gray-900 group-hover:text-[#4a403a] transition-colors">FAQ</span>
@@ -1098,20 +1053,17 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           </div>{/* end details column */}
         </div>{/* end two-column flex row */}
 
-        {/* ── You may also Like — Recommendation Products Carousel ── */}
+        {/* ✅ FIX 4: "You may also Like" traduit en français */}
         {recommendations && recommendations.length > 0 && (
           <section className="w-full py-12 md:py-16 bg-white border-t border-gray-200">
             <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
-              {/* Header */}
               <div className="mb-8 md:mb-12">
                 <h2 className="text-2xl md:text-3xl font-serif font-bold italic text-gray-900 text-center md:text-left">
-                  You may also <span className="not-italic" style={{ fontFamily: 'var(--font-serif-italic), cursive', fontStyle: 'italic', color: '#da2966' }}>Like</span>
+                  Vous aimerez <span className="not-italic" style={{ fontFamily: 'var(--font-serif-italic), cursive', fontStyle: 'italic', color: '#da2966' }}>Aussi</span>
                 </h2>
               </div>
 
-              {/* Carousel Container with Arrow Buttons */}
               <div className="relative group">
-                {/* Left Arrow Button */}
                 {recommendations.length > 5 && (
                   <button
                     onClick={() => scrollCarousel('left')}
@@ -1122,7 +1074,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                   </button>
                 )}
 
-                {/* Horizontal Scrollable Container */}
                 <div
                   ref={carouselRef}
                   className="overflow-x-auto scrollbar-hide"
@@ -1134,18 +1085,13 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 >
                   <div className="flex gap-3 sm:gap-4 md:gap-6 pb-4" style={{ minWidth: 'min-content' }}>
                     {recommendations.map((rec) => (
-                      <div key={rec.id} className="flex-shrink-0 w-auto" style={{
-                        width: '200px', // Approximate ProductCard width for consistency
-                      }}>
-                        <ProductCard
-                          {...rec}
-                        />
+                      <div key={rec.id} className="flex-shrink-0 w-auto" style={{ width: '200px' }}>
+                        <ProductCard {...rec} />
                       </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Right Arrow Button */}
                 {recommendations.length > 5 && (
                   <button
                     onClick={() => scrollCarousel('right')}
@@ -1161,7 +1107,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
         )}
         </div>
 
-        {/* ── Fullscreen Image Gallery Modal (for both product images and review images) ── */}
+        {/* Fullscreen Image Gallery Modal */}
         <ImageGalleryModal
           isOpen={isGalleryOpen}
           onClose={() => {
@@ -1174,7 +1120,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           altText={product.name}
         />
 
-        {/* ── Custom Toast Notification ── */}
+        {/* Custom Toast Notification */}
         {toast.show && (
           <div
             className={`fixed top-4 right-4 z-[9999] flex items-center space-x-3 px-5 py-3 rounded-md shadow-lg transition-all duration-300 animate-in fade-in slide-in-from-top-4 ${
