@@ -153,7 +153,7 @@ export default function CheckoutPage() {
           order: result.order_number,
           total: result.total,
           name: `${firstName} ${lastName}`,
-          phone,
+          phone: normalizedPhone,
           city,
         }));
       }

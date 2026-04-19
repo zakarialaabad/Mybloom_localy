@@ -35,14 +35,24 @@ export default function OrderSuccessPage() {
 
   useEffect(() => {
     if (!order || !phone) return;
-    // Auto-download invoice PDF after a short delay so the page renders first
-    const timer = setTimeout(() => {
-      const link = document.createElement('a');
-      link.href = `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${order}/download?phone=${encodeURIComponent(phone)}`;
-      link.download = `invoice-${order}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+    // Auto-download invoice PDF — use fetch+blob to avoid cross-origin navigation
+    const timer = setTimeout(async () => {
+      try {
+        const url = `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${order}/download?phone=${encodeURIComponent(phone)}`;
+        const res = await fetch(url);
+        if (!res.ok) return; // silently ignore if invoice unavailable
+        const blob = await res.blob();
+        const objectUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = objectUrl;
+        link.download = `invoice-${order}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(objectUrl);
+      } catch {
+        // Silently ignore download errors — user can download manually
+      }
     }, 1500);
     return () => clearTimeout(timer);
   }, [order, phone]);

@@ -62,13 +62,13 @@ Route::prefix('api')->group(function () {
             Route::post('/coupons/validate',           [CouponController::class, 'check']);
 
             // Orders — create + track (no auth)
-            Route::post('/orders',                                [OrderController::class, 'store'])->middleware('throttle:5,1');
+            Route::post('/orders',                                [OrderController::class, 'store']);
             Route::get('/orders/{orderNumber}/track',             [OrderController::class, 'track']);
             Route::get('/invoices/{orderNumber}/download',        [OrderController::class, 'downloadInvoice']);
 
             // Reviews — GET (approved, optional product_id scope) | POST (submit, no auth)
             Route::get('/reviews',                     [ReviewController::class, 'index']);
-            Route::post('/reviews',                    [ReviewController::class, 'store'])->middleware('throttle:3,1');
+            Route::post('/reviews',                    [ReviewController::class, 'store'])->middleware('throttle:10,1');
 
             // Banners — public read-only
             Route::get('/banners/homepage',            [BannerController::class, 'homepage']);
@@ -81,7 +81,7 @@ Route::prefix('api')->group(function () {
 
             // Store — public contact info
             Route::get('/store/contact',               [StoreController::class, 'contact']);
-            Route::post('/store/contact-submit',       [StoreController::class, 'submitContact'])->middleware('throttle:3,1');
+            Route::post('/store/contact-submit',       [StoreController::class, 'submitContact'])->middleware('throttle:10,1');
         });
 
         // ── Admin — auth endpoint (no sanctum guard, only throttle) ─────────

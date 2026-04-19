@@ -50,13 +50,15 @@ class OrderController extends Controller
 
         $order = Order::with(['items.product.images', 'statusHistories', 'shippingMethod'])
             ->where('order_number', $orderNumber)
-            ->where('customer_phone', $request->phone)
             ->first();
 
         if (! $order) {
             return response()->json(['message' => 'Order not found. Please check your order number and phone.'], 404);
         }
 
+        if (! $this->phonesMatch($request->phone, $order->customer_phone)) {
+            return response()->json(['message' => 'Order not found. Please check your order number and phone.'], 404);
+        }
         return response()->json(['data' => new OrderTrackResource($order)]);
     }
 
@@ -74,10 +76,14 @@ class OrderController extends Controller
 
         $order = Order::with(['items.product', 'shippingMethod'])
             ->where('order_number', $orderNumber)
-            ->where('customer_phone', $request->phone)
             ->first();
 
         if (! $order) {
+            return response()->json(['message' => 'Order not found. Please check your order number and phone.'], 404);
+        }
+
+        // Normalize both phones to digits-only local format for comparison
+        if (! $this->phonesMatch($request->phone, $order->customer_phone)) {
             return response()->json(['message' => 'Order not found. Please check your order number and phone.'], 404);
         }
 
@@ -95,5 +101,27 @@ class OrderController extends Controller
                 'Content-Disposition' => "attachment; filename=\"invoice-{$order->order_number}.pdf\"",
             ]
         );
+    }
+
+    /**
+     * Compare two phone numbers ignoring formatting differences.
+     * Handles: spaces, dashes, +212 vs 0 prefix (Moroccan numbers).
+     */
+    private function phonesMatch(string $a, string $b): bool
+    {
+        return $this->normalizePhone($a) === $this->normalizePhone($b);
+    }
+
+    private function normalizePhone(string $phone): string
+    {
+        // Strip all non-digit chars except leading +
+        $digits = preg_replace('/[^\d]/', '', $phone);
+
+        // +212XXXXXXXXX → 0XXXXXXXXX
+        if (str_starts_with($digits, '212') && strlen($digits) === 12) {
+            $digits = '0' . substr($digits, 3);
+        }
+
+        return $digits;
     }
 }

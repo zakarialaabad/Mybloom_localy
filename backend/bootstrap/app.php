@@ -21,8 +21,7 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\InjectAdminTokenFromCookie::class,
         ]);
 
-        // Throttle
-        $middleware->throttleApi();
+        // Note: throttle is applied per-route-group in routes/api.php (no global throttle)
 
         // Gzip compression for JSON responses
         $middleware->api(append: [
