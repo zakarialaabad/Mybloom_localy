@@ -136,6 +136,22 @@ return [
                 'height' => 300,
             ],
         ],
+        'brand_logos' => [
+            'path' => 'brand_logos',
+            'max_width' => 600,
+            'max_height' => 600,
+            'min_width' => 50,
+            'min_height' => 50,
+            'quality' => 85,
+            'allowed_mimes' => ['image/jpeg', 'image/png', 'image/webp', 'image/gif'],
+            'max_file_size' => 3 * 1024 * 1024, // 3MB
+            'convert_to_webp' => true,
+            'generate_thumbnail' => [
+                'enabled' => false,
+                'width' => 150,
+                'height' => 150,
+            ],
+        ],
     ],
 
     /**

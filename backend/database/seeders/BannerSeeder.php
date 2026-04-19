@@ -3,111 +3,51 @@
 namespace Database\Seeders;
 
 use App\Models\Banner;
+use App\Services\ImageService;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
 
 class BannerSeeder extends Seeder
 {
-    /**
-     * Seed the banners table with all existing banners.
-     * 
-     * Banners include:
-     * - Homepage slots (carousel/hero sections)
-     * - Collection hero images (for /collection pages)
-     */
     public function run(): void
     {
-        // ── Homepage Banners (hero section at top of homepage) ─────────────────
+        $imageService = app(ImageService::class);
+        $publicImageDir = base_path('../frontend/Public/public_Image');
 
-        Banner::create([
-            'title'         => 'MyBloom Special Collection',
-            'image_path'    => '/public_Image/Mybloom.jpg',
-            'type'          => 'homepage_slot',
-            'collection_id' => null,
-            'position'      => 1,
-            'link'          => '/collection',
-            'is_active'     => true,
-        ]);
+        $banners = [
+            ['title' => 'MyBloom Special Collection', 'image' => 'Mybloom.jpg', 'type' => 'homepage_slot', 'collection_id' => null, 'position' => 1, 'link' => '/collection', 'is_active' => true],
+            ['title' => 'Premium Perfumes', 'image' => 'Gemini_Generated_Image_hrmrnghrmrnghrmr@2x.jpg', 'type' => 'homepage_slot', 'collection_id' => 1, 'position' => 2, 'link' => '/collection?category=parfums', 'is_active' => true],
+            ['title' => 'Body Care Excellence', 'image' => 'Gemini_Generated_Image_kjemuakjemuakjem.jpg', 'type' => 'homepage_slot', 'collection_id' => 2, 'position' => 3, 'link' => '/collection?category=soins-du-corps', 'is_active' => true],
+            ['title' => 'Fast & Secure Delivery', 'image' => 'bloomDelivere.jpg', 'type' => 'homepage_slot', 'collection_id' => null, 'position' => 4, 'link' => null, 'is_active' => true],
+            ['title' => 'New Arrivals', 'image' => 'Gemini_Generated_Image_oceudqoceudqoceu.jpg', 'type' => 'homepage_slot', 'collection_id' => 3, 'position' => 5, 'link' => '/collection?category=nouveautes', 'is_active' => true],
+            ['title' => 'Explore All Products', 'image' => 'Gemini_Generated_Image_1el1is1el1is1el1.jpg', 'type' => 'collection_hero', 'collection_id' => null, 'position' => 1, 'link' => null, 'is_active' => true],
+            ['title' => 'Parfums Collection', 'image' => 'Gemini_Generated_Image_3524az3524az3524.jpg', 'type' => 'collection_hero', 'collection_id' => 1, 'position' => 1, 'link' => null, 'is_active' => true],
+            ['title' => 'Body Care Essentials', 'image' => 'Gemini_Generated_Image_y9e7hry9e7hry9e7 (1).jpg', 'type' => 'collection_hero', 'collection_id' => 2, 'position' => 1, 'link' => null, 'is_active' => true],
+            ['title' => 'Our Packaging', 'image' => 'order_packaging.jpg', 'type' => 'homepage_slot', 'collection_id' => null, 'position' => 6, 'link' => null, 'is_active' => true],
+        ];
 
-        Banner::create([
-            'title'         => 'Premium Perfumes',
-            'image_path'    => '/public_Image/Gemini_Generated_Image_hrmrnghrmrnghrmr@2x.jpg',
-            'type'          => 'homepage_slot',
-            'collection_id' => 1, // Parfums
-            'position'      => 2,
-            'link'          => '/collection?category=parfums',
-            'is_active'     => true,
-        ]);
+        foreach ($banners as $banner) {
+            $imagePath = $publicImageDir . DIRECTORY_SEPARATOR . $banner['image'];
+            $storedPath = '/public_Image/' . $banner['image']; // fallback
 
-        Banner::create([
-            'title'         => 'Body Care Excellence',
-            'image_path'    => '/public_Image/Gemini_Generated_Image_kjemuakjemuakjem.jpg',
-            'type'          => 'homepage_slot',
-            'collection_id' => 2, // Soins du Corps
-            'position'      => 3,
-            'link'          => '/collection?category=soins-du-corps',
-            'is_active'     => true,
-        ]);
+            if (file_exists($imagePath)) {
+                try {
+                    $result = $imageService->process($imagePath, 'banners');
+                    $storedPath = $result->relativePath;
+                } catch (\Exception $e) {
+                    Log::warning("BannerSeeder: Failed to process {$banner['image']}: {$e->getMessage()}");
+                }
+            }
 
-        Banner::create([
-            'title'         => 'Fast & Secure Delivery',
-            'image_path'    => '/public_Image/bloomDelivere.jpg',
-            'type'          => 'homepage_slot',
-            'collection_id' => null,
-            'position'      => 4,
-            'link'          => null,
-            'is_active'     => true,
-        ]);
-
-        Banner::create([
-            'title'         => 'New Arrivals',
-            'image_path'    => '/public_Image/Gemini_Generated_Image_oceudqoceudqoceu.jpg',
-            'type'          => 'homepage_slot',
-            'collection_id' => 3, // Nouveautés
-            'position'      => 5,
-            'link'          => '/collection?category=nouveautes',
-            'is_active'     => true,
-        ]);
-
-        // ── Collection Hero Banners (hero section for /collection page) ─────────
-
-        Banner::create([
-            'title'         => 'Explore All Products',
-            'image_path'    => '/public_Image/Gemini_Generated_Image_1el1is1el1is1el1.jpg',
-            'type'          => 'collection_hero',
-            'collection_id' => null, // Used as default collection hero
-            'position'      => 1,
-            'link'          => null,
-            'is_active'     => true,
-        ]);
-
-        Banner::create([
-            'title'         => 'Parfums Collection',
-            'image_path'    => '/public_Image/Gemini_Generated_Image_3524az3524az3524.jpg',
-            'type'          => 'collection_hero',
-            'collection_id' => 1, // Parfums
-            'position'      => 1,
-            'link'          => null,
-            'is_active'     => true,
-        ]);
-
-        Banner::create([
-            'title'         => 'Body Care Essentials',
-            'image_path'    => '/public_Image/Gemini_Generated_Image_y9e7hry9e7hry9e7 (1).jpg',
-            'type'          => 'collection_hero',
-            'collection_id' => 2, // Soins du Corps
-            'position'      => 1,
-            'link'          => null,
-            'is_active'     => true,
-        ]);
-
-        Banner::create([
-            'title'         => 'Our Packaging',
-            'image_path'    => '/public_Image/order_packaging.jpg',
-            'type'          => 'homepage_slot',
-            'collection_id' => null,
-            'position'      => 6,
-            'link'          => null,
-            'is_active'     => true,
-        ]);
+            Banner::create([
+                'title'         => $banner['title'],
+                'image_path'    => $storedPath,
+                'type'          => $banner['type'],
+                'collection_id' => $banner['collection_id'],
+                'position'      => $banner['position'],
+                'link'          => $banner['link'],
+                'is_active'     => $banner['is_active'],
+            ]);
+        }
     }
 }

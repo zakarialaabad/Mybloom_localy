@@ -23,6 +23,11 @@ return Application::configure(basePath: dirname(__DIR__))
         // Throttle
         $middleware->throttleApi();
 
+        // Gzip compression for JSON responses
+        $middleware->api(append: [
+            \App\Http\Middleware\CompressResponse::class,
+        ]);
+
         // Security headers on every response
         $middleware->api(append: [
             \App\Http\Middleware\SecurityHeaders::class,

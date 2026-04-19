@@ -12,6 +12,8 @@ class BannerService
 {
     private const MAX_HOMEPAGE_SLOTS = 4;
 
+    public function __construct(private ImageService $imageService) {}
+
     // ── Queries ────────────────────────────────────────────────────────────────
 
     public function getHomepageBanners(): \Illuminate\Database\Eloquent\Collection
@@ -48,9 +50,13 @@ class BannerService
     {
         $this->enforceConstraints($data);
 
-        $path = $image
-            ? $image->store('banners', 'public')
-            : ($data['image_path'] ?? '');
+        $path = '';
+        if ($image) {
+            $result = $this->imageService->process($image, 'banners');
+            $path = $result->relativePath;
+        } elseif (!empty($data['image_path'])) {
+            $path = $data['image_path'];
+        }
 
         return Banner::create([
             'title'         => $data['title'] ?? null,
@@ -66,8 +72,10 @@ class BannerService
     public function update(Banner $banner, array $data, ?UploadedFile $image): Banner
     {
         if ($image) {
-            Storage::disk('public')->delete($banner->image_path);
-            $data['image_path'] = $image->store('banners', 'public');
+            // Delete old image from storage
+            $this->imageService->delete($banner->image_path);
+            $result = $this->imageService->process($image, 'banners');
+            $data['image_path'] = $result->relativePath;
         }
 
         $banner->update([
@@ -87,7 +95,7 @@ class BannerService
 
     public function destroy(Banner $banner): void
     {
-        Storage::disk('public')->delete($banner->image_path);
+        $this->imageService->delete($banner->image_path);
         $banner->delete();
     }
 

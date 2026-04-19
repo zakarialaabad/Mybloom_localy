@@ -19,26 +19,38 @@ class ImageUrlResolver
             return $fallback;
         }
 
+        // Sanitize: strip embedded newlines/carriage-returns (from seeder copy-paste)
+        $path = str_replace(["\r\n", "\r", "\n"], ' ', $path);
+        $path = trim($path);
+        if (!$path) {
+            return $fallback;
+        }
+
         // If it's already a full URL (contains scheme), return as-is
         if (self::isFullUrl($path)) {
             return $path;
         }
 
-        // Paths served directly by the frontend (Next.js public folder) or backend public folder
-        // e.g. /images/ProductName/filename.jpg  →  served at http://localhost:3000/images/...
-        // e.g. /public_Image/filename.jpg         →  served at http://localhost:8000/public_Image/...
-        // e.g. /comments/filename.jpg             →  served at http://localhost:3000/comments/...
-        // e.g. /INGRÉDIENTS/filename.png          →  served at http://localhost:3000/INGRÉDIENTS/...
-        // These must NOT get the /storage/ prefix.
-        $frontendPaths = ['/images/', '/public_Image/', '/Brand/', '/INGRÉDIENTS/', '/Home background/', '/comments/'];
+        // Paths served directly by the frontend (Next.js public folder)
+        // These must NOT get the /storage/ prefix and stay relative.
+        $frontendPaths = ['/images/', '/Brand/', '/INGRÉDIENTS/', '/Home background/', '/comments/'];
         foreach ($frontendPaths as $prefix) {
             if (str_starts_with($path, $prefix)) {
                 return $path;
             }
         }
 
-        // Build storage URL from relative path (e.g. products/abc.jpg → /storage/products/abc.jpg)
-        return '/storage/' . ltrim($path, '/');
+        // Backend public assets (exist in both frontend/Public and backend/public)
+        // Case-insensitive check for /public_Image/ paths
+        if (stripos($path, '/public_image/') === 0) {
+            return rtrim(config('app.url'), '/') . $path;
+        }
+
+        // Build absolute storage URL from relative path
+        // e.g. products/abc.jpg → http://localhost:8000/storage/products/abc.jpg
+        // The frontend runs on a different port, so we must include the backend domain.
+        $storagePath = '/storage/' . ltrim($path, '/');
+        return rtrim(config('app.url'), '/') . $storagePath;
     }
 
     /**

@@ -4,8 +4,10 @@ namespace Database\Seeders;
 
 use App\Models\Review;
 use App\Models\ReviewImage;
+use App\Services\ImageService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class CommentReviewSeeder extends Seeder
@@ -22,6 +24,8 @@ class CommentReviewSeeder extends Seeder
 		if (empty($files)) {
 			return;
 		}
+
+		$imageService = app(ImageService::class);
 
 		foreach ($files as $file) {
 			$extension = strtolower($file->getExtension());
@@ -46,9 +50,17 @@ class CommentReviewSeeder extends Seeder
 				'approved_at'   => now(),
 			]);
 
+			$storedPath = '/comments/' . $filename; // fallback
+			try {
+				$result = $imageService->process($file->getPathname(), 'reviews');
+				$storedPath = $result->relativePath;
+			} catch (\Exception $e) {
+				Log::warning("CommentReviewSeeder: Failed to process {$filename}: {$e->getMessage()}");
+			}
+
 			ReviewImage::firstOrCreate([
 				'review_id' => $review->id,
-				'url'       => '/comments/' . $filename,
+				'url'       => $storedPath,
 			]);
 		}
 	}

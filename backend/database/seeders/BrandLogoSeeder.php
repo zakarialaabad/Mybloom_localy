@@ -2,15 +2,14 @@
 
 namespace Database\Seeders;
 
+use App\Services\ImageService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class BrandLogoSeeder extends Seeder
 {
-    /**
-     * Seed brands from logo images in frontend/Public/Brand.
-     */
     public function run(): void
     {
         $brandDir = base_path('../frontend/Public/Brand');
@@ -20,6 +19,7 @@ class BrandLogoSeeder extends Seeder
             return;
         }
 
+        $imageService = app(ImageService::class);
         $allowedExts = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'svg'];
         $files = array_diff(scandir($brandDir), ['.', '..']);
 
@@ -38,7 +38,20 @@ class BrandLogoSeeder extends Seeder
             }
 
             $slug = Str::slug($name);
-            $logoUrl = '/Brand/' . $file;
+            $filePath = $brandDir . DIRECTORY_SEPARATOR . $file;
+
+            // SVGs can't be processed by Intervention Image — store directly
+            if ($ext === 'svg') {
+                $logoUrl = '/Brand/' . $file;
+            } else {
+                try {
+                    $result = $imageService->process($filePath, 'brand_logos');
+                    $logoUrl = $result->relativePath;
+                } catch (\Exception $e) {
+                    Log::warning("BrandLogoSeeder: Failed to process {$file}: {$e->getMessage()}");
+                    $logoUrl = '/Brand/' . $file;
+                }
+            }
 
             $existing = DB::table('brands')->where('slug', $slug)->first();
             if ($existing) {

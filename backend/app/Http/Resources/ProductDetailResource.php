@@ -22,18 +22,12 @@ class ProductDetailResource extends JsonResource
         $url = str_replace(["\r\n", "\r", "\n"], ' ', $url);
         $url = trim($url);
         if (!$url) return null;
-        if (str_starts_with($url, 'https://')) return $url;
-        if (str_starts_with($url, 'http://')) {
-            $path = parse_url($url, PHP_URL_PATH) ?? '';
-            return rtrim(config('app.url'), '/') . $path;
-        }
-        // Only prefix Laravel storage paths with the backend URL.
-        // Frontend public assets (/images/, /ingredients/, etc.) stay relative
-        // so Next.js serves them directly from its own public folder.
-        if (str_starts_with($url, '/storage/')) {
-            return rtrim(config('app.url'), '/') . $url;
-        }
-        return $url;
+
+        // Delegate to centralized resolver which handles all path formats:
+        // - full URLs (https://...) → as-is
+        // - frontend paths (/images/, /comments/) → as-is (served by Next.js)
+        // - storage paths (products/xxx.webp, /storage/xxx) → APP_URL + /storage/...
+        return \App\Utilities\ImageUrlResolver::resolve($url);
     }
 
     /**
@@ -86,7 +80,7 @@ class ProductDetailResource extends JsonResource
                 'id'       => $this->brand?->id,
                 'name'     => $this->brand?->name,
                 'slug'     => $this->brand?->slug,
-                'logo_url' => $this->brand?->logo_url,
+                'logo_url' => $this->resolveUrl($this->brand?->logo_url),
             ]),
             'category'       => $this->whenLoaded('category', fn () => [
                 'id'   => $this->category?->id,
@@ -170,8 +164,9 @@ class ProductDetailResource extends JsonResource
      */
     private function getRecommendations(): array
     {
-        $items = $this->resource->getRelation('cachedRecommendations')
-            ?? collect(); // Fallback to empty if relation not set
+        $items = $this->resource->relationLoaded('cachedRecommendations')
+            ? $this->resource->getRelation('cachedRecommendations')
+            : collect();
 
         return $items->map(fn ($product) => [
             'id'              => $product->id,

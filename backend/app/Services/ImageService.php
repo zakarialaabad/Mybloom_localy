@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Image;
+use Intervention\Image\Drivers\Gd\Core as GdCore;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -51,26 +52,35 @@ class ImageService
             $originalHeight = $image->height();
             $originalExtension = $this->getExtension($file);
 
-            // Optimize image
-            $optimized = $this->optimize($image, $typeConfig);
+            // Resize image if needed
+            $resized = $this->optimize($image, $typeConfig);
 
-            // Generate unique filename
-            $filename = $this->generateFilename($type, $originalExtension);
+            // Capture dimensions before encoding (Image object has these methods)
+            $finalWidth = $resized->width();
+            $finalHeight = $resized->height();
+
+            // Determine output extension: use .webp when converting, else keep original
+            $outputExtension = ($this->config['convert_to_webp'] && strtolower($originalExtension) !== 'webp')
+                ? 'webp'
+                : $originalExtension;
+
+            // Generate unique filename with correct output extension
+            $filename = $this->generateFilename($type, $outputExtension);
             $relativePath = $typeConfig['path'] . '/' . $filename;
             $fullPath = $this->storagePath . '/' . $relativePath;
 
             // Ensure directory exists
             @mkdir(dirname($fullPath), 0755, true);
 
-            // Save optimized image
-            $optimized->save($fullPath);
+            // Encode and save image
+            $this->encodeAndSave($resized, $fullPath, $typeConfig);
 
             // Get final file size
             $filesize = filesize($fullPath);
 
             // Determine if converted to WebP
-            $converted = $this->config['convert_to_webp'] && strtolower($originalExtension) !== 'webp';
-            $finalExtension = $converted ? 'webp' : $originalExtension;
+            $converted = strtolower($outputExtension) !== strtolower($originalExtension);
+            $finalExtension = $outputExtension;
 
             // Build URL
             $url = '/storage/' . $relativePath;
@@ -93,8 +103,8 @@ class ImageService
                 filesize: $filesize,
                 mimeType: "image/{$finalExtension}",
                 dimensions: [
-                    'width' => $optimized->width(),
-                    'height' => $optimized->height(),
+                    'width' => $finalWidth,
+                    'height' => $finalHeight,
                 ],
                 converted: $converted,
                 originalExtension: $originalExtension
@@ -146,6 +156,95 @@ class ImageService
     }
 
     /**
+     * Download an image from an external URL and process it through the pipeline.
+     *
+     * @param string $url External image URL
+     * @param string $type Image type (products, reviews, banners, etc)
+     * @param int $timeout Download timeout in seconds
+     * @return ImageProcessResult
+     * @throws \Exception
+     */
+    public function processFromUrl(string $url, string $type = 'default', int $timeout = 30): ImageProcessResult
+    {
+        $tempFile = null;
+        try {
+            // Validate URL
+            if (!filter_var($url, FILTER_VALIDATE_URL)) {
+                throw new \Exception("Invalid URL: {$url}");
+            }
+
+            // Download the image to a temp file
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => $timeout,
+                    'user_agent' => 'Laravel/ImageService',
+                ],
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ],
+            ]);
+
+            $imageData = @file_get_contents($url, false, $context);
+            if ($imageData === false) {
+                throw new \Exception("Failed to download image from: {$url}");
+            }
+
+            // Write to temp file
+            $tempFile = tempnam(sys_get_temp_dir(), 'img_');
+            file_put_contents($tempFile, $imageData);
+
+            // Detect extension from content type or URL
+            $finfo = new \finfo(FILEINFO_MIME_TYPE);
+            $mimeType = $finfo->file($tempFile);
+            $extensionMap = [
+                'image/jpeg' => 'jpg',
+                'image/png' => 'png',
+                'image/webp' => 'webp',
+                'image/gif' => 'gif',
+            ];
+            $extension = $extensionMap[$mimeType] ?? pathinfo(parse_url($url, PHP_URL_PATH), PATHINFO_EXTENSION) ?: 'jpg';
+
+            // Rename temp file with correct extension so getExtension() works
+            $tempWithExt = $tempFile . '.' . $extension;
+            rename($tempFile, $tempWithExt);
+            $tempFile = $tempWithExt;
+
+            // Process through standard pipeline
+            return $this->process($tempFile, $type);
+        } finally {
+            // Clean up temp file
+            if ($tempFile && file_exists($tempFile)) {
+                @unlink($tempFile);
+            }
+        }
+    }
+
+    /**
+     * Process an image from raw binary content.
+     *
+     * @param string $content Raw image binary data
+     * @param string $type Image type (products, reviews, banners, etc)
+     * @param string $extension Original extension hint
+     * @return ImageProcessResult
+     * @throws \Exception
+     */
+    public function processFromContent(string $content, string $type = 'default', string $extension = 'jpg'): ImageProcessResult
+    {
+        $tempFile = null;
+        try {
+            $tempFile = tempnam(sys_get_temp_dir(), 'img_') . '.' . $extension;
+            file_put_contents($tempFile, $content);
+
+            return $this->process($tempFile, $type);
+        } finally {
+            if ($tempFile && file_exists($tempFile)) {
+                @unlink($tempFile);
+            }
+        }
+    }
+
+    /**
      * Get full URL for a relative path
      */
     public function getUrl(?string $relativePath): ?string
@@ -179,7 +278,8 @@ class ImageService
     }
 
     /**
-     * Optimize image - apply compression, resizing, WebP conversion
+     * Resize image to fit within max dimensions
+     * Returns the resized Image object (not encoded yet)
      */
     private function optimize(Image $image, array $typeConfig): Image
     {
@@ -191,22 +291,31 @@ class ImageService
             );
         }
 
-        // Strip metadata if enabled
-        if ($this->config['strip_metadata']) {
-            $image->stripExif();
-        }
-
-        // Convert to WebP if enabled and not already WebP
-        if ($this->config['convert_to_webp']) {
-            $image->toWebp($typeConfig['quality']);
-        } else {
-            // Set quality for JPEG/PNG
-            if ($this->config['progressive_jpeg']) {
-                $image->toJpeg($typeConfig['quality']);
-            }
-        }
+        // Metadata stripping is handled automatically by Intervention Image v3
+        // stripExif() method is not available in v3, but EXIF data handling is built-in
 
         return $image;
+    }
+
+    /**
+     * Encode resized image to target format (WebP or original) and save to disk.
+     * Handles the Intervention Image v3 API correctly:
+     * - toWebp() / toJpeg() / toPng() return EncodedImage objects
+     * - Only EncodedImage has the save() method
+     */
+    private function encodeAndSave(Image $image, string $fullPath, array $typeConfig): void
+    {
+        $quality = $typeConfig['quality'];
+
+        if ($this->config['convert_to_webp']) {
+            // toWebp() returns an EncodedImage object with save() method
+            $encoded = $image->toWebp(quality: $quality);
+            $encoded->save($fullPath);
+        } else {
+            // toJpeg() returns an EncodedImage object with save() method
+            $encoded = $image->toJpeg(quality: $quality);
+            $encoded->save($fullPath);
+        }
     }
 
     /**

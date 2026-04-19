@@ -2,15 +2,16 @@
 
 namespace Database\Seeders;
 
+use App\Services\ImageService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class IngredientImageSeeder extends Seeder
 {
     public function run(): void
     {
-        // Scan frontend/Public/INGRÉDIENTS for image files and map them to DB ingredients
         $folder = base_path('../frontend/Public/INGRÉDIENTS');
 
         if (!File::isDirectory($folder)) {
@@ -18,6 +19,7 @@ class IngredientImageSeeder extends Seeder
             return;
         }
 
+        $imageService = app(ImageService::class);
         $files = File::files($folder);
         $updated = 0;
 
@@ -27,14 +29,17 @@ class IngredientImageSeeder extends Seeder
                 continue;
             }
 
-            // Name in folder = ingredient name without extension (e.g. "Sésame")
             $name = $file->getFilenameWithoutExtension();
-            $filename = $file->getFilename();
 
-            // Path served by Next.js from its public folder
-            $path = '/INGRÉDIENTS/' . $filename;
+            $storedPath = '/INGRÉDIENTS/' . $file->getFilename(); // fallback
+            try {
+                $result = $imageService->process($file->getPathname(), 'ingredients');
+                $storedPath = $result->relativePath;
+            } catch (\Exception $e) {
+                Log::warning("IngredientImageSeeder: Failed to process {$file->getFilename()}: {$e->getMessage()}");
+            }
 
-            $rows = DB::table('ingredients')->where('name', $name)->update(['image_url' => $path]);
+            $rows = DB::table('ingredients')->where('name', $name)->update(['image_url' => $storedPath]);
             if ($rows) {
                 $updated++;
             }

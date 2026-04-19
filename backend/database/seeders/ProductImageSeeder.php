@@ -2,13 +2,17 @@
 
 namespace Database\Seeders;
 
+use App\Services\ImageService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ProductImageSeeder extends Seeder
 {
     public function run(): void
     {
+        $imageService = app(ImageService::class);
+
         // Unsplash perfume/cosmetics photo IDs
         $photos = [
             1  => '1594035910387-fea47794261f',
@@ -33,51 +37,44 @@ class ProductImageSeeder extends Seeder
             20 => '1567721913486-6585f069b172',
         ];
 
-        $rows = [];
-
         foreach ($photos as $productId => $photoId) {
             $base = "https://images.unsplash.com/photo-{$photoId}";
 
-            // Primary image (every product)
-            $rows[] = [
-                'product_id' => $productId,
-                'url'        => "{$base}?w=800",
-                'alt'        => "Produit Bloom #{$productId}",
-                'sort_order' => 0,
-                'is_primary' => true,
-                'created_at' => now(),
+            $variants = [
+                ['url' => "{$base}?w=800", 'alt' => "Produit Bloom #{$productId}", 'sort' => 0, 'primary' => true],
             ];
 
-            // Extra gallery images for featured products (1–5) and all active products
             if ($productId <= 5) {
-                $rows[] = [
-                    'product_id' => $productId,
-                    'url'        => "{$base}?w=800&fit=crop&crop=entropy",
-                    'alt'        => "Produit Bloom #{$productId} — vue 2",
-                    'sort_order' => 1,
-                    'is_primary' => false,
-                    'created_at' => now(),
-                ];
-                $rows[] = [
-                    'product_id' => $productId,
-                    'url'        => "{$base}?w=800&fit=crop&crop=faces",
-                    'alt'        => "Produit Bloom #{$productId} — vue 3",
-                    'sort_order' => 2,
-                    'is_primary' => false,
-                    'created_at' => now(),
-                ];
+                $variants[] = ['url' => "{$base}?w=800&fit=crop&crop=entropy", 'alt' => "Produit Bloom #{$productId} — vue 2", 'sort' => 1, 'primary' => false];
+                $variants[] = ['url' => "{$base}?w=800&fit=crop&crop=faces", 'alt' => "Produit Bloom #{$productId} — vue 3", 'sort' => 2, 'primary' => false];
             } elseif ($productId <= 18) {
-                $rows[] = [
-                    'product_id' => $productId,
-                    'url'        => "{$base}?w=800&fit=crop&crop=entropy",
-                    'alt'        => "Produit Bloom #{$productId} — vue 2",
-                    'sort_order' => 1,
-                    'is_primary' => false,
-                    'created_at' => now(),
-                ];
+                $variants[] = ['url' => "{$base}?w=800&fit=crop&crop=entropy", 'alt' => "Produit Bloom #{$productId} — vue 2", 'sort' => 1, 'primary' => false];
+            }
+
+            foreach ($variants as $v) {
+                try {
+                    $result = $imageService->processFromUrl($v['url'], 'products');
+                    DB::table('product_images')->insert([
+                        'product_id' => $productId,
+                        'url'        => $result->relativePath,
+                        'alt'        => $v['alt'],
+                        'sort_order' => $v['sort'],
+                        'is_primary' => $v['primary'],
+                        'created_at' => now(),
+                    ]);
+                } catch (\Exception $e) {
+                    // Fallback: store the external URL directly if download fails
+                    Log::warning("ProductImageSeeder: Failed to download {$v['url']}: {$e->getMessage()}");
+                    DB::table('product_images')->insert([
+                        'product_id' => $productId,
+                        'url'        => $v['url'],
+                        'alt'        => $v['alt'],
+                        'sort_order' => $v['sort'],
+                        'is_primary' => $v['primary'],
+                        'created_at' => now(),
+                    ]);
+                }
             }
         }
-
-        DB::table('product_images')->insert($rows);
     }
 }

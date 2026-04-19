@@ -21,7 +21,7 @@ class ProductController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Product::with(['brand', 'category', 'productType', 'sizes', 'variants', 'images' => fn ($q) => $q->orderBy('sort_order')->limit(2)])
+        $query = Product::with(['brand', 'category', 'productType', 'variants', 'images' => fn ($q) => $q->orderBy('sort_order')])
             ->withAvg('reviews as avg_rating', 'rating')
             ->withCount('reviews as review_count')
             ->where('is_active', true);
@@ -170,7 +170,7 @@ class ProductController extends Controller
                 'brand',
                 'category',
                 'productType',
-                'images'         => fn ($q) => $q->orderBy('sort_order')->limit(4),
+                'images'         => fn ($q) => $q->orderBy('sort_order'),
                 'sizes',
                 'variants',
                 'ingredientItems',
@@ -229,19 +229,23 @@ class ProductController extends Controller
      */
     public function aggregates(Request $request): JsonResponse
     {
-        $agg = Product::where('is_active', true)
-            ->whereNotNull('price')
-            ->where('price', '>', 0)
-            ->selectRaw('MIN(price) as min_price, MAX(price) as max_price')
-            ->first();
+        $data = Cache::remember('products:aggregates', now()->addMinutes(15), function () {
+            $agg = Product::where('is_active', true)
+                ->whereNotNull('price')
+                ->where('price', '>', 0)
+                ->selectRaw('MIN(price) as min_price, MAX(price) as max_price')
+                ->first();
 
-        $min = $agg && $agg->min_price !== null ? (float) $agg->min_price : 0;
-        $max = $agg && $agg->max_price !== null ? (float) $agg->max_price : 0;
+            $min = $agg && $agg->min_price !== null ? (float) $agg->min_price : 0;
+            $max = $agg && $agg->max_price !== null ? (float) $agg->max_price : 0;
 
-        if ($min === 0.0 && $max === 0.0) {
+            return ['min_price' => $min, 'max_price' => $max];
+        });
+
+        if ($data['min_price'] === 0.0 && $data['max_price'] === 0.0) {
             return response()->json(['data' => ['min_price' => 0, 'max_price' => 0, 'buckets' => array_fill(0, 10, 0)]]);
         }
 
-        return response()->json(['data' => ['min_price' => $min, 'max_price' => $max, 'buckets' => []]]);
+        return response()->json(['data' => [...$data, 'buckets' => []]]);
     }
 }

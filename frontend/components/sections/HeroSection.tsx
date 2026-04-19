@@ -4,19 +4,26 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+type VideoEntry = {
+  src: string;
+  poster?: string;
+};
+
 type HeroVideos = {
-  desktop: string[];
-  mobile: string[];
+  desktop: VideoEntry[];
+  mobile: VideoEntry[];
 };
 
 function VideoPlayer({
   videos,
   className,
 }: {
-  videos: string[];
+  videos: VideoEntry[];
   className: string;
 }) {
   const [activeIndex, setActiveIndex] = useState(0);
+  // Only mount the first video element initially; expand as videos need to be pre-loaded.
+  const [mountedCount, setMountedCount] = useState(1);
   const videoRefs    = useRef<(HTMLVideoElement | null)[]>([]);
   // Track which indexes have already had .load() triggered to avoid redundant calls.
   const preloadedSet = useRef<Set<number>>(new Set());
@@ -31,7 +38,7 @@ function VideoPlayer({
   }, [activeIndex, videos]);
 
   // Called by onTimeUpdate on the active <video>: when the current video is 70%
-  // through, start loading the next one so it's buffered in time for the switch.
+  // through, mount and start loading the next one so it's buffered in time.
   const handleTimeUpdate = useCallback(
     (index: number) => {
       const vid = videoRefs.current[index];
@@ -43,7 +50,20 @@ function VideoPlayer({
       const nextIndex = (index + 1) % videos.length;
       if (!preloadedSet.current.has(nextIndex)) {
         preloadedSet.current.add(nextIndex);
-        videoRefs.current[nextIndex]?.load();
+        // Mount the next video element if not yet in the DOM, then load it.
+        setMountedCount((prev) => {
+          const needed = nextIndex + 1;
+          if (needed > prev) {
+            // After mounting, trigger .load() on the next tick.
+            setTimeout(() => {
+              videoRefs.current[nextIndex]?.load();
+            }, 50);
+            return needed;
+          }
+          // Already mounted — trigger load immediately.
+          videoRefs.current[nextIndex]?.load();
+          return prev;
+        });
       }
     },
     [videos.length],
@@ -62,30 +82,32 @@ function VideoPlayer({
     );
   }
 
+  // Only render video elements that have been mounted (first one initially, rest lazily).
+  const visibleVideos = videos.slice(0, Math.min(mountedCount, videos.length));
+
   return (
     <>
-      {videos.map((src, index) => {
-        const isActive = index === activeIndex;
-        // z-index: 10 for active, 0 for inactive so the next video is behind the current one until cross-faded/cut
+      {visibleVideos.map((entry, index) => {
+        const isActive  = index === activeIndex;
+        const posterUrl = entry.poster || '/background.jpeg';
         return (
           <video
-            key={src}
+            key={entry.src}
             ref={(el) => {
               videoRefs.current[index] = el;
             }}
-            src={src}
+            src={entry.src}
             className={`${className} absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ease-in-out ${
               isActive ? 'opacity-100 z-10' : 'opacity-0 z-0'
             }`}
             muted
             playsInline
-            preload="none"
-            poster="/background.jpeg"
+            preload="metadata"
+            poster={posterUrl}
             onTimeUpdate={isActive ? () => handleTimeUpdate(index) : undefined}
             onEnded={() => {
-              // Once ended, reset this video's current time to 0 for next time
               if (videoRefs.current[index]) {
-                  videoRefs.current[index]!.currentTime = 0;
+                videoRefs.current[index]!.currentTime = 0;
               }
               setActiveIndex((i) => (i + 1) % videos.length);
             }}
@@ -118,17 +140,29 @@ export default function HeroSection() {
   useEffect(() => {
     let cancelled = false;
 
-    fetch('/api/hero-videos')
+    // Step 1: Fetch only the first video immediately so the hero renders fast
+    // and the rest of the page (BestSellers, Categories, Reviews) is not blocked.
+    fetch('/api/hero-videos?first=1')
       .then((res) => res.json())
       .then((data: HeroVideos) => {
-        if (!cancelled) {
-          setVideos(data);
-        }
+        if (!cancelled) setVideos(data);
       })
       .catch(() => {});
 
+    // Step 2: After page content is visible, fetch all remaining videos in the background.
+    const timer = setTimeout(() => {
+      if (cancelled) return;
+      fetch('/api/hero-videos')
+        .then((res) => res.json())
+        .then((data: HeroVideos) => {
+          if (!cancelled) setVideos(data);
+        })
+        .catch(() => {});
+    }, 3000);
+
     return () => {
       cancelled = true;
+      clearTimeout(timer);
     };
   }, []);
 

@@ -1,12 +1,17 @@
 import { NextResponse } from 'next/server';
-import { readdir } from 'node:fs/promises';
+import { readdir, access } from 'node:fs/promises';
 import path from 'node:path';
 
 const ALLOWED_EXTS = new Set(['.mp4', '.webm', '.ogg']);
 
+type VideoEntry = {
+  src: string;
+  poster?: string;
+};
+
 type HeroVideoData = {
-  desktop: string[];
-  mobile:  string[];
+  desktop: VideoEntry[];
+  mobile:  VideoEntry[];
 };
 
 /**
@@ -19,20 +24,24 @@ async function fetchFromBackend(): Promise<HeroVideoData | null> {
 
   try {
     const res = await fetch(`${backendUrl}/api/v1/videos/hero`, {
-      // Next.js server-side cache: revalidate every 30 min
       next: { revalidate: 1800 },
     });
 
     if (!res.ok) return null;
 
     const json = await res.json();
-    const data = json?.data as HeroVideoData | undefined;
+    const raw = json?.data as { desktop?: (string | VideoEntry)[]; mobile?: (string | VideoEntry)[] } | undefined;
 
-    if (!data) return null;
+    if (!raw) return null;
 
-    // Only use backend data when it actually has entries
-    if ((data.desktop?.length ?? 0) > 0 || (data.mobile?.length ?? 0) > 0) {
-      return data;
+    const normalize = (items: (string | VideoEntry)[]): VideoEntry[] =>
+      items.map((item) => (typeof item === 'string' ? { src: item } : item));
+
+    if ((raw.desktop?.length ?? 0) > 0 || (raw.mobile?.length ?? 0) > 0) {
+      return {
+        desktop: normalize(raw.desktop ?? []),
+        mobile:  normalize(raw.mobile ?? []),
+      };
     }
 
     return null;
@@ -53,17 +62,25 @@ async function scanLocalFallback(): Promise<HeroVideoData> {
   try {
     const files = await readdir(heroDir);
 
-    const desktop = files
-      .filter((f) => ALLOWED_EXTS.has(path.extname(f).toLowerCase()))
-      .filter((f) => f.toLowerCase().startsWith('desktop'))
-      .sort((a, b) => a.localeCompare(b))
-      .map((f) => encodeURI(`/Home background/${f}`));
+    const videoFiles = files.filter((f) => ALLOWED_EXTS.has(path.extname(f).toLowerCase()));
 
-    const mobile = files
-      .filter((f) => ALLOWED_EXTS.has(path.extname(f).toLowerCase()))
-      .filter((f) => f.toLowerCase().startsWith('mobile'))
-      .sort((a, b) => a.localeCompare(b))
-      .map((f) => encodeURI(`/Home background/${f}`));
+    const buildEntry = async (f: string): Promise<VideoEntry> => {
+      const src = encodeURI(`/Home background/${f}`);
+      const posterName = path.basename(f, path.extname(f)) + '_poster.jpg';
+      const posterPath = path.join(heroDir, posterName);
+      try {
+        await access(posterPath);
+        return { src, poster: encodeURI(`/Home background/${posterName}`) };
+      } catch {
+        return { src };
+      }
+    };
+
+    const desktopFiles = videoFiles.filter((f) => f.toLowerCase().startsWith('desktop')).sort();
+    const mobileFiles  = videoFiles.filter((f) => f.toLowerCase().startsWith('mobile')).sort();
+
+    const desktop = await Promise.all(desktopFiles.map(buildEntry));
+    const mobile  = await Promise.all(mobileFiles.map(buildEntry));
 
     return { desktop, mobile };
   } catch {
@@ -71,15 +88,30 @@ async function scanLocalFallback(): Promise<HeroVideoData> {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const firstOnly = searchParams.get('first') === '1';
+
   // 1. Primary: DB-managed videos from Laravel backend
   const backendData = await fetchFromBackend();
   if (backendData) {
+    if (firstOnly) {
+      return NextResponse.json({
+        desktop: backendData.desktop.slice(0, 1),
+        mobile:  backendData.mobile.slice(0, 1),
+      });
+    }
     return NextResponse.json(backendData);
   }
 
   // 2. Fallback: legacy local filesystem scan (maintains old behavior perfectly)
   const localData = await scanLocalFallback();
+  if (firstOnly) {
+    return NextResponse.json({
+      desktop: localData.desktop.slice(0, 1),
+      mobile:  localData.mobile.slice(0, 1),
+    });
+  }
   return NextResponse.json(localData);
 }
 

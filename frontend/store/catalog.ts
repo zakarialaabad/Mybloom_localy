@@ -52,6 +52,7 @@ interface CacheEntry {
 interface CatalogStore {
   // ── Product Cache ──────────────────────────────────────────────────────
   products: Map<string, CacheEntry>;
+  productDetails: Map<string, { data: Product; timestamp: number }>;
   loading: Record<string, boolean>;
   
   // Cache TTL in milliseconds (15 minutes default)
@@ -79,6 +80,25 @@ interface CatalogStore {
    * @returns Product | null
    */
   findProductBySlug: (slug: string) => Product | null;
+
+  /**
+   * Get a full product detail from cache by slug (if fresh)
+   * @param slug - Product slug
+   * @returns Product | null
+   */
+  getProductDetailBySlug: (slug: string) => Product | null;
+
+  /**
+   * Cache a full product detail payload from the detail API
+   * @param product - Product detail payload
+   */
+  cacheProductDetail: (product: Product) => void;
+
+  /**
+   * Prefetch a product detail in the background (non-blocking)
+   * @param slug - Product slug to prefetch
+   */
+  prefetchProductDetail: (slug: string) => void;
   
   /**
    * Get all cached products (for recommendations, comparisons, etc.)
@@ -99,13 +119,17 @@ interface CatalogStore {
   isCacheFresh: (key: string) => boolean;
 }
 
+// Shared in-flight promise map — prevents polling, enables real dedup
+const inflightRequests = new Map<string, Promise<Product[]>>();
+
 const useCatalogStore = create<CatalogStore>((set, get) => ({
   products: new Map(),
+  productDetails: new Map(),
   loading: {},
   CACHE_TTL: 15 * 60 * 1000, // 15 minutes
 
   ensureProducts: async (key: string, params?: Record<string, unknown>) => {
-    const { products, CACHE_TTL, loading } = get();
+    const { products, CACHE_TTL } = get();
     
     // 1. Check if cached & fresh
     const cached = products.get(key);
@@ -114,19 +138,11 @@ const useCatalogStore = create<CatalogStore>((set, get) => ({
       return cached.data;
     }
     
-    // 2. If already in-flight, wait for existing request
-    if (loading[key]) {
-      console.log(`[CatalogStore] Request in-flight for key: ${key}, waiting...`);
-      // Poll for result (simple approach; could use promises)
-      return new Promise((resolve) => {
-        const checkIfLoaded = setInterval(() => {
-          const updated = get().products.get(key);
-          if (updated && !get().loading[key]) {
-            clearInterval(checkIfLoaded);
-            resolve(updated.data);
-          }
-        }, 50);
-      });
+    // 2. If already in-flight, share the same promise (no polling)
+    const existing = inflightRequests.get(key);
+    if (existing) {
+      console.log(`[CatalogStore] Request in-flight for key: ${key}, sharing promise...`);
+      return existing;
     }
     
     // 3. Fetch fresh data from API
@@ -135,40 +151,53 @@ const useCatalogStore = create<CatalogStore>((set, get) => ({
       loading: { ...state.loading, [key]: true }
     }));
     
-    try {
-      console.log(`[CatalogStore] Calling productService.list with params:`, params);
-      const result = await productService.list(params);
-      console.log(`[CatalogStore] API Response:`, result);
-      
-      const data = Array.isArray(result) ? result : result.data || [];
-      console.log(`[CatalogStore] Extracted ${data.length} products from response for key: ${key}`);
-      
-      if (data.length === 0) {
-        console.warn(`[CatalogStore] ⚠️ No products returned for key: ${key} with params:`, params);
+    const promise = (async () => {
+      try {
+        console.log(`[CatalogStore] Calling productService.list with params:`, params);
+        const result = await productService.list(params);
+        console.log(`[CatalogStore] API Response:`, result);
+        
+        const data = Array.isArray(result) ? result : result.data || [];
+        console.log(`[CatalogStore] Extracted ${data.length} products from response for key: ${key}`);
+        
+        if (data.length === 0) {
+          console.warn(`[CatalogStore] ⚠️ No products returned for key: ${key} with params:`, params);
+        }
+        
+        set((state) => ({
+          products: new Map(state.products).set(key, {
+            data,
+            timestamp: Date.now(),
+          }),
+          loading: { ...state.loading, [key]: false }
+        }));
+        
+        console.log(`[CatalogStore] Successfully cached ${data.length} products for key: ${key}`);
+        return data;
+      } catch (error) {
+        console.error(`[CatalogStore] ❌ Error fetching products for key: ${key}`, error);
+        set((state) => ({
+          loading: { ...state.loading, [key]: false }
+        }));
+        throw error;
+      } finally {
+        inflightRequests.delete(key);
       }
-      
-      set((state) => ({
-        products: new Map(state.products).set(key, {
-          data,
-          timestamp: Date.now(),
-        }),
-        loading: { ...state.loading, [key]: false }
-      }));
-      
-      console.log(`[CatalogStore] Successfully cached ${data.length} products for key: ${key}`);
-      return data;
-    } catch (error) {
-      console.error(`[CatalogStore] ❌ Error fetching products for key: ${key}`, error);
-      console.error(`[CatalogStore] Called with params:`, params);
-      set((state) => ({
-        loading: { ...state.loading, [key]: false }
-      }));
-      throw error;
-    }
+    })();
+    
+    inflightRequests.set(key, promise);
+    return promise;
   },
 
   findProductBySlug: (slug: string) => {
-    const { products } = get();
+    const { products, productDetails, CACHE_TTL } = get();
+
+    // Prefer full detail cache first when available and fresh
+    const cachedDetail = productDetails.get(slug);
+    if (cachedDetail && Date.now() - cachedDetail.timestamp < CACHE_TTL) {
+      console.log(`[CatalogStore] Found product detail by slug in cache: ${slug}`);
+      return cachedDetail.data;
+    }
     
     // Search through all cached product lists
     for (const cacheEntry of products.values()) {
@@ -181,6 +210,24 @@ const useCatalogStore = create<CatalogStore>((set, get) => ({
     
     console.log(`[CatalogStore] Product not found in cache by slug: ${slug}`);
     return null;
+  },
+
+  getProductDetailBySlug: (slug: string) => {
+    const { productDetails, CACHE_TTL } = get();
+    const cached = productDetails.get(slug);
+    if (!cached) return null;
+    if (Date.now() - cached.timestamp >= CACHE_TTL) return null;
+    return cached.data;
+  },
+
+  cacheProductDetail: (product: Product) => {
+    if (!product?.slug) return;
+    set((state) => ({
+      productDetails: new Map(state.productDetails).set(product.slug, {
+        data: product,
+        timestamp: Date.now(),
+      }),
+    }));
   },
 
   getAllCachedProducts: () => {
@@ -199,7 +246,7 @@ const useCatalogStore = create<CatalogStore>((set, get) => ({
 
   clearCache: () => {
     console.log('[CatalogStore] Clearing all caches');
-    set({ products: new Map(), loading: {} });
+    set({ products: new Map(), productDetails: new Map(), loading: {} });
   },
 
   isCacheFresh: (key: string) => {
@@ -208,6 +255,28 @@ const useCatalogStore = create<CatalogStore>((set, get) => ({
     
     if (!cached) return false;
     return Date.now() - cached.timestamp < CACHE_TTL;
+  },
+
+  prefetchProductDetail: (slug: string) => {
+    const { productDetails, CACHE_TTL } = get();
+    
+    // Check if already cached and fresh
+    const cached = productDetails.get(slug);
+    if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
+      console.log(`[CatalogStore] Product detail already cached and fresh: ${slug}`);
+      return;
+    }
+    
+    // Prefetch in background (non-blocking)
+    console.log(`[CatalogStore] Prefetching product detail: ${slug}`);
+    productService.show(slug)
+      .then((product) => {
+        console.log(`[CatalogStore] Prefetch complete for: ${slug}`);
+        get().cacheProductDetail(product);
+      })
+      .catch((error) => {
+        console.warn(`[CatalogStore] Prefetch failed for ${slug}:`, error);
+      });
   },
 }));
 

@@ -1,10 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
 import useCartStore from '@/store/cart';
+import useCatalogStore from '@/store/catalog';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
@@ -58,6 +59,8 @@ export default function ProductCard({
   const [isHovered, setIsHovered] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'cart' | 'favorite' }>({ show: false, message: '', type: 'cart' });
   const addItem = useCartStore((s) => s.addItem);
+  const prefetchProductDetail = useCatalogStore((s) => s.prefetchProductDetail);
+  const prefetchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const safeImageUrl = sanitizeImageUrl(imageUrl);
   const safeSecondaryUrl = secondaryImageUrl ? sanitizeImageUrl(secondaryImageUrl) : undefined;
@@ -72,6 +75,35 @@ export default function ProductCard({
       return () => clearTimeout(timer);
     }
   }, [toast.show]);
+
+  // Cleanup prefetch timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (prefetchTimeoutRef.current) {
+        clearTimeout(prefetchTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    // Prefetch product detail after 300ms hover to avoid excessive prefetching
+    if (prefetchTimeoutRef.current) {
+      clearTimeout(prefetchTimeoutRef.current);
+    }
+    prefetchTimeoutRef.current = setTimeout(() => {
+      prefetchProductDetail(slug);
+    }, 300);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    // Clear prefetch timeout on mouse leave
+    if (prefetchTimeoutRef.current) {
+      clearTimeout(prefetchTimeoutRef.current);
+      prefetchTimeoutRef.current = null;
+    }
+  };
 
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -107,8 +139,8 @@ export default function ProductCard({
     <Link
       href={`/product/${slug}`}
       className="product-card group relative block"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <article className="cursor-pointer bg-white border border-t-0 border-gray-200">
         {/* Image container */}

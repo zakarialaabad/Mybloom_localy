@@ -65,7 +65,6 @@ export default function CollectionPage() {
   const [heroBanner, setHeroBanner] = useState<Banner | null>(null);
   const [heroImageError, setHeroImageError] = useState(false);
   const [loadingProducts, setLoadingProducts] = useState(true);
-  const [pageLoading, setPageLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [sortBy, setSortBy] = useState('newest');
@@ -129,12 +128,8 @@ export default function CollectionPage() {
   useEffect(() => { ensureIngredients(); }, [ensureIngredients]);
   useEffect(() => { ensureAggregates(); }, [ensureAggregates]);
 
-  // Mark page as loaded once initial reference data is ready
-  useEffect(() => {
-    if (brands.length > 0 && categories.length > 0 && ingredients.length > 0) {
-      setPageLoading(false);
-    }
-  }, [brands.length, categories.length, ingredients.length]);
+  // Reference data loading is non-blocking — sidebar filters appear when ready,
+  // but products load immediately without waiting for brands/categories/ingredients.
 
   const trackRef = useRef<HTMLDivElement>(null);
   const [canPrev, setCanPrev] = useState(false);
@@ -184,15 +179,29 @@ export default function CollectionPage() {
   }, []);
 
   // Apply URL params to filter store — re-runs on every URL change (soft navigation too)
+  // Only updates state when values actually change to avoid unnecessary re-renders
+  // that would trigger the product fetch effect with the same cache key.
   useEffect(() => {
     const categoryId   = searchParams.get('category');
     const ingredientIds = searchParams.getAll('ingredient');
     const featured     = searchParams.get('featured');
-    // Reset URL-controlled filters first, then apply current URL values
-    setSelectedCategories(categoryId ? [Number(categoryId)] : []);
-    setSelectedIngredients(ingredientIds.length > 0 ? ingredientIds.map((id) => Number(id)) : []);
-    setFeaturedOnly(featured === '1');
-  }, [searchParams, setSelectedCategories, setSelectedIngredients, setFeaturedOnly]);
+
+    const newCategories = categoryId ? [Number(categoryId)] : [];
+    const newIngredients = ingredientIds.length > 0 ? ingredientIds.map((id) => Number(id)) : [];
+    const newFeatured = featured === '1';
+
+    // Only call setters when values actually changed — avoids creating
+    // new array references that would cascade through dependency arrays.
+    if (JSON.stringify(newCategories) !== JSON.stringify(selectedCategories)) {
+      setSelectedCategories(newCategories);
+    }
+    if (JSON.stringify(newIngredients) !== JSON.stringify(selectedIngredients)) {
+      setSelectedIngredients(newIngredients);
+    }
+    if (newFeatured !== featuredOnly) {
+      setFeaturedOnly(newFeatured);
+    }
+  }, [searchParams]);
 
   // Helper function to toggle ingredient selection
   const toggleIngredientSelect = (ingredientId: number) => {
@@ -219,66 +228,77 @@ export default function CollectionPage() {
   // The debounced effect already fires on mount (when deps first run), so this
   // duplicate was redundant and was racing against the debounced one.
 
-  // Fetch products when filters change.
-  // Debounced (400 ms) so rapid slider drags don't flood the API.
-  // Uses catalog cache to avoid refetching when navigating between pages.
-  useEffect(() => {
-    const controller = new AbortController();
+  // Track whether this is the first render — skip debounce for initial load
+  const isFirstFetchRef = useRef(true);
+  const isCacheFresh = useCatalogStore((s) => s.isCacheFresh);
 
-    const timer = setTimeout(async () => {
-      setLoadingProducts(true);
-      const params: Record<string, unknown> = {};
+  // Build filter params (extracted so we can check cache synchronously)
+  const buildFilterParams = () => {
+    const params: Record<string, unknown> = {};
+    if (sortBy !== 'newest') params['sort'] = sortBy;
 
-      // Sort applies globally (including featuredOnly mode)
-      if (sortBy !== 'newest') params['sort'] = sortBy;
+    const searchTerm = searchParams.get('search');
+    if (searchTerm) params['search'] = searchTerm;
 
-      const searchTerm = searchParams.get('search');
-      if (searchTerm) params['search'] = searchTerm;
+    const productType = searchParams.get('product_type');
+    if (productType) params['product_type'] = productType;
 
-      const productType = searchParams.get('product_type');
-      if (productType) params['product_type'] = productType;
+    const isGift = searchParams.get('is_gift');
+    if (isGift === 'true' || isGift === '1') params['is_gift'] = 1;
 
-      const isGift = searchParams.get('is_gift');
-      if (isGift === 'true' || isGift === '1') params['is_gift'] = 1;
-
-      if (featuredOnly) {
-        // "Best Sellers" mode — send ONLY is_featured=1 + sort.
-        params['is_featured'] = 1;
-      } else {
-        if (selectedBrands.length > 0) params['brand_ids[]'] = selectedBrands;
-        if (selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
-        if (selectedIngredients.length > 0) params['ingredient_ids[]'] = selectedIngredients;
-        if (aggregatesReady) {
-          params['price_min'] = selectedMin;
-          params['price_max'] = selectedMax;
-        }
-        if (selectedRating !== null) params['min_rating'] = selectedRating;
-        if (promotionOnly) params['on_promotion'] = 1;
+    if (featuredOnly) {
+      params['is_featured'] = 1;
+    } else {
+      if (selectedBrands.length > 0) params['brand_ids[]'] = selectedBrands;
+      if (selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
+      if (selectedIngredients.length > 0) params['ingredient_ids[]'] = selectedIngredients;
+      // Only include price bounds when the user has actually moved the slider
+      // away from the global min/max. This keeps the cache key STABLE across
+      // the aggregatesReady transition (false→true), preventing a double fetch.
+      if (aggregatesReady && (selectedMin > globalMin || selectedMax < globalMax)) {
+        params['price_min'] = selectedMin;
+        params['price_max'] = selectedMax;
       }
+      if (selectedRating !== null) params['min_rating'] = selectedRating;
+      if (promotionOnly) params['on_promotion'] = 1;
+    }
+    return params;
+  };
 
+  // Fetch products when filters change.
+  // First load / cache hits → instant (0ms). Filter changes → debounced (400ms).
+  useEffect(() => {
+    const params = buildFilterParams();
+    const cacheKey = `collection:${JSON.stringify(params)}`;
+
+    // On first load or when cache is fresh, skip the 400ms debounce entirely.
+    // The cache check is synchronous — no HTTP call, no waiting.
+    const skipDebounce = isFirstFetchRef.current || isCacheFresh(cacheKey);
+
+    const fetchProducts = async () => {
+      setLoadingProducts(true);
       try {
-        // Build cache key from filters to ensure same filter set reuses cached data
-        const cacheKey = `collection:${JSON.stringify(params)}`;
-        
-        // Use catalog cache with 15-min TTL
-        // If this exact filter combo was just applied, we get instant results
         const data = await ensureProductsCache(cacheKey, params);
         setProducts(data);
       } catch (err: unknown) {
-        // Ignore AbortError — it means a newer request superseded this one
         if (err instanceof Error && err.name !== 'AbortError' && err.name !== 'CanceledError') {
           setProducts([]);
         }
       } finally {
         setLoadingProducts(false);
+        isFirstFetchRef.current = false;
       }
-    }, 400);
-
-    // Cleanup: cancel the debounce timer AND abort any in-flight request
-    return () => {
-      clearTimeout(timer);
-      controller.abort();
     };
+
+    if (skipDebounce) {
+      // Instant: cache hit or first page load — no waiting
+      fetchProducts();
+      return;
+    }
+
+    // Debounce: filter slider dragging, typing — wait 400ms before fetching
+    const timer = setTimeout(fetchProducts, 400);
+    return () => clearTimeout(timer);
   }, [
     searchParams,
     selectedBrands,
@@ -286,6 +306,8 @@ export default function CollectionPage() {
     selectedIngredients,
     selectedMin,
     selectedMax,
+    globalMin,
+    globalMax,
     selectedRating,
     promotionOnly,
     featuredOnly,
@@ -327,7 +349,7 @@ export default function CollectionPage() {
   return (
     <div className="h-screen overflow-hidden flex flex-col bg-white">
       {/* Loading Overlay — always renders behind spinner, same pattern as admin dashboard */}
-      {(pageLoading || loadingProducts) && <LoadingSpinner />}
+      {loadingProducts && <LoadingSpinner />}
       <Header />
       {/* ── Scrollable page body ─────────────────────────────────────────── */}
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden">

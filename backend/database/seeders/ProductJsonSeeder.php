@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Services\ImageService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Exception;
 
@@ -343,22 +345,35 @@ class ProductJsonSeeder extends Seeder
         }
 
         // ════════════════════════════════════════════════════════════════
-        // Seed Product Images
+        // Seed Product Images (processed through ImageService)
         // ════════════════════════════════════════════════════════════════
-        // Delete existing images (so we start fresh with only folder images)
         DB::table('product_images')->where('product_id', $productId)->delete();
-        
+
         if (isset($jsonProduct['img_main'])) {
-            // Normalize image URL: ensure it starts with /images/
+            $imageService = app(ImageService::class);
+
             $imgMainUrl = $jsonProduct['img_main'];
             if (!str_starts_with($imgMainUrl, '/')) {
                 $imgMainUrl = '/images/' . $imgMainUrl;
             }
 
-            // Insert main image
+            // Resolve to filesystem path
+            $mainFilePath = base_path('../frontend/Public') . str_replace('/', DIRECTORY_SEPARATOR, $imgMainUrl);
+
+            // Process main image through ImageService
+            $mainStoredPath = $imgMainUrl; // fallback to frontend path
+            if (file_exists($mainFilePath)) {
+                try {
+                    $result = $imageService->process($mainFilePath, 'products');
+                    $mainStoredPath = $result->relativePath;
+                } catch (\Exception $e) {
+                    Log::warning("ProductJsonSeeder: Failed to process main image {$imgMainUrl}: {$e->getMessage()}");
+                }
+            }
+
             DB::table('product_images')->insert([
                 'product_id' => $productId,
-                'url' => $imgMainUrl,
+                'url' => $mainStoredPath,
                 'alt' => $jsonProduct['name'] . ' - Main Image',
                 'sort_order' => 0,
                 'is_primary' => true,
@@ -366,15 +381,14 @@ class ProductJsonSeeder extends Seeder
             ]);
 
             // Scan the product folder for additional images
-            $folderUrl   = dirname($imgMainUrl);                       // e.g. /images/Summer in Bali Body Butter
-            $mainFile    = basename($imgMainUrl);                      // e.g. summer-in-bali-body-butter-img_main.png
-
-            $folderFs = base_path('../frontend/Public') . str_replace('/', DIRECTORY_SEPARATOR, $folderUrl);
+            $folderUrl = dirname($imgMainUrl);
+            $mainFile  = basename($imgMainUrl);
+            $folderFs  = base_path('../frontend/Public') . str_replace('/', DIRECTORY_SEPARATOR, $folderUrl);
 
             if (is_dir($folderFs)) {
-                $allowed  = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+                $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
                 $sortOrder = 1;
-                $additionalImagesCount = 0; // Limit: max 3 additional images (1 primary + 3 = 4 total)
+                $additionalImagesCount = 0;
                 $maxAdditionalImages = 3;
 
                 foreach (scandir($folderFs) as $file) {
@@ -384,15 +398,22 @@ class ProductJsonSeeder extends Seeder
                     if (!in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), $allowed)) {
                         continue;
                     }
-                    
-                    // Stop if we've reached the maximum number of additional images
                     if ($additionalImagesCount >= $maxAdditionalImages) {
                         break;
                     }
 
+                    $additionalPath = $folderFs . DIRECTORY_SEPARATOR . $file;
+                    $storedPath = $folderUrl . '/' . $file; // fallback
+                    try {
+                        $result = $imageService->process($additionalPath, 'products');
+                        $storedPath = $result->relativePath;
+                    } catch (\Exception $e) {
+                        Log::warning("ProductJsonSeeder: Failed to process {$file}: {$e->getMessage()}");
+                    }
+
                     DB::table('product_images')->insert([
                         'product_id' => $productId,
-                        'url' => $folderUrl . '/' . $file,
+                        'url' => $storedPath,
                         'alt' => $jsonProduct['name'] . ' - Image ' . $sortOrder,
                         'sort_order' => $sortOrder,
                         'is_primary' => false,

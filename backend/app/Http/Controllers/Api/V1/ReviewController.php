@@ -116,9 +116,8 @@ class ReviewController extends Controller
 
         $query->orderBy('rating', 'desc')->latest();
 
-        $collection = $request->filled('limit')
-            ? $query->paginate($request->integer('limit'))
-            : $query->get();
+        $limit = $request->integer('limit', 15);
+        $collection = $query->paginate(min($limit, 50));
 
         return ['collection' => $collection, 'rating_summary' => $ratingSummary];
     }

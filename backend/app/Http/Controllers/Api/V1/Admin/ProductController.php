@@ -388,7 +388,24 @@ class ProductController extends Controller
             $product->images()->update(['is_primary' => false]);
         }
 
-        $image = $product->images()->create($request->only('url', 'alt', 'sort_order', 'is_primary'));
+        // Download and optimize the image through ImageService
+        try {
+            $result = $this->imageService->processFromUrl($request->input('url'), 'products');
+            $storedUrl = $result->relativePath;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('storeImage: Failed to process URL, storing as-is', [
+                'url' => $request->input('url'),
+                'error' => $e->getMessage(),
+            ]);
+            $storedUrl = $request->input('url');
+        }
+
+        $image = $product->images()->create([
+            'url'        => $storedUrl,
+            'alt'        => $request->input('alt'),
+            'sort_order' => $request->input('sort_order'),
+            'is_primary' => $request->boolean('is_primary'),
+        ]);
 
         return response()->json(['data' => $image], 201);
     }

@@ -59,6 +59,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   console.log('[ProductPage] Component mounted with slug:', slug, 'params:', params);
 
   const [product, setProduct]           = useState<Product | null>(null);
+  const [images, setImages]             = useState<string[]>([]);
   const [loading, setLoading]           = useState(true);
   const [fetchError, setFetchError]     = useState(false);
   const [mainImage, setMainImage]       = useState('');
@@ -88,6 +89,8 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   
   // ── Call hooks at top level (required by React rules) ──
   const findProductBySlug = useCatalogStore((s) => s.findProductBySlug);
+  const getProductDetailBySlug = useCatalogStore((s) => s.getProductDetailBySlug);
+  const cacheProductDetail = useCatalogStore((s) => s.cacheProductDetail);
   const getAllCachedProducts = useCatalogStore((s) => s.getAllCachedProducts);
 
   // Auto-hide toast after 3 seconds
@@ -110,42 +113,86 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
     console.log('[ProductPage] Loading product with slug:', slug);
 
-    // ── Phase 1: Check catalog cache first (from collection page navigation) ──
+    // ── Phase 1: Check detail cache first (full payload, no API call) ──
+    const cachedDetailProduct = getProductDetailBySlug(slug);
+
+    if (cachedDetailProduct) {
+      if (!mounted) return;
+
+      setProduct(cachedDetailProduct);
+
+      const allImages: string[] = cachedDetailProduct.images?.length
+        ? cachedDetailProduct.images.map((i) => i.image_url).filter((u): u is string => !!u)
+        : cachedDetailProduct.primary_image ? [cachedDetailProduct.primary_image] : [];
+
+      const primary = cachedDetailProduct.images?.find((i) => i.is_primary)?.image_url
+        ?? allImages[0]
+        ?? 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800';
+
+      setMainImage(primary);
+      setImages(allImages.length > 0 ? allImages : [primary]);
+      selectVariantFromProduct(cachedDetailProduct);
+      setWished(isInWishlist(cachedDetailProduct.id));
+      handleRecommendations(cachedDetailProduct, getAllCachedProducts());
+      setLoading(false);
+
+      return () => { mounted = false; };
+    }
+
+    // ── Phase 2: Check catalog list cache (from collection page navigation) ──
     // The catalog cache comes from ProductResource (list API) which does NOT include
     // ingredientItems, reviews, faqs, or recommendations. We use it only for the
     // instant initial render, then always fire a background fetch for the full detail.
     const cachedProduct = findProductBySlug(slug);
 
     if (cachedProduct) {
-      console.log('[ProductPage] 🚀 Found product in catalog cache — rendering instantly, enriching in background');
       if (!mounted) return;
 
-      // Render immediately from cache so the page feels instant
+      // Stage all data from cache into state (skeleton is still visible).
       setProduct(cachedProduct);
-      const primary = cachedProduct.images?.find((i) => i.is_primary)?.image_url ?? cachedProduct.images?.[0]?.image_url ?? cachedProduct.primary_image ?? 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800';
+
+      const cachedImages: string[] = cachedProduct.images?.length
+        ? cachedProduct.images.map((i) => i.image_url).filter((u): u is string => !!u)
+        : [];
+
+      const primary = cachedProduct.primary_image
+        ?? cachedImages[0]
+        ?? 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800';
+
       setMainImage(primary);
+      // The list API returns ALL images per product (no limit on images relation),
+      // so the cache already holds the full image set. Show all thumbnails instantly.
+      setImages(cachedImages.length > 0 ? cachedImages : [primary]);
       selectVariantFromProduct(cachedProduct);
       setWished(isInWishlist(cachedProduct.id));
       handleRecommendations(cachedProduct, getAllCachedProducts());
+
+      // Page visible immediately with all images — no waiting.
       setLoading(false);
 
-      // Background enrich: fetch full detail (ingredients, reviews, faqs, etc.)
-      // Updates product state silently — no loading spinner shown to the user.
+      // Background enrich: detail API confirms definitive image order and adds
+      // ingredients, reviews, faqs. Updates silently without blocking.
       productService.show(slug)
         .then((fullData) => {
           if (!mounted) return;
-          console.log('[ProductPage] 📦 Background enrich complete — ingredients/reviews updated');
           setProduct(fullData);
-          // Only update mainImage if it's a better quality URL from the detail API
-          if (fullData.images?.length) {
-            const detailPrimary = fullData.images.find((i) => i.is_primary)?.image_url ?? fullData.images[0]?.image_url;
-            if (detailPrimary) setMainImage(detailPrimary);
+          cacheProductDetail(fullData);
+
+          const allImages: string[] = fullData.images?.length
+            ? fullData.images.map((i) => i.image_url).filter((u): u is string => !!u)
+            : fullData.primary_image ? [fullData.primary_image] : [];
+
+          if (allImages.length > 0) {
+            const freshPrimary = fullData.images?.find((i) => i.is_primary)?.image_url
+              ?? allImages[0];
+            setMainImage(freshPrimary);
+            setImages(allImages);
           }
+
           handleRecommendations(fullData, []);
         })
         .catch(() => {
-          // Silent failure — cached data already displayed, don't show error
-          console.warn('[ProductPage] Background enrich failed — using cached data only');
+          console.warn('[ProductPage] Detail API failed — using cached data');
         });
 
       return () => { mounted = false; };
@@ -157,7 +204,12 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       .then((data) => {
         console.log('[ProductPage] Product fetched successfully:', data);
         if (!mounted) return;
+        cacheProductDetail(data);
         setProduct(data);
+        const allImages: string[] = data.images?.length
+          ? data.images.map((i) => i.image_url).filter((u): u is string => !!u)
+          : data.primary_image ? [data.primary_image] : [];
+        setImages(allImages);
         const primary = data.images?.find((i) => i.is_primary)?.image_url ?? data.images?.[0]?.image_url ?? data.primary_image ?? 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=800';
         setMainImage(primary);
 
@@ -172,7 +224,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       .finally(() => { if (mounted) setLoading(false); });
 
     return () => { mounted = false; };
-  }, [slug]);
+  }, [slug, findProductBySlug, getProductDetailBySlug, cacheProductDetail, getAllCachedProducts]);
 
   // Helper: Set variant selection from product data
   const selectVariantFromProduct = (data: Product) => {
@@ -359,12 +411,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     );
   }
 
-  const images: string[] = product.images?.length
-    ? product.images.map((i) => i.image_url).filter((u): u is string => !!u)
-    : product.primary_image
-      ? [product.primary_image]
-      : [];
-
   const FAQ = (product.faqs && product.faqs.length > 0)
     ? product.faqs.map((f) => ({ q: f.question, a: f.answer }))
     : [
@@ -405,7 +451,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               <div className="hidden md:flex flex-col gap-4 w-16 lg:w-24 shrink-0">
                 {images.filter(img => img !== mainImage).slice(0, 3).map((img, idx) => (
                   <button
-                    key={idx}
+                    key={img}
                     onClick={() => setMainImage(img)}
                     className="relative flex-1 w-full overflow-hidden rounded-sm border-2 transition-all border-transparent hover:border-gray-300"
                   >

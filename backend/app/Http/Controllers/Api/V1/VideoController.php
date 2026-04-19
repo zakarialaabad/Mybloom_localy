@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Services\VideoService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class VideoController extends Controller
 {
@@ -28,15 +29,20 @@ class VideoController extends Controller
     public function hero(): JsonResponse
     {
         $result = Cache::remember('hero_videos', now()->addMinutes(30), function () {
-            // resolveStreamUrl() points to /api/v1/videos/stream/{id}, which
-            // handles HTTP Range requests in all environments (including dev).
-            // Legacy (Next.js) videos still return their /public path directly.
+            $format = function ($v) {
+                $entry = ['src' => $this->service->resolveStreamUrl($v)];
+                if ($v->thumbnail_path) {
+                    $entry['poster'] = Storage::disk('public')->url($v->thumbnail_path);
+                }
+                return $entry;
+            };
+
             $desktop = $this->service->getActive('desktop')
-                ->map(fn ($v) => $this->service->resolveStreamUrl($v))
+                ->map($format)
                 ->values();
 
             $mobile = $this->service->getActive('mobile')
-                ->map(fn ($v) => $this->service->resolveStreamUrl($v))
+                ->map($format)
                 ->values();
 
             return compact('desktop', 'mobile');
