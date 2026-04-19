@@ -49,12 +49,14 @@ export default function UniversSection() {
   }, [ensureProducts]);
 
   return (
-    <section className="pb-20 bg-white">
+    <section className="pt-16 sm:pt-20 bg-white">
       <SectionContainer>
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
           <div>
-            <h2 className="text-5xl font-serif text-gray-800">L'Univers de <span className="text-[#e63a6c] italic font-light ml-1 text-4xl md:text-5xl" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>Bloom Parfums</span></h2>
+            <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#4a403a] font-serif">
+              L'Univers de <span className="text-[#e63a6c] italic font-light ml-1 text-4xl md:text-5xl" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>MyBloom</span>
+            </h2>
             <p className="text-gray-500 text-sm mt-4 max-w-3xl leading-relaxed">
               Explorez notre catalogue complet regroupant tous nos produits, développés avec exigence pour répondre aux attentes les plus élevées, des solutions fiables et innovantes pensées pour vous apporter satisfaction, confiance et excellence.
             </p>
@@ -84,8 +86,9 @@ export default function UniversSection() {
           <div className="absolute bottom-0 left-0 right-0 h-48 md:h-[300px] bg-gradient-to-t from-[#ffffff] to-[#ffffff]/0 pointer-events-none z-10" />
         </div>
 
-        {/* Centered Button 149px below the products grid on desktop, responsive on mobile */}
-        <div className="flex justify-center mt-12 md:mt-[149px] relative z-20">
+        {/* Centered Button below the products grid on desktop, responsive on mobile */}
+        {/* mb-16 on mobile to add space before the Banners section as requested */}
+        <div className="flex justify-center mt-12 md:mt-16 mb-16 md:mb-0 relative z-20">
           <Link href="/collection" className="inline-flex items-center justify-center bg-[#4a403a] px-6 md:px-8 py-2.5 md:py-3 text-sm font-bold text-white shadow-lg hover:bg-[#3a322d] transition-colors rounded-md font-serif italic whitespace-nowrap">
             Voir toute la collection ›
           </Link>

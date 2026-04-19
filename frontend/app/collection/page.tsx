@@ -70,6 +70,12 @@ export default function CollectionPage() {
   const [sortBy, setSortBy] = useState('newest');
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
+  const [isSticky, setIsSticky] = useState(false);
+  const [headerHeight, setHeaderHeight] = useState(72);
+  const filterBarRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<HTMLDivElement>(null);
+  const [brandSearchTerm, setBrandSearchTerm] = useState('');
+  const [ingredientSearchTerm, setIngredientSearchTerm] = useState('');
   const sortRef = useRef<HTMLDivElement>(null);
   const productScrollRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -79,6 +85,7 @@ export default function CollectionPage() {
     brand: true,
     price: true,
     category: true,
+    ingredients: true,
     notes: true,
     promotions: true,
   });
@@ -115,6 +122,9 @@ export default function CollectionPage() {
   const aggregatesReady      = useFilterStore((s) => s.aggregatesReady);
   const brandCounts          = useFilterStore((s) => s.brandCounts);
   const setBrandCounts       = useFilterStore((s) => s.setBrandCounts);
+  const ingredientCounts     = useFilterStore((s) => s.ingredientCounts);
+  const setIngredientCounts  = useFilterStore((s) => s.setIngredientCounts);
+  const toggleIngredient     = useFilterStore((s) => s.toggleIngredient);
 
   // ── Catalog cache for product deduplication ──────────────────────────
   const ensureProductsCache = useCatalogStore((s) => s.ensureProducts);
@@ -130,32 +140,6 @@ export default function CollectionPage() {
 
   // Reference data loading is non-blocking — sidebar filters appear when ready,
   // but products load immediately without waiting for brands/categories/ingredients.
-
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(false);
-
-  const syncArrows = () => {
-    const el = trackRef.current;
-    if (!el) return;
-    setCanPrev(el.scrollLeft > 4);
-    setCanNext(el.scrollLeft < el.scrollWidth - el.clientWidth - 4);
-  };
-
-  useEffect(() => {
-    syncArrows();
-    window.addEventListener('resize', syncArrows);
-    return () => window.removeEventListener('resize', syncArrows);
-  }, [ingredients]);
-
-  const scrollIngredients = (dir: 'prev' | 'next') => {
-    const el = trackRef.current;
-    if (!el) return;
-    // Scroll by about half a screen
-    const clientWidth = el.clientWidth;
-    const scrollAmount = dir === 'next' ? clientWidth * 0.5 : -clientWidth * 0.5;
-    el.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-  };
 
   // ── Responsive products per page: 16 on desktop, 10 on mobile ────────────
   useEffect(() => {
@@ -202,15 +186,6 @@ export default function CollectionPage() {
       setFeaturedOnly(newFeatured);
     }
   }, [searchParams]);
-
-  // Helper function to toggle ingredient selection
-  const toggleIngredientSelect = (ingredientId: number) => {
-    const current = Array.isArray(selectedIngredients) ? selectedIngredients : [];
-    const updated = current.includes(ingredientId)
-      ? current.filter((id) => id !== ingredientId)
-      : [...current, ingredientId];
-    setSelectedIngredients(updated);
-  };
 
   // Fetch hero banner for the active collection (category) or global
   useEffect(() => {
@@ -319,19 +294,53 @@ export default function CollectionPage() {
   // Reset to page 1 whenever the product list changes (new filter applied)
   useEffect(() => { setCurrentPage(1); }, [products]);
 
-  // Calculate brand counts from current filtered products
+  // Calculate brand and ingredient counts from current filtered products
   useEffect(() => {
-    const counts: Record<number, number> = {};
+    const brandCounts: Record<number, number> = {};
+    const ingredientCounts: Record<number, number> = {};
+    
     products.forEach((p) => {
       if (p.brand?.id) {
-        counts[p.brand.id] = (counts[p.brand.id] ?? 0) + 1;
+        brandCounts[p.brand.id] = (brandCounts[p.brand.id] ?? 0) + 1;
       }
+      // Count ingredients
+      p.ingredients?.forEach((ing) => {
+        if (ing.id) {
+          ingredientCounts[ing.id] = (ingredientCounts[ing.id] ?? 0) + 1;
+        }
+      });
     });
-    setBrandCounts(counts);
-  }, [products, setBrandCounts]);
+    
+    setBrandCounts(brandCounts);
+    setIngredientCounts(ingredientCounts);
+  }, [products, setBrandCounts, setIngredientCounts]);
 
   const totalPages = Math.ceil(products.length / perPage);
   const paginatedProducts = products.slice((currentPage - 1) * perPage, currentPage * perPage);
+
+  // ── Intersection Observer for Sticky Mobile Filter ─────────────────────
+  useEffect(() => {
+    const observerElement = observerRef.current;
+    if (!observerElement) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // Find the header to measure its height
+        const header = document.querySelector('header');
+        if (header) {
+          setHeaderHeight(header.getBoundingClientRect().height);
+        }
+        setIsSticky(!entry.isIntersecting);
+      },
+      {
+        threshold: [1],
+        rootMargin: `-${headerHeight}px 0px 0px 0px`,
+      }
+    );
+
+    observer.observe(observerElement);
+    return () => observer.unobserve(observerElement);
+  }, [headerHeight]);
 
   // Build page number array with ellipsis: e.g. [1, '…', 4, 5, 6, '…', 12]
   function buildPages(current: number, total: number): (number | '…')[] {
@@ -382,107 +391,61 @@ export default function CollectionPage() {
         </div>
       )}
 
-      {/* ── Ingredient Circles Carousel ──────────────────────────────────── */}
-      {ingredients.length > 0 && (() => {
-        return (
-          <div className="bg-white py-10 sm:py-12 border-b border-gray-100">
-            <div className="container mx-auto px-4 max-w-7xl">
-              <div className="relative group">
-                {/* Left arrow */}
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-0 md:-translate-x-4 z-10 flex">
-                  <button
-                    onClick={() => scrollIngredients('prev')}
-                    disabled={!canPrev}
-                    className={`h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-opacity opacity-0 group-hover:opacity-100 ${
-                      canPrev ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 cursor-default'
-                    }`}
-                  >‹</button>
-                </div>
-
-                {/* Ingredient circles track */}
-                <div
-                  ref={trackRef}
-                  onScroll={syncArrows}
-                  className="flex gap-4 sm:gap-6 md:gap-8 overflow-x-auto scroll-smooth pb-4 scrollbar-hide"
-                >
-                  {ingredients.map((ingredient) => (
-                    <button
-                      key={ingredient.id}
-                      onClick={() => {
-                        toggleIngredientSelect(ingredient.id);
-                      }}
-                      className="flex-none w-[120px] md:w-[160px] block text-center focus:outline-none group/card"
-                    >
-                        <div className={`relative mx-auto h-24 w-24 md:h-32 md:w-32 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden transition-all duration-300 group-hover/card:scale-105 ring-2 ${
-                          Array.isArray(selectedIngredients) && selectedIngredients.includes(ingredient.id) ? 'ring-[#da2966]' : 'ring-transparent'
-                        }`}>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
-                          <img
-                            src={ingredient.image_url ?? 'https://images.unsplash.com/photo-1598007264887-acc47d519b88?auto=format&fit=crop&q=80&w=200'}
-                            alt={ingredient.name}
-                            className="h-full w-full object-cover opacity-90 mix-blend-multiply pointer-events-none"
-                          />
-                        </div>
-                        <h3 className={`mt-3 text-xs font-serif uppercase tracking-widest transition-colors ${
-                          Array.isArray(selectedIngredients) && selectedIngredients.includes(ingredient.id) ? 'text-[#da2966] font-semibold' : 'text-gray-500'
-                        }`}>
-                          {ingredient.name}
-                        </h3>
-                      </button>
-                    ))}
-                </div>
-
-                {/* Right arrow */}
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-0 md:translate-x-4 z-10 flex">
-                  <button
-                    onClick={() => scrollIngredients('next')}
-                    disabled={!canNext}
-                    className={`h-10 w-10 md:h-12 md:w-12 rounded-full border border-gray-200 bg-white/90 backdrop-blur-sm flex items-center justify-center shadow-sm transition-opacity opacity-0 group-hover:opacity-100 ${
-                      canNext ? 'text-gray-600 hover:text-gray-900' : 'text-gray-300 cursor-default'
-                    }`}
-                  >›</button>
-                </div>
-
-                {/* Selected ingredients pills (mobile-friendly) */}
-                {Array.isArray(selectedIngredients) && selectedIngredients.length > 0 && (
-                  <div className="mt-6 flex flex-wrap gap-2 justify-center">
-                    {selectedIngredients
-                      .map((id) => ingredients.find((ing) => ing.id === id))
-                      .filter(Boolean)
-                      .map((ingredient) => (
-                        <button
-                          key={ingredient!.id}
-                          onClick={() => toggleIngredientSelect(ingredient!.id)}
-                          className="inline-flex items-center gap-2 px-3 py-1.5 bg-[#da2966] text-white text-xs font-semibold rounded-full hover:bg-[#c7235a] transition-colors"
-                        >
-                          {ingredient!.name}
-                          <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                          </svg>
-                        </button>
-                      ))}
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        );
-      })()}
-
       <main className="container mx-auto px-4 pt-8 max-w-7xl">
         {/* Breadcrumbs */}
-        <div className="text-sm text-gray-400 mb-8 font-serif italic">
-          <Link href="/">Accueil</Link> / <span className="text-gray-900">Collection</span>
-        </div>
-
-        {/* ─── Mobile Toolbar ─────────────────────────────────────────────── */}
-        <div className="md:hidden sticky top-16 z-30 bg-white -mx-4 px-4 py-3 mb-5 border-b border-gray-100 flex items-center gap-2">
-          <span className="text-xs text-gray-400 font-serif italic flex-1 min-w-0 truncate">
+        <div className="text-sm text-gray-400 mb-8 font-serif italic flex items-center justify-between">
+          <div>
+            <Link href="/">Accueil</Link> / <span className="text-gray-900">
+              {(() => {
+                const catSlug = searchParams.get('cat');
+                const productType = searchParams.get('product_type');
+                const isGift = searchParams.get('is_gift');
+                const search = searchParams.get('search');
+                const featured = searchParams.get('featured');
+                if (isGift === 'true' || isGift === '1') return 'Pack';
+                if (featured === '1') return 'Best Sellers';
+                if (catSlug) {
+                  const map: Record<string, string> = {
+                    'beurre': 'Beurre',
+                    'parfum': 'Parfum',
+                    'gommage': 'Gommage',
+                    'maquillage': 'Maquillage',
+                    'hygiene-corporelle': 'Hygiène Corporelle',
+                  };
+                  return map[catSlug] ?? catSlug.charAt(0).toUpperCase() + catSlug.slice(1);
+                }
+                if (productType) {
+                  return productType.charAt(0).toUpperCase() + productType.slice(1);
+                }
+                if (search) return `Recherche : ${search}`;
+                return 'Collection';
+              })()}
+            </span>
+          </div>
+          <span className="md:hidden text-[14px] leading-tight text-gray-700 font-medium whitespace-nowrap not-italic">
             {loadingProducts ? '…' : `${products.length} Produit${products.length !== 1 ? 's' : ''}`}
           </span>
+        </div>
+
+        {/* Sentinel for sticky detection */}
+        <div ref={observerRef} className="h-0 w-0 absolute" style={{ top: '160px' }} />
+
+        {/* ─── Mobile Toolbar ─────────────────────────────────────────────── */}
+        {/* Placeholder to prevent layout jump */}
+        {isSticky && <div className="md:hidden h-[57px] mb-5" />}
+        
+        <div 
+          ref={filterBarRef}
+          className={`md:hidden z-30 bg-white -mx-4 px-4 py-3 mb-5 border-b border-gray-100 flex items-center justify-between gap-2 transition-shadow ${
+            isSticky 
+              ? 'fixed left-0 right-0 shadow-md' 
+              : 'relative'
+          }`}
+          style={isSticky ? { top: `${headerHeight}px`, margin: 0 } : {}}
+        >
           <button
             onClick={() => setMobileFilterOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 border border-gray-300 rounded-full text-xs text-gray-600 shrink-0 transition-colors active:bg-gray-50"
+            className="flex items-center gap-1.5 px-4 py-1.5 border border-gray-300 rounded-full text-xs text-gray-600 shrink-0 transition-colors active:bg-gray-50"
           >
             <SlidersHorizontal className="w-3.5 h-3.5" />
             Filtres
@@ -502,13 +465,13 @@ export default function CollectionPage() {
           <div className="flex items-center border border-gray-200 rounded-full overflow-hidden shrink-0">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-1.5 transition-all ${viewMode === 'grid' ? 'bg-[#4a403a] text-white' : 'text-gray-400'}`}
+              className={`px-2.5 py-1.5 transition-all ${viewMode === 'grid' ? 'bg-[#4a403a] text-white' : 'text-gray-400'}`}
             >
               <Grid className="h-3.5 w-3.5" />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-1.5 border-l border-gray-200 transition-all ${viewMode === 'list' ? 'bg-[#4a403a] text-white' : 'text-gray-400'}`}
+              className={`px-2.5 py-1.5 border-l border-gray-200 transition-all ${viewMode === 'list' ? 'bg-[#4a403a] text-white' : 'text-gray-400'}`}
             >
               <List className="h-3.5 w-3.5" />
             </button>
@@ -537,20 +500,68 @@ export default function CollectionPage() {
                   <>
                     <div className="relative mb-4">
                       <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
-                      <input type="text" placeholder="Rechercher une marque..." className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" />
+                      <input 
+                        type="text" 
+                        placeholder="Rechercher une marque..." 
+                        value={brandSearchTerm}
+                        onChange={(e) => setBrandSearchTerm(e.target.value)}
+                        className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" 
+                      />
                     </div>
                     <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
-                      {brands.map(brand => (
-                        <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
-                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleBrand(brand.id)}>
-                            {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
-                          </div>
-                          <div className="flex items-baseline gap-2">
-                            <span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span>
-                            <span className="text-[11px] text-gray-400">({brandCounts[brand.id] ?? 0})</span>
-                          </div>
-                        </label>
-                      ))}
+                      {brands
+                        .filter(brand => brand.name.toLowerCase().includes(brandSearchTerm.toLowerCase()))
+                        .map(brand => (
+                          <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
+                            <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleBrand(brand.id)}>
+                              {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
+                            </div>
+                            <div className="flex items-baseline gap-2">
+                              <span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span>
+                              <span className="text-[11px] text-gray-400">({brandCounts[brand.id] ?? 0})</span>
+                            </div>
+                          </label>
+                        ))}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Ingredients Filter */}
+              <div className="mb-6 border-t border-gray-100 pt-6">
+                <div 
+                  className="flex justify-between items-center mb-4 cursor-pointer hover:opacity-70 transition-opacity"
+                  onClick={() => toggleSection('ingredients')}
+                >
+                  <h3 className="font-serif text-gray-700">Ingrédients</h3>
+                  <ChevronUp className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedSections.ingredients ? 'rotate-0' : 'rotate-180'}`} />
+                </div>
+                {expandedSections.ingredients && (
+                  <>
+                    <div className="relative mb-4">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
+                      <input 
+                        type="text" 
+                        placeholder="Rechercher un ingrédient..." 
+                        value={ingredientSearchTerm}
+                        onChange={(e) => setIngredientSearchTerm(e.target.value)}
+                        className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" 
+                      />
+                    </div>
+                    <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
+                      {ingredients
+                        .filter(ingredient => ingredient.name.toLowerCase().includes(ingredientSearchTerm.toLowerCase()))
+                        .map(ingredient => (
+                          <label key={ingredient.id} className="flex items-center gap-3 cursor-pointer group">
+                            <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedIngredients.includes(ingredient.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleIngredient(ingredient.id)}>
+                              {selectedIngredients.includes(ingredient.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
+                            </div>
+                            <div className="flex items-baseline gap-2">
+                              <span className={`text-xs ${selectedIngredients.includes(ingredient.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{ingredient.name}</span>
+                              <span className="text-[11px] text-gray-400">({ingredientCounts[ingredient.id] ?? 0})</span>
+                            </div>
+                          </label>
+                        ))}
                     </div>
                   </>
                 )}
@@ -906,22 +917,61 @@ export default function CollectionPage() {
                 <h3 className="font-serif text-gray-700 mb-4">Brand</h3>
                 <div className="relative mb-4">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
-                  <input type="text" placeholder="Search brand..." className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none" />
+                  <input 
+                    type="text" 
+                    placeholder="Search brand..." 
+                    value={brandSearchTerm}
+                    onChange={(e) => setBrandSearchTerm(e.target.value)}
+                    className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none" 
+                  />
                 </div>
-                <div className="space-y-3">
-                  {brands.map(brand => (
-                    <label key={brand.id} className="flex items-center gap-3 cursor-pointer">
-                      <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleBrand(brand.id)}>
-                        {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span>
-                        <span className="text-[11px] text-gray-400">({brandCounts[brand.id] ?? 0})</span>
-                      </div>
-                    </label>
-                  ))}
+                <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
+                  {brands
+                    .filter(brand => brand.name.toLowerCase().includes(brandSearchTerm.toLowerCase()))
+                    .map(brand => (
+                      <label key={brand.id} className="flex items-center gap-3 cursor-pointer">
+                        <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleBrand(brand.id)}>
+                          {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
+                        </div>
+                        <div className="flex items-baseline gap-2">
+                          <span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span>
+                          <span className="text-[11px] text-gray-400">({brandCounts[brand.id] ?? 0})</span>
+                        </div>
+                      </label>
+                    ))}
                 </div>
               </div>
+
+              {/* Ingrédients */}
+              <div className="mb-6 border-t border-gray-100 pt-6">
+                <h3 className="font-serif text-gray-700 mb-4">Ingrédients</h3>
+                <div className="relative mb-4">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
+                  <input 
+                    type="text" 
+                    placeholder="Search ingredient..." 
+                    value={ingredientSearchTerm}
+                    onChange={(e) => setIngredientSearchTerm(e.target.value)}
+                    className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none" 
+                  />
+                </div>
+                <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
+                  {ingredients
+                    .filter(ingredient => ingredient.name.toLowerCase().includes(ingredientSearchTerm.toLowerCase()))
+                    .map(ingredient => (
+                      <label key={ingredient.id} className="flex items-center gap-3 cursor-pointer">
+                        <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedIngredients.includes(ingredient.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleIngredient(ingredient.id)}>
+                          {selectedIngredients.includes(ingredient.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
+                        </div>
+                        <div className="flex items-baseline gap-2">
+                          <span className={`text-xs ${selectedIngredients.includes(ingredient.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{ingredient.name}</span>
+                          <span className="text-[11px] text-gray-400">({ingredientCounts[ingredient.id] ?? 0})</span>
+                        </div>
+                      </label>
+                    ))}
+                </div>
+              </div>
+
               {/* Price */}
               <div className="mb-6 border-t border-gray-100 pt-6">
                 <h3 className="font-serif text-gray-700 mb-4">Price</h3>

@@ -2,22 +2,44 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import CartDrawer from '@/components/CartDrawer';
 import FilterModal from '@/components/FilterModal';
 import useCartStore from '@/store/cart';
 import { getWishlist } from '@/lib/wishlist';
+import { productService, Product } from '@/services/api';
+import { Instagram, Facebook } from 'lucide-react';
+
+// TikTok SVG (not in lucide)
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.2 8.2 0 0 0 4.78 1.52V6.76a4.85 4.85 0 0 1-1.01-.07z"/>
+    </svg>
+  );
+}
+
+// WhatsApp SVG (not in lucide)
+function WhatsAppIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/>
+    </svg>
+  );
+}
 
 
 const NAV_LINKS = [
-  { label: 'CADEAUX',     href: '/collection?is_gift=true' },
-  { label: 'VISAGE',      href: '/collection?product_type=visage' },
-  { label: 'CORPS',       href: '/collection?product_type=corps' },
-  { label: 'PARFUMS',     href: '/collection?product_type=parfums' },
-  { label: 'BEAUTÉ',      href: '/collection?product_type=skincare' },
-  { label: 'CHEVEUX',     href: '/collection?product_type=hair' },
+  { label: 'PACK',                href: '/collection?is_gift=true', highlight: true },
+  { label: 'BEURRE',              href: '/collection?cat=beurre' },
+  { label: 'PARFUM',              href: '/collection?cat=parfum' },
+  { label: 'GOMMAGE',             href: '/collection?cat=gommage' },
+  { label: 'MAQUILLAGE',          href: '/collection?cat=maquillage' },
+  { label: 'HYGIÈNE CORPORELLE',  href: '/collection?cat=hygiene-corporelle' },
 ];
+
+const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
 export default function Header() {
   const router = useRouter();
@@ -28,6 +50,42 @@ export default function Header() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
+
+  const openMenu = () => {
+    setIsMenuOpen(true);
+    window.dispatchEvent(new CustomEvent('mobile-menu-change', { detail: { isOpen: true } }));
+  };
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+    window.dispatchEvent(new CustomEvent('mobile-menu-change', { detail: { isOpen: false } }));
+  };
+
+  // ── Listen for mobile search request from Bottom Nav ─────────────────────
+  useEffect(() => {
+    const handleMobileSearch = () => {
+      openMenu();
+      // Small timeout to allow the menu to render before focusing
+      setTimeout(() => {
+        if (mobileSearchInputRef.current) {
+          mobileSearchInputRef.current.focus();
+        }
+      }, 300);
+    };
+    window.addEventListener('trigger-mobile-search', handleMobileSearch);
+    const handleTriggerCart = () => setIsCartOpen(true);
+    window.addEventListener('trigger-cart', handleTriggerCart);
+    return () => {
+      window.removeEventListener('trigger-mobile-search', handleMobileSearch);
+      window.removeEventListener('trigger-cart', handleTriggerCart);
+    };
+  }, []);
+
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [showSearchDropdown, setShowSearchDropdown] = useState(false);
+  const [isSearching, setIsSearching] = useState(false);
+  const searchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsMounted(true);
@@ -37,15 +95,68 @@ export default function Header() {
     return () => window.removeEventListener('wishlist-changed', onWishlistChanged);
   }, []);
 
+  // Instant search effect
+  useEffect(() => {
+    if (query.trim().length === 0) {
+      setSearchResults([]);
+      setShowSearchDropdown(false);
+      return;
+    }
+
+    setIsSearching(true);
+    const controller = new AbortController();
+
+    // Instant search - no delay
+    productService
+      .list({ search: query.trim(), limit: 8 })
+      .then((response) => {
+        setSearchResults(Array.isArray(response.data) ? response.data : []);
+        setShowSearchDropdown(true);
+        setIsSearching(false);
+      })
+      .catch(() => {
+        setSearchResults([]);
+        setIsSearching(false);
+      });
+
+    return () => controller.abort();
+  }, [query]);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (
+        searchRef.current && 
+        !searchRef.current.contains(e.target as Node) &&
+        mobileSearchRef.current &&
+        !mobileSearchRef.current.contains(e.target as Node)
+      ) {
+        setShowSearchDropdown(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <>
       <header className="sticky top-0 z-50 bg-white shadow-sm">
       {/* ── Announcement Bar ─────────────────────────────────────────────── */}
       <div className="overflow-hidden bg-black py-2 text-[10px] font-medium uppercase tracking-widest text-white">
-        <div className="flex items-center justify-center">
+        {/* Desktop: Static centered text */}
+        <div className="hidden md:flex items-center justify-center">
           <span>
             PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%
           </span>
+        </div>
+        {/* Mobile: Infinite scroll marquee */}
+        <div className="md:hidden flex">
+          <div className="flex w-max animate-[scrollAnnounce_20s_linear_infinite] gap-8">
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+          </div>
         </div>
       </div>
 
@@ -53,7 +164,7 @@ export default function Header() {
       <div className="container mx-auto flex items-center justify-between px-4 md:px-[69px] py-4 md:py-5">
         {/* Mobile Hamburger (hidden on pb-desktop) */}
         <div className="flex w-1/4 md:hidden">
-          <button aria-label="Menu" className="text-gray-900" onClick={() => setIsMenuOpen(true)}>
+          <button aria-label="Menu" className="text-gray-900" onClick={openMenu}>
             <svg className="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h8" />
             </svg>
@@ -76,13 +187,13 @@ export default function Header() {
 
         {/* Search */}
         <div className="hidden md:block w-2/4 px-4">
-          <div className="relative mx-auto max-w-xl">
+          <div ref={searchRef} className="relative mx-auto max-w-xl">
             {/* magnifier */}
             <svg
-              className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400"
+              className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 z-10"
               fill="none" stroke="currentColor" viewBox="0 0 24 24"
             >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
             <input
@@ -93,6 +204,7 @@ export default function Header() {
                 if (e.key === 'Enter') {
                   e.preventDefault();
                   if (query.trim()) {
+                    setShowSearchDropdown(false);
                     router.push(`/collection?search=${encodeURIComponent(query.trim())}`);
                   }
                 }
@@ -104,14 +216,68 @@ export default function Header() {
             {/* filter icon */}
             <svg
               onClick={() => setIsFilterOpen(true)}
-              className="absolute right-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-900 transition-colors"
-              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+              className="absolute right-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-900 transition-colors z-10"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
             >
-              <path d="M3 8h10m4 0h4" />
-              <circle cx="15" cy="8" r="2.5" />
-              <path d="M3 16h4m4 0h10" />
-              <circle cx="9" cy="16" r="2.5" />
+              <line x1="4" y1="21" x2="4" y2="14" />
+              <line x1="4" y1="10" x2="4" y2="3" />
+              <line x1="12" y1="21" x2="12" y2="12" />
+              <line x1="12" y1="8" x2="12" y2="3" />
+              <line x1="20" y1="21" x2="20" y2="16" />
+              <line x1="20" y1="10" x2="20" y2="3" />
+              <line x1="2" y1="14" x2="6" y2="14" />
+              <line x1="10" y1="8" x2="14" y2="8" />
+              <line x1="18" y1="16" x2="22" y2="16" />
             </svg>
+
+            {/* Search Dropdown */}
+            {showSearchDropdown && query.trim().length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-[400px] overflow-y-auto z-50">
+                {isSearching ? (
+                  <div className="px-4 py-8 text-center text-sm text-gray-500">
+                    Recherche en cours...
+                  </div>
+                ) : searchResults.length === 0 ? (
+                  <div className="px-4 py-8 text-center text-sm text-gray-500">
+                    Aucun résultat trouvé
+                  </div>
+                ) : (
+                  <div className="py-2">
+                    {searchResults.map((product) => (
+                      <Link
+                        key={product.id}
+                        href={`/product/${product.slug}`}
+                        onClick={() => {
+                          setShowSearchDropdown(false);
+                          setQuery('');
+                        }}
+                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors"
+                      >
+                        {/* Product Image */}
+                        <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                          <Image
+                            src={product.primary_image || product.images?.[0]?.image_url || FALLBACK_IMG}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                            unoptimized
+                          />
+                        </div>
+                        {/* Product Info */}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {product.name}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {product.product_type?.name || product.category?.name || 'Produit'}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -173,7 +339,7 @@ export default function Header() {
 
       {/* ── Main Navigation ─────────────────────────────────────────────── */}
       <nav className="hidden md:block container mx-auto px-4 pb-4">
-        <ul className="flex justify-center space-x-10 text-sm font-semibold tracking-widest text-gray-700">
+        <ul className="flex justify-center space-x-10 text-[16px] tracking-widest text-gray-700" style={{ fontFamily: "'Sitka Banner', serif", fontWeight: 'bold' }}>
           {NAV_LINKS.map(({ label, href }) => (
             <li key={label}>
               <Link
@@ -200,35 +366,38 @@ export default function Header() {
 
       {/* ── Mobile Menu Overlay ───────────────────────────────────────── */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[100] bg-white flex flex-col pt-safe pb-safe overflow-y-auto">
+        <div className="fixed inset-0 z-[200] bg-white flex flex-col pt-safe pb-safe overflow-y-auto">
           {/* Header inside menu */}
-          <div className="flex items-center justify-between px-4 py-4 mb-2">
+          <div className="flex items-center justify-between px-4 py-4 mb-[37px]">
             <button 
-              onClick={() => setIsMenuOpen(false)}
-              className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-gray-200"
+              onClick={closeMenu}
+              className="flex items-center justify-center text-gray-700 transition-colors hover:text-gray-900"
+              style={{ width: 31, height: 31 }}
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <svg style={{ width: 31, height: 31 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
             <Image
               src="/logo.png"
               alt="MyBloom"
-              width={160}
-              height={40}
-              className="object-contain h-6"
+              width={95}
+              height={29}
+              className="object-contain"
+              style={{ width: 95, height: 29 }}
             />
-            {/* Right placeholder to keep logo perfectly centered between close button and edge */}
-            <div className="w-8" />
+            {/* Right placeholder to keep logo perfectly centered */}
+            <div style={{ width: 31 }} />
           </div>
 
           {/* Search */}
-          <div className="px-6 py-2 mb-6">
+          <div ref={mobileSearchRef} className="py-2 mb-[45px] relative" style={{ marginLeft: 35, marginRight: 35 }}>
             <div className="relative border-b border-gray-300 pb-2 flex items-center">
-              <svg className="w-4 h-4 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              <svg className="w-4 h-4 text-gray-400 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input 
+                ref={mobileSearchInputRef}
                 type="text" 
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
@@ -236,37 +405,102 @@ export default function Header() {
                   if (e.key === 'Enter') {
                     e.preventDefault();
                     if (query.trim()) {
-                      setIsMenuOpen(false);
+                      setShowSearchDropdown(false);
+                      closeMenu();
                       router.push(`/collection?search=${encodeURIComponent(query.trim())}`);
                     }
                   }
                 }}
-                placeholder="Rechercher un parfum..." 
-                className="flex-1 bg-transparent text-sm focus:outline-none placeholder-gray-500 font-medium"
+                placeholder="Search for a scent..." 
+                className="flex-1 bg-transparent focus:outline-none placeholder-gray-400"
+                style={{ fontFamily: "'Akhbar MT', 'Amiri', serif", fontSize: 18 }}
               />
               <svg 
                 onClick={() => {
-                  setIsMenuOpen(false);
+                  closeMenu();
                   setIsFilterOpen(true);
                 }}
                 className="w-[18px] h-[18px] text-gray-500 ml-3 cursor-pointer hover:text-gray-900 transition-colors" 
-                viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"
+                viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
               >
-                <path d="M3 8h10m4 0h4" />
-                <circle cx="15" cy="8" r="2.5" />
-                <path d="M3 16h4m4 0h10" />
-                <circle cx="9" cy="16" r="2.5" />
+                <line x1="4" y1="21" x2="4" y2="14" />
+                <line x1="4" y1="10" x2="4" y2="3" />
+                <line x1="12" y1="21" x2="12" y2="12" />
+                <line x1="12" y1="8" x2="12" y2="3" />
+                <line x1="20" y1="21" x2="20" y2="16" />
+                <line x1="20" y1="10" x2="20" y2="3" />
+                <line x1="2" y1="14" x2="6" y2="14" />
+                <line x1="10" y1="8" x2="14" y2="8" />
+                <line x1="18" y1="16" x2="22" y2="16" />
               </svg>
             </div>
+
+            {/* Mobile Search Dropdown */}
+            {showSearchDropdown && query.trim().length > 0 && (
+              <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg max-h-[400px] overflow-y-auto z-50">
+                {isSearching ? (
+                  <div className="px-4 py-8 text-center text-sm text-gray-500">
+                    Recherche en cours...
+                  </div>
+                ) : searchResults.length === 0 ? (
+                  <div className="px-4 py-8 text-center text-sm text-gray-500">
+                    Aucun résultat trouvé
+                  </div>
+                ) : (
+                  <div className="py-2">
+                    {searchResults.map((product) => (
+                      <Link
+                        key={product.id}
+                        href={`/product/${product.slug}`}
+                        onClick={() => {
+                          setShowSearchDropdown(false);
+                          setQuery('');
+                          closeMenu();
+                        }}
+                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 transition-colors"
+                      >
+                        {/* Product Image */}
+                        <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-gray-100 shrink-0">
+                          <Image
+                            src={product.primary_image || product.images?.[0]?.image_url || FALLBACK_IMG}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                            unoptimized
+                          />
+                        </div>
+                        {/* Product Info */}
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {product.name}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">
+                            {product.product_type?.name || product.category?.name || 'Produit'}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Navigation Links */}
-          <div className="flex flex-col px-6 space-y-7 mb-auto">
-            {NAV_LINKS.map(({ label, href }) => (
+          <div className="flex flex-col px-6 mb-auto" style={{ gap: 22 }}>
+            {NAV_LINKS.map(({ label, href, highlight }) => (
               <Link
                 key={label}
                 href={href}
-                className="font-serif text-[22px] uppercase text-gray-900 transition-colors hover:text-[#da2966]"
+                onClick={closeMenu}
+                className="uppercase transition-colors"
+                style={{
+                  fontFamily: "'Sitka Banner', serif",
+                  fontSize: 24,
+                  fontWeight: 'bold',
+                  color: highlight ? '#C9527A' : '#111827',
+                  lineHeight: 1.2,
+                }}
               >
                 {label}
               </Link>
@@ -276,42 +510,58 @@ export default function Header() {
           {/* Collection Highlights */}
           <div className="mt-12 px-6">
             <div className="flex items-center justify-between mb-5">
-              <h3 className="text-[11px] text-gray-500 font-bold tracking-wider uppercase">COLLECTION HIGHLIGHTS</h3>
-              <Link href="#" className="text-xs text-[#e63a6c] font-semibold">View All</Link>
+              <h3
+                className="uppercase tracking-[1px] text-[#999999]"
+                style={{ fontFamily: "'Akhbar MT', 'Amiri', serif", fontSize: 18 }}
+              >
+                COLLECTION HIGHLIGHTS
+              </h3>
+              <Link
+                href="#"
+                className="text-[#C9527A]"
+                style={{ fontFamily: "'Akhbar MT', 'Amiri', serif", fontSize: 16 }}
+              >
+                View All
+              </Link>
             </div>
             
             <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
               <Link href="/collection?is_best_seller=true" className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
-                <Image src="https://images.unsplash.com/photo-1615397323214-cb9192415d86?auto=format&fit=crop&q=80&w=400" alt="Best Sellers" fill className="object-cover opacity-90 transition-transform group-hover:scale-105" />
-                <div className="absolute inset-0 bg-white/20 p-4 flex flex-col justify-end">
-                  <h4 className="font-serif font-bold text-black text-xl">Best Sellers</h4>
-                  <p className="text-[11px] text-gray-800 mt-1 font-medium">Shop Now</p>
+                <Image src="https://images.unsplash.com/photo-1615397323214-cb9192415d86?auto=format&fit=crop&q=80&w=400" alt="Best Sellers" fill className="object-cover transition-transform group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent p-4 flex flex-col justify-end">
+                  <h4 className="font-serif font-bold text-white text-xl drop-shadow">Best Sellers</h4>
+                  <p className="text-[11px] text-white/80 mt-1 font-medium">Shop Now</p>
                 </div>
               </Link>
               <Link href="/collection?is_gift=true" className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
-                <Image src="https://images.unsplash.com/photo-1595425970377-c9703bc48b4d?auto=format&fit=crop&q=80&w=400" alt="Gift Sets" fill className="object-cover opacity-90 transition-transform group-hover:scale-105" />
-                <div className="absolute inset-0 bg-white/20 p-4 flex flex-col justify-end">
-                  <h4 className="font-serif font-bold text-black text-xl">Gift Sets</h4>
-                  <p className="text-[11px] text-gray-800 mt-1 font-medium">Discover</p>
+                <Image src="https://images.unsplash.com/photo-1595425970377-c9703bc48b4d?auto=format&fit=crop&q=80&w=400" alt="Gift Sets" fill className="object-cover transition-transform group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent p-4 flex flex-col justify-end">
+                  <h4 className="font-serif font-bold text-white text-xl drop-shadow">Gift Sets</h4>
+                  <p className="text-[11px] text-white/80 mt-1 font-medium">Discover</p>
                 </div>
               </Link>
             </div>
           </div>
 
           {/* Social Icons */}
-          <div className="mt-8 pt-6 pb-10 flex justify-center space-x-6 w-full">
-            <a href="#" className="text-gray-800 hover:text-black transition-transform hover:scale-110">
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd" /></svg>
-            </a>
-            <a href="#" className="text-gray-800 hover:text-black transition-transform hover:scale-110">
-               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" /></svg>
-            </a>
-            <a href="#" className="flex items-center text-gray-800 hover:text-black transition-transform hover:scale-110">
-               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M21.582 6.186a2.6 2.6 0 00-1.83-1.84C18.14 3.9 12 3.9 12 3.9s-6.14 0-7.75.446a2.6 2.6 0 00-1.83 1.84C2 7.82 2 12 2 12s0 4.18.42 5.814a2.601 2.601 0 001.83 1.841c1.61.445 7.75.445 7.75.445s6.14 0 7.75-.445a2.602 2.602 0 001.83-1.84 27.604 27.604 0 00.42-5.815s.005-4.18-.418-5.814zM9.9 15.3v-6.6l5.72 3.3-5.72 3.3z"/></svg>
-            </a>
-            <a href="#" className="text-gray-800 hover:text-black transition-transform hover:scale-110">
-               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.52 3.48A11.964 11.964 0 0012 .29C5.39.29.02 5.66.02 12.27c0 2.11.55 4.17 1.6 5.99L.25 23.63l5.52-1.44c1.78.96 3.79 1.47 5.86 1.47h.01c6.61 0 11.98-5.37 11.98-11.98 0-3.21-1.25-6.22-3.52-8.49L20.52 3.48zM12 21.68c-1.8 0-3.55-.48-5.09-1.4l-.36-.21-3.78.99.99-3.69-.23-.37a9.9 9.9 0 01-1.43-5.1C2.08 6.44 6.55 2.05 12 2.05c2.61 0 5.06 1.02 6.91 2.87A9.8 9.8 0 0121.8 11.93c0 5.46-4.47 9.85-10.05 9.85h-.01zm5.5-7.53c-.3-.15-1.78-.88-2.06-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.95 1.18-.18.2-.35.23-.65.08-.3-.15-1.27-.47-2.42-1.33-.9-.67-1.5-1.5-1.68-1.8-.18-.3-.02-.46.13-.61.14-.14.3-.3.45-.45.15-.15.2-.26.3-.43.1-.18.05-.33-.03-.48-.08-.15-.68-1.64-.93-2.25-.25-.59-.5-.51-.68-.52h-.58c-.2 0-.53.08-.8.38-.28.3-1.05 1.03-1.05 2.52 0 1.49 1.08 2.93 1.23 3.13.15.2 2.13 3.25 5.16 4.56.72.31 1.28.5 1.72.64.72.23 1.38.2 1.9.12.58-.09 1.78-.73 2.03-1.43.25-.7.25-1.3.18-1.43-.07-.13-.27-.2-.57-.35z"/></svg>
-            </a>
+          <div className="mt-6 pb-10 flex justify-center gap-3 w-full px-6">
+            {[
+              { href: 'https://instagram.com',      icon: <Instagram className="w-[18px] h-[18px]" />,     label: 'Instagram' },
+              { href: 'https://facebook.com',        icon: <Facebook className="w-[18px] h-[18px]" />,      label: 'Facebook'  },
+              { href: 'https://tiktok.com',          icon: <TikTokIcon className="w-[16px] h-[16px]" />,    label: 'TikTok'    },
+              { href: 'https://wa.me/212611955060',  icon: <WhatsAppIcon className="w-[17px] h-[17px]" />,  label: 'WhatsApp'  },
+            ].map(({ href, icon, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="w-[38px] h-[38px] rounded-full bg-[#f1f1f1] flex items-center justify-center text-gray-700 hover:bg-[#da2966] hover:text-white transition-colors"
+              >
+                {icon}
+              </a>
+            ))}
           </div>
         </div>
       )}

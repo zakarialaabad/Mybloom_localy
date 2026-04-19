@@ -2,6 +2,22 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'Sitka Banner';
+  src: local('Sitka Banner Bold'), local('Sitka Banner'), local('SitkaBanner-Bold');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Akhbar MT';
+  src: url('/fonts/AkhbarMT.woff2') format('woff2'),
+       url('/fonts/AkhbarMT.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 @layer base {
   :root {
     --background: #ffffff;
@@ -102,6 +118,57 @@
   @keyframes scrollBrand {
     0% { transform: translateX(0); }
     100% { transform: translateX(calc(-25%)); } /* Translate by exactly 1 entire set of products since we duplicated 4 times, 25% represents the initial list size. */
+  }
+
+  @keyframes scrollAnnounce {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-25%)); } /* Seamless infinite scroll with 4 duplicates */
+  }
+
+  /* Mobile icon sizes for "Pourquoi choisir MyBloom" section */
+  @media (max-width: 768px) {
+    .icon-authentic {
+      width: 39px !important;
+      height: 39px !important;
+    }
+    
+    .icon-competitive {
+      width: 48px !important;
+      height: 28px !important;
+    }
+    
+    .icon-support {
+      width: 39px !important;
+      height: 44px !important;
+    }
+    
+    .icon-cod {
+      width: 39px !important;
+      height: 39px !important;
+    }
+  }
+
+  /* Desktop icon sizes for "Pourquoi choisir MyBloom" section */
+  @media (min-width: 769px) {
+    .icon-authentic {
+      width: 71px !important;
+      height: 71px !important;
+    }
+    
+    .icon-competitive {
+      width: 89px !important;
+      height: 53px !important;
+    }
+    
+    .icon-support {
+      width: 62px !important;
+      height: 71px !important;
+    }
+    
+    .icon-cod {
+      width: 62px !important;
+      height: 62px !important;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

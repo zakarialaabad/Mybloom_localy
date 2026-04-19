@@ -28,6 +28,13 @@ function VideoPlayer({
   // Track which indexes have already had .load() triggered to avoid redundant calls.
   const preloadedSet = useRef<Set<number>>(new Set());
 
+  // When the full video list arrives (phase 2), mount all videos so they're available.
+  useEffect(() => {
+    if (videos.length > mountedCount) {
+      setMountedCount(videos.length);
+    }
+  }, [videos.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // Reset preload tracking and start playing when the active video changes.
   useEffect(() => {
     preloadedSet.current.clear();
@@ -167,7 +174,7 @@ export default function HeroSection() {
   }, []);
 
   return (
-    <section className="relative h-[550px] md:h-[650px] overflow-hidden bg-gray-200">
+    <section className="relative h-[calc(100vh-140px)] md:h-[650px] overflow-hidden bg-gray-200">
       {/* Background video (desktop) */}
       <VideoPlayer videos={videos.desktop} className="hidden md:block" />
 
@@ -188,7 +195,7 @@ export default function HeroSection() {
         <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto px-8 md:px-0 items-center">
           <Link
             href="#best-sellers"
-            className="flex w-max items-center justify-center rounded-full bg-white/40 md:bg-white px-8 md:px-10 py-2.5 md:py-3 text-xs md:text-sm font-semibold tracking-widest text-white md:text-gray-900 backdrop-blur-sm transition-colors hover:bg-aura-gold hover:text-white"
+            className="flex w-max items-center justify-center rounded-full bg-white/40 md:bg-white px-8 md:px-10 py-2.5 md:py-3 text-xs md:text-sm font-semibold tracking-widest text-white md:text-gray-900 backdrop-blur-sm transition-colors hover:bg-[#da2966] hover:text-white"
           >
             ACHETER MAINTENANT <span className="ml-2 text-[10px] md:hidden">▶</span>
           </Link>

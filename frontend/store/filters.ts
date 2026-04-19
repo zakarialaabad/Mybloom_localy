@@ -46,6 +46,8 @@ interface FilterStore {
   // ── Dynamic brand counts (based on current filtered products) ────────────
   brandCounts: Record<number, number>; // brand_id -> product_count
   setBrandCounts: (counts: Record<number, number>) => void;
+  ingredientCounts: Record<number, number>; // ingredient_id -> product_count
+  setIngredientCounts: (counts: Record<number, number>) => void;
 
   // ── Mutations ───────────────────────────────────────────────────────
   setSelectedMin: (v: number) => void;
@@ -102,6 +104,8 @@ const useFilterStore = create<FilterStore>((set, get) => ({
   // ── Dynamic brand counts ──────────────────────────────────────────────────
   brandCounts: {},
   setBrandCounts: (counts) => set({ brandCounts: counts }),
+  ingredientCounts: {},
+  setIngredientCounts: (counts) => set({ ingredientCounts: counts }),
 
   // ── Mutations ─────────────────────────────────────────────────────────────
   setSelectedMin: (v) => set({ selectedMin: v }),
