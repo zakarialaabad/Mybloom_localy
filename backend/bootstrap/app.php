@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Force JSON responses for all API routes
         $middleware->api(prepend: [
             \App\Http\Middleware\ForceJsonResponse::class,
+            \App\Http\Middleware\InjectAdminTokenFromCookie::class,
         ]);
 
         // Throttle

@@ -39,10 +39,11 @@ class ProductController extends Controller
 
         // Full-text search across name, subtitle and category name
         if ($search = trim((string) $request->get('search', ''))) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('subtitle', 'like', "%{$search}%")
-                  ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$search}%"));
+            $escaped = str_replace(['%', '_'], ['\%', '\_'], $search);
+            $query->where(function ($q) use ($escaped) {
+                $q->where('name', 'like', "%{$escaped}%")
+                  ->orWhere('subtitle', 'like', "%{$escaped}%")
+                  ->orWhereHas('category', fn ($c) => $c->where('name', 'like', "%{$escaped}%"));
             });
         }
 
@@ -164,7 +165,8 @@ class ProductController extends Controller
             return response()->json(['data' => new ProductDetailResource($product->load(['brand', 'category', 'images', 'sizes', 'variants', 'reviews.images', 'allReviews.images']))], 201);
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
-            return response()->json(['message' => 'Failed to create product.', 'error' => $e->getMessage()], 500);
+            \Illuminate\Support\Facades\Log::error('Failed to create product', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return response()->json(['message' => 'Failed to create product.'], 500);
         }
     }
 
@@ -340,7 +342,8 @@ class ProductController extends Controller
 
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\DB::rollBack();
-            return response()->json(['message' => 'Failed to update product.', 'error' => $e->getMessage()], 500);
+            \Illuminate\Support\Facades\Log::error('Failed to update product', ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return response()->json(['message' => 'Failed to update product.'], 500);
         }
     }
 

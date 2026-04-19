@@ -51,7 +51,7 @@ class AdminAuthController extends Controller
                 '/',
                 null,
                 config('app.env') === 'production',  // Secure
-                false,                                 // NOT HttpOnly — JS reads it to set Authorization header
+                true,                                  // HttpOnly — prevents XSS token theft
                 false,
                 'Lax'
             );

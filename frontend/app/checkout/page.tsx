@@ -147,9 +147,17 @@ export default function CheckoutPage() {
         })),
       });
       clearCart();
-      router.push(
-        `/success?order=${result.order_number}&total=${result.total}&name=${encodeURIComponent(`${firstName} ${lastName}`)}&phone=${encodeURIComponent(phone)}&city=${encodeURIComponent(city)}`,
-      );
+      // Store order details in sessionStorage to avoid PII in URL params
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('order_success', JSON.stringify({
+          order: result.order_number,
+          total: result.total,
+          name: `${firstName} ${lastName}`,
+          phone,
+          city,
+        }));
+      }
+      router.push('/success');
     } catch (err: unknown) {
       const msg = (err as { message?: string })?.message;
       setSubmitError(msg ?? 'Une erreur est survenue. Réessayez.');

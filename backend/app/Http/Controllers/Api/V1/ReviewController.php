@@ -151,7 +151,7 @@ class ReviewController extends Controller
             'reviewer_name' => $data['reviewer_name'],
             'rating'        => $data['rating'],
             'body'          => $data['body'] ?? null,
-            'is_approved'   => true,
+            'is_approved'   => false,
         ]);
 
         // Persist each uploaded photo and link it to the review using ImageService

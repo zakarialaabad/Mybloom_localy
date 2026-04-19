@@ -18,9 +18,9 @@ export function middleware(request: NextRequest) {
   }
 
   if (isAdminRoute) {
-    const token = request.cookies.get('admin_token')?.value;
+    const loggedIn = request.cookies.get('admin_logged_in')?.value;
 
-    if (!token) {
+    if (!loggedIn) {
       const loginUrl = new URL('/admin/login', request.url);
       return NextResponse.redirect(loginUrl);
     }

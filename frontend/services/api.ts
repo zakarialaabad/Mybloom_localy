@@ -44,16 +44,7 @@ const apiClient = axios.create({
 // it as Authorization: Bearer on every request. This replaces the fragile
 // server-side InjectAdminTokenFromCookie middleware that crashed PHP on Windows.
 
-apiClient.interceptors.request.use((config) => {
-  if (typeof document !== 'undefined') {
-    const match = document.cookie.match(/(?:^|;\s*)admin_token=([^;]+)/);
-    if (match) {
-      const token = decodeURIComponent(match[1]);
-      config.headers['Authorization'] = `Bearer ${token}`;
-    }
-  }
-  return config;
-});
+apiClient.interceptors.request.use((config) => config);
 
 // â”€â”€â”€ Response interceptor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // 401 â†’ redirect to /admin/login. No retry. No token refresh.
@@ -63,8 +54,7 @@ apiClient.interceptors.response.use(
   (error: AxiosError<ApiValidationError>) => {
     if (error.response?.status === 401) {
       if (typeof window !== 'undefined') {
-        // Clear the frontend-domain cookie before redirecting
-        document.cookie = 'admin_token=; path=/; max-age=0; SameSite=Lax';
+        document.cookie = 'admin_logged_in=; path=/; max-age=0; SameSite=Lax';
         window.location.href = '/admin/login';
       }
     }
@@ -78,20 +68,19 @@ apiClient.interceptors.response.use(
 export const adminAuthService = {
   login: async (payload: AdminLoginPayload): Promise<AdminLoginResponse> => {
     const { data } = await apiClient.post<AdminLoginResponse>('/v1/admin/auth/login', payload);
-    // Set the token as a cookie on the frontend domain (localhost) so
-    // Next.js Edge middleware can read it for route protection.
+    // Set a non-sensitive flag cookie so Next.js middleware can gate admin routes.
+    // The actual token is in an HttpOnly cookie set by the backend response.
     if (typeof document !== 'undefined' && data.token) {
       const maxAge = 60 * 60 * 24; // 24 h
-      document.cookie = `admin_token=${encodeURIComponent(data.token)}; path=/; max-age=${maxAge}; SameSite=Lax`;
+      document.cookie = `admin_logged_in=1; path=/; max-age=${maxAge}; SameSite=Lax`;
     }
     return data;
   },
 
   logout: async (): Promise<void> => {
     await apiClient.post('/v1/admin/auth/logout');
-    // Remove the frontend-domain cookie too
     if (typeof document !== 'undefined') {
-      document.cookie = 'admin_token=; path=/; max-age=0; SameSite=Lax';
+      document.cookie = 'admin_logged_in=; path=/; max-age=0; SameSite=Lax';
     }
   },
 
@@ -697,25 +686,16 @@ export const adminProfileService = {
     // which prevents the browser from setting multipart/form-data with the required boundary.
     // Without the correct boundary, PHP $_FILES is empty and $request->hasFile() returns false.
     const baseURL = process.env.NEXT_PUBLIC_API_URL;
-    let authToken = '';
-    if (typeof document !== 'undefined') {
-      const match = document.cookie.match(/(?:^|;\s*)admin_token=([^;]+)/);
-      if (match) authToken = decodeURIComponent(match[1]);
-    }
-    
-    console.log('[updateProfile] Sending FormData via raw axios to:', `${baseURL}/v1/admin/profile`);
-    console.log('[updateProfile] FormData entries:', Array.from(formData.entries()));
     
     const { data } = await axios.post(`${baseURL}/v1/admin/profile`, formData, {
       withCredentials: true,
       headers: {
-        'Authorization': `Bearer ${authToken}`,
         'Accept': 'application/json',
         // No Content-Type — browser/XHR sets multipart/form-data with boundary automatically
+        // No Authorization — HttpOnly admin_token cookie is sent automatically via withCredentials
       },
     });
     
-    console.log('[updateProfile] Success:', data);
     return data;
   },
   changePassword: async (payload: any): Promise<any> => {

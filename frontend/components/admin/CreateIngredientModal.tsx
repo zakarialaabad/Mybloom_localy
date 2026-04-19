@@ -56,20 +56,13 @@ export default function CreateIngredientModal({ isOpen, onClose, onCreated }: Cr
       formData.append('name', name.trim());
       if (file) formData.append('image', file);
 
-      // Get token from cookie (same pattern as updateProfile)
-      let authToken = '';
-      if (typeof document !== 'undefined') {
-        const match = document.cookie.match(/(?:^|;\s*)admin_token=([^;]+)/);
-        if (match) authToken = decodeURIComponent(match[1]);
-      }
-
       const baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
       const { data } = await axios.post(`${baseURL}/v1/admin/ingredients`, formData, {
         withCredentials: true,
         headers: {
-          'Authorization': `Bearer ${authToken}`,
           'Accept': 'application/json',
           // No Content-Type — browser/XHR sets multipart/form-data with boundary automatically
+          // No Authorization — HttpOnly admin_token cookie is sent automatically via withCredentials
         },
       });
 

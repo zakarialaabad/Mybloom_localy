@@ -61,16 +61,25 @@ class OrderController extends Controller
     }
 
     /**
-     * GET /api/v1/invoices/{orderNumber}/download
+     * GET /api/v1/invoices/{orderNumber}/download?phone=
      *
      * Generate and download the PDF invoice for an order.
-     * No authentication required — link can be shared with customers.
+     * Requires phone verification to prevent unauthorized access (IDOR).
      */
-    public function downloadInvoice(string $orderNumber)
+    public function downloadInvoice(Request $request, string $orderNumber)
     {
+        $request->validate([
+            'phone' => ['required', 'string'],
+        ]);
+
         $order = Order::with(['items.product', 'shippingMethod'])
             ->where('order_number', $orderNumber)
-            ->firstOrFail();
+            ->where('customer_phone', $request->phone)
+            ->first();
+
+        if (! $order) {
+            return response()->json(['message' => 'Order not found. Please check your order number and phone.'], 404);
+        }
 
         // Generate the PDF
         $pdfBinary = $this->invoiceService->generatePdf($order);

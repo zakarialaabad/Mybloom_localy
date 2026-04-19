@@ -421,11 +421,10 @@ export default function AddProductPage() {
           data.append('price', '0');
           data.append('stock', '0');
         }
-      const tokenMatch = document.cookie.match(/(?:^|;\s*)admin_token=([^;]+)/);
-      const adminToken = tokenMatch ? decodeURIComponent(tokenMatch[1]) : '';
       const res = await fetch('http://localhost:8000/api/v1/admin/products', {
         method: 'POST',
-        headers: { 'Accept': 'application/json', ...(adminToken ? { 'Authorization': `Bearer ${adminToken}` } : {}) },
+        credentials: 'include',
+        headers: { 'Accept': 'application/json' },
         body: data
       });
       const jsonData = await res.json();

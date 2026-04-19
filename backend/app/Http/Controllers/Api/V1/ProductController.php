@@ -28,10 +28,11 @@ class ProductController extends Controller
 
         // Search
         if ($search = $request->query('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                  ->orWhere('subtitle', 'like', "%{$search}%")
-                  ->orWhere('description', 'like', "%{$search}%");
+            $escaped = str_replace(['%', '_'], ['\%', '\_'], $search);
+            $query->where(function ($q) use ($escaped) {
+                $q->where('name', 'like', "%{$escaped}%")
+                  ->orWhere('subtitle', 'like', "%{$escaped}%")
+                  ->orWhere('description', 'like', "%{$escaped}%");
             });
         }
 

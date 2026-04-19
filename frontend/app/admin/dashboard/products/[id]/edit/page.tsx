@@ -499,15 +499,13 @@ export default function EditProductPage() {
         }
       });
 
-      const tokenMatch = document.cookie.match(/(?:^|;\s*)admin_token=([^;]+)/);
-      const adminToken = tokenMatch ? decodeURIComponent(tokenMatch[1]) : '';
       const apiBase = process.env.NEXT_PUBLIC_API_URL;
 
       const res = await fetch(`${apiBase}/v1/admin/products/${productId}`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           Accept: 'application/json',
-          ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {}),
         },
         body: data,
       });

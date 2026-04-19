@@ -67,9 +67,10 @@ class ReviewController extends Controller
 
         // Full-text search across reviewer name and review body
         if ($search = $request->query('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('reviewer_name', 'like', "%{$search}%")
-                  ->orWhere('body', 'like', "%{$search}%");
+            $escaped = str_replace(['%', '_'], ['\%', '\_'], $search);
+            $query->where(function ($q) use ($escaped) {
+                $q->where('reviewer_name', 'like', "%{$escaped}%")
+                  ->orWhere('body', 'like', "%{$escaped}%");
             });
         }
 

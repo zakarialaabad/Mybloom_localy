@@ -31,10 +31,11 @@ class OrderController extends Controller
         }
 
         if ($search = $request->query('search')) {
-            $query->where(function ($q) use ($search) {
-                $q->where('order_number', 'like', "%{$search}%")
-                  ->orWhere('customer_name', 'like', "%{$search}%")
-                  ->orWhere('customer_phone', 'like', "%{$search}%");
+            $escaped = str_replace(['%', '_'], ['\%', '\_'], $search);
+            $query->where(function ($q) use ($escaped) {
+                $q->where('order_number', 'like', "%{$escaped}%")
+                  ->orWhere('customer_name', 'like', "%{$escaped}%")
+                  ->orWhere('customer_phone', 'like', "%{$escaped}%");
             });
         }
 

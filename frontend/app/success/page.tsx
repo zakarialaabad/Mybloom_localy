@@ -1,7 +1,7 @@
 'use client';
 
 import { Headphones, ArrowLeft, Check } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
@@ -10,26 +10,42 @@ import Footer from '@/components/layout/Footer';
 
 export default function OrderSuccessPage() {
   const router = useRouter();
-  const params  = useSearchParams();
-  const order   = params.get('order')  ?? '';
-  const total   = params.get('total')  ?? '';
-  const name    = params.get('name')   ?? '';
-  const phone   = params.get('phone')  ?? '';
-  const city    = params.get('city')   ?? 'MAROC';
+
+  // Read order details from sessionStorage (set by checkout page)
+  const [orderData, setOrderData] = useState<{
+    order: string; total: string; name: string; phone: string; city: string;
+  } | null>(null);
 
   useEffect(() => {
-    if (!order) return;
+    if (typeof window === 'undefined') return;
+    const raw = sessionStorage.getItem('order_success');
+    if (raw) {
+      try {
+        setOrderData(JSON.parse(raw));
+      } catch { /* ignore corrupt data */ }
+      sessionStorage.removeItem('order_success');
+    }
+  }, []);
+
+  const order = orderData?.order ?? '';
+  const total = orderData?.total ?? '';
+  const name  = orderData?.name  ?? '';
+  const phone = orderData?.phone ?? '';
+  const city  = orderData?.city  ?? 'MAROC';
+
+  useEffect(() => {
+    if (!order || !phone) return;
     // Auto-download invoice PDF after a short delay so the page renders first
     const timer = setTimeout(() => {
       const link = document.createElement('a');
-      link.href = `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${order}/download`;
+      link.href = `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${order}/download?phone=${encodeURIComponent(phone)}`;
       link.download = `invoice-${order}.pdf`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
     }, 1500);
     return () => clearTimeout(timer);
-  }, [order]);
+  }, [order, phone]);
 
   return (
     <>

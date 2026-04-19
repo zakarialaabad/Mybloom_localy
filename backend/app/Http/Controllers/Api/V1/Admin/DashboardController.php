@@ -34,7 +34,7 @@ class DashboardController extends Controller
             \Illuminate\Support\Facades\Log::error('DashboardController error: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
-            return response()->json(['message' => 'Failed to load dashboard data.', 'error' => $e->getMessage()], 500);
+            return response()->json(['message' => 'Failed to load dashboard data.'], 500);
         }
     }
 

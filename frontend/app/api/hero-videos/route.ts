@@ -23,7 +23,7 @@ async function fetchFromBackend(): Promise<HeroVideoData | null> {
   if (!backendUrl) return null;
 
   try {
-    const res = await fetch(`${backendUrl}/api/v1/videos/hero`, {
+    const res = await fetch(`${backendUrl}/v1/videos/hero`, {
       next: { revalidate: 1800 },
     });
 

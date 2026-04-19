@@ -168,9 +168,25 @@ class ImageService
     {
         $tempFile = null;
         try {
-            // Validate URL
+            // Validate URL format
             if (!filter_var($url, FILTER_VALIDATE_URL)) {
-                throw new \Exception("Invalid URL: {$url}");
+                throw new \Exception('Invalid URL format.');
+            }
+
+            // SECURITY: Only allow http/https schemes — blocks file://, php://, gopher://, etc.
+            $parsed = parse_url($url);
+            if (!in_array($parsed['scheme'] ?? '', ['http', 'https'], true)) {
+                throw new \Exception('Only HTTP and HTTPS URLs are allowed.');
+            }
+
+            // SECURITY: Block private/reserved IP ranges to prevent SSRF
+            $host = $parsed['host'] ?? '';
+            $ip = gethostbyname($host);
+            if ($ip === $host) {
+                throw new \Exception('Could not resolve hostname.');
+            }
+            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false) {
+                throw new \Exception('URLs pointing to internal/private networks are not allowed.');
             }
 
             // Download the image to a temp file
@@ -178,10 +194,11 @@ class ImageService
                 'http' => [
                     'timeout' => $timeout,
                     'user_agent' => 'Laravel/ImageService',
+                    'max_redirects' => 3,
                 ],
                 'ssl' => [
-                    'verify_peer' => false,
-                    'verify_peer_name' => false,
+                    'verify_peer' => true,
+                    'verify_peer_name' => true,
                 ],
             ]);
 

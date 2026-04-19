@@ -314,5 +314,7 @@ export function sanitizeImageUrl(url: string | null | undefined): string {
   // Strip embedded newline / carriage-return / tab chars (seeder data issue)
   const cleaned = url.replace(/[\r\n\t]+/g, '').trim();
   if (!cleaned) return FALLBACK_IMG;
-  return cleaned;
+  // SECURITY: Only allow http, https, and relative paths — block javascript:, data:, etc.
+  if (/^(https?:\/\/|\/)/i.test(cleaned)) return cleaned;
+  return FALLBACK_IMG;
 }
