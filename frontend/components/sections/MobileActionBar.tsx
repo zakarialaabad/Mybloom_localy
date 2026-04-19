@@ -20,7 +20,11 @@ export default function MobileActionBar() {
       setHidden((e as CustomEvent<{ isOpen: boolean }>).detail.isOpen);
     };
     window.addEventListener('mobile-menu-change', handler);
-    return () => window.removeEventListener('mobile-menu-change', handler);
+    window.addEventListener('image-gallery-change', handler);
+    return () => {
+      window.removeEventListener('mobile-menu-change', handler);
+      window.removeEventListener('image-gallery-change', handler);
+    };
   }, []);
 
   if (pathname?.startsWith('/admin')) {

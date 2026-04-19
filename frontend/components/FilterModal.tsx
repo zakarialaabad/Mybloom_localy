@@ -22,6 +22,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import useFilterStore from '@/store/filters';
 import useReferenceStore from '@/store/reference';
+import useCatalogStore from '@/store/catalog';
 import PriceHistogram from '@/components/ui/PriceHistogram';
 
 interface FilterModalProps {
@@ -66,6 +67,10 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const ensureIngredients = useReferenceStore((s) => s.ensureIngredients);
   const brandCounts      = useFilterStore((s) => s.brandCounts);
   const ingredientCounts = useFilterStore((s) => s.ingredientCounts);
+  const setBrandCounts      = useFilterStore((s) => s.setBrandCounts);
+  const setIngredientCounts = useFilterStore((s) => s.setIngredientCounts);
+
+  const ensureProductsCache = useCatalogStore((s) => s.ensureProducts);
 
   useEffect(() => { setIsMounted(true); }, []);
 
@@ -78,6 +83,25 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       ensureAggregates();
     }
   }, [isOpen, ensureBrands, ensureCategories, ensureIngredients, ensureAggregates]);
+
+  // Compute brand/ingredient counts if they're empty (modal opened outside /collection)
+  useEffect(() => {
+    if (!isOpen) return;
+    const hasBrandCounts = Object.keys(brandCounts).length > 0;
+    const hasIngredientCounts = Object.keys(ingredientCounts).length > 0;
+    if (hasBrandCounts && hasIngredientCounts) return;
+
+    ensureProductsCache('all-products', {}).then((products) => {
+      const bc: Record<number, number> = {};
+      const ic: Record<number, number> = {};
+      products.forEach((p) => {
+        if (p.brand?.id) bc[p.brand.id] = (bc[p.brand.id] ?? 0) + 1;
+        p.ingredients?.forEach((ing) => { if (ing.id) ic[ing.id] = (ic[ing.id] ?? 0) + 1; });
+      });
+      if (!hasBrandCounts) setBrandCounts(bc);
+      if (!hasIngredientCounts) setIngredientCounts(ic);
+    });
+  }, [isOpen, brandCounts, ingredientCounts, ensureProductsCache, setBrandCounts, setIngredientCounts]);
 
   // Count active filters for the badge
   const activeFilterCount =

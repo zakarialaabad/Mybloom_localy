@@ -3,14 +3,15 @@ import { create } from 'zustand';
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 export interface CartItem {
-  productId  : number;
-  productName: string;
-  slug       : string;
-  sizeId     : number;
-  sizeLabel  : string | null;
-  quantity   : number;
-  unitPrice  : number;
-  imageUrl   : string;
+  productId     : number;
+  productName   : string;
+  slug          : string;
+  sizeId        : number;
+  sizeLabel     : string | null;
+  quantity      : number;
+  unitPrice     : number;
+  originalPrice ?: number;
+  imageUrl      : string;
 }
 
 interface CartStore {

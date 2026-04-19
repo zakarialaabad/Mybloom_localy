@@ -78,6 +78,7 @@ class ProductResource extends JsonResource
                 $this->variants->map(function ($v) {
                     $base  = (float) $v->price;
                     $promo = (float) ($v->promotion_percent ?? 0);
+
                     $final = $promo > 0 ? round($base * (1 - $promo / 100), 2) : $base;
                     return [
                         'id'                => $v->id,
@@ -90,6 +91,12 @@ class ProductResource extends JsonResource
                         'stock_quantity'    => (int) ($v->stock_quantity ?? 0),
                     ];
                 })
+            ),
+            'ingredients'    => $this->whenLoaded('ingredientItems', fn () =>
+                $this->ingredientItems->map(fn ($ing) => [
+                    'id'   => $ing->id,
+                    'name' => $ing->name,
+                ])
             ),
             'created_at'     => $this->created_at?->toISOString(),
         ];

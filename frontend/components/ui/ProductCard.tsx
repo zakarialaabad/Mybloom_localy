@@ -122,13 +122,14 @@ export default function ProductCard({
     e.preventDefault();
     e.stopPropagation();
     addItem({
-      productId:   id,
-      productName: name,
+      productId:     id,
+      productName:   name,
       slug,
-      sizeId:      0,
-      sizeLabel:   null,
-      quantity:    1,
-      unitPrice:   price,
+      sizeId:        0,
+      sizeLabel:     null,
+      quantity:      1,
+      unitPrice:     price,
+      originalPrice: originalPrice > price ? originalPrice : undefined,
       imageUrl,
     });
     setToast({ show: true, message: 'Produit ajouté au panier avec succès !', type: 'cart' });

@@ -22,14 +22,25 @@ export default function ImageGalleryModal({
   onImageChange,
   altText = "Gallery image"
 }: ImageGalleryModalProps) {
-  // Lock body scroll when gallery is open
+  // Lock body scroll when gallery is open & hide mobile nav bar
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
+      if (window.innerWidth < 768) {
+        window.dispatchEvent(new CustomEvent('image-gallery-change', { detail: { isOpen: true } }));
+      }
     } else {
       document.body.style.overflow = 'unset';
+      if (window.innerWidth < 768) {
+        window.dispatchEvent(new CustomEvent('image-gallery-change', { detail: { isOpen: false } }));
+      }
     }
-    return () => { document.body.style.overflow = 'unset'; };
+    return () => {
+      document.body.style.overflow = 'unset';
+      if (window.innerWidth < 768) {
+        window.dispatchEvent(new CustomEvent('image-gallery-change', { detail: { isOpen: false } }));
+      }
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -49,7 +60,7 @@ export default function ImageGalleryModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-black/95 backdrop-blur-md animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[110] flex flex-col bg-black/95 backdrop-blur-md animate-in fade-in duration-300">
       {/* Top bar with Close & Counter */}
       <div className="flex items-center justify-between p-4 sm:p-6 text-white/70 absolute top-0 w-full z-10 pointer-events-none">
         {images.length > 0 ? (

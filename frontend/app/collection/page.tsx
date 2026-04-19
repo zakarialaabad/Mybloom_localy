@@ -99,6 +99,7 @@ export default function CollectionPage() {
   const setSelectedMin        = useFilterStore((s) => s.setSelectedMin);
   const setSelectedMax        = useFilterStore((s) => s.setSelectedMax);
   const toggleBrand           = useFilterStore((s) => s.toggleBrand);
+  const setSelectedBrands      = useFilterStore((s) => s.setSelectedBrands);
   const toggleCategory        = useFilterStore((s) => s.toggleCategory);
   const setSelectedCategories = useFilterStore((s) => s.setSelectedCategories);
   const setSelectedIngredients = useFilterStore((s) => s.setSelectedIngredients);
@@ -142,10 +143,22 @@ export default function CollectionPage() {
   // Apply URL params to filter store — re-runs on every URL change (soft navigation too)
   // Only updates state when values actually change to avoid unnecessary re-renders
   // that would trigger the product fetch effect with the same cache key.
+  const prevCatRef = useRef<string | null>(null);
   useEffect(() => {
+    const catSlug       = searchParams.get('cat');
     const categoryId    = searchParams.get('category');
     const ingredientIds = searchParams.getAll('ingredient');
-    const featured     = searchParams.get('featured');
+    const featured      = searchParams.get('featured');
+
+    // Reset sidebar filters when the navbar category (cat slug) changes
+    const prevCat = prevCatRef.current;
+    prevCatRef.current = catSlug;
+    if (prevCat !== null && prevCat !== catSlug) {
+      setSelectedBrands([]);
+      setSelectedIngredients([]);
+      setSelectedRating(null);
+      setPromotionOnly(false);
+    }
 
     const newCategories = categoryId ? [Number(categoryId)] : [];
     const newIngredients = ingredientIds.length > 0 ? ingredientIds.map((id) => Number(id)) : [];
@@ -189,6 +202,10 @@ export default function CollectionPage() {
     const searchTerm = searchParams.get('search');
     if (searchTerm) params['search'] = searchTerm;
 
+    // Category slug from navbar (e.g. ?cat=parfum)
+    const catSlug = searchParams.get('cat');
+    if (catSlug) params['category'] = catSlug;
+
     const productType = searchParams.get('product_type');
     if (productType) params['product_type'] = productType;
 
@@ -199,7 +216,8 @@ export default function CollectionPage() {
       params['is_featured'] = 1;
     } else {
       if (selectedBrands.length > 0) params['brand_ids[]'] = selectedBrands;
-      if (selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
+      // Only send category_ids[] when there's no cat slug (avoid conflicting filters)
+      if (!catSlug && selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
       if (selectedIngredients.length > 0) params['ingredient_ids[]'] = selectedIngredients;
       // Only include price bounds when the user has actually moved the slider
       // away from the global min/max. This keeps the cache key STABLE across
@@ -329,24 +347,32 @@ export default function CollectionPage() {
           {/* Breadcrumbs */}
           <div className="text-sm text-gray-400 mb-8 font-serif italic flex items-center justify-between">
             <div>
-              <Link href="/">Accueil</Link> / <span className="text-gray-900">
-                {(() => {
-                  const catSlug    = searchParams.get('cat');
-                  const productType = searchParams.get('product_type');
-                  const isGift     = searchParams.get('is_gift');
-                  const search     = searchParams.get('search');
-                  const featured   = searchParams.get('featured');
-                  if (isGift === 'true' || isGift === '1') return 'Pack';
-                  if (featured === '1') return 'Best Sellers';
-                  if (catSlug) {
-                    const map: Record<string, string> = { beurre: 'Beurre', parfum: 'Parfum', gommage: 'Gommage', maquillage: 'Maquillage', 'hygiene-corporelle': 'Hygiène Corporelle' };
-                    return map[catSlug] ?? catSlug.charAt(0).toUpperCase() + catSlug.slice(1);
-                  }
-                  if (productType) return productType.charAt(0).toUpperCase() + productType.slice(1);
-                  if (search) return `Recherche : ${search}`;
-                  return 'Collection';
-                })()}
-              </span>
+              <Link href="/">Accueil</Link>
+              {' / '}
+              {(() => {
+                const catSlug    = searchParams.get('cat');
+                const productType = searchParams.get('product_type');
+                const isGift     = searchParams.get('is_gift');
+                const search     = searchParams.get('search');
+                const featured   = searchParams.get('featured');
+                const catMap: Record<string, string> = { beurre: 'Beurre', parfum: 'Parfum', gommage: 'Gommage', maquillage: 'Maquillage', 'hygiene-corporelle': 'Hygiène Corporelle' };
+
+                if (catSlug) {
+                  const catLabel = catMap[catSlug] ?? catSlug.charAt(0).toUpperCase() + catSlug.slice(1);
+                  return (
+                    <>
+                      <Link href="/collection">Collection</Link>
+                      {' / '}
+                      <span className="text-gray-900">{catLabel}</span>
+                    </>
+                  );
+                }
+                if (isGift === 'true' || isGift === '1') return <span className="text-gray-900">Pack</span>;
+                if (featured === '1') return <span className="text-gray-900">Best Sellers</span>;
+                if (productType) return <span className="text-gray-900">{productType.charAt(0).toUpperCase() + productType.slice(1)}</span>;
+                if (search) return <span className="text-gray-900">Recherche : {search}</span>;
+                return <span className="text-gray-900">Collection</span>;
+              })()}
             </div>
             <span className="md:hidden text-[14px] leading-tight text-gray-700 font-medium whitespace-nowrap not-italic">
               {loadingProducts ? '…' : `${products.length} Produit${products.length !== 1 ? 's' : ''}`}
@@ -483,8 +509,9 @@ export default function CollectionPage() {
                     {expandedSections.notes && (
                       <div className="flex flex-wrap gap-2">
                         <button onClick={() => setSelectedRating(null)} className={`px-3 py-1 rounded-sm text-xs font-medium ${selectedRating === null ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}>Tout</button>
-                        <button onClick={() => setSelectedRating(5)}    className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 5 ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 5.0</button>
-                        <button onClick={() => setSelectedRating(4)}    className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 4 ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 4.0</button>
+                        <button onClick={() => setSelectedRating(5)}    className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 5 ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 5.0+</button>
+                        <button onClick={() => setSelectedRating(4)}    className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 4 ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 4.0+</button>
+                        <button onClick={() => setSelectedRating(3)}    className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 3 ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 3.0+</button>
                       </div>
                     )}
                   </div>
@@ -522,8 +549,8 @@ export default function CollectionPage() {
                 </div>
                 <div className="flex items-center gap-4">
                   <div className="flex items-center border border-gray-200 rounded-sm overflow-hidden">
-                    <button onClick={() => setViewMode('grid')} title="Vue grille" className={`p-2 transition-all ${viewMode === 'grid' ? 'bg-[#4a403a] text-white' : 'text-gray-400 hover:bg-[#fdf6e3] hover:text-[#b8860b]'}`}><Grid className="h-3.5 w-3.5" /></button>
-                    <button onClick={() => setViewMode('list')} title="Vue liste"  className={`p-2 transition-all border-l border-gray-200 ${viewMode === 'list' ? 'bg-[#4a403a] text-white' : 'text-gray-400 hover:bg-[#fdf6e3] hover:text-[#b8860b]'}`}><List className="h-3.5 w-3.5" /></button>
+                    <button onClick={() => setViewMode('grid')} title="Vue grille" className={`p-2 transition-all ${viewMode === 'grid' ? 'bg-[#4a403a] text-white' : 'text-gray-400 hover:bg-[#fdf0f4] hover:text-[#da2966]'}`}><Grid className="h-3.5 w-3.5" /></button>
+                    <button onClick={() => setViewMode('list')} title="Vue liste"  className={`p-2 transition-all border-l border-gray-200 ${viewMode === 'list' ? 'bg-[#4a403a] text-white' : 'text-gray-400 hover:bg-[#fdf0f4] hover:text-[#da2966]'}`}><List className="h-3.5 w-3.5" /></button>
                   </div>
                   <div ref={sortRef} className="relative">
                     <button onClick={() => setShowSortMenu((v) => !v)} className="flex items-center gap-2 text-sm font-serif italic text-gray-500 hover:text-gray-900 transition-colors select-none">
@@ -566,12 +593,12 @@ export default function CollectionPage() {
                   ) : (
                     <div className="flex flex-col gap-3">
                       {paginatedProducts.map(p => (
-                        <Link key={p.id} href={`/product/${p.slug}`} className="group flex items-center gap-5 bg-[#fcfcfc] hover:bg-[#fdf6e3] border border-gray-100 hover:border-[#b8860b]/30 rounded-sm p-4 transition-all duration-200">
+                        <Link key={p.id} href={`/product/${p.slug}`} className="group flex items-center gap-5 bg-[#fcfcfc] hover:bg-[#fdf0f4] border border-gray-100 hover:border-[#da2966]/30 rounded-sm p-4 transition-all duration-200">
                           <div className="relative w-28 h-28 shrink-0 rounded-sm overflow-hidden bg-white border border-gray-100">
                             <Image src={p.primary_image ?? FALLBACK_IMG} alt={p.name} fill unoptimized className="object-contain p-3 mix-blend-multiply transition-transform duration-300 group-hover:scale-105" />
                           </div>
                           <div className="flex-1 min-w-0 pr-4">
-                            <h3 className="font-serif text-lg font-bold text-gray-900 tracking-wide truncate">{p.name}</h3>
+                            <h3 className="font-serif text-lg font-bold text-gray-900 tracking-wide truncate group-hover:text-[#da2966] transition-colors">{p.name}</h3>
                             <p className="text-xs text-gray-600 pb-2">{p.brand?.name}</p>
                             <div className="border-t border-gray-100/80 w-full mb-2"></div>
                             <p className="text-[11px] text-gray-500 pt-1 line-clamp-2 leading-relaxed">{p.subtitle}</p>
@@ -590,7 +617,7 @@ export default function CollectionPage() {
                             {p.is_featured && <span className="rounded border border-aura-gold bg-white px-2 py-1 text-[9px] font-semibold text-aura-gold tracking-wider uppercase mb-1">Best Seller</span>}
                             <div className="flex flex-col items-end gap-1 mt-auto">
                               <div className="flex items-center space-x-2">
-                                <span className="text-[13px] text-gray-900">{p.min_price ?? 0} DH</span>
+                                <span className="text-xl font-bold font-serif italic text-gray-900">{p.min_price ?? 0} DH</span>
                                 {(p.original_price != null) && p.original_price > (p.min_price ?? 0) && (
                                   <><span className="text-[13px] text-gray-900">-</span><span className="text-[13px] text-gray-400 line-through decoration-1">{p.original_price} DH</span></>
                                 )}
@@ -611,7 +638,7 @@ export default function CollectionPage() {
                         p === '…' ? (
                           <span key={`ellipsis-${i}`} className="w-9 h-9 flex items-center justify-center text-xs text-gray-300 select-none">…</span>
                         ) : (
-                          <button key={p} onClick={() => { setCurrentPage(p as number); scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' }); }} className={`w-9 h-9 flex items-center justify-center rounded-sm border text-xs font-medium transition-all ${currentPage === p ? 'bg-[#4a403a] border-[#4a403a] text-white shadow-sm' : 'border-gray-200 text-gray-500 hover:bg-[#fdf6e3] hover:border-[#b8860b] hover:text-[#b8860b]'}`}>{p}</button>
+                          <button key={p} onClick={() => { setCurrentPage(p as number); scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' }); }} className={`w-9 h-9 flex items-center justify-center rounded-sm border text-xs font-medium transition-all ${currentPage === p ? 'bg-[#4a403a] border-[#4a403a] text-white shadow-sm' : 'border-gray-200 text-gray-500 hover:bg-[#fdf0f4] hover:border-[#da2966] hover:text-[#da2966]'}`}>{p}</button>
                         )
                       )}
                       <button onClick={() => { setCurrentPage(p => p + 1); scrollContainerRef.current?.scrollTo({ top: 0, behavior: 'smooth' }); }} disabled={currentPage === totalPages} className={`w-9 h-9 flex items-center justify-center rounded-sm border text-sm transition-all ${currentPage === totalPages ? 'border-gray-100 text-gray-300 cursor-not-allowed' : 'border-gray-200 text-gray-500 hover:border-[#4a403a] hover:text-[#4a403a]'}`} aria-label="Page suivante">›</button>
@@ -682,8 +709,9 @@ export default function CollectionPage() {
                   <h3 className="font-serif text-gray-700 mb-4">Notes</h3>
                   <div className="flex flex-wrap gap-2">
                     <button onClick={() => setSelectedRating(null)} className={`px-3 py-1 rounded-sm text-xs font-medium ${selectedRating === null ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}>Tout</button>
-                    <button onClick={() => setSelectedRating(5)}    className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 5 ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 5.0</button>
-                    <button onClick={() => setSelectedRating(4)}    className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 4 ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 4.0</button>
+                    <button onClick={() => setSelectedRating(5)}    className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 5 ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 5.0+</button>
+                    <button onClick={() => setSelectedRating(4)}    className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 4 ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 4.0+</button>
+                    <button onClick={() => setSelectedRating(3)}    className={`px-3 py-1 rounded-sm text-xs flex items-center gap-1 ${selectedRating === 3 ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]' : 'bg-gray-100 text-gray-600'}`}><span className="text-[10px]">★</span> 3.0+</button>
                   </div>
                 </div>
                 {/* Promotions */}
