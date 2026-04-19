@@ -62,7 +62,7 @@ Route::prefix('api')->group(function () {
             Route::post('/coupons/validate',           [CouponController::class, 'check']);
 
             // Orders — create + track (no auth)
-            Route::post('/orders',                                [OrderController::class, 'store']);
+            Route::post('/orders',                                [OrderController::class, 'store'])->middleware('throttle:place-order');
             Route::get('/orders/{orderNumber}/track',             [OrderController::class, 'track']);
             Route::get('/invoices/{orderNumber}/download',        [OrderController::class, 'downloadInvoice']);
 

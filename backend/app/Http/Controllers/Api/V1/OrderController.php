@@ -74,6 +74,12 @@ class OrderController extends Controller
             'phone' => ['required', 'string'],
         ]);
 
+        // Normalize phone to match the format stored in DB (+212XXXXXXXXX).
+        // The frontend may send the display value ("07 22 44 33 11") if the
+        // session was written before the fix; strip spaces and convert leading 0.
+        $rawPhone    = preg_replace('/[\s\-]/', '', $request->phone);
+        $normalPhone = preg_replace('/^0/', '+212', $rawPhone);
+
         $order = Order::with(['items.product', 'shippingMethod'])
             ->where('order_number', $orderNumber)
             ->first();
