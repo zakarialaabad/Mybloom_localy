@@ -115,63 +115,72 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        {/* ── Header ───────────────────────────────────────────────────────── */}
-        <div className="flex items-center justify-center p-5 relative bg-white shrink-0 z-10 hidden md:flex">
-          <h2 className="text-[15px] font-serif font-bold text-[#333] tracking-widest uppercase">
+        {/* ── Header Desktop ───────────────────────────────────────────────── */}
+        <div className="hidden md:flex items-center justify-between py-5 px-6 bg-white shrink-0 z-10 border-b border-gray-50">
+
+          {/* Bouton Réinitialiser — même style que le bouton ✕ */}
+          <button
+            onClick={activeFilterCount > 0 ? resetFilters : undefined}
+            className={`w-8 h-8 rounded-full bg-[#f0f0f0] flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200 ${
+              activeFilterCount === 0 ? 'invisible' : ''
+            }`}
+            aria-label="Reset"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+
+          {/* Titre centré avec badge aligné */}
+          <h2 className="flex items-center gap-2 text-[15px] font-serif font-bold text-[#333] tracking-widest uppercase">
             Filter
             {activeFilterCount > 0 && (
-              <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#cda873] text-white text-[10px] font-sans font-semibold">
+              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#da2966] text-white text-[10px] font-sans font-semibold leading-none">
                 {activeFilterCount}
               </span>
             )}
           </h2>
 
-          {/* Reset */}
-          {activeFilterCount > 0 && (
-            <button
-              onClick={resetFilters}
-              className="absolute left-6 flex items-center gap-1 text-[11px] text-gray-400 hover:text-[#cda873] transition-colors font-serif uppercase tracking-wider"
-            >
-              <RotateCcw className="w-3 h-3" />
-            </button>
-          )}
-
+          {/* Bouton Fermer */}
           <button
             onClick={onClose}
-            className="absolute right-6 w-8 h-8 rounded-full bg-[#f0f0f0] flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200"
+            className="w-8 h-8 rounded-full bg-[#f0f0f0] flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200"
+            aria-label="Close"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Mobile Header (Matches screenshot) */}
-        <div className="flex md:hidden items-center justify-center py-5 px-6 relative bg-white shrink-0 z-10 border-b border-gray-50">
+        {/* ── Header Mobile ────────────────────────────────────────────────── */}
+        <div className="flex md:hidden items-center justify-between py-5 px-6 bg-white shrink-0 z-10 border-b border-gray-50">
+
+          {/* Bouton Réinitialiser — même style que le bouton ✕ */}
           <button
-            onClick={onClose}
-            className="absolute left-6 w-8 h-8 rounded-full bg-[#f5f5f5] flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200"
-            aria-label="Close"
+            onClick={activeFilterCount > 0 ? resetFilters : undefined}
+            className={`w-8 h-8 rounded-full bg-[#f5f5f5] flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200 ${
+              activeFilterCount === 0 ? 'invisible' : ''
+            }`}
+            aria-label="Reset"
           >
-            <X className="h-4 w-4" />
+            <RotateCcw className="w-4 h-4" />
           </button>
-          
-          <h2 className="text-[14px] font-serif font-bold text-[#333] tracking-[0.15em] uppercase">
+
+          {/* Titre centré avec badge aligné */}
+          <h2 className="flex items-center gap-2 text-[14px] font-serif font-bold text-[#333] tracking-[0.15em] uppercase">
             Filter
             {activeFilterCount > 0 && (
-              <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-black text-white text-[10px] font-sans font-semibold">
+              <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#da2966] text-white text-[10px] font-sans font-semibold leading-none">
                 {activeFilterCount}
               </span>
             )}
           </h2>
 
-          {activeFilterCount > 0 && (
-            <button
-              onClick={resetFilters}
-              className="absolute right-6 flex items-center justify-center text-gray-400 hover:text-black transition-colors"
-              aria-label="Reset"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
-          )}
+          {/* Bouton Fermer */}
+          <button
+            onClick={onClose}
+            className="w-8 h-8 rounded-full bg-[#f5f5f5] flex items-center justify-center transition-colors text-gray-700 hover:bg-gray-200"
+            aria-label="Close"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
 
         {/* ── Scrollable content ───────────────────────────────────────────── */}
@@ -352,7 +361,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                   onClick={() => setSelectedRating(r)}
                   className={`px-3 py-1.5 rounded-sm text-xs font-serif transition-colors ${
                     selectedRating === r
-                      ? 'bg-[#fdf6e3] text-[#b8860b] border border-[#cda873]'
+                      ? 'bg-[#fde8ef] text-[#da2966] border border-[#da2966]'
                       : 'bg-[#f8f8f8] text-[#444] hover:bg-gray-200'
                   }`}
                 >
@@ -417,7 +426,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
           >
             View results
             {activeFilterCount > 0 && (
-              <span className="ml-1 text-[#e8c99b]">({activeFilterCount} active)</span>
+              <span className="ml-1 text-[#f9a8c4]">({activeFilterCount} active)</span>
             )}
           </Link>
         </div>

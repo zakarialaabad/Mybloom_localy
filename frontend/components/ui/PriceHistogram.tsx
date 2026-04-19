@@ -98,7 +98,7 @@ export default function PriceHistogram({
                 className="flex-1 rounded-t-sm"
                 style={{
                   height: `${h}%`,
-                  backgroundColor: inSelection ? '#cda873' : '#dfc99e',
+                  backgroundColor: inSelection ? '#da2966' : '#f4a0bc',
                   transition: 'background-color 0.15s ease',
                 }}
               />
@@ -108,13 +108,13 @@ export default function PriceHistogram({
 
         {/* Baseline */}
         <div
-          className="absolute left-0 right-0 h-[1px] bg-[#cda873]"
+          className="absolute left-0 right-0 h-[1px] bg-[#da2966]"
           style={{ bottom: 9 }}
         />
 
         {/* Active-range fill */}
         <div
-          className="absolute h-[2px] bg-[#cda873] rounded-full"
+          className="absolute h-[2px] bg-[#da2966] rounded-full"
           style={{
             bottom: 8,
             left:  `calc(${leftPct  / 100} * (100% - 18px))`,
@@ -130,7 +130,7 @@ export default function PriceHistogram({
             left:   `calc(${leftPct / 100} * (100% - 18px))`,
             width:  18,
             height: 18,
-            border: activeThumb === 'min' ? '1.5px solid #cda873' : '1px solid #d4d4d4',
+            border: activeThumb === 'min' ? '1.5px solid #da2966' : '1px solid #d4d4d4',
             boxShadow: '0 1px 4px rgba(0,0,0,0.13)',
             transition: 'border-color 0.15s ease',
           }}
@@ -144,7 +144,7 @@ export default function PriceHistogram({
             left:   `calc(${rightPct / 100} * (100% - 18px))`,
             width:  18,
             height: 18,
-            border: activeThumb === 'max' ? '1.5px solid #cda873' : '1px solid #d4d4d4',
+            border: activeThumb === 'max' ? '1.5px solid #da2966' : '1px solid #d4d4d4',
             boxShadow: '0 1px 4px rgba(0,0,0,0.13)',
             transition: 'border-color 0.15s ease',
           }}
