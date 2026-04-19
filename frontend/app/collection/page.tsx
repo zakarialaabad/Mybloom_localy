@@ -99,6 +99,7 @@ export default function CollectionPage() {
   const setSelectedMin        = useFilterStore((s) => s.setSelectedMin);
   const setSelectedMax        = useFilterStore((s) => s.setSelectedMax);
   const toggleBrand           = useFilterStore((s) => s.toggleBrand);
+  const setSelectedBrands      = useFilterStore((s) => s.setSelectedBrands);
   const toggleCategory        = useFilterStore((s) => s.toggleCategory);
   const setSelectedCategories = useFilterStore((s) => s.setSelectedCategories);
   const setSelectedIngredients = useFilterStore((s) => s.setSelectedIngredients);
@@ -142,10 +143,22 @@ export default function CollectionPage() {
   // Apply URL params to filter store — re-runs on every URL change (soft navigation too)
   // Only updates state when values actually change to avoid unnecessary re-renders
   // that would trigger the product fetch effect with the same cache key.
+  const prevCatRef = useRef<string | null>(null);
   useEffect(() => {
+    const catSlug       = searchParams.get('cat');
     const categoryId    = searchParams.get('category');
     const ingredientIds = searchParams.getAll('ingredient');
-    const featured     = searchParams.get('featured');
+    const featured      = searchParams.get('featured');
+
+    // Reset sidebar filters when the navbar category (cat slug) changes
+    const prevCat = prevCatRef.current;
+    prevCatRef.current = catSlug;
+    if (prevCat !== null && prevCat !== catSlug) {
+      setSelectedBrands([]);
+      setSelectedIngredients([]);
+      setSelectedRating(null);
+      setPromotionOnly(false);
+    }
 
     const newCategories = categoryId ? [Number(categoryId)] : [];
     const newIngredients = ingredientIds.length > 0 ? ingredientIds.map((id) => Number(id)) : [];
@@ -189,6 +202,10 @@ export default function CollectionPage() {
     const searchTerm = searchParams.get('search');
     if (searchTerm) params['search'] = searchTerm;
 
+    // Category slug from navbar (e.g. ?cat=parfum)
+    const catSlug = searchParams.get('cat');
+    if (catSlug) params['category'] = catSlug;
+
     const productType = searchParams.get('product_type');
     if (productType) params['product_type'] = productType;
 
@@ -199,7 +216,8 @@ export default function CollectionPage() {
       params['is_featured'] = 1;
     } else {
       if (selectedBrands.length > 0) params['brand_ids[]'] = selectedBrands;
-      if (selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
+      // Only send category_ids[] when there's no cat slug (avoid conflicting filters)
+      if (!catSlug && selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
       if (selectedIngredients.length > 0) params['ingredient_ids[]'] = selectedIngredients;
       // Only include price bounds when the user has actually moved the slider
       // away from the global min/max. This keeps the cache key STABLE across
@@ -329,24 +347,32 @@ export default function CollectionPage() {
           {/* Breadcrumbs */}
           <div className="text-sm text-gray-400 mb-8 font-serif italic flex items-center justify-between">
             <div>
-              <Link href="/">Accueil</Link> / <span className="text-gray-900">
-                {(() => {
-                  const catSlug    = searchParams.get('cat');
-                  const productType = searchParams.get('product_type');
-                  const isGift     = searchParams.get('is_gift');
-                  const search     = searchParams.get('search');
-                  const featured   = searchParams.get('featured');
-                  if (isGift === 'true' || isGift === '1') return 'Pack';
-                  if (featured === '1') return 'Best Sellers';
-                  if (catSlug) {
-                    const map: Record<string, string> = { beurre: 'Beurre', parfum: 'Parfum', gommage: 'Gommage', maquillage: 'Maquillage', 'hygiene-corporelle': 'Hygiène Corporelle' };
-                    return map[catSlug] ?? catSlug.charAt(0).toUpperCase() + catSlug.slice(1);
-                  }
-                  if (productType) return productType.charAt(0).toUpperCase() + productType.slice(1);
-                  if (search) return `Recherche : ${search}`;
-                  return 'Collection';
-                })()}
-              </span>
+              <Link href="/">Accueil</Link>
+              {' / '}
+              {(() => {
+                const catSlug    = searchParams.get('cat');
+                const productType = searchParams.get('product_type');
+                const isGift     = searchParams.get('is_gift');
+                const search     = searchParams.get('search');
+                const featured   = searchParams.get('featured');
+                const catMap: Record<string, string> = { beurre: 'Beurre', parfum: 'Parfum', gommage: 'Gommage', maquillage: 'Maquillage', 'hygiene-corporelle': 'Hygiène Corporelle' };
+
+                if (catSlug) {
+                  const catLabel = catMap[catSlug] ?? catSlug.charAt(0).toUpperCase() + catSlug.slice(1);
+                  return (
+                    <>
+                      <Link href="/collection">Collection</Link>
+                      {' / '}
+                      <span className="text-gray-900">{catLabel}</span>
+                    </>
+                  );
+                }
+                if (isGift === 'true' || isGift === '1') return <span className="text-gray-900">Pack</span>;
+                if (featured === '1') return <span className="text-gray-900">Best Sellers</span>;
+                if (productType) return <span className="text-gray-900">{productType.charAt(0).toUpperCase() + productType.slice(1)}</span>;
+                if (search) return <span className="text-gray-900">Recherche : {search}</span>;
+                return <span className="text-gray-900">Collection</span>;
+              })()}
             </div>
             <span className="md:hidden text-[14px] leading-tight text-gray-700 font-medium whitespace-nowrap not-italic">
               {loadingProducts ? '…' : `${products.length} Produit${products.length !== 1 ? 's' : ''}`}

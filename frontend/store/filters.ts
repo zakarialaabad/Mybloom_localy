@@ -53,6 +53,7 @@ interface FilterStore {
   setSelectedMin: (v: number) => void;
   setSelectedMax: (v: number) => void;
   toggleBrand: (id: number) => void;
+  setSelectedBrands: (ids: number[]) => void;
   toggleCategory: (id: number) => void;
   setSelectedCategories: (ids: number[]) => void;
   toggleIngredient: (id: number) => void;
@@ -117,6 +118,8 @@ const useFilterStore = create<FilterStore>((set, get) => ({
         ? s.selectedBrands.filter((b) => b !== id)
         : [...s.selectedBrands, id],
     })),
+
+  setSelectedBrands: (ids) => set({ selectedBrands: ids }),
 
   toggleCategory: (id) =>
     set((s) => ({
