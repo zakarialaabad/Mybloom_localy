@@ -113,7 +113,7 @@ export default function WishlistPage() {
             {sorted.length} Produit{sorted.length !== 1 ? 's' : ''}
           </p>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center justify-between w-full sm:w-auto gap-4 sm:gap-6">
             {/* ── View toggle ── */}
             <div className="flex items-center gap-1 border border-gray-200 rounded-sm overflow-hidden">
               <button
