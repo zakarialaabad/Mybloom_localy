@@ -80,6 +80,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const [isGalleryOpen, setGalleryOpen] = useState(false);
   const [galleryImages, setGalleryImages] = useState<string[]>([]);
   const [galleryStartImage, setGalleryStartImage] = useState('');
+  const [mobileBarReady, setMobileBarReady] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' | 'favorite' }>({ show: false, message: '', type: 'success' });
   const carouselRef = useRef<HTMLDivElement>(null);
   const reviewsCarouselRef = useRef<HTMLDivElement>(null);
@@ -90,6 +91,12 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const getProductDetailBySlug = useCatalogStore((s) => s.getProductDetailBySlug);
   const cacheProductDetail = useCatalogStore((s) => s.cacheProductDetail);
   const getAllCachedProducts = useCatalogStore((s) => s.getAllCachedProducts);
+
+  // Slide-up animation for mobile action bar
+  useEffect(() => {
+    const timer = setTimeout(() => setMobileBarReady(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
 
   // Auto-hide toast after 3 seconds
   useEffect(() => {
@@ -103,25 +110,6 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
     setToast({ show: true, message, type });
   };
 
-<<<<<<< HEAD
-=======
-  // ─── Mobile fixed action bar — slide-up on mount ──────────────────────────
-  useEffect(() => {
-    if (product) {
-      const t = setTimeout(() => setMobileBarReady(true), 100);
-      return () => clearTimeout(t);
-    }
-  }, [product]);
-
-  // ─── Hide bottom nav & sticky bar when gallery is open on mobile ──────────
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    if (window.innerWidth <= 768) {
-      window.dispatchEvent(new CustomEvent('mobile-menu-change', { detail: { isOpen: isGalleryOpen } }));
-    }
-  }, [isGalleryOpen]);
-
->>>>>>> 7db2a54 (Hide bottom navigation bar on mobile when opening product image in fullscreen for a more immersive user experience)
   // ─── Fetch product ──────────────────────────────────────────────────────────
   useEffect(() => {
     let mounted = true;
@@ -436,7 +424,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       {loading && <LoadingSpinner />}
 
       <main className="flex-grow bg-white">
-        <div className="container mx-auto px-4 pt-6 pb-12 sm:pt-8 sm:pb-16 max-w-7xl scroll-smooth">
+        <div className="container mx-auto px-4 pt-6 pb-40 sm:pt-8 md:pb-16 max-w-7xl scroll-smooth">
           {/* Breadcrumbs */}
           <nav className="mb-6 sm:mb-8 text-sm text-gray-500">
             <Link href="/" className="hover:text-gray-900 transition-colors">Accueil</Link> /{' '}
@@ -627,10 +615,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
             <hr className="hidden md:block mb-8 border-gray-200" />
 
-            {/* Actions Section */}
-            <div className="mb-8 flex items-center gap-3 md:gap-4 lg:gap-5 w-full h-12 md:max-w-2xl">
+            {/* Actions Section — desktop only */}
+            <div className="mb-8 hidden md:flex items-center gap-3 md:gap-4 lg:gap-5 w-full h-12 md:max-w-2xl">
               {/* Quantity selector — equal thirds, perfectly centred */}
-              <div className="flex h-11 w-[100px] md:h-12 md:w-[120px] items-center rounded-md border border-gray-300 shrink-0 bg-white shadow-sm overflow-hidden">
+              <div className="flex h-11 w-[100px] md:h-12 md:w-[120px] items-center rounded-md border-2 border-[#969292] shrink-0 bg-white shadow-sm overflow-hidden">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
                   className="flex-1 h-full flex items-center justify-center text-gray-500 hover:text-gray-900 text-xl font-light fallback-touch"
@@ -660,10 +648,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               {/* Cart Icon */}
               <button
                 onClick={handleAddToCart}
-                className={`flex h-11 w-11 md:h-12 md:w-12 items-center justify-center rounded-md border shrink-0 shadow-sm active:scale-[0.98] transition-colors ${
+                className={`flex h-11 w-11 md:h-12 md:w-12 items-center justify-center rounded-md border-2 shrink-0 shadow-sm active:scale-[0.98] transition-colors ${
                   !selectedSize || selectedSize.stock_quantity === 0
                     ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-white border-gray-300 text-gray-700 hover:border-gray-400 hover:text-gray-900'
+                    : 'bg-white border-[#969292] text-gray-700 hover:border-gray-400 hover:text-gray-900'
                 }`}
               >
                 <ShoppingCart className="h-5 w-5 md:h-6 md:w-6" strokeWidth={1.5} />
@@ -672,10 +660,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
               {/* Wishlist (Desktop only) */}
               <button
                 onClick={handleWishlist}
-                className={`hidden md:flex h-12 w-12 items-center justify-center rounded-md border shrink-0 shadow-sm active:scale-[0.98] transition-colors ${
+                className={`hidden md:flex h-12 w-12 items-center justify-center rounded-md border-2 shrink-0 shadow-sm active:scale-[0.98] transition-colors ${
                   wished
                     ? 'border-red-500 bg-red-50'
-                    : 'border-gray-300 bg-white hover:border-gray-400'
+                    : 'border-[#969292] bg-white hover:border-gray-400'
                 }`}
               >
                 <Heart className={`h-6 w-6 ${wished ? 'fill-red-500 text-red-500' : 'text-gray-700'}`} strokeWidth={1.5} />
@@ -698,12 +686,12 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                       key={variant.id}
                       disabled={outOfStock}
                       onClick={() => !outOfStock && setSelectedSize(variant)}
-                      className={`relative flex flex-col items-center justify-center rounded-sm border-[4px] py-4 transition-colors ${
+                      className={`relative flex flex-col items-center justify-center rounded-[9px] py-4 transition-colors ${
                         outOfStock
-                          ? 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200'
+                          ? 'opacity-50 cursor-not-allowed bg-gray-50 border-2 border-gray-200'
                           : isSelected
-                          ? 'border-[#4a403a] bg-[#FFFDF6]'
-                          : 'border-gray-200 hover:border-gray-300 bg-white'
+                          ? 'border-[4px] border-[#4a403a] bg-[#FFFDF6]'
+                          : 'border-2 border-gray-200 hover:border-gray-300 bg-white'
                       }`}
                     >
                       {outOfStock && (
@@ -744,12 +732,12 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                         is_default:        true,
                         stock_quantity:    size.stock_quantity ?? 0,
                       })}
-                      className={`relative flex flex-col items-center justify-center rounded-sm border-[4px] py-4 transition-colors ${
+                      className={`relative flex flex-col items-center justify-center rounded-[9px] py-4 transition-colors ${
                         outOfStock
-                          ? 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200'
+                          ? 'opacity-50 cursor-not-allowed bg-gray-50 border-2 border-gray-200'
                           : isSelected
-                          ? 'border-[#4a403a] bg-[#FFFDF6]'
-                          : 'border-gray-200 hover:border-gray-300 bg-white'
+                          ? 'border-[4px] border-[#4a403a] bg-[#FFFDF6]'
+                          : 'border-2 border-gray-200 hover:border-gray-300 bg-white'
                       }`}
                     >
                       {outOfStock && (
@@ -1165,69 +1153,63 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           </div>
         )}
       </main>
-<<<<<<< HEAD
-=======
 
-      {/* ── Fixed Mobile Action Bar — always visible above bottom nav ────────── */}
+      {/* ── Mobile Fixed Action Bar ─────────────────────────────────── */}
       {product && !isGalleryOpen && (
         <div
-          className={`fixed left-0 right-0 z-[90] md:hidden transition-transform duration-300 ease-in-out ${
-            mobileBarReady ? 'translate-y-0' : 'translate-y-full'
-          }`}
-          style={{ bottom: '64px', paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
+          className="fixed left-0 right-0 z-[90] md:hidden flex items-center justify-between gap-3 px-4 bg-white transition-transform duration-300 ease-out"
+          style={{
+            bottom: 'calc(64px + env(safe-area-inset-bottom, 0px))',
+            height: '75px',
+            borderRadius: '16px 16px 0 0',
+            boxShadow: '0 -2px 10px rgba(0,0,0,0.08)',
+            transform: mobileBarReady ? 'translateY(0)' : 'translateY(100%)',
+          }}
         >
-          <div
-            className="bg-white px-4 flex items-center justify-between gap-3"
-            style={{
-              height: '75px',
-              borderRadius: '16px 16px 0 0',
-              boxShadow: '0 -2px 10px rgba(0,0,0,0.08)',
-            }}
-          >
-            {/* Quantity */}
-            <div className="flex h-[42px] w-[96px] items-center rounded-[7px] border-2 border-[#969292] bg-white overflow-hidden shrink-0">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="flex-1 h-full flex items-center justify-center text-gray-500 active:bg-gray-100 text-lg font-light"
-              >-</button>
-              <span className="flex-1 h-full flex items-center justify-center font-serif font-bold tabular-nums text-[17px]">{quantity}</span>
-              <button
-                onClick={() => {
-                  const max = selectedSize?.stock_quantity ?? product?.stock ?? 99;
-                  setQuantity((q) => Math.min(max, q + 1));
-                }}
-                className="flex-1 h-full flex items-center justify-center text-gray-500 active:bg-gray-100 text-lg font-light"
-              >+</button>
-            </div>
-
-            {/* Buy Now */}
+          {/* Quantity selector */}
+          <div className="flex h-11 items-center border-2 border-[#969292] shrink-0 bg-white overflow-hidden" style={{ borderRadius: '7px' }}>
             <button
-              onClick={handleBuyNow}
-              className={`flex h-[42px] flex-1 items-center justify-center rounded-[7px] px-3 transition-all active:scale-[0.97] ${
-                !selectedSize || selectedSize.stock_quantity === 0
-                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
-                  : 'bg-[#4a403a] text-white active:bg-[#342f2d]'
-              }`}
-            >
-              <span className="font-serif italic text-[15px] tracking-wide whitespace-nowrap">Acheter maintenant &rsaquo;</span>
-            </button>
-
-            {/* Cart */}
+              onClick={() => setQuantity(Math.max(1, quantity - 1))}
+              className="w-11 h-full flex items-center justify-center text-gray-500 active:bg-gray-100 text-lg"
+            >−</button>
+            <span className="w-9 h-full flex items-center justify-center font-bold tabular-nums" style={{ fontSize: '17px' }}>{quantity}</span>
             <button
-              onClick={handleAddToCart}
-              className={`flex h-[42px] w-[42px] items-center justify-center rounded-[7px] border-2 shrink-0 transition-colors active:scale-[0.95] ${
-                !selectedSize || selectedSize.stock_quantity === 0
-                  ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
-                  : 'bg-white border-[#969292] text-gray-700 active:bg-gray-50'
-              }`}
-            >
-              <ShoppingCart className="h-[21px] w-[21px]" strokeWidth={1.5} />
-            </button>
+              onClick={() => {
+                const max = selectedSize?.stock_quantity ?? product?.stock ?? 99;
+                setQuantity((q) => Math.min(max, q + 1));
+              }}
+              className="w-11 h-full flex items-center justify-center text-gray-500 active:bg-gray-100 text-lg"
+            >+</button>
           </div>
+
+          {/* Buy Now */}
+          <button
+            onClick={handleBuyNow}
+            className={`flex-1 h-11 flex items-center justify-center transition-all active:scale-[0.97] ${
+              !selectedSize || selectedSize.stock_quantity === 0
+                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                : 'bg-[#4a403a] text-white'
+            }`}
+            style={{ borderRadius: '7px', fontSize: '15px' }}
+          >
+            <span className="font-serif italic tracking-wide">Acheter maintenant</span>
+          </button>
+
+          {/* Cart Icon */}
+          <button
+            onClick={handleAddToCart}
+            className={`flex h-11 w-11 items-center justify-center shrink-0 border-2 active:scale-[0.95] transition-colors ${
+              !selectedSize || selectedSize.stock_quantity === 0
+                ? 'bg-gray-100 border-gray-200 text-gray-400 cursor-not-allowed'
+                : 'bg-white border-[#969292] text-gray-700'
+            }`}
+            style={{ borderRadius: '7px' }}
+          >
+            <ShoppingCart style={{ width: '21px', height: '21px' }} strokeWidth={1.5} />
+          </button>
         </div>
       )}
 
->>>>>>> 7db2a54 (Hide bottom navigation bar on mobile when opening product image in fullscreen for a more immersive user experience)
       <Footer />
     </div>
   );
