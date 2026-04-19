@@ -315,14 +315,15 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       ? `${selectedSize.size}ml`
       : null;
     addItem({
-      productId:   product.id,
-      productName: product.name,
-      slug:        product.slug,
-      sizeId:      selectedSize.id,
+      productId:     product.id,
+      productName:   product.name,
+      slug:          product.slug,
+      sizeId:        selectedSize.id,
       sizeLabel,
       quantity,
-      unitPrice:   selectedSize.final_price,
-      imageUrl:    mainImage,
+      unitPrice:     selectedSize.final_price,
+      originalPrice: selectedSize.original_price ?? undefined,
+      imageUrl:      mainImage,
     });
     showToast('Produit ajouté au panier avec succès !', 'success');
   };
@@ -343,8 +344,9 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       sizeId:      selectedSize.id,
       sizeLabel,
       quantity,
-      unitPrice:   selectedSize.final_price,
-      imageUrl:    mainImage,
+      unitPrice:     selectedSize.final_price,
+      originalPrice: selectedSize.original_price ?? undefined,
+      imageUrl:      mainImage,
     });
     showToast('Redirection vers le paiement...', 'success');
     setTimeout(() => {

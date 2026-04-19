@@ -75,10 +75,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           <h2 className="text-sm font-serif uppercase tracking-widest font-bold text-gray-800">YOUR CART ({itemCount} {itemCount === 1 ? 'ITEM' : 'ITEMS'})</h2>
         </div>
 
-        {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto px-4 sm:px-6 pb-6 pt-4 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-          {/* Products Container */}
-          <div className="mb-6">
+        {/* Content area: products scroll independently, summary always visible on both mobile and desktop */}
+        <div className="flex-1 flex flex-col overflow-hidden px-4 sm:px-6 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
+          {/* Products list — independent scroll on both mobile and desktop */}
+          <div className="overflow-y-auto max-h-[45vh] pt-4 mb-6 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
             <div className="px-2 pb-3">
               <h3 className="font-serif text-sm text-gray-800">Other Products ( <strong>{itemCount} items</strong> )</h3>
             </div>
@@ -103,7 +103,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       </div>
                       <div className="text-right flex flex-col items-end">
                         <div className="font-serif font-bold italic text-sm text-gray-900">{item.unitPrice * item.quantity} DH</div>
-                        <div className="font-serif italic text-[10px] text-gray-400 line-through mt-0.5">{(item.unitPrice * item.quantity) + 160} DH</div>
+                        {item.originalPrice != null && item.originalPrice > item.unitPrice && (
+                          <div className="font-serif italic text-[10px] text-gray-400 line-through mt-0.5">{item.originalPrice * item.quantity} DH</div>
+                        )}
                       </div>
                     </div>
                     
@@ -128,6 +130,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             </div>
           </div>
 
+          {/* Summary + coupon + actions — always visible, scrolls if needed */}
+          <div className="shrink-0 overflow-y-auto pb-6 [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
           {/* Summary */}
           <div className="space-y-4 mb-6 px-2">
             <div className="flex justify-between items-center text-sm">
@@ -200,6 +204,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               Acheter maintenant <span className="text-xs group-hover:translate-x-0.5 transition-transform">›</span>
             </Link>
           </div>
+          </div>{/* end summary+coupon+actions */}
         </div>
       </div>
     </>
