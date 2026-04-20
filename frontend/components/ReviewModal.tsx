@@ -1,6 +1,6 @@
 'use client';
 
-import { X, Star, Plus, Trash2 } from 'lucide-react';
+import { X, Star, Plus } from 'lucide-react';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 
@@ -41,21 +41,16 @@ export default function ReviewModal({
 
   useEffect(() => { setIsMounted(true); }, []);
 
-  // Update state when modal opens with new initial data
   useEffect(() => {
     if (isOpen) {
       setRating(initialRating);
       setReviewText(initialReviewText);
-      // Clean up old previews
       previews.forEach((url) => URL.revokeObjectURL(url));
-      
       setImages(initialImages);
-      // Generate previews for existing files
       const newPreviews = initialImages.map(file => URL.createObjectURL(file));
       setPreviews(newPreviews);
       setHoveredRating(0);
     } else {
-      // Optional: Clear state on close, though the next open will overwrite it
       setRating(0);
       setReviewText('');
       setImages([]);
@@ -79,16 +74,8 @@ export default function ReviewModal({
   };
 
   const handleSubmit = () => {
-    console.log('[ReviewModal] Submit clicked — rating:', rating, 'images:', images.length);
-    if (rating === 0) {
-      console.warn('[ReviewModal] Submit blocked: no star rating selected');
-      return;
-    }
-    if (!onSubmit) {
-      console.warn('[ReviewModal] Submit blocked: onSubmit prop is not provided');
-      return;
-    }
-    console.log('[ReviewModal] Calling onSubmit...');
+    if (rating === 0) return;
+    if (!onSubmit) return;
     onSubmit(rating, reviewText, images);
   };
 
@@ -104,15 +91,14 @@ export default function ReviewModal({
         onClick={onClose}
       />
 
-      {/* Modal - Always Centered Card Style per Reference */}
+      {/* Modal */}
       <div className={`fixed inset-0 z-[101] flex items-center justify-center p-4 ${isOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}>
-        
         <div
           className={`bg-white w-full max-w-[340px] md:max-w-[420px] shadow-xl flex flex-col transform transition-all duration-300 relative max-h-[90vh] ${
             isOpen ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto' : 'opacity-0 scale-95 translate-y-4 pointer-events-none'
           }`}
         >
-          {/* Close Button - Top Right Circular */}
+          {/* Bouton fermer */}
           <button
             onClick={onClose}
             className="absolute right-4 top-4 z-10 w-7 h-7 bg-gray-100 rounded-full flex items-center justify-center text-gray-500 hover:bg-gray-200 transition-colors"
@@ -120,17 +106,19 @@ export default function ReviewModal({
             <X className="h-3.5 w-3.5" />
           </button>
 
-          {/* Scrollable Content */}
+          {/* Contenu scrollable */}
           <div className="overflow-y-auto p-6 md:p-8 space-y-6 md:space-y-7">
-            
-            {/* Header Section (Left aligned) */}
+
+            {/* En-tête */}
             <div className="text-left border-b border-gray-200 pb-5">
-              <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-500 mb-1.5">SHARE YOUR THOUGHTS</p>
+              <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-500 mb-1.5">
+                PARTAGEZ VOTRE AVIS
+              </p>
               <h2 className="text-2xl font-serif font-bold text-gray-900 mb-1 leading-tight">{productName}</h2>
               <p className="font-serif italic text-[11px] text-gray-500">{productDesc}</p>
             </div>
 
-            {/* Rating Section (Row: Image Left, Stars Right) */}
+            {/* Section note */}
             <div className="flex gap-5 items-start">
               {productImage && (
                 <div className="relative w-20 h-20 bg-gray-50 shrink-0">
@@ -138,7 +126,9 @@ export default function ReviewModal({
                 </div>
               )}
               <div className="pt-0.5">
-                <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-800 mb-2.5">RATE THE EXPERIENCE</p>
+                <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-800 mb-2.5">
+                  ÉVALUEZ L&apos;EXPÉRIENCE
+                </p>
                 <div className="flex gap-1.5 mb-2">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <Star
@@ -153,29 +143,32 @@ export default function ReviewModal({
                   ))}
                 </div>
                 <p className="font-serif italic text-[10px] text-gray-400">
-                  {rating > 0 ? 'Thanks for rating!' : 'Tap a star to rate'}
+                  {rating > 0 ? 'Merci pour votre note !' : 'Appuyez sur une étoile pour noter'}
                 </p>
               </div>
             </div>
 
-            {/* Details Section (Separator below) */}
+            {/* Section détails */}
             <div className="border-b border-gray-100 pb-6">
-              <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-800 mb-3">THE DETAILS</p>
+              <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-800 mb-3">
+                LES DÉTAILS
+              </p>
               <textarea
                 value={reviewText}
                 onChange={(e) => setReviewText(e.target.value)}
-                placeholder="Describe the notes, the longevity, the feeling …"
+                placeholder="Décrivez les notes, la longévité, le ressenti…"
                 className="w-full font-serif italic text-[13px] text-gray-700 placeholder:text-gray-300 resize-none outline-none min-h-[40px] bg-transparent"
                 rows={2}
               />
             </div>
 
-            {/* Photography Section */}
+            {/* Section photos */}
             <div>
-              <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-800 mb-4">PHOTOGRAPHY</p>
+              <p className="text-[9px] font-bold tracking-[0.2em] font-serif uppercase text-gray-800 mb-4">
+                PHOTOGRAPHIES
+              </p>
 
-              {/* Hidden File Input */}
-               <input
+              <input
                 ref={fileInputRef}
                 type="file"
                 accept="image/*"
@@ -185,33 +178,41 @@ export default function ReviewModal({
               />
 
               <div className="flex flex-wrap items-center gap-3">
-                 {/* Previews */}
-                 {previews.map((src, idx) => (
+                {previews.map((src, idx) => (
                   <div key={idx} className="relative w-12 h-12 border border-gray-200 overflow-hidden group">
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={src} alt="preview" className="w-full h-full object-cover" />
-                    <button onClick={() => removeImage(idx)} className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100"><X className="w-3 h-3 text-white"/></button>
+                    <img src={src} alt="aperçu" className="w-full h-full object-cover" />
+                    <button
+                      onClick={() => removeImage(idx)}
+                      className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100"
+                    >
+                      <X className="w-3 h-3 text-white" />
+                    </button>
                   </div>
                 ))}
 
-                 {/* Upload Trigger - Square Box style */}
-                 {images.length < 4 && (
-                   <div className="flex items-center gap-3 cursor-pointer group" onClick={() => fileInputRef.current?.click()}>
-                      <div className="w-10 h-10 border border-gray-200 flex items-center justify-center text-gray-300 group-hover:border-gray-300 group-hover:text-gray-400 transition-colors">
-                        <Plus className="w-5 h-5 stroke-[1px]" />
-                      </div>
-                      <span className="font-serif italic text-[13px] text-gray-500 group-hover:text-gray-700">Upload Image</span>
-                   </div>
-                 )}
+                {images.length < 4 && (
+                  <div
+                    className="flex items-center gap-3 cursor-pointer group"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <div className="w-10 h-10 border border-gray-200 flex items-center justify-center text-gray-300 group-hover:border-gray-300 group-hover:text-gray-400 transition-colors">
+                      <Plus className="w-5 h-5 stroke-[1px]" />
+                    </div>
+                    <span className="font-serif italic text-[13px] text-gray-500 group-hover:text-gray-700">
+                      Ajouter une image
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
 
-            {/* Error Message */}
+            {/* Message d'erreur */}
             {errorMsg && (
               <p className="text-xs text-red-500 font-serif italic text-center">{errorMsg}</p>
             )}
 
-            {/* Submit Button - Dark Brown Pill/Rect */}
+            {/* Bouton publier */}
             <div>
               <button
                 type="button"
@@ -219,7 +220,7 @@ export default function ReviewModal({
                 disabled={rating === 0 || isSubmitting}
                 className="w-full bg-[#4a403a] text-white py-3.5 rounded-[4px] font-serif italic text-[13px] hover:bg-[#3a322d] transition-colors flex justify-center items-center gap-1 disabled:opacity-70"
               >
-                {isSubmitting ? 'Publication…' : 'Publish review ›'}
+                {isSubmitting ? 'Publication en cours…' : 'Publier mon avis ›'}
               </button>
             </div>
 
