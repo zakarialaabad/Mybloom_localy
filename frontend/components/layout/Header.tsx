@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import CartDrawer from '@/components/CartDrawer';
 import FilterModal from '@/components/FilterModal';
 import useCartStore from '@/store/cart';
@@ -43,6 +43,8 @@ const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea4779426
 
 export default function Header() {
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isMounted, setIsMounted] = useState(false);
   const cartItemCount = useCartStore((s) => s.itemCount());
   const [query, setQuery] = useState('');
@@ -340,16 +342,33 @@ export default function Header() {
       {/* ── Main Navigation ─────────────────────────────────────────────── */}
       <nav className="hidden md:block container mx-auto px-4 pb-4">
         <ul className="flex justify-center space-x-10 text-[16px] tracking-widest text-gray-700" style={{ fontFamily: "'Sitka Banner', serif", fontWeight: 'bold' }}>
-          {NAV_LINKS.map(({ label, href }) => (
-            <li key={label}>
-              <Link
-                href={href}
-                className="transition-colors hover:text-[#da2966]"
-              >
-                {label}
-              </Link>
-            </li>
-          ))}
+          {NAV_LINKS.map(({ label, href }) => {
+            // Determine active state by comparing pathname and search params when present in href
+            const [basePath, qs] = href.split('?');
+            let isActive = false;
+            if (basePath === pathname) {
+              if (!qs) isActive = true;
+              else {
+                const params = new URLSearchParams(qs);
+                isActive = true;
+                for (const [k, v] of params.entries()) {
+                  const current = searchParams.get(k) ?? '';
+                  if (current !== v) { isActive = false; break; }
+                }
+              }
+            }
+
+            return (
+              <li key={label}>
+                <Link
+                  href={href}
+                  className={`transition-colors duration-200 ease-in-out ${isActive ? 'text-[#da2966]' : 'hover:text-[#da2966] text-gray-700'}`}
+                >
+                  {label}
+                </Link>
+              </li>
+            );
+          })}
         </ul>
       </nav>
     </header>
@@ -488,23 +507,38 @@ export default function Header() {
 
           {/* Navigation Links */}
           <div className="flex flex-col px-6 mb-auto" style={{ gap: 22 }}>
-            {NAV_LINKS.map(({ label, href, highlight }) => (
-              <Link
-                key={label}
-                href={href}
-                onClick={closeMenu}
-                className="uppercase transition-colors"
-                style={{
-                  fontFamily: "'Sitka Banner', serif",
-                  fontSize: 24,
-                  fontWeight: 'bold',
-                  color: highlight ? '#C9527A' : '#111827',
-                  lineHeight: 1.2,
-                }}
-              >
-                {label}
-              </Link>
-            ))}
+            {NAV_LINKS.map(({ label, href }) => {
+              const [basePath, qs] = href.split('?');
+              let isActive = false;
+              if (basePath === pathname) {
+                if (!qs) isActive = true;
+                else {
+                  const params = new URLSearchParams(qs);
+                  isActive = true;
+                  for (const [k, v] of params.entries()) {
+                    const current = searchParams.get(k) ?? '';
+                    if (current !== v) { isActive = false; break; }
+                  }
+                }
+              }
+
+              return (
+                <Link
+                  key={label}
+                  href={href}
+                  onClick={closeMenu}
+                  className={`uppercase transition-colors duration-200 ease-in-out ${isActive ? 'text-[#da2966]' : 'text-[#111827] hover:text-[#da2966]'}`}
+                  style={{
+                    fontFamily: "'Sitka Banner', serif",
+                    fontSize: 24,
+                    fontWeight: 'bold',
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {label}
+                </Link>
+              );
+            })}
           </div>
 
           {/* Collection Highlights */}

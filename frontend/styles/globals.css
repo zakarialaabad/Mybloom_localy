@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hanken Grotesk from Google Fonts — used for step indicators */
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@500;700&display=swap');
+
 @font-face {
   font-family: 'Sitka Banner';
   src: local('Sitka Banner Bold'), local('Sitka Banner'), local('SitkaBanner-Bold');
@@ -175,5 +178,19 @@
     .scrolling-text {
       animation: none !important;
     }
+  }
+
+  /* Utility for Hanken Grotesk font family */
+  .font-hanken {
+    font-family: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  }
+
+  /* Numeric-only styling: Hanken Grotesk + increase size by ~1px relative to surrounding text */
+  .num {
+    font-family: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    font-variant-numeric: tabular-nums;
+    line-height: inherit;
+    display: inline-block;
+    font-size: calc(1em + 1px);
   }
 }
