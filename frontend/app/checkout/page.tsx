@@ -288,7 +288,7 @@ export default function CheckoutPage() {
                 <h2 className="text-lg font-serif font-bold text-gray-800 mb-6 md:mb-8">Your Cart</h2>
 
                 {/* Items */}
-                <div className="space-y-6 mb-8">
+                <div className="space-y-6 mb-8 bg-white rounded-[12px] shadow-sm overflow-y-auto max-h-[280px] p-4 border border-gray-100">
                   {items.length === 0 ? (
                     <p className="font-serif italic text-gray-400 text-sm text-center py-4">Your cart is empty.</p>
                   ) : items.map((item, idx) => (
