@@ -338,7 +338,7 @@ export default function WishlistPage() {
                   {/* Price + Actions */}
                   <div className="shrink-0 flex flex-col items-end gap-3">
                     <div className="text-right">
-                      <p className="text-base font-bold text-[#3d342f]">{(product.min_price ?? 0).toLocaleString('fr-FR')} DH</p>
+                      <p className="text-lg font-bold text-[#3d342f]">{(product.min_price ?? 0).toLocaleString('fr-FR')} DH</p>
                       {(product.original_price ?? 0) > (product.min_price ?? 0) && (
                         <p className="text-xs text-gray-400 line-through">{(product.original_price ?? 0).toLocaleString('fr-FR')} DH</p>
                       )}

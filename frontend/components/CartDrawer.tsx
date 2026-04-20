@@ -102,7 +102,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         <p className="font-serif italic text-xs text-gray-500 mt-0.5">Body Mist</p>
                       </div>
                       <div className="text-right flex flex-col items-end">
-                        <div className="font-serif font-bold italic text-sm text-gray-900">{item.unitPrice * item.quantity} DH</div>
+                        <div className="font-serif font-bold italic text-base text-gray-900">{item.unitPrice * item.quantity} DH</div>
                         {item.originalPrice != null && item.originalPrice > item.unitPrice && (
                           <div className="font-serif italic text-[10px] text-gray-400 line-through mt-0.5">{item.originalPrice * item.quantity} DH</div>
                         )}

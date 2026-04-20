@@ -145,7 +145,7 @@ export default function ProductCard({
     >
       <article className="cursor-pointer bg-white border border-t-0 border-gray-200">
         {/* Image container */}
-        <div className="relative mb-4 aspect-[4/5] overflow-hidden bg-[#f8f5f1]">
+        <div className="relative mb-0 aspect-[4/5] overflow-hidden bg-[#f8f5f1]">
 
           {/* Header overlay – favorite icon + discount badge */}
           <div className="absolute top-0 left-0 right-0 z-10 p-2 sm:p-2.5 flex items-start justify-between">
@@ -278,7 +278,7 @@ export default function ProductCard({
           <div className="space-y-0.5 pt-0.5">
             {/* Price Row — Consistent height */}
             <div className="flex items-baseline space-x-2 h-6">
-              <span className="text-base sm:text-lg font-bold text-gray-900 leading-none">{price} DH</span>
+              <span className="text-lg sm:text-xl font-bold text-gray-900 leading-none">{price} DH</span>
               {originalPrice > price && (
                 <>
                   <span className="text-xs text-gray-400 line-through decoration-1">{originalPrice} DH</span>
