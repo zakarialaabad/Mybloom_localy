@@ -154,8 +154,8 @@ export default function CreateCouponPage() {
               </div>
               <div>
                 <TextInput
-                  label="Company Name"
-                  placeholder="e.g. Luxury Brands Inc."
+                  label="Campaign Name"
+                  placeholder="e.g. Ramadan 2026"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                 />

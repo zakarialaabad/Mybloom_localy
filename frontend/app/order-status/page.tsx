@@ -8,6 +8,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { CheckCircle2, ChevronUp } from 'lucide-react';
 import { orderService, OrderTrackResult } from '@/services/api';
+import { statusContent, STATUS_LABELS } from '@/lib/statusContent';
 
 export default function OrderStatusPage() {
   const params      = useSearchParams();
@@ -29,17 +30,10 @@ export default function OrderStatusPage() {
       .finally(() => setLoading(false));
   }, [orderNumber, phone]);
 
-  const STATUS_LABELS: Record<string, string> = {
-    pending:    'Commande reçue',
-    confirmed:  'Commande confirmée',
-    preparing:  'Préparation de votre colis',
-    dispatched: 'En cours de livraison',
-    shipped:    'En cours de livraison',
-    delivered:  'Colis livré',
-    cancelled:  'Annulée',
-  };
+  // STATUS_LABELS and statusContent imported from '@/lib/statusContent' for reuse and testability
 
   const currentStatus = trackData?.status ?? '';
+  const content = statusContent[currentStatus as keyof typeof statusContent];
 
   return (
     <>
@@ -61,18 +55,33 @@ export default function OrderStatusPage() {
               <div className="flex justify-between items-start mb-8">
                 <div>
                   <p className="text-gray-500 font-serif text-[13px] mb-2 uppercase tracking-wider">COMMANDE #{orderNumber || 'LX-8921-Q'}</p>
-                  <h1 className="text-[32px] md:text-[38px] font-serif text-gray-800 tracking-tight leading-none mb-1">
-                    {STATUS_LABELS[currentStatus] ?? 'Package Delivered'}
+                  <h1 key={currentStatus} className="text-[32px] md:text-[38px] font-serif text-gray-800 tracking-tight leading-none mb-1 transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-2">
+                    {content?.title ?? STATUS_LABELS[currentStatus] ?? 'Statut de la commande'}
                   </h1>
                 </div>
-                <div className="w-[55px] h-[55px] md:w-[65px] md:h-[65px] relative flex items-center justify-center shrink-0">
-                  <svg viewBox="0 0 200 200" className="absolute inset-0 w-full h-full text-[#fdefed] fill-current">
-                    <path d="M 100, 10 A 20,20 0 0,1 120,30 A 20,20 0 0,0 145,45 A 20,20 0 0,1 160,70 A 20,20 0 0,0 170,95 A 20,20 0 0,1 170,125 A 20,20 0 0,0 160,150 A 20,20 0 0,1 145,175 A 20,20 0 0,0 120,190 A 20,20 0 0,1 100,210 A 20,20 0 0,1 80,190 A 20,20 0 0,0 55,175 A 20,20 0 0,1 40,150 A 20,20 0 0,0 30,125 A 20,20 0 0,1 30,95 A 20,20 0 0,0 40,70 A 20,20 0 0,1 55,45 A 20,20 0 0,0 80,30 A 20,20 0 0,1 100,10 z" />
-                  </svg>
-                  <div className="relative z-10 w-9 h-9 bg-white rounded-full flex items-center justify-center shadow-sm">
-                    <svg className="w-5 h-5 text-[#da2966]" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM17 12V9.5h2.5l1.97 2.5H17z" />
+                <div className="flex justify-center">
+                  <div className="relative w-[68px] h-[68px] md:w-[80px] md:h-[80px]">
+
+                    <svg
+                      viewBox="15 4 170 184"
+                      className="absolute inset-0 w-full h-full text-[#fdefed] fill-current"
+                    >
+                      <path d="M 100.00,4.00 C 110.00,4.00 115.00,12.00 120.00,15.00 C 126.00,18.00 135.00,15.00 142.00,20.00 C 148.00,24.00 148.00,32.00 152.00,38.00 C 158.00,44.00 166.00,44.00 170.00,52.00 C 174.00,58.00 170.00,68.00 174.00,74.00 C 180.00,81.00 185.00,88.00 185.00,95.00 C 185.00,105.00 178.00,111.00 175.00,119.00 C 172.00,125.00 176.00,132.00 172.00,138.00 C 168.00,145.00 159.00,144.00 152.00,150.00 C 146.00,156.00 146.00,165.00 139.00,170.00 C 132.00,174.00 124.00,170.00 117.00,175.00 C 111.00,180.00 106.00,188.00 100.00,188.00 C 94.00,188.00 89.00,180.00 83.00,175.00 C 76.00,170.00 68.00,174.00 61.00,170.00 C 54.00,165.00 54.00,156.00 48.00,150.00 C 41.00,144.00 32.00,145.00 28.00,138.00 C 24.00,132.00 28.00,125.00 25.00,119.00 C 22.00,111.00 15.00,105.00 15.00,95.00 C 15.00,88.00 20.00,81.00 26.00,74.00 C 30.00,68.00 26.00,58.00 30.00,52.00 C 34.00,44.00 42.00,44.00 48.00,38.00 C 52.00,32.00 52.00,24.00 58.00,20.00 C 65.00,15.00 74.00,18.00 80.00,15.00 C 85.00,12.00 90.00,4.00 100.00,4.00 Z" />
                     </svg>
+
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <div className="w-[42px] h-[42px] md:w-[50px] md:h-[50px] bg-white rounded-full flex items-center justify-center shadow-[0_2px_8px_rgba(0,0,0,0.05)]">
+                        <svg
+                          style={{ width: '26px', height: '22px' }}
+                          className="text-[#da2966]"
+                          fill="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM17 12V9.5h2.5l1.97 2.5H17z" />
+                        </svg>
+                      </div>
+                    </div>
+
                   </div>
                 </div>
               </div>
@@ -82,10 +91,10 @@ export default function OrderStatusPage() {
                 <div className="w-6 h-6 shrink-0 mt-0.5 rounded-full bg-white flex items-center justify-center shadow-sm text-[#c72864]">
                   <CheckCircle2 className="w-[18px] h-[18px]" fill="#c72864" stroke="white" strokeWidth={3} />
                 </div>
-                <div>
-                  <h3 className="text-[#c72864] font-serif font-bold text-[17px] mb-1.5">Commande confirmée</h3>
+                <div key={`banner-${currentStatus}`} className="transition-all duration-500 ease-out animate-in fade-in slide-in-from-bottom-2">
+                  <h3 className="text-[#c72864] font-serif font-bold text-[17px] mb-1.5">{content?.title ?? STATUS_LABELS[currentStatus] ?? 'Statut de la commande'}</h3>
                   <p className="text-[#888] text-[12.5px] font-serif leading-[1.6]">
-                    Votre commande a été reçue avec succès et vérifiée avec soin par notre équipe. Nous préparons maintenant vos parfums et produits de beauté sélectionnés avec la plus grande attention aux détails, en assurant l'authenticité, le contrôle de qualité et un traitement sécurisé avant de passer à l'étape suivante.
+                    {content?.subtitle ?? 'Nous mettons à jour le statut de votre commande. Revenez dans quelques instants pour voir les dernières informations.'}
                   </p>
                 </div>
               </div>
@@ -137,13 +146,13 @@ export default function OrderStatusPage() {
                     return (
                       <div key={idx} className="relative flex gap-6">
                         <div className="relative flex flex-col items-center">
-                          <div className={`w-[30px] h-[30px] rounded-full flex items-center justify-center text-[13px] font-serif z-10 shrink-0 border-[2px] transition-colors ${isDone ? 'bg-[#403531] border-[#403531] text-white' : 'bg-white border-[#403531] text-[#403531]'}`}>
-                            {idx + 1}
-                          </div>
+                          <div className={`w-[30px] h-[30px] rounded-full flex items-center justify-center text-[14px] font-hanken font-medium z-10 shrink-0 border-[2px] transition-colors ${isDone ? 'bg-[#403531] border-[#403531] text-white' : 'bg-white border-[#403531] text-[#403531]'}`}>
+                                  <span className="num">{idx + 1}</span>
+                                </div>
                           {!isLast && <div className="w-[2px] h-[70px] bg-[#403531]" />}
                         </div>
                         <div className={`pt-0.5 ${isLast ? '' : 'pb-[32px]'}`}>
-                          <h4 className={`font-serif font-bold text-[16px] md:text-[17px] transition-colors ${isActive ? 'text-[#c72864]' : 'text-[#403531]'}`}>
+                          <h4 className={`font-serif font-bold text-[16px] md:text-[17px] transition-colors ${isDone ? 'text-[#c72864]' : 'text-[#403531]'}`}>
                             {step.label}
                           </h4>
                           {dateFormatted ? (
@@ -217,7 +226,8 @@ export default function OrderStatusPage() {
                 </div>
                 {trackData && (
                   <span className="font-serif text-[#111] font-semibold text-[15px] lg:hidden">
-                    {trackData.total.toFixed(2)} DH
+                    <span className="num">{trackData.total.toFixed(2)}</span>{' '}
+                    <span>DH</span>
                   </span>
                 )}
               </div>
@@ -230,7 +240,7 @@ export default function OrderStatusPage() {
                     <div key={idx} className="flex gap-5 items-center">
                       <div className="relative w-[65px] h-[65px] bg-[#f2f2f2] rounded-md shrink-0 shadow-[0_2px_8px_rgba(0,0,0,0.06)] border border-gray-100">
                         <Image src={item.image_url ?? 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=200'} alt={item.product_name} fill className="object-cover mix-blend-multiply p-1.5 rounded-md" />
-                        <span className="absolute -top-[7px] -right-[7px] w-[20px] h-[20px] bg-[#4a4846] text-white text-[10px] flex items-center justify-center rounded-full font-serif">{item.quantity}</span>
+                        <span className="absolute -top-[7px] -right-[7px] w-[20px] h-[20px] bg-[#4a4846] text-white text-[10px] flex items-center justify-center rounded-full font-serif"><span className="num">{item.quantity}</span></span>
                       </div>
                       <div className="flex-1 flex justify-between items-center">
                         <div className="flex flex-col">
@@ -240,7 +250,7 @@ export default function OrderStatusPage() {
                           </p>
                         </div>
                         <div className="font-serif italic text-[#7a7a7a] text-[13px] whitespace-nowrap pl-2">
-                          {(item.unit_price * item.quantity).toFixed(2)} DH
+                          <span className="num">{(item.unit_price * item.quantity).toFixed(2)}</span>{' '}<span>DH</span>
                         </div>
                       </div>
                     </div>
@@ -252,27 +262,27 @@ export default function OrderStatusPage() {
                 <div className="space-y-4 pt-1">
                   <div className="flex justify-between items-center text-[13px]">
                     <span className="font-serif text-[#4a4846]">Your Price</span>
-                    <span className="font-serif italic text-[#7a7a7a]">{trackData.subtotal.toFixed(2)} DH</span>
+                    <span className="font-serif italic text-[#7a7a7a]"><span className="num">{trackData.subtotal.toFixed(2)}</span>{' '}<span>DH</span></span>
                   </div>
                   <div className="flex justify-between items-center text-[13px]">
                     <span className="font-serif text-[#4a4846]">Expédition</span>
-                    <span className="font-serif font-bold italic text-[#111]">{trackData.shipping_cost === 0 ? 'Free' : `${trackData.shipping_cost.toFixed(2)} DH`}</span>
+                    <span className="font-serif font-bold italic text-[#111]">{trackData.shipping_cost === 0 ? 'Free' : (<><span className="num">{trackData.shipping_cost.toFixed(2)}</span>{' '}<span>DH</span></>)}</span>
                   </div>
                   {trackData.coupon_discount > 0 ? (
                     <div className="flex justify-between items-center text-[13px]">
                       <span className="font-serif text-[#4a4846]">Coupon</span>
-                      <span className="font-serif italic text-[#7a7a7a]">{trackData.coupon_discount.toFixed(2)} DH</span>
+                      <span className="font-serif italic text-[#7a7a7a]"><span className="num">{trackData.coupon_discount.toFixed(2)}</span>{' '}<span>DH</span></span>
                     </div>
                   ) : (
                     <div className="flex justify-between items-center text-[13px]">
                       <span className="font-serif text-[#4a4846]">Coupon</span>
-                      <span className="font-serif italic text-[#7a7a7a]">0.00 DH</span>
+                      <span className="font-serif italic text-[#7a7a7a]"><span className="num">0.00</span>{' '}<span>DH</span></span>
                     </div>
                   )}
                   <div className="border-t border-[#e5e5df] my-2 pt-4">
                     <div className="flex justify-between items-center">
                       <span className="font-serif font-bold text-[#333] text-[15px]">Total</span>
-                      <span className="font-serif font-bold text-[#111] text-[16px]">{trackData.total.toFixed(2)} DH</span>
+                      <span className="font-serif font-bold text-[#111] text-[16px]"><span className="num">{trackData.total.toFixed(2)}</span>{' '}<span>DH</span></span>
                     </div>
                   </div>
                 </div>

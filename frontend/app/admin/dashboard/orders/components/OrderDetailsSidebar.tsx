@@ -120,6 +120,22 @@ export default function OrderDetailsSidebar({
     );
   }
 
+  // Derive a display string for the delivery address. Backend may provide
+  // `shipping_address_full` (string) or `shipping_address` (string or object).
+  const rawDelivery: any = (order as any).shipping_address_full ?? (order as any).shipping_address;
+  let deliveryAddressStr = '';
+  if (!rawDelivery) {
+    deliveryAddressStr = order.customer_email || '';
+  } else if (typeof rawDelivery === 'string') {
+    deliveryAddressStr = rawDelivery;
+  } else if (typeof rawDelivery === 'object') {
+    deliveryAddressStr = [rawDelivery.address, rawDelivery.quartier, rawDelivery.city, rawDelivery.zip]
+      .filter(Boolean)
+      .join(', ');
+  } else {
+    deliveryAddressStr = String(rawDelivery);
+  }
+
   return (
     <>
       {/* Backdrop */}
@@ -297,10 +313,10 @@ export default function OrderDetailsSidebar({
 
               <div>
                 <h5 className="text-[11px] text-[#da2966] font-bold tracking-widest uppercase mb-2">
-                  Email Address
+                  Adresse de livraison
                 </h5>
-                <p className="text-[13px] text-gray-500 tracking-wide uppercase">
-                  {order.customer_email}
+                <p className="text-[13px] text-gray-500 tracking-wide uppercase break-words">
+                  {deliveryAddressStr}
                 </p>
               </div>
             </div>

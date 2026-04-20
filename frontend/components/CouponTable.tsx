@@ -83,7 +83,7 @@ export function CouponTable({
 
     {
       key: 'company_name',
-      label: 'Company',
+      label: 'Campaign Name',
       sortable: true,
       className: 'w-[13%]',
       render: (coupon: AdminCoupon) => (
