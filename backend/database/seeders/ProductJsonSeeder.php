@@ -265,28 +265,46 @@ class ProductJsonSeeder extends Seeder
         array $productTypeMap,
         array $ingredientMap
     ): void {
-        // ── Skip if product with this name already exists (idempotent) ──────
-        $existing = DB::table('products')->where('name', $jsonProduct['name'])->first();
+        // Resolve per-product brand (fallback to catalog brand)
+        $brandName = $jsonProduct['brand'] ?? $catalogBrand;
+        $brandId   = $brandMap[$brandName] ?? ($brandMap[$catalogBrand] ?? 1);
+        // Map gender value
+        $genderMap = [
+            'women' => 'women',
+            'male' => 'men',
+            'men' => 'men',
+            'female' => 'women',
+            'unisex' => 'unisex',
+        ];
+        $gender = $genderMap[$jsonProduct['gender'] ?? 'unisex'] ?? 'unisex';
+
+        // Get category ID (from catalog categories map)
+        $categoryId = $categoryMap[$jsonProduct['category']] ?? null;
+
+        // Get product type ID
+        $typeProduit   = $jsonProduct['type_produit'] ?? null;
+        $productTypeId = ($typeProduit && isset($productTypeMap[$typeProduit]))
+            ? $productTypeMap[$typeProduit]
+            : null;
+
+        // ── Skip if a product with same name + category + type already exists (idempotent)
+        $existing = DB::table('products')
+            ->where('name', $jsonProduct['name'])
+            ->when($categoryId !== null, fn($q) => $q->where('category_id', $categoryId))
+            ->when($productTypeId !== null, fn($q) => $q->where('product_type_id', $productTypeId))
+            ->first();
+
         if ($existing) {
             $productId = $existing->id;
             // Still update product_type_id if it was missing
-            if (!$existing->product_type_id) {
-                $typeProduit = $jsonProduct['type_produit'] ?? null;
-                $typeId = ($typeProduit && isset($productTypeMap[$typeProduit]))
-                    ? $productTypeMap[$typeProduit]
-                    : null;
-                if ($typeId) {
-                    DB::table('products')->where('id', $existing->id)->update([
-                        'product_type_id' => $typeId,
-                        'updated_at'      => now(),
-                    ]);
-                }
+            if (!$existing->product_type_id && $productTypeId) {
+                DB::table('products')->where('id', $existing->id)->update([
+                    'product_type_id' => $productTypeId,
+                    'updated_at'      => now(),
+                ]);
             }
             // Continue to process images for existing products (don't return early)
         } else {
-            // Resolve per-product brand (fallback to catalog brand)
-            $brandName = $jsonProduct['brand'] ?? $catalogBrand;
-            $brandId   = $brandMap[$brandName] ?? ($brandMap[$catalogBrand] ?? 1);
             // Generate unique slug
             $baseSlug = Str::slug($jsonProduct['name']);
             $slug = $baseSlug;
@@ -296,25 +314,6 @@ class ProductJsonSeeder extends Seeder
                 $slug = "{$baseSlug}-{$counter}";
                 $counter++;
             }
-
-            // Map gender value
-            $genderMap = [
-                'women' => 'women',
-                'male' => 'men',
-                'men' => 'men',
-                'female' => 'women',
-                'unisex' => 'unisex',
-            ];
-            $gender = $genderMap[$jsonProduct['gender'] ?? 'unisex'] ?? 'unisex';
-
-            // Get category ID (brand_id already resolved above)
-            $categoryId = $categoryMap[$jsonProduct['category']] ?? null;
-
-            // Get product type ID
-            $typeProduit   = $jsonProduct['type_produit'] ?? null;
-            $productTypeId = ($typeProduit && isset($productTypeMap[$typeProduit]))
-                ? $productTypeMap[$typeProduit]
-                : null;
 
             if ($typeProduit && !$productTypeId) {
                 $this->command->warn("  ⚠ No product_type_id resolved for type '{$typeProduit}' (product: {$jsonProduct['name']})");

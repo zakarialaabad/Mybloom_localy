@@ -33,6 +33,8 @@ class BrandLogoSeeder extends Seeder
             }
 
             $name = trim(pathinfo($file, PATHINFO_FILENAME));
+            // Normalize file-derived brand names to Title Case to avoid uppercase duplicates
+            $name = mb_convert_case(mb_strtolower($name, 'UTF-8'), MB_CASE_TITLE, 'UTF-8');
             if ($name === '') {
                 continue;
             }

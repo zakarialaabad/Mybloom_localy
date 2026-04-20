@@ -30,7 +30,7 @@
  */
 
 import { create } from 'zustand';
-import { bannerService, brandService, categoryService, ingredientService, reviewService, Banner, Brand, Category, Ingredient, ReviewItem, RatingSummary } from '@/services/api';
+import { bannerService, brandService, categoryService, ingredientService, reviewService, resourceService, Banner, Brand, Category, Ingredient, ReviewItem, RatingSummary } from '@/services/api';
 
 interface ReferenceStore {
   // ── Brands ──────────────────────────────────────────────────────────────────
@@ -118,6 +118,27 @@ const useReferenceStore = create<ReferenceStore>((set, get) => ({
       .then((data) => set({ ingredients: data, ingredientsReady: true }))
       .catch(() => {})
       .finally(() => set({ ingredientsLoading: false }));
+  },
+
+  // ── Product Types ───────────────────────────────────────────────────────
+  productTypes: [],
+  productTypesReady: false,
+  productTypesLoading: false,
+  ensureProductTypes: () => {
+    if (get().productTypesReady || get().productTypesLoading) return;
+    set({ productTypesLoading: true });
+    // Fetch canonical product types from the API using the configured API client
+    resourceService
+      .list('/v1/product-types')
+      .then((res: any) => {
+        // resourceService returns the axios response body (which usually contains a `data` array)
+        const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+        set({ productTypes: list, productTypesReady: true });
+      })
+      .catch(() => {
+        // Leave productTypes empty — callers will fallback to client-derived counts
+      })
+      .finally(() => set({ productTypesLoading: false }));
   },
 
   // ── Homepage banners ─────────────────────────────────────────────────────

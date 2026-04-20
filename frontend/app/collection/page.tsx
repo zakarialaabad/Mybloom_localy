@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { ChevronDown, ChevronUp, Search, Grid, List, SlidersHorizontal, X, Check } from 'lucide-react';
 
 const SORT_OPTIONS = [
@@ -53,9 +53,11 @@ export default function CollectionPage() {
   const brands           = useReferenceStore((s) => s.brands);
   const categories       = useReferenceStore((s) => s.categories);
   const ingredients      = useReferenceStore((s) => s.ingredients);
+  const productTypes     = useReferenceStore((s) => s.productTypes);
   const ensureBrands     = useReferenceStore((s) => s.ensureBrands);
   const ensureCategories = useReferenceStore((s) => s.ensureCategories);
   const ensureIngredients = useReferenceStore((s) => s.ensureIngredients);
+  const ensureProductTypes = useReferenceStore((s) => s.ensureProductTypes);
 
   const [perPage, setPerPage] = useState(10);
   const [products, setProducts] = useState<Product[]>([]);
@@ -78,7 +80,7 @@ export default function CollectionPage() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    brand: true, price: true, category: true, ingredients: true, notes: true, promotions: true,
+    brand: true, price: true, category: true, ingredients: true, notes: true, promotions: true, productTypes: true,
   });
 
   const toggleSection = (section: string) => {
@@ -116,10 +118,13 @@ export default function CollectionPage() {
 
   const ensureProductsCache = useCatalogStore((s) => s.ensureProducts);
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => { ensureBrands(); }, [ensureBrands]);
   useEffect(() => { ensureCategories(); }, [ensureCategories]);
   useEffect(() => { ensureIngredients(); }, [ensureIngredients]);
+  useEffect(() => { ensureProductTypes(); }, [ensureProductTypes]);
   useEffect(() => { ensureAggregates(); }, [ensureAggregates]);
 
   // Reference data loading is non-blocking — sidebar filters appear when ready,
@@ -297,6 +302,36 @@ export default function CollectionPage() {
     setIngredientCounts(ic);
   }, [products, setBrandCounts, setIngredientCounts]);
 
+  const [productTypeCounts, setProductTypeCounts] = useState<Record<string, { name: string; count: number }>>({});
+  const slugify = (s: string) => s ? s.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : '';
+  useEffect(() => {
+    const pc: Record<string, { name: string; count: number }> = {};
+    products.forEach((p) => {
+      // Prefer an explicit slug from the product payload (backend canonical slug).
+      // Fallback to product_type.name or category.name and slugify that for older/edge payloads.
+      const nameFromType = p.product_type?.name ?? p.category?.name;
+      const slugFromType = p.product_type?.slug ?? null;
+      const name = nameFromType ?? 'Autre';
+      const slug = slugFromType ?? slugify(name);
+      if (!pc[slug]) pc[slug] = { name, count: 0 };
+      pc[slug].count += 1;
+    });
+    setProductTypeCounts(pc);
+  }, [products]);
+
+  const selectedProductType = searchParams.get('product_type');
+  const toggleProductType = (typeSlug: string) => {
+    const params = new URLSearchParams(Array.from(searchParams.entries()));
+    if (searchParams.get('product_type') === typeSlug) params.delete('product_type');
+    else params.set('product_type', typeSlug);
+    const qs = params.toString();
+    router.push(`${pathname}${qs ? `?${qs}` : ''}`);
+  };
+
+  const effectiveProductTypes = (productTypes && productTypes.length > 0)
+    ? productTypes
+    : Object.entries(productTypeCounts).map(([slug, v]) => ({ id: slug, name: v.name, slug }));
+
   const totalPages        = Math.ceil(products.length / perPage);
   const paginatedProducts = products.slice((currentPage - 1) * perPage, currentPage * perPage);
 
@@ -424,7 +459,7 @@ export default function CollectionPage() {
                           <input type="text" placeholder="Rechercher une marque..." value={brandSearchTerm} onChange={(e) => setBrandSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" />
                         </div>
                         <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
-                          {brands.filter(b => b.name.toLowerCase().includes(brandSearchTerm.toLowerCase())).map(brand => (
+                          {brands.filter(b => b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (brandCounts[b.id] ?? 0) > 0).map(brand => (
                             <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
                               <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleBrand(brand.id)}>
                                 {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
@@ -496,6 +531,33 @@ export default function CollectionPage() {
                             <span className={`text-xs ${selectedCategories.includes(cat.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{cat.name}</span>
                           </label>
                         ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Product Types (mirror of Category UI, with counts) */}
+                  <div className="mb-6 border-t border-gray-100 pt-6">
+                    <div className="flex justify-between items-center mb-4 cursor-pointer hover:opacity-70 transition-opacity" onClick={() => toggleSection('productTypes')}>
+                      <h3 className="font-serif text-gray-700">Type de produit</h3>
+                      <ChevronUp className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedSections.productTypes ? 'rotate-0' : 'rotate-180'}`} />
+                    </div>
+                    {expandedSections.productTypes && (
+                      <div className="space-y-3">
+                        {effectiveProductTypes.sort((a,b) => a.name.localeCompare(b.name)).map((pt) => {
+                          const slugKey = pt.slug || slugify(pt.name || String(pt.id || ''));
+                          const cnt = productTypeCounts[slugKey]?.count ?? 0;
+                          return (
+                            <label key={slugKey} className="flex items-center gap-3 cursor-pointer group">
+                              <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedProductType === slugKey ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleProductType(slugKey)}>
+                                {selectedProductType === slugKey && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
+                              </div>
+                              <div className="flex items-baseline gap-2">
+                                <span className={`text-xs ${selectedProductType === slugKey ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{pt.name}</span>
+                                <span className="text-[11px] text-gray-400">({cnt})</span>
+                              </div>
+                            </label>
+                          );
+                        })}
                       </div>
                     )}
                   </div>
@@ -665,8 +727,8 @@ export default function CollectionPage() {
                 <div className="mb-6">
                   <h3 className="font-serif text-gray-700 mb-4">Brand</h3>
                   <div className="relative mb-4"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" /><input type="text" placeholder="Search brand..." value={brandSearchTerm} onChange={(e) => setBrandSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none" /></div>
-                  <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
-                    {brands.filter(b => b.name.toLowerCase().includes(brandSearchTerm.toLowerCase())).map(brand => (
+                    <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
+                    {brands.filter(b => b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (brandCounts[b.id] ?? 0) > 0).map(brand => (
                       <label key={brand.id} className="flex items-center gap-3 cursor-pointer">
                         <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleBrand(brand.id)}>{selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}</div>
                         <div className="flex items-baseline gap-2"><span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span><span className="text-[11px] text-gray-400">({brandCounts[brand.id] ?? 0})</span></div>
@@ -702,6 +764,22 @@ export default function CollectionPage() {
                         <span className={`text-xs ${selectedCategories.includes(cat.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{cat.name}</span>
                       </label>
                     ))}
+                  </div>
+                </div>
+                {/* Product Types */}
+                <div className="mb-6 border-t border-gray-100 pt-6">
+                  <h3 className="font-serif text-gray-700 mb-4">Type de produit</h3>
+                  <div className="space-y-3">
+                    {effectiveProductTypes.sort((a,b) => a.name.localeCompare(b.name)).map((pt) => {
+                      const slugKey = pt.slug || slugify(pt.name || String(pt.id || ''));
+                      const cnt = productTypeCounts[slugKey]?.count ?? 0;
+                      return (
+                        <label key={slugKey} className="flex items-center gap-3 cursor-pointer">
+                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedProductType === slugKey ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleProductType(slugKey)}>{selectedProductType === slugKey && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}</div>
+                          <div className="flex items-baseline gap-2"><span className={`text-xs ${selectedProductType === slugKey ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{pt.name}</span><span className="text-[11px] text-gray-400">({cnt})</span></div>
+                        </label>
+                      );
+                    })}
                   </div>
                 </div>
                 {/* ── Notes — #da2966 (mobile drawer) ─────────────────────── */}

@@ -1,0 +1,4570 @@
+{
+  "catalog": {
+    "brand": "My Bloom",
+    "total_products": 82,
+    "categories": [
+      "beurre",
+      "gommage",
+      "maquillage",
+      "parfum",
+      "hygiène corporelle"
+    ],
+    "products": [
+      {
+        "id": 1,
+        "name": "Summer in Bali",
+        "type_produit": "Body Butter",
+        "img_main": "/images/Summer in Bali Body Butter/summer-in-bali-body-butter-img_main.jpg",
+        "subtitle": "Plongez dans la chaleur d'une sérénité tropicale",
+        "description": "Découvrez notre beurre corporel Summer in Bali, formule 100% naturelle enrichie en huile de sésame et pépins de raisin. Unifie le teint, atténue les taches pigmentaires avec hydratation profonde. Livraison rapide au Maroc, produit 100% original. Parfait usage quotidien.",
+        "price": 80,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "beurre",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 200,
+            "price": 80,
+            "final_price": 80,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Sésame",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Pépins de raisin",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, il est recommandé de l'utiliser quotidiennement pour obtenir une hydratation et une douceur optimales."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, ce beurre est exclusivement destiné au corps."
+          },
+          {
+            "question": "Aide-t-il à unifier le teint ?",
+            "answer": "Oui, sa formule contribue à réduire les taches pigmentaires et à unifier le teint du corps."
+          },
+          {
+            "question": "Les ingrédients sont-ils naturels ?",
+            "answer": "Oui, ce produit est fabriqué avec des ingrédients 100% naturels."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 2,
+        "name": "Summer in Bali",
+        "type_produit": "Body Scrub",
+        "img_main": "/images/Summer in Bali Body Scrub/summer-in-bali-body-scrub-img_main.jpg",
+        "subtitle": "Une exfoliation luxueuse inspirée de Bali pour révéler une peau douce, éclatante et parfaitement unifiée",
+        "description": "Gommage corporel Summer in Bali 100% naturel enrichi en huile pépins raisin et sésame. Élimine cellules mortes, unifie teint naturellement. Peau douce, lisse, lumineuse en une application. Livraison Maroc, authentique. Idéal exfoliation luxueuse quotidienne.",
+        "price": 80,
+        "original_price": null,
+        "stock": 10,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "gommage",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 200,
+            "price": 80,
+            "final_price": 80,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 10
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Pépins de raisin",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Sésame",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Il est recommandé de l'utiliser 2 à 3 fois par semaine pour un résultat optimal."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, ce gommage est destiné uniquement au corps."
+          },
+          {
+            "question": "Convient-il à tous les types de peau ?",
+            "answer": "Oui, sa formule naturelle convient à tous les types de peau."
+          },
+          {
+            "question": "Peut-il être utilisé comme gel douche ?",
+            "answer": "Oui, grâce à sa mousse légère, il peut être utilisé comme gommage ou gel douche."
+          },
+          {
+            "question": "Les ingrédients sont-ils naturels ?",
+            "answer": "Oui, le produit est fabriqué à partir d'ingrédients 100% naturels."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 3,
+        "name": "A Lot of Love",
+        "type_produit": "Body Scrub",
+        "img_main": "/images/A lot of love Body Scrub/a-lot-of-love-body-scrub-img_main.jpg",
+        "subtitle": "L'élixir gommant qui révèle la douceur naturelle de votre peau",
+        "description": "Gommage A Lot of Love 100% naturel allie huile théier et jojoba puissante. Exfolie douceur, traite peau poule efficacement. Peau soyeuse lumineuse garantie. Livraison gratuite Maroc, produit authentique. Usage 2-3 fois semaine pour résultats optimaux.",
+        "price": 80,
+        "original_price": null,
+        "stock": 0,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "gommage",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 200,
+            "price": 80,
+            "final_price": 80,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 0
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Jojoba",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Arbre à thé",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on utiliser ce gommage quotidiennement ?",
+            "answer": "Il est conseillé de l'utiliser 2 à 3 fois par semaine pour de meilleurs résultats sans irriter la peau."
+          },
+          {
+            "question": "Ce gommage est-il adapté au visage ?",
+            "answer": "Non, ce gommage est exclusivement formulé pour le corps."
+          },
+          {
+            "question": "Peut-on l'utiliser comme gel douche ?",
+            "answer": "Oui, grâce à sa légère mousse, il peut s'utiliser aussi bien comme gommage que comme gel douche."
+          },
+          {
+            "question": "Les ingrédients sont-ils naturels ?",
+            "answer": "Oui, ce produit est fabriqué à partir d'ingrédients 100% naturels, sans additifs chimiques."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 4,
+        "name": "A Lot of Love",
+        "type_produit": "Body Butter",
+        "img_main": "/images/A lot of Love -- Body Butter/a-lot-of-love-body-butter-img_main.jpg",
+        "subtitle": "Enveloppez votre peau d'un charme fruité irrésistible",
+        "description": "Beurre corporel A Lot of Love formule exclusive 100% naturelle traite efficacement peau poule. Enrichi théier et jojoba. Lisse progressivement, restaure texture soyeuse. Résultats visibles 2-3 semaines. Produit original, livraison rapide Maroc.",
+        "price": 80,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "beurre",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 200,
+            "price": 80,
+            "final_price": 80,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Arbre à thé",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Jojoba",
+            "image_url": null
+          },
+          {
+            "id": 3,
+            "name": "Cacao",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, il est recommandé de l'utiliser quotidiennement pour obtenir une hydratation et une douceur optimales."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, ce beurre est exclusivement destiné au corps."
+          },
+          {
+            "question": "Aide-t-il à traiter la peau de poulet ?",
+            "answer": "Oui, sa formule améliore la texture de la peau et contribue à traiter la kératose pilaire (peau de poulet)."
+          },
+          {
+            "question": "Les ingrédients sont-ils naturels ?",
+            "answer": "Oui, ce produit est fabriqué avec des ingrédients 100% naturels."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 5,
+        "name": "Sugar Pop",
+        "type_produit": "Body Scrub",
+        "img_main": "/images/Sugar Pop Body Scrub/sugar-pop-body-scrub-img_main.jpg",
+        "subtitle": "La douceur sucrée qui transforme votre peau dès la première utilisation",
+        "description": "Sugar Pop gommage 100% naturel fusion huile amande douce coco. Exfolie délicatement, traite boutons corps. Usage polyvalent comme gel douche. Peau douce garantie. Livraison express Maroc, authentique. Idéal tous types peau.",
+        "price": 80,
+        "original_price": null,
+        "stock": 0,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "gommage",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 200,
+            "price": 80,
+            "final_price": 80,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 0
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Amande",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Noix de coco",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on utiliser ce gommage quotidiennement ?",
+            "answer": "Il est conseillé de l'utiliser 2 à 3 fois par semaine pour de meilleurs résultats sans irriter la peau."
+          },
+          {
+            "question": "Ce gommage est-il adapté au visage ?",
+            "answer": "Non, ce gommage est exclusivement formulé pour le corps."
+          },
+          {
+            "question": "Peut-on l'utiliser comme gel douche ?",
+            "answer": "Oui, grâce à sa légère mousse, il peut s'utiliser aussi bien comme gommage que comme gel douche."
+          },
+          {
+            "question": "Les ingrédients sont-ils naturels ?",
+            "answer": "Oui, ce produit est fabriqué à partir d'ingrédients 100% naturels, sans additifs chimiques."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 6,
+        "name": "Sugar Pop",
+        "type_produit": "Body Butter",
+        "img_main": "/images/Sugar Pop -- Body Butter/sugar-pop-body-butter-img_main.jpg",
+        "subtitle": "Douceur sucrée et peau de soie dès la première application",
+        "description": "Beurre Sugar Pop riche formule 100% naturelle. Amande douce, coco, karité, cacao, vitamine E. Élimine imperfections, hydrate profondément. Texture riche non-grasse. Produit original livraison rapide Maroc. Soin complet quotidien.",
+        "price": 80,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "beurre",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 200,
+            "price": 80,
+            "final_price": 80,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Amande",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Noix de coco",
+            "image_url": null
+          },
+          {
+            "id": 3,
+            "name": "Karité",
+            "image_url": null
+          },
+          {
+            "id": 4,
+            "name": "Cacao",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, il est recommandé de l'utiliser quotidiennement pour obtenir une hydratation et une douceur optimales."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, ce beurre est exclusivement destiné au corps."
+          },
+          {
+            "question": "Laisse-t-il un parfum sur la peau ?",
+            "answer": "Oui, sa formule vous enveloppe d'un parfum gourmand qui perdure longtemps."
+          },
+          {
+            "question": "Les ingrédients sont-ils naturels ?",
+            "answer": "Oui, ce produit est fabriqué avec des ingrédients 100% naturels."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 7,
+        "name": "Cherry Tint",
+        "type_produit": "Tint Visage",
+        "img_main": "/images/Cherry Tint/cherry-tint-img_main.jpg",
+        "subtitle": "L'éclat naturel à portée de main",
+        "description": "Tint Cherry Tint teinte cerise naturelle eau rose aloe. Sublime joues lèvres fraîcheur naturelle. Hydratation délicate persistante toute journée. Formule sûre peau. Livraison Maroc. Maquillage naturel quotidien.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "maquillage",
+        "type": "visage",
+        "variants": [
+          {
+            "size": 15,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Aloe vera",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Eau de rose distillée",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+          },
+          {
+            "question": "Convient-il à tous les types de peau ?",
+            "answer": "Oui, sa formule légère convient à tous les types de peau."
+          },
+          {
+            "question": "Hydrate-t-il les lèvres ?",
+            "answer": "Oui, grâce à l'aloe vera, il aide à hydrater les lèvres en profondeur."
+          },
+          {
+            "question": "Comment l'appliquer ?",
+            "answer": "Appliquez une petite quantité sur les joues ou les lèvres et estompez délicatement pour obtenir une couleur naturelle."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 8,
+        "name": "Sexy Bloom Hair Mist",
+        "type_produit": "Hair Mist",
+        "img_main": "/images/Sexy Bloom Hair Mist/sexy-bloom-hair-mist-img_main.jpg",
+        "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
+        "description": "Brume capillaire Sexy Bloom eau rose vitamine E. Parfum féminin captivant cheveux. Persistance toute journée sans alourdir. Usage cheveux corps. Produit original Maroc. Fragrance sensuelle quotidienne.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "cheveux",
+        "variants": [
+          {
+            "size": 30,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Eau de rose distillée",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+          },
+          {
+            "question": "Convient-il à tous les types de cheveux ?",
+            "answer": "Oui, sa formule convient à tous les types de cheveux."
+          },
+          {
+            "question": "Laisse-t-il les cheveux lourds ou gras ?",
+            "answer": "Non, sa formule légère n'alourdit pas les cheveux et ne laisse aucun effet gras."
+          },
+          {
+            "question": "Comment l'appliquer ?",
+            "answer": "Vaporisez légèrement sur les cheveux à distance pour obtenir un parfum frais et durable."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 9,
+        "name": "The Secret Hair Mist",
+        "type_produit": "Hair Mist",
+        "img_main": "/images/Thes sucret Hair Mist/the-secret-hair-mist-img_main.jpg",
+        "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
+        "description": "Brume Secret eau rose vitamine E. Cheveux fragrance captivante toute journée sans alourdir. Polyvalente cheveux corps. Produit original livraison Maroc. Parfum féminin discret quotidien.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "cheveux",
+        "variants": [
+          {
+            "size": 30,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Eau de rose distillée",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+          },
+          {
+            "question": "Convient-il à tous les types de cheveux ?",
+            "answer": "Oui, sa formule convient à tous les types de cheveux."
+          },
+          {
+            "question": "Laisse-t-il les cheveux lourds ou gras ?",
+            "answer": "Non, sa formule légère n'alourdit pas les cheveux et ne laisse aucun effet gras."
+          },
+          {
+            "question": "Comment l'appliquer ?",
+            "answer": "Vaporisez légèrement sur les cheveux à distance pour obtenir un parfum frais et durable."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 10,
+        "name": "Paradis Adress Hair Mist",
+        "type_produit": "Hair Mist",
+        "img_main": "/images/Paradis Adresse Hair Mist/paradis-adress-hair-mist-img_main.jpg",
+        "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
+        "description": "Brume Paradis Adress eau rose vitamine E. Cheveux fragrance féminine captivante toute journée. Sans alourdir. Polyvalente cheveux corps. Produit original Maroc. Choix femmes marocaines.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "cheveux",
+        "variants": [
+          {
+            "size": 30,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Eau de rose distillée",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+          },
+          {
+            "question": "Convient-il à tous les types de cheveux ?",
+            "answer": "Oui, sa formule convient à tous les types de cheveux."
+          },
+          {
+            "question": "Laisse-t-il les cheveux lourds ou gras ?",
+            "answer": "Non, sa formule légère n'alourdit pas les cheveux et ne laisse aucun effet gras."
+          },
+          {
+            "question": "Comment l'appliquer ?",
+            "answer": "Vaporisez légèrement sur les cheveux à distance pour obtenir un parfum frais et durable."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 11,
+        "name": "Heartbeat Body Mist",
+        "type_produit": "Body Mist",
+        "img_main": "/images/Heartbeat Body Mist/heart-rate-body-mist-img_main.jpg",
+        "subtitle": "Chaque battement raconte une histoire d'amour",
+        "description": "Brume Heartbeat eau rose. Parfum frais captivant voile reflets scintillants. Persistance longue durée. Produit authentique livraison Maroc. Occasions spéciales, usage quotidien.",
+        "price": 75,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 100,
+            "price": 75,
+            "final_price": 75,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Eau de rose distillée",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+          },
+          {
+            "question": "Convient-il à tous les types de peau ?",
+            "answer": "Oui, sa formule convient à tous les types de peau."
+          },
+          {
+            "question": "Laisse-t-il un effet brillant visible sur le corps ?",
+            "answer": "Il offre un effet scintillant subtil qui apporte une touche lumineuse délicate et élégante."
+          },
+          {
+            "question": "Comment l'appliquer ?",
+            "answer": "Vaporisez directement sur le corps pour obtenir un parfum frais et une touche lumineuse subtile."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 12,
+        "name": "Over Dose Body Mist",
+        "type_produit": "Body Mist",
+        "img_main": "/images/Over Dose Body Mist/over-dose-body-mist-img_main.jpg",
+        "subtitle": "Chaque battement raconte une histoire d'amour",
+        "description": "Over Dose brume corporelle eau rose. Voile reflets scintillants subtil. Parfum frais longue persistance. Présence naturelle. Produit original Maroc. Tous moments journée.",
+        "price": 75,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 100,
+            "price": 75,
+            "final_price": 75,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Eau de rose distillée",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+          },
+          {
+            "question": "Convient-il à tous les types de peau ?",
+            "answer": "Oui, sa formule convient à tous les types de peau."
+          },
+          {
+            "question": "Laisse-t-il un effet brillant visible sur le corps ?",
+            "answer": "Il offre un effet scintillant subtil qui apporte une touche lumineuse délicate et élégante."
+          },
+          {
+            "question": "Comment l'appliquer ?",
+            "answer": "Vaporisez directement sur le corps pour obtenir un parfum frais et une touche lumineuse subtile."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 13,
+        "name": "Remember Body Mist",
+        "type_produit": "Body Mist",
+        "img_main": "/images/Remember Body Mist/remember-body-mist-img_main.jpg",
+        "subtitle": "Chaque battement raconte une histoire d'amour",
+        "description": "Remember brume corporelle eau rose. Parfum frais captivant voile scintillant subtil prestige. Toute journée. Produit original authentique Maroc. Moments précieux inoubliables.",
+        "price": 75,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 100,
+            "price": 75,
+            "final_price": 75,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Eau de rose distillée",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, vous pouvez l'utiliser quotidiennement selon vos envies."
+          },
+          {
+            "question": "Convient-il à tous les types de peau ?",
+            "answer": "Oui, sa formule convient à tous les types de peau."
+          },
+          {
+            "question": "Laisse-t-il un effet brillant visible sur le corps ?",
+            "answer": "Il offre un effet scintillant subtil qui apporte une touche lumineuse délicate et élégante."
+          },
+          {
+            "question": "Comment l'appliquer ?",
+            "answer": "Vaporisez directement sur le corps pour obtenir un parfum frais et une touche lumineuse subtile."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 14,
+        "name": "Deo Roll-On Femme",
+        "type_produit": "Déodorant",
+        "img_main": "/images/Deo Roll Femme/deo-roll-on-femme-img_main.jpg",
+        "subtitle": "Fraîcheur naturelle et douceur au quotidien",
+        "description": "Déodorant Deo femme protection 48h naturelle. Aloe vera oliban. Sans aluminium sulfates alcool. Unifie progressivement teint aisselles. Femme marocaine. Livraison rapide. Testé dermatologiquement.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "female",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "hygiène corporelle",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 60,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Aloe vera",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Oliban",
+            "image_url": null
+          },
+          {
+            "id": 3,
+            "name": "Eau de rose distillée",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Convient-il à tous les types de peau ?",
+            "answer": "Oui, sa formule douce convient à tous les types de peau, même les plus sensibles."
+          },
+          {
+            "question": "Contient-il des substances nocives ?",
+            "answer": "Non, sa formule naturelle est exempte de sels d'aluminium, sulfates, alcool et autres substances agressives pour la peau."
+          },
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, vous pouvez l'utiliser quotidiennement pour maintenir une fraîcheur optimale."
+          },
+          {
+            "question": "Hydrate-t-il la peau ?",
+            "answer": "Oui, grâce à l'aloe vera, il hydrate délicatement la zone des aisselles."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 15,
+        "name": "Deo Roll-On Homme",
+        "type_produit": "Déodorant",
+        "img_main": "/images/Deo Roll Homme/deo-roll-on-homme-img_main.jpg",
+        "subtitle": "Protection efficace et fraîcheur masculine toute la journée",
+        "description": "Déodorant Deo homme protection 48h naturelle aloe oliban. Innovation fraîcheur masculine longue durée. Homme actif Maroc. Produit original livraison rapide. Protection quotidienne garantie.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "male",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "hygiène corporelle",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 60,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Aloe vera",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Oliban",
+            "image_url": null
+          },
+          {
+            "id": 3,
+            "name": "Eau de rose distillée",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Convient-il à tous les types de peau ?",
+            "answer": "Oui, sa formule douce convient à tous les types de peau, même les plus sensibles."
+          },
+          {
+            "question": "Contient-il des substances nocives ?",
+            "answer": "Non, sa formule naturelle est exempte de sels d'aluminium, sulfates, alcool et autres substances agressives pour la peau."
+          },
+          {
+            "question": "Peut-on l'utiliser quotidiennement ?",
+            "answer": "Oui, vous pouvez l'utiliser quotidiennement pour maintenir une fraîcheur optimale."
+          },
+          {
+            "question": "Hydrate-t-il la peau ?",
+            "answer": "Oui, grâce à l'aloe vera, il hydrate la zone des aisselles tout en assurant une protection efficace."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 16,
+        "name": "La Luna Crème Parfumée",
+        "type_produit": "Crème Parfumée",
+        "img_main": "/images/La Luna Crème Parfumée/la-luna-creme-parfumee-img_main.jpg",
+        "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+        "description": "Crème Luna luxueuse coco amande. Corps cheveux parfum féminin captivant. Texture onctueuse sans gras. Persistance toute journée. Produit original Maroc. Soin fragrance parfait.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 50,
+            "price": 60,
+            "final_price": 60,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Noix de coco",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Amande",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser sur les cheveux ?",
+            "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le corps ?",
+            "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+          },
+          {
+            "question": "Alourdit-elle les cheveux ?",
+            "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 17,
+        "name": "Imperial Valley Crème Parfumée",
+        "type_produit": "Crème Parfumée",
+        "img_main": "/images/Imperial Valley Crème Parfumée/imperial-valley-creme-parfumee-img_main.jpg",
+        "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+        "description": "Crème Imperial prestige coco amande. Corps cheveux fragrance féminine prestige. Texture riche douce sans résidu. Parfum longue durée. Authentique Maroc. Cadeau luxe femme.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 50,
+            "price": 60,
+            "final_price": 60,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Noix de coco",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Amande",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser sur les cheveux ?",
+            "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le corps ?",
+            "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+          },
+          {
+            "question": "Alourdit-elle les cheveux ?",
+            "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 18,
+        "name": "Bombshel Passion Crème Parfumée",
+        "type_produit": "Crème Parfumée",
+        "img_main": "/images/Bombshel Passion Crème Parfumée/bombshel-passion-creme-parfumee-img_main.jpg",
+        "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+        "description": "Crème Bombshel luxueuse coco amande. Corps cheveux fragrance passion. Texture onctueuse sans gras. Persistance longue. Produit original Maroc. Femme confiante élégante.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 50,
+            "price": 60,
+            "final_price": 60,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Noix de coco",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Amande",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser sur les cheveux ?",
+            "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le corps ?",
+            "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+          },
+          {
+            "question": "Alourdit-elle les cheveux ?",
+            "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 19,
+        "name": "Eros Crème Parfumée",
+        "type_produit": "Crème Parfumée",
+        "img_main": "/images/Eros Crème Parfumée/eros-creme-parfumee-img_main.jpg",
+        "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+        "description": "Crème Eros luxueuse coco amande. Corps cheveux parfum captivant sensuel. Texture riche onctueuse sans gras. Persistance excellente. Authentique Maroc. Cadeau prestige.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 50,
+            "price": 60,
+            "final_price": 60,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Noix de coco",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Amande",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser sur les cheveux ?",
+            "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le corps ?",
+            "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+          },
+          {
+            "question": "Alourdit-elle les cheveux ?",
+            "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 20,
+        "name": "One And Only Crème Parfumée",
+        "type_produit": "Crème Parfumée",
+        "img_main": "/images/One And Only Crème Parfumée/one-and-only-creme-parfumee-img_main.jpg",
+        "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+        "description": "Crème One coco amande. Corps cheveux parfum unique captivant. Texture luxueuse sans film. Persistance longue. Produit original Maroc. Femme unique spéciale.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 50,
+            "price": 60,
+            "final_price": 60,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Noix de coco",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Amande",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser sur les cheveux ?",
+            "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le corps ?",
+            "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+          },
+          {
+            "question": "Alourdit-elle les cheveux ?",
+            "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 21,
+        "name": "Nina Ricci Crème Parfumée",
+        "type_produit": "Crème Parfumée",
+        "img_main": "/images/Nina Ricci Crème Parfumée/nina-ricci-creme-parfumee-img_main.jpg",
+        "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+        "description": "Crème Nina Ricci luxueuse coco amande. Corps cheveux fragrance féminine. Texture onctueuse subtile sans gras. Persistance excellent. Maroc authentique. Prestige garanti.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 50,
+            "price": 60,
+            "final_price": 60,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Noix de coco",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Amande",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser sur les cheveux ?",
+            "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le corps ?",
+            "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+          },
+          {
+            "question": "Alourdit-elle les cheveux ?",
+            "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+          }
+        ],
+        "brand": "Nina Ricci"
+      },
+      {
+        "id": 22,
+        "name": "Hudson Valley Crème Parfumée",
+        "type_produit": "Crème Parfumée",
+        "img_main": "/images/Hudson Valley Crème Parfumée/hudson-valley-creme-parfumee-img_main.jpg",
+        "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+        "description": "Crème Hudson luxueuse coco amande. Corps cheveux parfum captivant douce. Texture riche onctueuse. Persistance journée. Produit original Maroc. Usage quotidien.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 50,
+            "price": 60,
+            "final_price": 60,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Noix de coco",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Amande",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser sur les cheveux ?",
+            "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le corps ?",
+            "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+          },
+          {
+            "question": "Alourdit-elle les cheveux ?",
+            "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 23,
+        "name": "Idol Crème Parfumée",
+        "type_produit": "Crème Parfumée",
+        "img_main": "/images/Idol Crème Parfumée/idol-creme-parfumee-img_main.jpg",
+        "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
+        "description": "Crème Idol luxueuse coco amande. Corps cheveux parfum captivant lumineux. Texture onctueuse persistante. Produit authentique Maroc. Idole beauté personnelle.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 50,
+            "price": 60,
+            "final_price": 60,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Noix de coco",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Amande",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on l'utiliser sur les cheveux ?",
+            "answer": "Oui, appliquez une petite quantité sur les pointes des cheveux, qu'ils soient mouillés ou secs, pour un parfum délicat et une brillance naturelle."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le corps ?",
+            "answer": "Oui, vous pouvez l'appliquer sur le corps pour obtenir un parfum agréable et une hydratation légère."
+          },
+          {
+            "question": "Peut-on l'utiliser sur le visage ?",
+            "answer": "Non, cette crème est exclusivement destinée au corps et aux cheveux."
+          },
+          {
+            "question": "Alourdit-elle les cheveux ?",
+            "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 24,
+        "name": "Fruité des Bois Diffuseur",
+        "type_produit": "Diffuseur",
+        "img_main": "/images/Fruité des Bois Diffuseur/fruite-des-bois-diffuseur-img_main.jpg",
+        "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
+        "description": "Diffuseur ambiance fruité délicate. Notes fraîches élégantes. Persiste progressivement heures. Intérieur havre bien-être olfactif. Maison maroc. Atmosphère agréable garantie.",
+        "price": 70,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "maison",
+        "variants": [
+          {
+            "size": 100,
+            "price": 70,
+            "final_price": 70,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Vanille",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Où peut-on l'utiliser ?",
+            "answer": "Il peut être utilisé dans les chambres, le salon, le bureau ou n'importe quelle pièce de la maison."
+          },
+          {
+            "question": "Combien de temps dure le parfum ?",
+            "answer": "Le parfum perdure pendant plusieurs heures et se diffuse progressivement dans l'espace."
+          },
+          {
+            "question": "Comment l'utiliser ?",
+            "answer": "Placez-le simplement à l'endroit souhaité et laissez le parfum se diffuser naturellement dans l'atmosphère."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 25,
+        "name": "Mange Péche Diffuseur",
+        "type_produit": "Diffuseur",
+        "img_main": "/images/Mange Péche Diffuseur/mange-peche-diffuseur-img_main.jpg",
+        "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
+        "description": "Diffuseur pêche ambiance fruité notes fraîches. Persiste heures progressif. Maison havre bien-être. Maroc authentique. Parfum ambiance garantie.",
+        "price": 70,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "maison",
+        "variants": [
+          {
+            "size": 100,
+            "price": 70,
+            "final_price": 70,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Vanille",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Où peut-on l'utiliser ?",
+            "answer": "Il peut être utilisé dans les chambres, le salon, le bureau ou n'importe quelle pièce de la maison."
+          },
+          {
+            "question": "Combien de temps dure le parfum ?",
+            "answer": "Le parfum perdure pendant plusieurs heures et se diffuse progressivement dans l'espace."
+          },
+          {
+            "question": "Comment l'utiliser ?",
+            "answer": "Placez-le simplement à l'endroit souhaité et laissez le parfum se diffuser naturellement dans l'atmosphère."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 26,
+        "name": "Coco Diffuseur",
+        "type_produit": "Diffuseur",
+        "img_main": "/images/Coco Diffuseur/coco-diffuseur-img_main.jpg",
+        "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
+        "description": "Diffuseur coco ambiance fruité tropical. Notes fraîches persistantes. Progressif heures. Maison agréable. Maroc. Parfum garantie.",
+        "price": 70,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "maison",
+        "variants": [
+          {
+            "size": 100,
+            "price": 70,
+            "final_price": 70,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Vanille",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Où peut-on l'utiliser ?",
+            "answer": "Il peut être utilisé dans les chambres, le salon, le bureau ou n'importe quelle pièce de la maison."
+          },
+          {
+            "question": "Combien de temps dure le parfum ?",
+            "answer": "Le parfum perdure pendant plusieurs heures et se diffuse progressivement dans l'espace."
+          },
+          {
+            "question": "Comment l'utiliser ?",
+            "answer": "Placez-le simplement à l'endroit souhaité et laissez le parfum se diffuser naturellement dans l'atmosphère."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 27,
+        "name": "My Bloom Spray d'Intérieur Tropical",
+        "type_produit": "Spray d'Intérieur",
+        "img_main": "/images/My Bloom Spray d'Intérieur Tropical/my-bloom-spray-d-intérieur-tropical-img_main.jpg",
+        "subtitle": "L'évasion tropicale en un simple geste",
+        "description": "Spray ambiance tropical polyvalent rafraîchissant persistant. Intérieurs textiles vêtements bureau voiture maroc. Fragrance fraîche agréable. Produit original.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "maison",
+        "variants": [
+          {
+            "size": 100,
+            "price": 60,
+            "final_price": 60,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Vanille",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Noix de coco",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Où peut-on l'utiliser ?",
+            "answer": "Il peut être utilisé à la maison, sur les vêtements, les tissus d'ameublement, au bureau ou dans la voiture."
+          },
+          {
+            "question": "Peut-on le vaporiser directement sur les textiles ?",
+            "answer": "Oui, vous pouvez le vaporiser sur les textiles pour leur donner un parfum frais et agréable."
+          },
+          {
+            "question": "Combien de temps dure le parfum ?",
+            "answer": "Le parfum persiste pendant plusieurs heures en laissant une sensation de fraîcheur durable."
+          },
+          {
+            "question": "Comment l'utiliser ?",
+            "answer": "Vaporisez dans l'espace souhaité ou sur les textiles pour obtenir un parfum frais et agréable."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 28,
+        "name": "My Bloom Spray d'Intérieur Caramel",
+        "type_produit": "Spray d'Intérieur",
+        "img_main": "/images/My Bloom Spray d'Intérieur Caramel/my-bloom-spray-d-intérieur-caramel-img_main.jpg",
+        "subtitle": "L'évasion tropicale en un simple geste",
+        "description": "Spray caramel ambiance polyvalent doux persistant. Intérieurs textiles vêtements bureau voiture. Maroc authentique. Fragrance gourmande agréable.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "maison",
+        "variants": [
+          {
+            "size": 100,
+            "price": 60,
+            "final_price": 60,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Vanille",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Noix de coco",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Où peut-on l'utiliser ?",
+            "answer": "Il peut être utilisé à la maison, sur les vêtements, les tissus d'ameublement, au bureau ou dans la voiture."
+          },
+          {
+            "question": "Peut-on le vaporiser directement sur les textiles ?",
+            "answer": "Oui, vous pouvez le vaporiser sur les textiles pour leur donner un parfum frais et agréable."
+          },
+          {
+            "question": "Combien de temps dure le parfum ?",
+            "answer": "Le parfum persiste pendant plusieurs heures en laissant une sensation de fraîcheur durable."
+          },
+          {
+            "question": "Comment l'utiliser ?",
+            "answer": "Vaporisez dans l'espace souhaité ou sur les textiles pour obtenir un parfum frais et agréable."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 29,
+        "name": "My Bloom Spray d'Intérieur Oud",
+        "type_produit": "Spray d'Intérieur",
+        "img_main": "/images/My Bloom Spray d'Intérieur Oud/my-bloom-spray-d-intérieur-oud-img_main.jpg",
+        "subtitle": "L'évasion tropicale en un simple geste",
+        "description": "Spray oud ambiance polyvalent rafraîchissant persistant. Intérieurs textiles vêtements bureau voiture maroc. Fragrance prestigieuse agréable.",
+        "price": 60,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "maison",
+        "variants": [
+          {
+            "size": 100,
+            "price": 60,
+            "final_price": 60,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Vanille",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Noix de coco",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Où peut-on l'utiliser ?",
+            "answer": "Il peut être utilisé à la maison, sur les vêtements, les tissus d'ameublement, au bureau ou dans la voiture."
+          },
+          {
+            "question": "Peut-on le vaporiser directement sur les textiles ?",
+            "answer": "Oui, vous pouvez le vaporiser sur les textiles pour leur donner un parfum frais et agréable."
+          },
+          {
+            "question": "Combien de temps dure le parfum ?",
+            "answer": "Le parfum persiste pendant plusieurs heures en laissant une sensation de fraîcheur durable."
+          },
+          {
+            "question": "Comment l'utiliser ?",
+            "answer": "Vaporisez dans l'espace souhaité ou sur les textiles pour obtenir un parfum frais et agréable."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 30,
+        "name": "Coffret Cadeau Bloom d'Amour",
+        "type_produit": "Coffret Cadeau",
+        "img_main": "/images/Coffret Cadeau Bloom d'Amour/coffret-cadeau-bloom-d-amour-img_main.jpg",
+        "subtitle": "L'expérience sensorielle complète pour rayonner de féminité",
+        "description": "Coffret exception réunit soins corporels harmonisés fragrance féminine envoûtante. Pochette cadeau élégante. Maroc livraison. Cadeau prestige femme.",
+        "price": 250,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "female",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 300,
+            "price": 250,
+            "final_price": 250,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Amande",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Noix de coco",
+            "image_url": null
+          },
+          {
+            "id": 3,
+            "name": "Eau de rose distillée",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Tous les produits du coffret ont-ils le même parfum ?",
+            "answer": "Oui, tous les produits du coffret partagent la même fragrance féminine distinctive pour une expérience olfactive harmonieuse."
+          },
+          {
+            "question": "Peut-on utiliser ces produits quotidiennement ?",
+            "answer": "Oui, vous pouvez les utiliser quotidiennement pour profiter d'un parfum frais et durable."
+          },
+          {
+            "question": "Les produits laissent-ils un effet brillant sur le corps ?",
+            "answer": "Oui, ils contiennent une touche de brillance subtile qui apporte un éclat lumineux délicat à la peau."
+          },
+          {
+            "question": "Ce coffret convient-il comme cadeau ?",
+            "answer": "Oui, il est présenté avec une pochette cadeau élégante, ce qui en fait un présent idéal pour toutes les occasions."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 31,
+        "name": "قطرة دلع",
+        "type_produit": "Huile Parfumée",
+        "img_main": "/images/قطرة-دلع/قطرة دلعimg_main.jpg",
+        "subtitle": "L'élixir parfumé qui enveloppe votre peau d'une douceur irrésistible",
+        "description": "Huile Qatrat 100% naturelle coco amande. Hydratation intense sillage envoûtant toute journée. Maroc livraison rapide. Produit original authentique.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "100% Naturel"
+        ],
+        "category": "parfum",
+        "type": "corps",
+        "variants": [
+          {
+            "size": 30,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 100
+          }
+        ],
+        "ingredients": [
+          {
+            "id": 1,
+            "name": "Noix de coco",
+            "image_url": null
+          },
+          {
+            "id": 2,
+            "name": "Amande",
+            "image_url": null
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Peut-on utiliser cette huile au quotidien ?",
+            "answer": "Oui, cette huile parfumée peut être utilisée chaque jour pour hydrater le corps et maintenir un sillage agréable tout au long de la journée."
+          },
+          {
+            "question": "Cette huile est-elle adaptée au visage ?",
+            "answer": "Non, cette huile est exclusivement formulée pour le corps. Elle n'est pas recommandée pour une application sur le visage."
+          },
+          {
+            "question": "Laisse-t-elle un vrai parfum sur la peau ?",
+            "answer": "Oui, sa formule unique dépose un parfum envoûtant et persistant qui accompagne votre peau tout au long de la journée."
+          },
+          {
+            "question": "Les ingrédients sont-ils naturels ?",
+            "answer": "Absolument. Qatrat Dalaa est composée d'ingrédients 100% naturels, sans additifs artificiels, pour prendre soin de votre peau en toute sérénité."
+          }
+        ],
+        "brand": "My Bloom"
+      },
+      {
+        "id": 35,
+        "name": "212",
+        "type_produit": "Floral Musqué",
+        "img_main": "/images/212 femme/212-femme-img_main.jpg",
+        "subtitle": "L'énergie urbaine de New York",
+        "description": "212 Carolina Herrera parfum floral musqué urbain moderne. Femme dynamique sophistiquée. Fleur oranger gardénia musc blanc. Frais pétillant. Maroc authentique. Best seller marque.",
+        "price": 50,
+        "original_price": null,
+        "stock": 50,
+        "is_best_seller": true,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "212 offre une tenue de 6 à 8 heures avec un sillage modéré."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Idéal pour le printemps et l'été grâce à sa fraîcheur florale."
+          },
+          {
+            "question": "Est-il adapté à un usage quotidien ?",
+            "answer": "Oui, c'est un parfum polyvalent parfait pour le quotidien et les occasions spéciales."
+          }
+        ],
+        "brand": "Carolina Herrera"
+      },
+      {
+        "id": 36,
+        "name": "Bad Boy",
+        "type_produit": "Oriental Boisé",
+        "img_main": "/images/Bad diesel/Bad diesel.jpg",
+        "subtitle": "Osez être différent",
+        "description": "Bad Boy Diesel parfum oriental boisé audacieux. Homme modern confiant dualité. Poivre bergamote cèdre cacao. Maroc produit original. Best authentique Diesel.",
+        "price": 50,
+        "original_price": null,
+        "stock": 40,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "homme",
+        "badges": [],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Bad Boy offre une excellente tenue de 8 à 10 heures avec un sillage puissant."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Parfait pour les soirées et occasions spéciales, peut être porté au quotidien en hiver."
+          },
+          {
+            "question": "Le flacon a-t-il une forme particulière ?",
+            "answer": "Oui, le flacon iconique en forme de poing symbolise la force et l'audace."
+          }
+        ],
+        "brand": "Diesel"
+      },
+      {
+        "id": 37,
+        "name": "Burberry Goddess",
+        "type_produit": "Gourmand Floral",
+        "img_main": "/images/Burberry goddess/burberry-goddess-img_main.jpg",
+        "subtitle": "La force féminine réinventée",
+        "description": "Goddess Burberry parfum gourmand floral moderne. Force féminité confiance. Vanille lavande cacao. Maroc produit original. Femme prestige incontournable.",
+        "price": 50,
+        "original_price": null,
+        "stock": 35,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Nouveau"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Burberry Goddess offre une excellente tenue de 10 à 12 heures."
+          },
+          {
+            "question": "Est-il adapté pour l'été ?",
+            "answer": "C'est un parfum riche, idéal pour l'automne et l'hiver, mais peut être porté en soirée en été."
+          },
+          {
+            "question": "Le flacon est-il rechargeable ?",
+            "answer": "Oui, Burberry propose des recharges pour réduire l'impact environnemental."
+          }
+        ],
+        "brand": "Burberry"
+      },
+      {
+        "id": 38,
+        "name": "Cinema",
+        "type_produit": "Oriental Floral",
+        "img_main": "/images/Cinema/cinema-img_main.jpg",
+        "subtitle": "L'élégance hollywoodienne",
+        "description": "Cinema YSL parfum oriental floral glamour hollywoodien. Élégance charme féminité. Mandarine jasmin ambre vanille. Maroc. Prestige soirée.",
+        "price": 50,
+        "original_price": null,
+        "stock": 30,
+        "is_best_seller": false,
+        "is_gift": true,
+        "is_recommended": false,
+        "gender": "femme",
+        "badges": [
+          "Élégant"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Cinema offre une bonne tenue de 7 à 9 heures avec un sillage élégant."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Idéal pour les soirées élégantes et occasions spéciales."
+          },
+          {
+            "question": "Est-il encore disponible ?",
+            "answer": "Oui, bien que rare, il est encore disponible dans certaines boutiques."
+          }
+        ],
+        "brand": "Yves Saint Laurent"
+      },
+      {
+        "id": 39,
+        "name": "Dior Addict",
+        "type_produit": "Oriental Floral",
+        "img_main": "/images/Dior addict/dior-addict-img_main.jpg",
+        "subtitle": "La séduction absolue",
+        "description": "Addict Dior parfum oriental floral sensuel addictif. Fleur oranger Tunisie jasmin vanille bourbon. Féminité moderne audacieuse irrésistible. Maroc iconique.",
+        "price": 50,
+        "original_price": null,
+        "stock": 60,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Iconique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Dior Addict offre une excellente tenue de 8 à 10 heures avec un sillage modéré à puissant."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Polyvalent, peut être porté toute l'année, particulièrement agréable en automne et hiver."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne Dior Addict comprend plusieurs variations comme Addict Eau Fraîche et Addict Shine."
+          }
+        ],
+        "brand": "Dior"
+      },
+      {
+        "id": 40,
+        "name": "Good Girl",
+        "type_produit": "Oriental Floral",
+        "img_main": "/images/Good girl/good-girl-img_main.jpg",
+        "subtitle": "Osez votre dualité",
+        "description": "Good Girl Carolina Herrera parfum oriental floral. Dualité féminine audacieuse. Jasmin tonka cacao. Flacon escarpin iconique. Maroc prestige femme moderne.",
+        "price": 50,
+        "original_price": null,
+        "stock": 70,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Iconique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Good Girl offre une excellente tenue de 10 à 12 heures avec un sillage puissant."
+          },
+          {
+            "question": "Le flacon est-il confortable à utiliser ?",
+            "answer": "Oui, malgré sa forme d'escarpin, le flacon est bien conçu et facile à vaporiser."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Parfait pour les soirées et occasions spéciales, assez polyvalent pour le quotidien."
+          }
+        ],
+        "brand": "Carolina Herrera"
+      },
+      {
+        "id": 41,
+        "name": "Idôle",
+        "type_produit": "Floral Chypré",
+        "img_main": "/images/Idole/idole-img_main.jpg",
+        "subtitle": "Soyez votre propre idole",
+        "description": "Idôle Lancôme parfum floral chypré moderne. Femme accomplie nouvelle génération. Poire rose jasmin praline vanille. Rechargeable écologique. Maroc féminité forte.",
+        "price": 50,
+        "original_price": null,
+        "stock": 55,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Éco-responsable"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Idôle offre une bonne tenue de 7 à 9 heures avec un sillage modéré."
+          },
+          {
+            "question": "Le flacon est-il rechargeable ?",
+            "answer": "Oui, le flacon ultra-fin est conçu pour être rechargeable, réduisant ainsi l'impact environnemental."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Parfait pour le printemps et l'été grâce à sa fraîcheur florale."
+          }
+        ],
+        "brand": "Lancôme"
+      },
+      {
+        "id": 42,
+        "name": "La Nuit Trésor",
+        "type_produit": "Oriental Gourmand",
+        "img_main": "/images/La nuit tresor/la-nuit-tresor-img_main.jpg",
+        "subtitle": "L'amour à son apogée",
+        "description": "Nuit Trésor Lancôme parfum oriental gourmand sensuel. Amour passion séduction. Framboise rose vanille praline. Maroc soirée romantique.",
+        "price": 50,
+        "original_price": null,
+        "stock": 40,
+        "is_best_seller": false,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Romantique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "La Nuit Trésor offre une très bonne tenue de 8 à 10 heures avec un sillage gourmand."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Idéal pour les soirées romantiques et occasions spéciales en automne et hiver."
+          },
+          {
+            "question": "Est-il différent de Trésor ?",
+            "answer": "Oui, c'est une version plus gourmande et orientale du Trésor classique."
+          }
+        ],
+        "brand": "Lancôme"
+      },
+      {
+        "id": 43,
+        "name": "Light Blue Femme",
+        "type_produit": "Fruité Floral",
+        "img_main": "/images/light bleu femme/light-bleu-femme-img_main.jpg",
+        "subtitle": "L'esprit méditerranéen",
+        "description": "Light Blue DG parfum fruité floral frais lumineux. Été méditerranéen esprit. Citron sicile pomme jasmin. Maroc iconique summer.",
+        "price": 50,
+        "original_price": null,
+        "stock": 80,
+        "is_best_seller": true,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Iconique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Light Blue offre une tenue modérée de 5 à 7 heures, idéale pour un rafraîchissement en journée."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Parfait pour le printemps et l'été, c'est le parfum estival par excellence."
+          },
+          {
+            "question": "Y a-t-il une version homme ?",
+            "answer": "Oui, Light Blue Pour Homme est la version masculine avec des notes plus boisées."
+          }
+        ],
+        "brand": "Dolce & Gabbana"
+      },
+      {
+        "id": 44,
+        "name": "L'Interdit Rouge",
+        "type_produit": "Floral Épicé",
+        "img_main": "/images/l'interdit rouge/l'interdit-rouge-img_main.jpg",
+        "subtitle": "Osez l'interdit ultime",
+        "description": "Interdit Rouge Givenchy parfum floral épicé audacieux. Féminité ardente passionné. Gingembre fleur oranger tubéreuse santal. Maroc intense.",
+        "price": 50,
+        "original_price": null,
+        "stock": 45,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Intense"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "L'Interdit Rouge offre une excellente tenue de 10 à 12 heures avec un sillage puissant et épicé."
+          },
+          {
+            "question": "Quelle est la différence avec L'Interdit classique ?",
+            "answer": "L'Interdit Rouge est plus intense, épicé et sensuel que la version originale."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Idéal pour les soirées et occasions spéciales, particulièrement en automne et hiver."
+          }
+        ],
+        "brand": "Givenchy"
+      },
+      {
+        "id": 45,
+        "name": "Miss Dior",
+        "type_produit": "Floral Chypré",
+        "img_main": "/images/Miss laverne/Miss-laverne-img_main.jpg",
+        "subtitle": "L'amour toujours",
+        "description": "Miss Dior parfum floral chypré frais romantique. Élégance parisienne intemporelle. Mandarine rose patchouli. Maroc iconique classique.",
+        "price": 50,
+        "original_price": null,
+        "stock": 90,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Iconique",
+          "Classique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Miss Dior offre une bonne tenue de 7 à 9 heures avec un sillage élégant et fleuri."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Polyvalent, parfait toute l'année, particulièrement agréable au printemps."
+          },
+          {
+            "question": "Y a-t-il différentes versions ?",
+            "answer": "Oui, la ligne Miss Dior comprend Miss Dior Blooming Bouquet, Absolutely Blooming, et Rose N'Roses."
+          }
+        ],
+        "brand": "Dior"
+      },
+      {
+        "id": 46,
+        "name": "Nina",
+        "type_produit": "Fruité Gourmand",
+        "img_main": "/images/Nina Ricci/nina-ricci-img_main.jpg",
+        "subtitle": "Croquez la vie à pleines dents",
+        "description": "Nina Nina Ricci parfum fruité gourmand pétillant joyeux. Jeunesse fraîcheur gourmandise. Citron pomme caramel vanille. Marque flacon pomme. Maroc.",
+        "price": 50,
+        "original_price": null,
+        "stock": 50,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": false,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Gourmand"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Nina offre une tenue modérée de 5 à 7 heures, parfaite pour le quotidien."
+          },
+          {
+            "question": "Le flacon est-il pratique ?",
+            "answer": "Oui, malgré sa forme de pomme, le flacon est très maniable et décoratif."
+          },
+          {
+            "question": "Pour quel âge ?",
+            "answer": "Parfait pour les jeunes femmes et toutes celles qui aiment les parfums gourmands et pétillants."
+          }
+        ],
+        "brand": "Nina Ricci"
+      },
+      {
+        "id": 47,
+        "name": "Olympéa",
+        "type_produit": "Oriental Floral Aquatique",
+        "img_main": "/images/Olympeca/Olympeca-img_main.jpg",
+        "subtitle": "La déesse moderne",
+        "description": "Olympéa Paco Rabanne parfum oriental floral aquatique puissant. Déesse triomphante divine. Mandarine jasmin sel marin ambre vanille. Maroc prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 55,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Puissant"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Olympéa offre une excellente tenue de 10 à 12 heures avec un sillage très puissant."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Polyvalent, peut être porté toute l'année, particulièrement en soirée."
+          },
+          {
+            "question": "Y a-t-il une version masculine ?",
+            "answer": "Oui, Invictus est le pendant masculin avec un flacon en forme de trophée."
+          }
+        ],
+        "brand": "Paco Rabanne"
+      },
+      {
+        "id": 48,
+        "name": "Panda",
+        "type_produit": "Floral Boisé",
+        "img_main": "/images/Panda/panda-img_main.jpg",
+        "subtitle": "L'élégance contemporaine",
+        "description": "Panda Paco Rabanne parfum floral boisé moderne sophistiqué. Femme urbaine contemporaine. Fraîcheur sensualité équilibrée. Maroc.",
+        "price": 50,
+        "original_price": null,
+        "stock": 35,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": false,
+        "gender": "femme",
+        "badges": [],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Panda offre une bonne tenue de 6 à 8 heures avec un sillage modéré."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Parfait pour le quotidien et les occasions professionnelles."
+          }
+        ],
+        "brand": "Paco Rabanne"
+      },
+      {
+        "id": 49,
+        "name": "Quelques Notes d'Amour",
+        "type_produit": "Floral Fruité",
+        "img_main": "/images/Quelque notees damour/Quelque-notees-damour-img_main.jpg",
+        "subtitle": "Une déclaration olfactive",
+        "description": "Amour Van Cleef parfum floral fruité élégant romantique. Amour poésie. Jasmin rose pêche ambre. Flacon trèfle signature. Maroc prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 30,
+        "is_best_seller": false,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Romantique",
+          "Élégant"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Quelques Notes d'Amour offre une bonne tenue de 6 à 8 heures avec un sillage délicat."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Idéal pour les occasions romantiques et les moments précieux."
+          },
+          {
+            "question": "Le flacon est-il précieux ?",
+            "answer": "Oui, le flacon est orné d'un trèfle à quatre feuilles, signature de la maison."
+          }
+        ],
+        "brand": "Van Cleef & Arpels"
+      },
+      {
+        "id": 50,
+        "name": "Sì",
+        "type_produit": "Chypré Fruité",
+        "img_main": "/images/Si/si-img_main.jpg",
+        "subtitle": "Dites oui à la vie",
+        "description": "Sì Giorgio Armani parfum chypré fruité élégant moderne. Féminité affirmée indépendance. Cassis rose musc patchouli. Maroc femme moderne.",
+        "price": 50,
+        "original_price": null,
+        "stock": 65,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Élégant"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Sì offre une excellente tenue de 8 à 10 heures avec un sillage raffiné."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Polyvalent, idéal toute l'année, particulièrement en automne."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend Sì Passione, Sì Intense, et Sì Fiori."
+          }
+        ],
+        "brand": "Giorgio Armani"
+      },
+      {
+        "id": 51,
+        "name": "Y pour Homme",
+        "type_produit": "Aromatique Fougère",
+        "img_main": "/images/YSI homme/ysl-homme-img_main.jpg",
+        "subtitle": "Osez poser la question",
+        "description": "Y YSL parfum aromatique fougère moderne audacieux. Homme accomplissement rêves réussite. Bergamote sauge géranium cèdre. Maroc prestige homme.",
+        "price": 50,
+        "original_price": null,
+        "stock": 60,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "homme",
+        "badges": [
+          "Best Seller"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Y offre une bonne tenue de 7 à 9 heures avec un sillage frais et boisé."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Polyvalent, parfait pour le quotidien et les occasions professionnelles."
+          },
+          {
+            "question": "Y a-t-il une version plus intense ?",
+            "answer": "Oui, Y Eau de Parfum est plus concentré et intense."
+          }
+        ],
+        "brand": "Yves Saint Laurent"
+      },
+      {
+        "id": 52,
+        "name": "Amira Al Arab",
+        "type_produit": "Oriental",
+        "img_main": "/images/أميرة العرب/أميرة العرب-img_main.jpg",
+        "subtitle": "La princesse des parfums arabes",
+        "description": "Amira Arab parfum oriental luxueux raffiné arab. Princesse richesse tradition. Rose oud safran ambre. Marque arabe. Maroc prestige royal.",
+        "price": 50,
+        "original_price": null,
+        "stock": 40,
+        "is_best_seller": false,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Oriental",
+          "Luxe"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Amira Al Arab offre une excellente tenue de 10 à 12 heures grâce à sa concentration élevée."
+          },
+          {
+            "question": "Est-il intense ?",
+            "answer": "Oui, c'est un parfum riche et puissant typique de la parfumerie arabe."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Idéal pour les occasions spéciales et soirées élégantes."
+          }
+        ],
+        "brand": "Arabian Oud"
+      },
+      {
+        "id": 53,
+        "name": "Azzaro Wanted Girl",
+        "type_produit": "Floral Oriental Gourmand",
+        "img_main": "/images/Azzaro wanted girl/azzaro-wanted-girl-img_main.jpg",
+        "subtitle": "Affichez vos désirs",
+        "description": "Wanted Girl Azzaro parfum oriental gourmand audacieux. Femme désirs audacieuse. Fleur oranger dulce leche tonka. Maroc prestige femme.",
+        "price": 50,
+        "original_price": null,
+        "stock": 45,
+        "is_best_seller": true,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Gourmand"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Wanted Girl offre une bonne tenue de 7 à 9 heures avec un sillage gourmand."
+          },
+          {
+            "question": "Y a-t-il une version masculine ?",
+            "answer": "Oui, Azzaro Wanted est la version homme avec un flacon en forme de révolver."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Idéal pour l'automne et l'hiver grâce à sa gourmandise."
+          }
+        ],
+        "brand": "Azzaro"
+      },
+      {
+        "id": 54,
+        "name": "Black Opium",
+        "type_produit": "Oriental Gourmand",
+        "img_main": "/images/Black Opium/black-opium-img_main.jpg",
+        "subtitle": "L'addiction assumée",
+        "description": "Black Opium YSL parfum oriental gourmand addictif moderne. Féminité rock sensuelle. Café noir vanille fleur. Maroc iconique intense.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Iconique",
+          "Intense"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Black Opium offre une excellente tenue de 10 à 14 heures avec un sillage très puissant."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Parfait pour les soirées et occasions nocturnes, idéal en automne et hiver."
+          },
+          {
+            "question": "Y a-t-il différentes versions ?",
+            "answer": "Oui, la ligne comprend Black Opium Intense, Over Red, Nuit Blanche, et Extreme."
+          }
+        ],
+        "brand": "Yves Saint Laurent"
+      },
+      {
+        "id": 55,
+        "name": "Burberry Her",
+        "type_produit": "Gourmand Fruité",
+        "img_main": "/images/Burberry her/burberry-her-img_main.jpg",
+        "subtitle": "L'esprit de Londres",
+        "description": "Her Burberry parfum gourmand fruité pétillant joyeux. Londre énergie vibrante. Fruits rouges jasmin musc. Maroc prestige moderne.",
+        "price": 50,
+        "original_price": null,
+        "stock": 55,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Burberry Her offre une bonne tenue de 7 à 9 heures avec un sillage fruité et gourmand."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Polyvalent, agréable toute l'année, particulièrement au printemps et été."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend Burberry Her Intense, Elixir, et Petals."
+          }
+        ],
+        "brand": "Burberry"
+      },
+      {
+        "id": 56,
+        "name": "Coco Mademoiselle",
+        "type_produit": "Oriental",
+        "img_main": "/images/Coco Mademosseille/Coco Mademosseille-img_main.jpg",
+        "subtitle": "L'esprit d'indépendance",
+        "description": "Coco Mademoiselle Chanel parfum oriental frais intemporel. Liberté audace élégance Coco. Orange rose jasmin patchouli. Maroc iconique classique.",
+        "price": 50,
+        "original_price": null,
+        "stock": 85,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Iconique",
+          "Classique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Coco Mademoiselle offre une excellente tenue de 8 à 10 heures avec un sillage raffiné."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Polyvalent et élégant, parfait pour toutes occasions, quotidien ou soirées."
+          },
+          {
+            "question": "Quelle est la différence avec Coco ?",
+            "answer": "Coco Mademoiselle est plus frais et moderne, tandis que Coco est plus oriental et classique."
+          }
+        ],
+        "brand": "Chanel"
+      },
+      {
+        "id": 57,
+        "name": "D&G L'Impératrice",
+        "type_produit": "Fruité Aquatique",
+        "img_main": "/images/D and G l'imperatrice/D-and-G-l'imperatrice-img_main.jpg",
+        "subtitle": "La fraîcheur impériale",
+        "description": "Impératrice DG parfum fruité aquatique pétillant méditerranéen. Exotisme joie vivre. Kiwi pastèque musc rose. Maroc fraîcheur prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 50,
+        "is_best_seller": true,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Frais"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "L'Impératrice offre une tenue modérée de 5 à 7 heures, idéale pour un rafraîchissement."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Parfait pour le printemps et l'été grâce à sa fraîcheur fruité aquatique."
+          },
+          {
+            "question": "Fait-il partie d'une collection ?",
+            "answer": "Oui, il appartient à l'Anthology de Dolce & Gabbana, une collection de 20 parfums."
+          }
+        ],
+        "brand": "Dolce & Gabbana"
+      },
+      {
+        "id": 58,
+        "name": "Evidence",
+        "type_produit": "Oriental Boisé",
+        "img_main": "/images/Evidence/evidence-img_main.jpg",
+        "subtitle": "L'évidence de la féminité",
+        "description": "Evidence Yves Rocher parfum oriental boisé sensuel. Féminité naturelle magnétique. Bois jasmin musc. Maroc accessible prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 45,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": false,
+        "gender": "femme",
+        "badges": [
+          "Accessible"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Evidence offre une bonne tenue de 6 à 8 heures avec un sillage chaleureux."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Parfait pour le quotidien et les soirées, particulièrement en automne et hiver."
+          },
+          {
+            "question": "Le rapport qualité-prix est-il bon ?",
+            "answer": "Oui, Evidence offre un excellent rapport qualité-prix dans la parfumerie accessible."
+          }
+        ],
+        "brand": "Yves Rocher"
+      },
+      {
+        "id": 59,
+        "name": "Hypnotic Poison",
+        "type_produit": "Oriental Ambré",
+        "img_main": "/images/Hypnotic poison/hypnotic-poison-img_main.jpg",
+        "subtitle": "Le philtre envoûtant",
+        "description": "Poison Dior parfum oriental ambré mystérieux captivant. Envoûtement fascination sensualité. Vanille amande jasmin santal. Maroc iconic sensuel.",
+        "price": 50,
+        "original_price": null,
+        "stock": 60,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Iconique",
+          "Sensuel"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Hypnotic Poison offre une excellente tenue de 10 à 12 heures avec un sillage puissant."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Idéal pour les soirées et occasions spéciales en automne et hiver."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne Poison comprend aussi Poison, Tendre Poison, Pure Poison et Poison Girl."
+          }
+        ],
+        "brand": "Dior"
+      },
+      {
+        "id": 60,
+        "name": "La Lune",
+        "type_produit": "Floral Aldéhydé",
+        "img_main": "/images/La luna/la-luna-img_main.jpg",
+        "subtitle": "La lumière nocturne",
+        "description": "Lune Prada parfum floral aldéhydé élégant raffiné. Lune mystique. Citron mimosa ambre gris. Maroc prestige lumière.",
+        "price": 50,
+        "original_price": null,
+        "stock": 35,
+        "is_best_seller": false,
+        "is_gift": true,
+        "is_recommended": false,
+        "gender": "femme",
+        "badges": [
+          "Élégant",
+          "Raffiné"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "La Lune offre une bonne tenue de 6 à 8 heures avec un sillage délicat."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Idéal pour les occasions élégantes et raffinées, jour ou soirée."
+          }
+        ],
+        "brand": "Prada"
+      },
+      {
+        "id": 61,
+        "name": "La Vie Est Belle",
+        "type_produit": "Gourmand Floral",
+        "img_main": "/images/La vie est belle/la-vie-est-belle-img_main.jpg",
+        "subtitle": "Choisissez le bonheur",
+        "description": "Vie Lancôme parfum gourmand floral iris luxueux. Vie bonheur élégance. Cassis poire iris praline vanille. Maroc iconic gourmand.",
+        "price": 50,
+        "original_price": null,
+        "stock": 95,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Iconique",
+          "Gourmand"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "La Vie Est Belle offre une excellente tenue de 8 à 10 heures avec un sillage gourmand."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Polyvalent, agréable toute l'année, particulièrement en automne et hiver."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend La Vie Est Belle Intensément, Soleil Cristal, En Rose, et L'Éclat."
+          }
+        ],
+        "brand": "Lancôme"
+      },
+      {
+        "id": 62,
+        "name": "L'Interdit",
+        "type_produit": "Floral Blanc",
+        "img_main": "/images/l'interdit/l'interdit-img_main.jpg",
+        "subtitle": "Osez l'inattendu",
+        "description": "Interdit Givenchy parfum floral blanc audacieux lumineux. Féminité conventions libre. Oranger jasmin tubéreuse sésame. Maroc prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 75,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Élégant"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "L'Interdit offre une excellente tenue de 8 à 10 heures avec un sillage blanc floral."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Polyvalent, peut être porté toute l'année, particulièrement agréable au printemps."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend L'Interdit Intense et L'Interdit Rouge."
+          }
+        ],
+        "brand": "Givenchy"
+      },
+      {
+        "id": 63,
+        "name": "Miss Dior Chérie",
+        "type_produit": "Fruité Chypré",
+        "img_main": "/images/Miss dior cherie/miss-dior-cherie-img_main.jpg",
+        "subtitle": "La douceur pétillante",
+        "description": "Chérie Dior parfum fruité chypré pétillant romantique. Jeunesse parisienne carefree. Fraise framboise cerise jasmin patchouli. Maroc iconic.",
+        "price": 50,
+        "original_price": null,
+        "stock": 40,
+        "is_best_seller": false,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Fruité",
+          "Romantique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Miss Dior Chérie offre une bonne tenue de 6 à 8 heures avec un sillage fruité."
+          },
+          {
+            "question": "Est-il toujours disponible ?",
+            "answer": "Cette version a été reformulée, mais reste disponible dans certaines boutiques."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Idéal pour le printemps et l'été grâce à sa fraîcheur fruitée."
+          }
+        ],
+        "brand": "Dior"
+      },
+      {
+        "id": 64,
+        "name": "Mon Paris",
+        "type_produit": "Chypré Fruité Gourmand",
+        "img_main": "/images/mon paris/mon-paris-img_main.jpg",
+        "subtitle": "L'amour à Paris",
+        "description": "Paris YSL parfum chypré fruité passionné. Amour Paris. Fraise framboise poire patchouli musc. Maroc romantique prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 70,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Romantique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Mon Paris offre une excellente tenue de 8 à 10 heures avec un sillage fruité gourmand."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Parfait pour les rendez-vous romantiques et occasions spéciales."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend Mon Paris Intensément, Couture, et Floral."
+          }
+        ],
+        "brand": "Yves Saint Laurent"
+      },
+      {
+        "id": 65,
+        "name": "The One",
+        "type_produit": "Oriental Floral",
+        "img_main": "/images/One and only/one-and-only-img_main.jpg",
+        "subtitle": "L'unique",
+        "description": "One DG parfum oriental floral luxueux enveloppant. Féminité sophistiquée sensuelle. Litchi pêche jasmin musc ambre. Maroc prestige unique.",
+        "price": 50,
+        "original_price": null,
+        "stock": 55,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Élégant"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "The One offre une très bonne tenue de 7 à 9 heures avec un sillage chaleureux."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Idéal pour les soirées élégantes et occasions spéciales en automne et hiver."
+          },
+          {
+            "question": "Y a-t-il une version masculine ?",
+            "answer": "Oui, The One pour Homme est la version masculine avec des notes plus boisées épicées."
+          }
+        ],
+        "brand": "Dolce & Gabbana"
+      },
+      {
+        "id": 66,
+        "name": "Pure XS",
+        "type_produit": "Oriental",
+        "img_main": "/images/Pur xs/pur-xs-img_main.jpg",
+        "subtitle": "L'excès assumé",
+        "description": "XS Paco Rabanne parfum oriental vanillé audacieux addictif. Masculinité excessive sensuelle. Gingembre cannelle vanille myrrhe. Maroc intense prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 50,
+        "is_best_seller": true,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "homme",
+        "badges": [
+          "Best Seller",
+          "Intense"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Pure XS offre une excellente tenue de 8 à 10 heures avec un sillage puissant et vanillé."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Idéal pour les soirées et occasions nocturnes en automne et hiver."
+          },
+          {
+            "question": "Y a-t-il une version féminine ?",
+            "answer": "Oui, Pure XS For Her est la version féminine avec des notes plus florales gourmandes."
+          }
+        ],
+        "brand": "Paco Rabanne"
+      },
+      {
+        "id": 67,
+        "name": "Scandal",
+        "type_produit": "Floral Gourmand",
+        "img_main": "/images/Scandal/scandal-img_main.jpg",
+        "subtitle": "Osez le scandale",
+        "description": "Scandal JPG parfum floral gourmand audacieux addictif. Féminité provocante irrésistible. Miel patchouli gardénia caramel. Flacon jambe. Maroc iconic.",
+        "price": 50,
+        "original_price": null,
+        "stock": 65,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Iconique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Scandal offre une excellente tenue de 9 à 11 heures avec un sillage gourmand puissant."
+          },
+          {
+            "question": "Le flacon est-il pratique ?",
+            "answer": "Oui, malgré sa forme de jambe audacieuse, le flacon est bien conçu et stable."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend Scandal A Paris, By Night, et Jean Paul Gaultier."
+          }
+        ],
+        "brand": "Jean Paul Gaultier"
+      },
+      {
+        "id": 68,
+        "name": "Bombshell Passion",
+        "type_produit": "Fruité Floral",
+        "img_main": "/images/Victoria sucret bombshell passion/Victoria-sucret-bombshell-passion-img_main.jpg",
+        "subtitle": "La passion incarnée",
+        "description": "Passion Victoria parfum fruité floral passionné séduisant. Féminité audacieuse. Pivoine vanille cerise. Maroc prestige casual.",
+        "price": 50,
+        "original_price": null,
+        "stock": 55,
+        "is_best_seller": true,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Fruité"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Bombshell Passion offre une tenue modérée de 5 à 7 heures avec un sillage fruité floral."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Parfait pour le quotidien et les sorties décontractées."
+          },
+          {
+            "question": "Fait-il partie d'une collection ?",
+            "answer": "Oui, c'est une variation de la ligne Bombshell de Victoria's Secret."
+          }
+        ],
+        "brand": "Victoria's Secret"
+      },
+      {
+        "id": 69,
+        "name": "Zara Woman",
+        "type_produit": "Floral",
+        "img_main": "/images/Zara/zara-img_main.jpg",
+        "subtitle": "L'élégance accessible",
+        "description": "Woman Zara parfum floral frais moderne polyvalent. Femme urbaine contemporaine. Signature olfactive élégante abordable. Maroc accessible.",
+        "price": 50,
+        "original_price": null,
+        "stock": 80,
+        "is_best_seller": false,
+        "is_gift": false,
+        "is_recommended": false,
+        "gender": "femme",
+        "badges": [
+          "Accessible"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Zara Woman offre une tenue modérée de 4 à 6 heures, idéale pour le quotidien."
+          },
+          {
+            "question": "Le rapport qualité-prix est-il bon ?",
+            "answer": "Oui, Zara offre un excellent rapport qualité-prix dans la parfumerie accessible."
+          },
+          {
+            "question": "Y a-t-il d'autres parfums Zara ?",
+            "answer": "Oui, Zara propose une large gamme de parfums inspirés des grands classiques."
+          }
+        ],
+        "brand": "Zara"
+      },
+      {
+        "id": 70,
+        "name": "Yara",
+        "type_produit": "Oriental Gourmand",
+        "img_main": "/images/يارا/يارا-img_main.jpg",
+        "subtitle": "L'élégance orientale",
+        "description": "Yara Lattafa parfum oriental gourmand riche envoûtant. Grande fragrance luxe. Vanille orchidée sucré. Maroc prestige abordable.",
+        "price": 50,
+        "original_price": null,
+        "stock": 70,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Oriental"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Yara offre une excellente tenue de 8 à 10 heures avec un sillage gourmand puissant."
+          },
+          {
+            "question": "À quoi ressemble-t-il ?",
+            "answer": "Il est souvent comparé à des parfums de luxe gourmands orientaux comme La Vie Est Belle."
+          },
+          {
+            "question": "Le rapport qualité-prix est-il bon ?",
+            "answer": "Oui, Yara offre une qualité exceptionnelle pour son prix accessible."
+          }
+        ],
+        "brand": "Lattafa"
+      },
+      {
+        "id": 71,
+        "name": "Baccarat Rouge 540",
+        "type_produit": "Ambré Floral",
+        "img_main": "/images/Baccarat rouge/baccarat-rouge-img_main.jpg",
+        "subtitle": "L'excellence olfactive",
+        "description": "Rouge FKM parfum ambré floral lumineux sophistiqué. Excellence olfactive créativité. Jasmin safran cèdre ambre gris. Maroc luxe absolu.",
+        "price": 50,
+        "original_price": null,
+        "stock": 25,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "Best Seller",
+          "Luxe",
+          "Iconique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Baccarat Rouge 540 offre une tenue exceptionnelle de 12 à 16 heures avec un sillage unique et puissant."
+          },
+          {
+            "question": "Pourquoi est-il si cher ?",
+            "answer": "Sa formule unique, ses ingrédients de haute qualité et son statut iconique justifient son prix."
+          },
+          {
+            "question": "Est-il vraiment unisexe ?",
+            "answer": "Oui, sa composition équilibrée convient parfaitement aux hommes et aux femmes."
+          }
+        ],
+        "brand": "Maison Francis Kurkdjian"
+      },
+      {
+        "id": 72,
+        "name": "Black Orchid",
+        "type_produit": "Oriental Chypré",
+        "img_main": "/images/Black orchid/black-orchid-img_main.jpg",
+        "subtitle": "Le luxe sombre",
+        "description": "Orchid Tom Ford parfum oriental chypré luxueux mystérieux. Sensualité opulente sophistiquée. Orchidée truffe ylang ambre. Maroc prestige sombre.",
+        "price": 50,
+        "original_price": null,
+        "stock": 30,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "Best Seller",
+          "Luxe",
+          "Iconique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Black Orchid offre une excellente tenue de 10 à 14 heures avec un sillage très puissant."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Idéal pour l'automne et l'hiver, particulièrement pour les soirées élégantes."
+          },
+          {
+            "question": "Est-il vraiment unisexe ?",
+            "answer": "Oui, bien que riche et opulent, il convient parfaitement aux deux sexes."
+          }
+        ],
+        "brand": "Tom Ford"
+      },
+      {
+        "id": 73,
+        "name": "Chance",
+        "type_produit": "Floral",
+        "img_main": "/images/Chanel chance/chanel-chance-img_main.jpg",
+        "subtitle": "Saisissez votre chance",
+        "description": "Chance Chanel parfum floral pétillant joyeux imprévisible. Chance opportunités. Pamplemousse rose jasmin iris musc. Maroc classique.",
+        "price": 50,
+        "original_price": null,
+        "stock": 60,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Classique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Chance offre une bonne tenue de 6 à 8 heures avec un sillage frais et pétillant."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Polyvalent, particulièrement agréable au printemps et en été."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend Chance Eau Tendre, Eau Fraîche, et Eau Vive."
+          }
+        ],
+        "brand": "Chanel"
+      },
+      {
+        "id": 74,
+        "name": "Eros Femme",
+        "type_produit": "Floral Boisé Musqué",
+        "img_main": "/images/Eros femme/eros-femme-img_main.jpg",
+        "subtitle": "La déesse de l'amour",
+        "description": "Eros Versace parfum floral boisé sensuel lumineux. Déesse amour passion. Citron jasmin pivoine musc. Maroc prestige élégant.",
+        "price": 50,
+        "original_price": null,
+        "stock": 50,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Eros Femme offre une très bonne tenue de 7 à 9 heures avec un sillage floral musqué."
+          },
+          {
+            "question": "Y a-t-il une version masculine ?",
+            "answer": "Oui, Eros pour Homme est la version masculine avec des notes plus fraîches et menthées."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Polyvalent, parfait pour le quotidien et les occasions spéciales."
+          }
+        ],
+        "brand": "Versace"
+      },
+      {
+        "id": 75,
+        "name": "Flora",
+        "type_produit": "Floral",
+        "img_main": "/images/Gucci Hora/Gucci-hora-img_main.jpg",
+        "subtitle": "Le jardin de Gucci",
+        "description": "Flora Gucci parfum floral moderne lumineux joyeux. Féminité radieuse beauté. Pivoine osmanthus rose santal. Maroc prestige jardin.",
+        "price": 50,
+        "original_price": null,
+        "stock": 45,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Floral"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Flora offre une bonne tenue de 6 à 8 heures avec un sillage floral délicat."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Idéal pour le printemps et l'été grâce à sa fraîcheur florale."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend Flora Gorgeous Gardenia, Gorgeous Jasmine, et Gorgeous Magnolia."
+          }
+        ],
+        "brand": "Gucci"
+      },
+      {
+        "id": 76,
+        "name": "La Belle",
+        "type_produit": "Oriental Gourmand",
+        "img_main": "/images/la belle/la-belle-img_main.jpg",
+        "subtitle": "La beauté réinventée",
+        "description": "Belle JPG parfum oriental gourmand sensuel audacieux. Beauté rebelle affirmée. Poire vanille vétiver santal. Flacon buste. Maroc prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 40,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Gourmand"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "La Belle offre une excellente tenue de 8 à 10 heures avec un sillage gourmand boisé."
+          },
+          {
+            "question": "Le flacon est-il iconique ?",
+            "answer": "Oui, le flacon en forme de buste féminin est une signature de Jean Paul Gaultier."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Idéal pour l'automne et l'hiver grâce à sa richesse gourmande."
+          }
+        ],
+        "brand": "Jean Paul Gaultier"
+      },
+      {
+        "id": 77,
+        "name": "La Petite Robe Noire",
+        "type_produit": "Fruité Gourmand",
+        "img_main": "/images/La petite robe noire/la-petite-robe-noire-img_main.jpg",
+        "subtitle": "L'audace en flacon",
+        "description": "Robe Guerlain parfum fruité gourmand pétillant moderne. Féminité parisienne audacieuse rock. Cerise amande rose thé réglisse. Maroc iconic.",
+        "price": 50,
+        "original_price": null,
+        "stock": 55,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Iconique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "La Petite Robe Noire offre une très bonne tenue de 7 à 9 heures avec un sillage fruité gourmand."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Polyvalent, parfait pour le quotidien et les sorties, particulièrement en automne."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend plusieurs variations comme Intense, Couture, et Ma Robe Cocktail."
+          }
+        ],
+        "brand": "Guerlain"
+      },
+      {
+        "id": 78,
+        "name": "Light Blue Homme",
+        "type_produit": "Aromatique Fruité",
+        "img_main": "/images/Light blue Homme/light-blue-homme-img_main.jpg",
+        "subtitle": "L'été méditerranéen masculin",
+        "description": "Light Blue DG parfum aromatique fruité frais vibrante. Été méditerranéen virilité. Pamplemousse genévrier romarin rose. Maroc prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 65,
+        "is_best_seller": true,
+        "is_gift": false,
+        "is_recommended": true,
+        "gender": "homme",
+        "badges": [
+          "Best Seller"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Light Blue Homme offre une tenue modérée de 5 à 7 heures, idéale pour le quotidien."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Parfait pour le printemps et l'été, c'est le parfum estival masculin par excellence."
+          },
+          {
+            "question": "Y a-t-il une version féminine ?",
+            "answer": "Oui, Light Blue Femme est la version féminine avec des notes plus fleuries."
+          }
+        ],
+        "brand": "Dolce & Gabbana"
+      },
+      {
+        "id": 79,
+        "name": "My Way",
+        "type_produit": "Floral Blanc",
+        "img_main": "/images/May way/may-way-img_main.jpg",
+        "subtitle": "Tracez votre propre chemin",
+        "description": "Way Armani parfum floral blanc lumineux durable. Chemin découverte élégance. Bergamote oranger tubéreuse jasmin vanille. Maroc moderne prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 60,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Éco-responsable"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "My Way offre une bonne tenue de 7 à 9 heures avec un sillage floral blanc élégant."
+          },
+          {
+            "question": "Le flacon est-il éco-responsable ?",
+            "answer": "Oui, le flacon est rechargeable et conçu avec des matériaux durables."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Polyvalent, agréable toute l'année, particulièrement au printemps et été."
+          }
+        ],
+        "brand": "Giorgio Armani"
+      },
+      {
+        "id": 80,
+        "name": "Mon Guerlain",
+        "type_produit": "Oriental",
+        "img_main": "/images/Mon gurlain/Mon-gurlain-img_main.jpg",
+        "subtitle": "Ma femme, mon Guerlain",
+        "description": "Guerlain parfum oriental raffiné envoûtant femme. Liberté passionnée. Lavande vanille tahitienne jasmin santal. Maroc prestige intemporel.",
+        "price": 50,
+        "original_price": null,
+        "stock": 50,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Élégant"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Mon Guerlain offre une excellente tenue de 8 à 10 heures avec un sillage oriental frais."
+          },
+          {
+            "question": "Pour quelle occasion ?",
+            "answer": "Polyvalent et élégant, parfait pour toutes occasions, quotidien ou soirées."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend Mon Guerlain Intense, Florale, et Bloom of Rose."
+          }
+        ],
+        "brand": "Guerlain"
+      },
+      {
+        "id": 81,
+        "name": "Poison Girl",
+        "type_produit": "Oriental Gourmand",
+        "img_main": "/images/Poisson girl/poisson-girl-img_main.jpg",
+        "subtitle": "L'arme de séduction",
+        "description": "Girl Dior parfum oriental gourmand audacieux addictif. Jeune femme séductrice spontanée. Oranger amère rose vanille tonka. Maroc prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 55,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Gourmand"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Poison Girl offre une très bonne tenue de 7 à 9 heures avec un sillage gourmand."
+          },
+          {
+            "question": "Fait-il partie de la ligne Poison ?",
+            "answer": "Oui, c'est une variation moderne et gourmande de la famille Poison de Dior."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Idéal pour l'automne et l'hiver grâce à sa richesse gourmande."
+          }
+        ],
+        "brand": "Dior"
+      },
+      {
+        "id": 82,
+        "name": "Sauvage",
+        "type_produit": "Aromatique Fougère",
+        "img_main": "/images/Sauvage/sauvage-img_main.jpg",
+        "subtitle": "L'instinct sauvage",
+        "description": "Sauvage Dior parfum aromatique fougère frais puissant. Masculinité naturelle libre noble. Bergamote poivre Sichuab lavande ambroxan. Maroc prestige n°1.",
+        "price": 50,
+        "original_price": null,
+        "stock": 100,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "homme",
+        "badges": [
+          "Best Seller",
+          "Iconique",
+          "N°1"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Sauvage offre une excellente tenue de 8 à 10 heures avec un sillage frais et puissant."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Polyvalent, parfait toute l'année grâce à sa fraîcheur et sa puissance équilibrées."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend Sauvage Eau de Parfum, Parfum, et Elixir (plus intenses)."
+          }
+        ],
+        "brand": "Dior"
+      },
+      {
+        "id": 83,
+        "name": "Sì Rouge",
+        "type_produit": "Chypré Fruité",
+        "img_main": "/images/Si rouge/si-rouge-img_main.jpg",
+        "subtitle": "La passion affirmée",
+        "description": "Rouge Armani parfum chypré fruité intense passionné. Féminité passion audace. Cassis rose davana patchouli. Maroc intense prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 45,
+        "is_best_seller": false,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Intense"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Sì Rouge offre une excellente tenue de 9 à 11 heures avec un sillage intense et passionné."
+          },
+          {
+            "question": "Quelle est la différence avec Sì classique ?",
+            "answer": "Sì Rouge est plus intense, fruité et passionné que la version originale."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Idéal pour l'automne et l'hiver grâce à son intensité."
+          }
+        ],
+        "brand": "Giorgio Armani"
+      },
+      {
+        "id": 84,
+        "name": "Libre",
+        "type_produit": "Floral Fougère",
+        "img_main": "/images/ysl libre/ysl-libre-img_main.jpg",
+        "subtitle": "La liberté affichée",
+        "description": "Libre YSL parfum floral fougère audacieux moderne. Femme libre forte. Mandarine lavande oranger jasmin musc. Maroc iconic prestige.",
+        "price": 50,
+        "original_price": null,
+        "stock": 75,
+        "is_best_seller": true,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "femme",
+        "badges": [
+          "Best Seller",
+          "Iconique"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Libre offre une excellente tenue de 8 à 10 heures avec un sillage floral fougère puissant."
+          },
+          {
+            "question": "Pour quelle saison ?",
+            "answer": "Polyvalent, peut être porté toute l'année grâce à son équilibre frais et chaud."
+          },
+          {
+            "question": "Y a-t-il d'autres versions ?",
+            "answer": "Oui, la ligne comprend Libre Intense, Le Parfum, et Flowers & Flames."
+          }
+        ],
+        "brand": "Yves Saint Laurent"
+      },
+      {
+        "id": 85,
+        "name": "Kalimat",
+        "type_produit": "Oriental",
+        "img_main": "/images/كلمات/كلمات.jpg",
+        "subtitle": "Les mots précieux",
+        "description": "Kalimat Arabian parfum oriental luxueux riche captivant arabe. Tradition splendeur. Oud rose safran ambre musc. Maroc prestige arabe.",
+        "price": 50,
+        "original_price": null,
+        "stock": 45,
+        "is_best_seller": false,
+        "is_gift": true,
+        "is_recommended": true,
+        "gender": "unisex",
+        "badges": [
+          "Oriental",
+          "Luxe"
+        ],
+        "category": "parfum",
+        "variants": [
+          {
+            "size": 50,
+            "price": 30,
+            "final_price": 30,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 30
+          },
+          {
+            "size": 100,
+            "price": 50,
+            "final_price": 50,
+            "original_price": null,
+            "promotion_percent": 0,
+            "stock_quantity": 50
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quelle est la tenue du parfum ?",
+            "answer": "Kalimat offre une excellente tenue de 10 à 14 heures grâce à sa concentration élevée."
+          },
+          {
+            "question": "Est-il intense ?",
+            "answer": "Oui, c'est un parfum riche et puissant typique de la parfumerie arabe de luxe."
+          },
+          {
+            "question": "Convient-il aux hommes et femmes ?",
+            "answer": "Oui, c'est un parfum unisexe qui convient parfaitement aux deux genres."
+          }
+        ],
+        "brand": "Arabian Oud"
+      }
+    ]
+  }
+}
