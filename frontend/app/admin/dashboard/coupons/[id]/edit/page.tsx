@@ -144,13 +144,13 @@ export default function EditCouponPage() {
               className="inline-flex items-center gap-2 text-[#da2966] font-medium text-[13px] hover:underline mb-4 transition-all"
             >
               <ArrowLeft size={16} strokeWidth={2.5} />
-              Back to Coupon
+              Retour aux codes promo
             </Link>
             <h1 className="text-[28px] sm:text-[34px] font-serif font-bold text-[#333] tracking-tight leading-tight mb-1">
-              Edit Coupon
+              Modifier le code promo
             </h1>
             <p className="text-[14px] text-gray-500">
-              Update your luxury promotion details and redemption rules
+              Mettez à jour les détails de votre promotion et les règles de remboursement
             </p>
           </div>
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto mt-2 md:mt-0">
@@ -160,7 +160,7 @@ export default function EditCouponPage() {
               className="flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#ed3269] hover:bg-[#d42255] text-white font-medium text-[14px] transition-all shadow-sm disabled:opacity-60 w-full sm:w-auto"
             >
               <Save size={16} strokeWidth={2.5} />
-              {isSaving ? 'Saving...' : 'Save Coupon'}
+              {isSaving ? 'Énregistrement...' : 'Enregistrer le coupon'}
             </button>
           </div>
         </div>
@@ -175,7 +175,7 @@ export default function EditCouponPage() {
           <div className="bg-white rounded-[16px] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
             <div className="flex items-center gap-2 text-[#da2966] mb-8">
               <Info size={20} strokeWidth={2} />
-              <h2 className="text-[16px] sm:text-[18px] font-serif font-bold tracking-wide">Basic Information</h2>
+              <h2 className="text-[16px] sm:text-[18px] font-serif font-bold tracking-wide">Informations de base</h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mb-6">
@@ -190,7 +190,7 @@ export default function EditCouponPage() {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-bold text-[#444] mb-2">Campaign Name</label>
+                <label className="block text-[11px] font-bold text-[#444] mb-2">Nom de la campagne</label>
                 <input
                   type="text"
                   placeholder="e.g. Ramadan 2026"
@@ -202,7 +202,7 @@ export default function EditCouponPage() {
             </div>
 
             <div>
-              <label className="block text-[11px] font-bold text-[#444] mb-3">Promotion Type</label>
+              <label className="block text-[11px] font-bold text-[#444] mb-3">Type de promotion</label>
               <div className="flex flex-wrap items-center gap-3">
                 <button
                   type="button"
@@ -244,12 +244,12 @@ export default function EditCouponPage() {
           <div className="bg-white rounded-[16px] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
             <div className="flex items-center gap-2 text-[#da2966] mb-8">
               <Clock size={20} strokeWidth={2} />
-              <h2 className="text-[16px] sm:text-[18px] font-serif font-bold tracking-wide">Validity</h2>
+              <h2 className="text-[16px] sm:text-[18px] font-serif font-bold tracking-wide">Validité</h2>
             </div>
             
             <div className="space-y-6">
               <div>
-                <label className="block text-[11px] font-bold text-[#444] mb-2">Start Date</label>
+                <label className="block text-[11px] font-bold text-[#444] mb-2">Date de début</label>
                 <div className="relative">
                   <input
                     type="date"
@@ -262,7 +262,7 @@ export default function EditCouponPage() {
               </div>
               
               <div>
-                <label className="block text-[11px] font-bold text-[#444] mb-2">End Date</label>
+                <label className="block text-[11px] font-bold text-[#444] mb-2">Date de fin</label>
                 <div className="relative">
                   <input
                     type="date"
@@ -279,24 +279,24 @@ export default function EditCouponPage() {
           <div className="bg-white rounded-[16px] p-5 sm:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
             <div className="flex items-center gap-2 text-[#da2966] mb-8">
               <PercentCircle size={20} strokeWidth={2} />
-              <h2 className="text-[16px] sm:text-[18px] font-serif font-bold tracking-wide">Discount Settings</h2>
+              <h2 className="text-[16px] sm:text-[18px] font-serif font-bold tracking-wide">Paramétres de réduction</h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-[11px] font-bold text-[#444] mb-2">Discount Type</label>
+                <label className="block text-[11px] font-bold text-[#444] mb-2">Type de réduction</label>
                 <AdminSelect
                   variant="compact"
                   value={discountType}
                   onChange={(e) => setDiscountType(e.target.value as 'percent' | 'fixed')}
                 >
-                  <option value="percent">Percentage (%)</option>
-                  <option value="fixed">Fixed Amount (DH)</option>
+                  <option value="percent">Pourcentage (%)</option>
+                  <option value="fixed">Montant fixe (DH)</option>
                 </AdminSelect>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-[#444] mb-2">Discount Value</label>
+                <label className="block text-[11px] font-bold text-[#444] mb-2">Valeur de la réduction</label>
                 <div className="relative">
                   <input
                     type="number"

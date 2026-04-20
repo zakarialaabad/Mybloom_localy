@@ -237,7 +237,7 @@ export default function ReviewEditorModal({
               id="modal-title"
               className="text-[17px] font-bold text-[#da2966]"
             >
-              {review?.id ? 'Edit Review' : 'Ajouter un avis'}
+              {review?.id ? 'Edit Review' : 'Add Review'}
             </h3>
           </div>
           <button
@@ -308,7 +308,7 @@ export default function ReviewEditorModal({
                   onBlur={() =>
                     setTimeout(() => setProductSearchOpen(false), 150)
                   }
-                  placeholder="Chercher un produit…"
+                  placeholder="Search product…"
                   className="w-full pl-9 pr-4 py-3 border border-gray-200 rounded-[10px] text-[14px] text-[#333] placeholder-gray-300 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-colors"
                 />
                 {productSearching && (
@@ -476,7 +476,7 @@ export default function ReviewEditorModal({
             ) : review?.id ? (
               '+ Save Changes'
             ) : (
-              '+ Ajouter un avis'
+              '+ Add Review'
             )}
           </button>
         </div>

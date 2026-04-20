@@ -24,7 +24,7 @@ export default function AdminLoginPage() {
       }, 150);
     } catch (err: unknown) {
       const msg =
-        (err as { message?: string })?.message ?? 'Invalid credentials.';
+        (err as { message?: string })?.message ?? 'Identifiants invalides.';
       setError(msg);
       setLoading(false);
     }

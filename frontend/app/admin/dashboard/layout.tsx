@@ -75,8 +75,8 @@ export default function AdminDashboardLayout({
   const formatLastLogin = (iso: string | null | undefined): string => {
     if (!iso) return '';
     const d = new Date(iso);
-    return 'Last visit ' + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })
-      + ' at ' + d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+    return 'Derniére visite ' + d.toLocaleDateString('fr-FR', { month: 'long', day: 'numeric', year: 'numeric' })
+      + ' à ' + d.toLocaleTimeString('fr-FR', { hour: 'numeric', minute: '2-digit', hour12: false });
   };
 
   useEffect(() => {
@@ -102,12 +102,12 @@ export default function AdminDashboardLayout({
   };
 
   const navItems = [
-    { name: 'Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
-    { name: 'Products', href: '/admin/dashboard/products', icon: Package },
-    { name: 'Orders', href: '/admin/dashboard/orders', icon: ShoppingCart },
-    { name: 'Coupons', href: '/admin/dashboard/coupons', icon: Ticket },
-    { name: 'Banners', href: '/admin/dashboard/banners', icon: ImageIcon },
-    { name: 'Review', href: '/admin/dashboard/reviews', icon: MessageSquare },
+    { name: 'Tableau de bord', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Produits', href: '/admin/dashboard/products', icon: Package },
+    { name: 'Commandes', href: '/admin/dashboard/orders', icon: ShoppingCart },
+    { name: 'Codes promo', href: '/admin/dashboard/coupons', icon: Ticket },
+    { name: 'Bannières', href: '/admin/dashboard/banners', icon: ImageIcon },
+    { name: 'Avis', href: '/admin/dashboard/reviews', icon: MessageSquare },
   ];
 
   const isFullScreenPage = pathname.endsWith('/create') || pathname.includes('/edit');

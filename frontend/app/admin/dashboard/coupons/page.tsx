@@ -164,13 +164,13 @@ export default function CouponsPage() {
         <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/20 backdrop-blur-sm">
           <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-4 sm:p-6 w-[360px] mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[16px] font-bold text-[#111]">Delete Coupon</h3>
+              <h3 className="text-[16px] font-bold text-[#111]">Supprimer le code promo</h3>
               <button onClick={() => setDeletingId(null)} className="text-gray-400 hover:text-gray-600"><X size={18} /></button>
             </div>
-            <p className="text-[14px] text-gray-500 mb-6">This coupon will be permanently deleted. Orders using it will keep their discount.</p>
+            <p className="text-[14px] text-gray-500 mb-6">Ce code promo sera supprimé définitivement. Les commandes l'utilisant conserveront leur réduction.</p>
             <div className="flex gap-3">
-              <button onClick={() => setDeletingId(null)} className="flex-1 py-2.5 rounded-[8px] border border-gray-200 text-[14px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors">Cancel</button>
-              <button onClick={confirmDelete} disabled={isDeleting} className="flex-1 py-2.5 rounded-[8px] bg-red-500 text-white text-[14px] font-semibold hover:bg-red-600 disabled:opacity-60 transition-colors">{isDeleting ? 'Deleting…' : 'Delete'}</button>
+              <button onClick={() => setDeletingId(null)} className="flex-1 py-2.5 rounded-[8px] border border-gray-200 text-[14px] font-semibold text-gray-600 hover:bg-gray-50 transition-colors">Annuler</button>
+              <button onClick={confirmDelete} disabled={isDeleting} className="flex-1 py-2.5 rounded-[8px] bg-red-500 text-white text-[14px] font-semibold hover:bg-red-600 disabled:opacity-60 transition-colors">{isDeleting ? 'Suppression…' : 'Supprimer'}</button>
             </div>
           </div>
         </div>
@@ -179,8 +179,8 @@ export default function CouponsPage() {
       {/* ─── Header ───────────────────────────────────────────────────────────── */}
       <div className="flex flex-col md:flex-row md:items-start justify-between mb-8 border-b border-gray-100 pb-6">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-[#111] tracking-tight mb-2">Promo Codes</h1>
-          <p className="text-[14px] text-gray-500">Manage and track your premium campaign discounts across all collections.</p>
+          <h1 className="text-3xl font-serif font-bold text-[#111] tracking-tight mb-2">Codes promo</h1>
+          <p className="text-[14px] text-gray-500">Gérez et suivez les réductions de vos campagnes premium dans toutes les collections.</p>
         </div>
         <div className="mt-4 md:mt-0">
           <Link
@@ -188,7 +188,7 @@ export default function CouponsPage() {
             className="flex items-center gap-2 bg-[#423835] text-white px-5 py-3 rounded-[8px] text-[13px] font-bold shadow-sm hover:bg-[#2d2624] transition-colors"
           >
             <Plus size={16} strokeWidth={3} />
-            Create New Code
+            Créer un nouveau code
           </Link>
         </div>
       </div>
@@ -204,10 +204,10 @@ export default function CouponsPage() {
             </div>
             <div className="flex items-center gap-1 bg-[#eefaf3] text-[#0f8e5c] px-2.5 py-1 rounded-[6px] text-[13px] font-bold">
               <TrendingUp size={14} strokeWidth={3} />
-              Live
+              Actif
             </div>
           </div>
-          <p className="text-[14px] text-gray-500 font-medium mb-1">Active Coupons</p>
+          <p className="text-[14px] text-gray-500 font-medium mb-1">Codes actifs</p>
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
             {stats ? stats.active.toLocaleString() : <div className='h-9 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
@@ -223,11 +223,11 @@ export default function CouponsPage() {
               <Package size={24} strokeWidth={2.5} />
             </div>
           </div>
-          <p className="text-[14px] text-gray-500 font-medium mb-1">Total Redemptions</p>
+          <p className="text-[14px] text-gray-500 font-medium mb-1">Remboursements totaux</p>
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
             {stats ? stats.total_redemptions.toLocaleString() : <div className='h-9 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
-          <div className="text-[12px] text-gray-400 mt-2">Across all coupons</div>
+          <div className="text-[12px] text-gray-400 mt-2">Tous les codes promo</div>
         </div>
 
         {/* Expiring Soon */}
@@ -238,15 +238,15 @@ export default function CouponsPage() {
             </div>
             {stats && stats.expiring_soon > 0 && (
               <div className="flex items-center gap-1 bg-orange-50 text-orange-600 border border-orange-200 px-2.5 py-1 rounded-[6px] text-[13px] font-bold">
-                Needs attention
+                Nécessite attention
               </div>
             )}
           </div>
-          <p className="text-[14px] text-gray-500 font-medium mb-1">Expiring Soon</p>
+          <p className="text-[14px] text-gray-500 font-medium mb-1">Expirant bientôt</p>
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
             {stats ? stats.expiring_soon.toLocaleString() : <div className='h-9 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
-          <div className="text-[12px] text-gray-400 mt-2">Within next 7 days</div>
+          <div className="text-[12px] text-gray-400 mt-2">Dans les 7 prochains jours</div>
         </div>
 
       </div>

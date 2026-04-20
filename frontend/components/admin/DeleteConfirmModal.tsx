@@ -19,8 +19,8 @@ export default function DeleteConfirmModal({
   onConfirm,
   onCancel,
   deleting,
-  confirmLabel = 'Supprimer',
-  cancelLabel = 'Annuler',
+    confirmLabel = 'Delete',
+    cancelLabel = 'Cancel',
 }: DeleteConfirmModalProps) {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onCancel(); };

@@ -156,7 +156,7 @@ export default function OrdersPage() {
         <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/20 backdrop-blur-sm">
           <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-4 sm:p-6 w-[380px] mx-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[16px] font-bold text-[#111]">Update Order Status</h3>
+              <h3 className="text-[16px] font-bold text-[#111]">Modifier le statut de la commande</h3>
               <button onClick={() => setEditingOrder(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
                 <X size={18} />
               </button>
@@ -172,7 +172,7 @@ export default function OrdersPage() {
               value={newStatus}
               onChange={(e) => setNewStatus(e.target.value)}
             >
-              <option value="">Select new status…</option>
+              <option value="">Sélectionner le nouveau statut…</option>
               {VALID_STATUSES.map((s) => (
                 <option key={s} value={s}>{capitalize(s)}</option>
               ))}
@@ -183,14 +183,14 @@ export default function OrdersPage() {
                 onClick={() => setEditingOrder(null)}
                 className="flex-1 px-4 py-2.5 border border-gray-200 rounded-[8px] text-[13px] font-bold text-gray-600 hover:bg-gray-50 transition-colors"
               >
-                Cancel
+                Annuler
               </button>
               <button
                 onClick={handleStatusUpdate}
                 disabled={!newStatus || newStatus === editingOrder.status || isUpdating}
                 className="flex-1 px-4 py-2.5 bg-[#da2966] rounded-[8px] text-[13px] font-bold text-white hover:bg-[#b11b4e] disabled:opacity-40 disabled:pointer-events-none transition-colors"
               >
-                {isUpdating ? 'Updating…' : 'Update Status'}
+                {isUpdating ? 'Mise à jour…' : 'Mettre à jour le statut'}
               </button>
             </div>
           </div>
@@ -269,7 +269,7 @@ export default function OrdersPage() {
               {formatTrend(stats?.delivered.trend ?? 0)}
             </div>
           </div>
-          <p className="text-[14px] text-gray-500 font-medium mb-1">Delivered</p>
+          <p className="text-[14px] text-gray-500 font-medium mb-1">Livré</p>
           <h2 className="text-[36px] font-serif font-bold text-[#111] leading-none tracking-tight">
             {stats ? stats.delivered.count.toLocaleString() : <div className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
           </h2>
@@ -292,7 +292,7 @@ export default function OrdersPage() {
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
             >
-              <option value="">All Statuses</option>
+              <option value="">Tous les statuts</option>
               {VALID_STATUSES.map((s) => (
                 <option key={s} value={s}>{capitalize(s)}</option>
               ))}
@@ -305,7 +305,7 @@ export default function OrdersPage() {
               </div>
               <input
                 type="text"
-                placeholder="Search by name, phone, or order #…"
+                placeholder="Rechercher par nom, téléphone ou numéro de commande…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full pl-9 pr-8 py-2 border border-gray-200 rounded-[8px] text-[13px] focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all"
@@ -326,8 +326,8 @@ export default function OrdersPage() {
             {isLoading
               ? <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
               : totalCount > 0
-                ? `Showing ${paginationFrom}–${paginationTo} of ${totalCount.toLocaleString()}`
-                : 'No results'}
+                ? `Affichage ${paginationFrom}–${paginationTo} sur ${totalCount.toLocaleString()}`
+                : 'Aucun résultat'}
           </div>
         </div>
 
@@ -348,7 +348,7 @@ export default function OrdersPage() {
               className="flex items-center gap-1.5 text-[13px] font-bold text-[#da2966] hover:text-[#b11b4e] transition-colors disabled:opacity-30 disabled:pointer-events-none"
             >
               <ArrowLeft size={16} strokeWidth={2} />
-              Previous
+              Précédent
             </button>
 
             <div className="hidden sm:flex items-center gap-1">
@@ -376,7 +376,7 @@ export default function OrdersPage() {
               disabled={currentPage >= totalPages}
               className="flex items-center gap-1.5 text-[13px] font-bold text-[#da2966] hover:text-[#b11b4e] transition-colors disabled:opacity-30 disabled:pointer-events-none"
             >
-              Next
+              Suivant
               <ArrowRight size={16} strokeWidth={2} />
             </button>
           </div>

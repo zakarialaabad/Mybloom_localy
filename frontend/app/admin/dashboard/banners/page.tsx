@@ -198,10 +198,10 @@ export default function BannersPage() {
       {/* ─── Header ─────────────────────────────────────────────────────── */}
       <div className="mb-10 pb-6 border-b border-gray-100">
         <h1 className="text-[22px] sm:text-[28px] lg:text-[32px] font-serif font-bold text-[#111] tracking-tight mb-2">
-          Promo Image Management
+          Gestion des images promotionnelles
         </h1>
         <p className="text-[15px] text-gray-500 font-medium">
-          Curate the visual experience of your store front
+          Organisez l'expérience visuelle de votre vitrine
         </p>
       </div>
 
@@ -209,9 +209,9 @@ export default function BannersPage() {
         {/* ─── Homepage Slots ──────────────────────────────────────────── */}
         <div className="bg-white rounded-[10px] border border-[#f2e6ea] p-4 sm:p-6 lg:p-5 sm:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.02)]">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-[16px] font-bold text-[#da2966]">Homepage Slots</h2>
+            <h2 className="text-[16px] font-bold text-[#da2966]">Emplacements de la page d'accueil</h2>
             <span className="text-[13px] text-gray-400 font-medium">
-              {loading ? '…' : `${activeCount} Slots Active`}
+              {loading ? '\u2026' : `${activeCount} emplacements actifs`}
             </span>
           </div>
 
@@ -275,13 +275,13 @@ export default function BannersPage() {
         {/* ─── Collection Hero Banner ───────────────────────────────────── */}
         <div className="bg-white rounded-[10px] border border-[#f2e6ea] p-4 sm:p-6 lg:p-5 sm:p-8 shadow-[0_2px_20px_rgba(0,0,0,0.02)]">
           <div className="flex justify-between items-center mb-6">
-            <h2 className="text-[16px] font-bold text-[#da2966]">Collection Hero Banner</h2>
+            <h2 className="text-[16px] font-bold text-[#da2966]">Banni\u00e8re h\u00e9ro de la collection</h2>
             {heroBanner && (
               <button
                 onClick={handleHeroDeleteRequest}
                 className="text-[13px] text-red-500 hover:text-red-700 font-medium transition-colors"
               >
-                Remove
+                Supprimer
               </button>
             )}
           </div>
@@ -328,7 +328,7 @@ export default function BannersPage() {
                     <div className="w-12 h-12 rounded-full bg-[#da2966] flex items-center justify-center text-white mb-3 shadow-[0_4px_10px_rgba(218,41,102,0.3)] group-hover:scale-110 transition-transform">
                       <UploadCloud size={24} strokeWidth={2} />
                     </div>
-                    <p className="text-[13px] sm:text-[14px] font-bold text-[#111] mb-1 leading-snug text-center">Collection Hero Banner</p>
+                    <p className="text-[13px] sm:text-[14px] font-bold text-[#111] mb-1 leading-snug text-center">Banni\u00e8re h\u00e9ro de la collection</p>
                     <p className="text-[10px] sm:text-[11px] text-gray-400 font-medium text-center">JPG · PNG · 10 Mo max</p>
                   </>
                 )}

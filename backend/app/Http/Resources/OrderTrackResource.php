@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Utilities\ImageUrlResolver;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -33,9 +34,10 @@ class OrderTrackResource extends JsonResource
                     'product_size_label'=> $item->size_label,
                     'quantity'          => $item->quantity,
                     'unit_price'        => (float) $item->unit_price,
-                    'image_url'         => $item->product?->images
-                        ?->firstWhere('is_primary', true)?->url
-                        ?? $item->product?->images?->first()?->url,
+                    'image_url'         => ImageUrlResolver::resolve(
+                        $item->product?->images?->firstWhere('is_primary', true)?->url
+                        ?? $item->product?->images?->first()?->url
+                    ),
                 ])
             ),
             'status_histories' => $this->whenLoaded('statusHistories', fn () =>

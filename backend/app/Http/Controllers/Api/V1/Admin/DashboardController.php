@@ -157,14 +157,14 @@ class DashboardController extends Controller
 
     private function recentOrders(): array
     {
-        return Order::with(['items.product:id,name'])
+        return Order::with('items')
             ->orderByDesc('created_at')
             ->limit(10)
             ->get()
             ->map(fn (Order $order) => [
                 'id'           => $order->id,
                 'order_number' => $order->order_number,
-                'product'      => optional($order->items->first()?->product)->name ?? 'N/A',
+                'items_count'  => (int) $order->items->sum('quantity'),
                 'date'         => $order->created_at->format('M d, Y'),
                 'customer'     => $order->customer_name,
                 'phone'        => $order->customer_phone,

@@ -10,10 +10,12 @@ import useCartStore from '@/store/cart';
 import { shippingService, couponService, orderService, ShippingMethod, CouponValidateResult } from '@/services/api';
 
 export default function CheckoutPage() {
-  const router    = useRouter();
-  const items     = useCartStore((s) => s.items);
-  const subtotal  = useCartStore((s) => s.subtotal());
-  const clearCart = useCartStore((s) => s.clearCart);
+  const router        = useRouter();
+  const items         = useCartStore((s) => s.items);
+  const subtotal      = useCartStore((s) => s.subtotal());
+  const clearCart     = useCartStore((s) => s.clearCart);
+  const appliedCoupon = useCartStore((s) => s.appliedCoupon);
+  const clearCoupon   = useCartStore((s) => s.clearCoupon);
 
   /* ── Shipping methods ─────────────────────────────────────────── */
   const [shippingMethods,  setShippingMethods]  = useState<ShippingMethod[]>([]);
@@ -46,9 +48,40 @@ export default function CheckoutPage() {
   const [couponResult,  setCouponResult]  = useState<CouponValidateResult | null>(null);
   const [couponError,   setCouponError]   = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
+  const [autoValidated, setAutoValidated] = useState(false);
 
   const couponDiscount = couponResult?.savings_amount ?? 0;
   const total          = Math.max(0, subtotal + shippingCost - couponDiscount);
+
+  // Auto-charger le coupon depuis le store au montage de la page (une seule fois)
+  useEffect(() => {
+    if (appliedCoupon && appliedCoupon.code && !autoValidated) {
+      setCouponCode(appliedCoupon.code);
+      setAutoValidated(true);
+      // Revalider le coupon automatiquement
+      (async () => {
+        setCouponLoading(true);
+        try {
+          const result = await couponService.validate(appliedCoupon.code, subtotal);
+          if (result.valid) {
+            setCouponResult(result);
+          } else {
+            // Coupon invalide ou expiré - afficher une alerte
+            alert(`Code promo invalide ou expiré: ${result.message || 'Le code n\'est plus valide.'}`);
+            setCouponError(result.message || 'Code invalide.');
+            clearCoupon();
+          }
+        } catch {
+          alert('Code promo invalide ou expiré.');
+          setCouponError('Code invalide ou expiré.');
+          clearCoupon();
+        } finally {
+          setCouponLoading(false);
+        }
+      })();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appliedCoupon, autoValidated, subtotal]);
 
   const handleCoupon = async () => {
     setCouponError('');
@@ -61,9 +94,11 @@ export default function CheckoutPage() {
         setCouponResult(result);
       } else {
         setCouponError(result.message || 'Code invalide.');
+        alert(`Code promo invalide: ${result.message || 'Le code n\'est pas valide.'}`);
       }
     } catch {
       setCouponError('Code invalide ou expiré.');
+      alert('Code promo invalide ou expiré.');
     } finally {
       setCouponLoading(false);
     }
@@ -137,19 +172,49 @@ export default function CheckoutPage() {
     submittingRef.current = true;
     setSubmitting(true);
     try {
-      const result = await orderService.place({
+      // Construire le payload sans coupon_code si pas de coupon validé
+      const payload: any = {
         customer_name: `${firstName} ${lastName}`.trim(),
         customer_phone: normalizedPhone,
         shipping_address: { city, quartier, zip, address },
         shipping_method_id: selectedMethodId,
-        coupon_code: couponResult ? couponCode : undefined,
         items: items.map((i) => ({
           product_id: i.productId,
           size_id: i.sizeId,
           quantity: i.quantity,
         })),
-      });
+      };
+      
+      // Ajouter coupon_code seulement si un coupon est validé
+      if (couponResult && couponCode.trim()) {
+        payload.coupon_code = couponCode.trim();
+      }
+
+      const result = await orderService.place(payload);
       clearCart();
+      
+      // Télécharger automatiquement le PDF de la commande
+      try {
+        const pdfUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api'}/v1/invoices/${result.order_number}/download?phone=${encodeURIComponent(normalizedPhone)}`;
+        
+        // Fetch le PDF et le télécharger
+        const response = await fetch(pdfUrl);
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `invoice-${result.order_number}.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          window.URL.revokeObjectURL(url);
+        }
+      } catch (pdfError) {
+        console.error('Erreur lors du téléchargement du PDF:', pdfError);
+        // Ne pas bloquer la redirection si le PDF échoue
+      }
+      
       // Store order details in sessionStorage to avoid PII in URL params
       if (typeof window !== 'undefined') {
         sessionStorage.setItem('order_success', JSON.stringify({
@@ -295,7 +360,7 @@ export default function CheckoutPage() {
                     <div key={`${item.productId}-${item.sizeLabel}-${idx}`} className="flex gap-4 items-center">
                       <div className="relative w-20 h-20 bg-gray-100 rounded-sm shrink-0 border border-gray-200">
                         {item.imageUrl ? (
-                          <Image src={item.imageUrl} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
+                          <Image src={item.imageUrl && item.imageUrl.startsWith('http') ? item.imageUrl : item.imageUrl ? '/' + item.imageUrl : 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=200'} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
                         ) : (
                           <div className="w-full h-full bg-gray-100 rounded-sm" />
                         )}

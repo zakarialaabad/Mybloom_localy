@@ -184,7 +184,7 @@ export default function ReviewFormModal({
   if (!isOpen) return null;
 
   const isEditing = !!(initialData?.reviewer_name);
-  const defaultLabel = isEditing ? '+ Enregistrer les modifications' : '+ Ajouter un avis';
+    const defaultLabel = isEditing ? '+ Save Changes' : '+ Add Review';
 
   return createPortal(
     <div
@@ -208,7 +208,7 @@ export default function ReviewFormModal({
               id="review-form-modal-title"
               className="text-[17px] font-bold text-[#da2966]"
             >
-              {isEditing ? "Modifier l'avis" : 'Ajouter un avis'}
+                            {isEditing ? "Edit Review" : 'Add Review'}
             </h3>
           </div>
           <button

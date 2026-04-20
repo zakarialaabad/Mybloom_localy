@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -64,7 +64,7 @@ const ToggleRow = ({ label, active, border, onClick }: { label: string, active: 
   <div onClick={onClick} className={`flex items-center justify-between px-6 py-4 w-full h-[60px] ${border ? 'bg-white border border-dashed border-gray-200' : 'bg-[#f8f8f8]'} rounded-full cursor-pointer`}>
     <span className="text-[14px] font-bold text-[#333]">{label}</span>
     <div className="flex items-center gap-3">
-      {active && <span className="text-[12px] font-bold text-[#da2966]">Active</span>}
+      {active && <span className="text-[12px] font-bold text-[#da2966]">Actif</span>}}
       <div className={`w-11 h-6 rounded-full flex items-center px-1 transition-colors ${active ? 'bg-[#da2966]' : 'bg-gray-200'}`}>
         <div className={`w-4 h-4 bg-white rounded-full transition-transform transform shadow-sm ${active ? 'translate-x-5' : 'translate-x-0'}`} />
       </div>
@@ -78,7 +78,7 @@ const IngredientCircle = ({ thumb, add }: { thumb?: string, add?: boolean }) => 
       <div className="flex flex-col items-center gap-4">
         <button className="w-[150px] h-[150px] rounded-full border-[2.5px] border-dashed border-[#da2966] bg-white flex flex-col items-center justify-center gap-1.5 hover:bg-[#fff0f3] transition-colors shrink-0">
           <span className="text-[#da2966] font-bold text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] leading-none mb-1">+</span>
-          <span className="text-[#da2966] text-[13px] font-bold">ADD</span>
+          <span className="text-[#da2966] text-[13px] font-bold">AJOUTER</span>
         </button>
         {/* Invisible spacer to perfectly align the circles with the text row */}
         <span className="text-[14px] font-bold text-transparent select-none whitespace-nowrap" aria-hidden="true">&nbsp;</span>
@@ -208,7 +208,7 @@ export default function AddProductPage() {
       const selectedFiles = Array.from(e.target.files);
 
       if (images.length >= 4) {
-        showToast('You have reached the maximum of 4 photos.');
+        showToast('Vous avez atteint le maximum de 4 photos.');
         e.target.value = '';
         return;
       }
@@ -221,14 +221,14 @@ export default function AddProductPage() {
       });
 
       if (duplicates.length > 0) {
-        showToast(`"${duplicates[0]}" is already added.`);
+        showToast(`"${duplicates[0]}" est déjà ajouté.`);
       }
 
       const remainingSlots = 4 - images.length;
       const filesToAdd = unique.slice(0, remainingSlots);
 
       if (unique.length > remainingSlots) {
-        showToast(`Only ${remainingSlots} slot${remainingSlots !== 1 ? 's' : ''} remaining — extra photos were skipped.`);
+        showToast(`Il ne reste que ${remainingSlots} emplacement${remainingSlots !== 1 ? 's' : ''} — les photos supplémentaires ont été ignorées.`);
       }
 
       if (filesToAdd.length > 0) {
@@ -268,11 +268,11 @@ export default function AddProductPage() {
 
   const handleAddVariantClick = () => {
     if (variants.length >= 3) {
-      showToast('Maximum 3 size variants allowed.');
+      showToast('Maximum 3 variantes de taille autorisées.');
       return;
     }
     if (draftVariant !== null) {
-      showToast('Please validate the open row before adding another.');
+      showToast('Veuillez valider la ligne ouverte avant d\'en ajouter une autre.');
       setEntryRowHighlight(true);
       setTimeout(() => setEntryRowHighlight(false), 2000);
       return;
@@ -283,7 +283,7 @@ export default function AddProductPage() {
 
   const handleValidateDraft = () => {
     if (!draftVariant || !draftVariant.size || !draftVariant.price) {
-      showToast('Please fill in at least Size and Price.');
+      showToast('Veuillez remplir au moins Taille et Prix.');
       return;
     }
     setVariants([...variants, draftVariant]);
@@ -489,9 +489,6 @@ export default function AddProductPage() {
           <p className="text-[13px] sm:text-[15px] text-gray-400 mt-1">Create a new listing for your luxury collection</p>
         </div>
         <div className="flex items-center gap-3 sm:mt-8 shrink-0">
-          <button className="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl border border-gray-200 bg-white text-[13px] sm:text-[14px] font-semibold text-[#333] hover:bg-gray-50 shadow-sm transition-colors">
-            Discard
-          </button>
           <button onClick={handleSubmit} disabled={isSubmitting} className={`flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#da2966] text-white text-[13px] sm:text-[14px] font-semibold flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(218,41,102,0.25)] transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#c22158]'}`}>
             <SaveIcon /> {isSubmitting ? 'Saving...' : 'Save Product'}
           </button>

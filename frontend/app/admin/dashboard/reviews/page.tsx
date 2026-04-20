@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { AdminSelect } from '@/components/admin/AdminSelect';
 import dynamic from 'next/dynamic';
 import type { ReviewFormSaveData } from '@/components/admin/ReviewFormModal';
@@ -308,10 +309,10 @@ export default function ReviewsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 pb-6 border-b border-gray-100 gap-4">
         <div>
           <h1 className="text-[32px] font-serif font-bold text-[#111] tracking-tight mb-2">
-            Review Management
+            Gestion des avis
           </h1>
           <p className="text-[15px] text-gray-500 font-medium">
-            Analyze performance and curate your brand&apos;s best feedback
+            Analysez les performances et organisez les meilleurs commentaires de votre marque
           </p>
         </div>
 
@@ -375,7 +376,7 @@ export default function ReviewsPage() {
               Live
             </div>
           </div>
-          <p className="text-[14px] text-gray-400 font-bold mb-2">Global Average</p>
+          <p className="text-[14px] text-gray-400 font-bold mb-2">Note moyenne globale</p>
           <div className="flex items-baseline gap-1">
             <h2 className="text-[38px] font-serif font-bold text-[#111] tracking-tighter">
               {stats ? stats.average_rating.toFixed(1) : <span className='h-8 w-16 bg-gray-200 rounded animate-pulse inline-block align-middle' />}
@@ -383,7 +384,7 @@ export default function ReviewsPage() {
             <span className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif text-[#da2966] font-bold">/5.0</span>
           </div>
           <p className="text-[12px] text-gray-400 mt-2 font-medium flex items-center h-4">
-            {stats ? `${stats.total.toLocaleString()} total reviews` : <span className="h-3 w-20 bg-gray-200 rounded animate-pulse inline-block" />}
+            {stats ? `${stats.total.toLocaleString()} avis au total` : <span className="h-3 w-20 bg-gray-200 rounded animate-pulse inline-block" />}
           </p>
         </div>
 
@@ -395,7 +396,7 @@ export default function ReviewsPage() {
             </div>
             {stats && stats.pending > 0 && (
               <div className="flex items-center gap-1 bg-yellow-50 text-yellow-700 border border-yellow-200 px-3 py-1 rounded-[6px] text-[13px] font-bold">
-                {stats.pending} pending
+                {stats.pending} en attente
               </div>
             )}
           </div>
@@ -413,12 +414,13 @@ export default function ReviewsPage() {
         {/* Card 3: Most Reviewed */}
         <div className="bg-white rounded-[20px] border border-[#f2e6ea] p-7 shadow-[0_2px_15px_rgba(0,0,0,0.01)]">
           <div className="flex justify-between items-start mb-6">
-            <div className="w-[56px] h-[56px] rounded-full bg-[#fdf2f4] flex items-center justify-center text-[#da2966] overflow-hidden border border-[#f2e6ea]">
+            <div className="w-[56px] h-[56px] rounded-full bg-[#fdf2f4] flex items-center justify-center text-[#da2966] overflow-hidden border border-[#f2e6ea] relative">
               {stats?.most_reviewed?.product_image ? (
-                <img 
-                  src={stats.most_reviewed.product_image} 
+                <Image 
+                  src={stats.most_reviewed.product_image.startsWith('http') ? stats.most_reviewed.product_image : '/' + stats.most_reviewed.product_image}
                   alt={stats.most_reviewed.product_name}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
                 />
               ) : (
                 <MessageSquare size={24} strokeWidth={2.5} />

@@ -64,7 +64,7 @@ const ToggleRow = ({ label, active, border, onClick }: { label: string, active: 
   <div onClick={onClick} className={`flex items-center justify-between px-6 py-4 w-full h-[60px] ${border ? 'bg-white border border-dashed border-gray-200' : 'bg-[#f8f8f8]'} rounded-full cursor-pointer`}>
     <span className="text-[14px] font-bold text-[#333]">{label}</span>
     <div className="flex items-center gap-3">
-      {active && <span className="text-[12px] font-bold text-[#da2966]">Active</span>}
+      {active && <span className="text-[12px] font-bold text-[#da2966]">Actif</span>}}
       <div className={`w-11 h-6 rounded-full flex items-center px-1 transition-colors ${active ? 'bg-[#da2966]' : 'bg-gray-200'}`}>
         <div className={`w-4 h-4 bg-white rounded-full transition-transform transform shadow-sm ${active ? 'translate-x-5' : 'translate-x-0'}`} />
       </div>

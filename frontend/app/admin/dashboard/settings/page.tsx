@@ -197,7 +197,7 @@ export default function GeneralSettingsPage() {
   const strengthScore = Object.values(strength).filter(Boolean).length;
 
   if (isLoading) {
-    return <div className="p-5 sm:p-8 max-w-[1240px] flex justify-center items-center h-[50vh]">Loading profile...</div>;
+    return <div className="p-5 sm:p-8 max-w-[1240px] flex justify-center items-center h-[50vh]">Chargement du profil...</div>;
   }
 
   return (
@@ -227,10 +227,10 @@ export default function GeneralSettingsPage() {
       <div className="flex flex-col md:flex-row md:items-start justify-between mb-10 pb-6 border-b border-gray-100">
         <div>
           <h1 className="text-[32px] font-serif font-bold text-[#111] tracking-tight mb-2">
-            Account Settings
+            Paramètres du compte
           </h1>
           <p className="text-[15px] text-gray-500 font-medium">
-            Manage your luxury boutique's profile and secure your credentials
+            Gérez le profil de votre boutique de luxe et sécurisez vos identifiants
           </p>
         </div>
       </div>
@@ -242,7 +242,7 @@ export default function GeneralSettingsPage() {
             <div className="flex justify-between items-center mb-8">
               <div className="flex items-center gap-2 text-[#da2966]">
                 <Info size={22} strokeWidth={2.5} />
-                <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold">Profile Information</h2>
+                <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold">Informations de profil</h2>
               </div>
               <button 
                 onClick={saveProfile}
@@ -250,14 +250,14 @@ export default function GeneralSettingsPage() {
                 className="flex items-center gap-2 bg-[#423835] text-white px-5 py-2.5 rounded-[8px] text-[13px] font-bold shadow-sm hover:bg-[#2d2624] transition-colors italic disabled:opacity-70"
               >
                 <Save size={16} strokeWidth={2.5} />
-                {isSavingProfile ? 'Saving...' : 'Save Profile'}
+                {isSavingProfile ? 'Énregistrement...' : 'Enregistrer le profil'}
               </button>
             </div>
 
             <div className="space-y-6">
               {/* Username */}
               <div>
-                <label className="block text-[13px] font-bold text-[#444] mb-3">Username</label>
+                <label className="block text-[13px] font-bold text-[#444] mb-3">Nom d'utilisateur</label>
                 <div className="relative">
                   <input 
                     type="text" 
@@ -273,7 +273,7 @@ export default function GeneralSettingsPage() {
               {/* Email & Phone Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                 <div>
-                  <label className="block text-[13px] font-bold text-[#444] mb-3">Email Address</label>
+                  <label className="block text-[13px] font-bold text-[#444] mb-3">Adresse e-mail</label>
                   <input 
                     type="email" 
                     name="email"
@@ -283,7 +283,7 @@ export default function GeneralSettingsPage() {
                   />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#444] mb-3">Phone Number</label>
+                  <label className="block text-[13px] font-bold text-[#444] mb-3">Numéro de téléphone</label>
                   <input 
                     type="text" 
                     name="phone"

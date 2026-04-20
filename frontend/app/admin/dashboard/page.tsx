@@ -397,7 +397,7 @@ export default function AdminDashboardPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="w-2.5 h-2.5 rounded-full bg-[#da2966] shrink-0"></span>
-                    <span className="text-[12px] font-medium text-gray-500">Current Week</span>
+                    <span className="text-[12px] font-medium text-gray-500">Semaine en cours</span>
                   </div>
                 </div>
                 <SalesChart chart={data.sales_chart} />
@@ -405,7 +405,7 @@ export default function AdminDashboardPage() {
 
               {/* Top Customers */}
               <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 flex flex-col">
-                <h3 className="text-[16px] font-bold text-[#1a1a1a] mb-4">Top Customers</h3>
+                <h3 className="text-[16px] font-bold text-[#1a1a1a] mb-4">Meilleurs clients</h3>
                 <div className="flex-1 divide-y divide-gray-100">
                   {data.top_customers.map((c, i) => (
                     <div key={i} className="flex items-center gap-3 py-3.5">
@@ -416,12 +416,12 @@ export default function AdminDashboardPage() {
                       </div>
                       <div className="text-right shrink-0">
                         <p className="text-[14px] font-bold italic text-[#da2966]">{Number(c.total_spent).toLocaleString('fr-MA', { minimumFractionDigits: 2 })} Dhs</p>
-                        <p className="text-[12px] italic text-gray-400 mt-0.5">{c.orders} Orders</p>
+                        <p className="text-[12px] italic text-gray-400 mt-0.5">{c.orders} Commandes</p>
                       </div>
                     </div>
                   ))}
                   {data.top_customers.length === 0 && (
-                    <p className="text-[13px] text-gray-400 py-4">No customers yet.</p>
+                    <p className="text-[13px] text-gray-400 py-4">Aucun client pour l'instant.</p>
                   )}
                 </div>
               </div>
@@ -430,9 +430,9 @@ export default function AdminDashboardPage() {
             {/* ── RECENT ORDERS ─────────────────────────────────────── */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="flex items-center justify-between px-6 py-5">
-                <h3 className="text-[16px] font-bold text-[#1a1a1a]">Recent Orders</h3>
+                <h3 className="text-[16px] font-bold text-[#1a1a1a]">Commandes récentes</h3>
                 <Link href="/admin/dashboard/orders" className="text-[13px] font-bold text-[#da2966] hover:underline">
-                  See all orders
+                  Voir toutes les commandes
                 </Link>
               </div>
 
@@ -441,7 +441,7 @@ export default function AdminDashboardPage() {
                 <table className="w-full">
                   <thead>
                     <tr className="border-t border-b border-gray-100 bg-white">
-                      {['Order ID', 'Product', 'Date', 'Customer', 'Status', 'Amount'].map((col, i) => (
+                      {['N° de commande', 'Articles', 'Date', 'Client', 'Statut', 'Montant'].map((col, i) => (
                         <th
                           key={col}
                           className={`px-6 py-3 text-[11px] font-extrabold text-[#da2966] uppercase tracking-wider ${i === 5 ? 'text-right' : 'text-left'}`}
@@ -455,7 +455,7 @@ export default function AdminDashboardPage() {
                     {data.recent_orders.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="px-6 py-16 text-center text-[14px] text-gray-400">
-                          No orders yet.
+                          Aucune commande pour l'instant.
                         </td>
                       </tr>
                     ) : (
@@ -464,13 +464,8 @@ export default function AdminDashboardPage() {
                           <td className="px-6 py-4 text-[13px] font-semibold text-[#333]">
                             {order.order_number}
                           </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-3">
-                              <ProductThumb />
-                              <span className="text-[13px] text-[#444] font-medium truncate max-w-[140px]">
-                                {order.product}
-                              </span>
-                            </div>
+                          <td className="px-6 py-4 text-[13px] text-[#666]">
+                            {order.items_count} {order.items_count === 1 ? 'item' : 'items'}
                           </td>
                           <td className="px-6 py-4 text-[13px] text-[#666]">{order.date}</td>
                           <td className="px-6 py-4 text-[13px] text-[#444] font-medium">{order.customer}</td>
@@ -494,7 +489,7 @@ export default function AdminDashboardPage() {
               <div className="md:hidden flex flex-col divide-y divide-gray-50 border-t border-gray-100">
                 {data.recent_orders.length === 0 ? (
                   <div className="px-6 py-16 text-center text-[14px] text-gray-400">
-                    No orders yet.
+                    Aucune commande pour l'instant.
                   </div>
                 ) : (
                   data.recent_orders.map((order) => (
@@ -507,10 +502,9 @@ export default function AdminDashboardPage() {
                         </span>
                       </div>
                       
-                      <div className="flex items-center gap-3">
-                        <ProductThumb />
+                      <div className="flex items-center gap-2 mt-2">
                         <div className="flex-1 min-w-0">
-                          <p className="text-[13px] font-bold text-[#333] truncate">{order.product}</p>
+                          <p className="text-[13px] font-bold text-[#333]">{order.items_count} {order.items_count === 1 ? 'item' : 'items'}</p>
                           <p className="text-[12px] text-gray-500 mt-0.5 truncate">{order.customer}</p>
                         </div>
                       </div>

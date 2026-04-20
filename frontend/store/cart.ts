@@ -14,14 +14,23 @@ export interface CartItem {
   imageUrl      : string;
 }
 
+export interface AppliedCoupon {
+  code           : string;
+  savingsAmount  : number;
+  message        : string;
+}
+
 interface CartStore {
-  items      : CartItem[];
-  addItem    : (item: CartItem) => void;
-  removeItem : (productId: number, sizeLabel: string | null) => void;
-  updateQty  : (productId: number, sizeLabel: string | null, qty: number) => void;
-  clearCart  : () => void;
-  itemCount  : () => number;
-  subtotal   : () => number;
+  items         : CartItem[];
+  appliedCoupon : AppliedCoupon | null;
+  addItem       : (item: CartItem) => void;
+  removeItem    : (productId: number, sizeLabel: string | null) => void;
+  updateQty     : (productId: number, sizeLabel: string | null, qty: number) => void;
+  clearCart     : () => void;
+  itemCount     : () => number;
+  subtotal      : () => number;
+  setCoupon     : (coupon: AppliedCoupon | null) => void;
+  clearCoupon   : () => void;
 }
 
 // ─── Store ────────────────────────────────────────────────────────────────────
@@ -31,6 +40,7 @@ interface CartStore {
 
 const useCartStore = create<CartStore>((set, get) => ({
   items: [],
+  appliedCoupon: null,
 
   addItem: (incoming) => {
     set((state) => {
@@ -71,12 +81,16 @@ const useCartStore = create<CartStore>((set, get) => ({
     }));
   },
 
-  clearCart: () => set({ items: [] }),
+  clearCart: () => set({ items: [], appliedCoupon: null }),
 
   itemCount: () => get().items.length,
 
   subtotal: () =>
     get().items.reduce((sum, i) => sum + i.unitPrice * i.quantity, 0),
+
+  setCoupon: (coupon) => set({ appliedCoupon: coupon }),
+
+  clearCoupon: () => set({ appliedCoupon: null }),
 }));
 
 export default useCartStore;

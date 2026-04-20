@@ -477,7 +477,7 @@ export interface DashboardCustomer {
 export interface DashboardOrder {
   id: number;
   order_number: string;
-  product: string;
+  items_count: number;
   date: string;
   customer: string;
   phone: string;

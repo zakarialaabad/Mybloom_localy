@@ -7,6 +7,7 @@ use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use App\Models\ReviewImage;
 use App\Services\ImageService;
+use App\Utilities\ImageUrlResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
@@ -151,7 +152,10 @@ class ReviewController extends Controller
             'distribution'   => $distribution,
             'most_reviewed'  => $mostReviewed ? [
                 'product_name' => $mostReviewed->product?->name ?? 'N/A',
-                'product_image' => $mostReviewed->product?->image_url ?? null,
+                'product_image' => ImageUrlResolver::resolve(
+                    $mostReviewed->product?->images?->firstWhere('is_primary', true)?->url
+                    ?? $mostReviewed->product?->images?->first()?->url
+                ),
                 'count'        => (int) $mostReviewed->review_count,
             ] : null,
         ]);

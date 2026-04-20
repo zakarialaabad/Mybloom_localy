@@ -29,6 +29,17 @@ function WhatsAppIcon({ className }: { className?: string }) {
   );
 }
 
+// Snapchat SVG (not in lucide) - Outline style to match lucide icons
+function SnapchatIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 3c-3.866 0-5.5 2.5-5.5 5.5 0 1.8.6 3.2 1.5 4.2-.4.8-.5 1.5-.5 2.3 0 1.5 1 2.5 2 2.5.4 0 .8-.1 1.2-.3.8.5 1.8.8 2.8.8s2-.3 2.8-.8c.4.2.8.3 1.2.3 1 0 2-1 2-2.5 0-.8-.1-1.5-.5-2.3.9-1 1.5-2.4 1.5-4.2 0-3-1.634-5.5-5.5-5.5z" />
+      <path d="M8.5 14c-.5.5-1 1-2 1" />
+      <path d="M15.5 14c.5.5 1 1 2 1" />
+    </svg>
+  );
+}
+
 
 const NAV_LINKS = [
   { label: 'PACK',                href: '/collection?is_gift=true', highlight: true },
@@ -584,6 +595,7 @@ export default function Header() {
               { href: 'https://instagram.com',      icon: <Instagram className="w-[18px] h-[18px]" />,     label: 'Instagram' },
               { href: 'https://facebook.com',        icon: <Facebook className="w-[18px] h-[18px]" />,      label: 'Facebook'  },
               { href: 'https://tiktok.com',          icon: <TikTokIcon className="w-[16px] h-[16px]" />,    label: 'TikTok'    },
+              { href: 'https://snapchat.com',        icon: <SnapchatIcon className="w-[18px] h-[18px]" />,  label: 'Snapchat' },
               { href: 'https://wa.me/212611955060',  icon: <WhatsAppIcon className="w-[17px] h-[17px]" />,  label: 'WhatsApp'  },
             ].map(({ href, icon, label }) => (
               <a

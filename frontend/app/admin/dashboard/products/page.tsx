@@ -309,7 +309,7 @@ export default function ProductsPage() {
         <div className="flex flex-col sm:flex-row items-center justify-between px-1 gap-4">
           {/* Left: range info */}
           <span className="text-[13px] text-gray-400">
-            Showing{' '}
+            Affichage{' '}
             <span className="font-semibold text-[#1a1a1a]">
               {Math.min((currentPage - 1) * ITEMS_PER_PAGE + 1, filtered.length)}
             </span>
@@ -317,9 +317,9 @@ export default function ProductsPage() {
             <span className="font-semibold text-[#1a1a1a]">
               {Math.min(currentPage * ITEMS_PER_PAGE, filtered.length)}
             </span>
-            {' '}of{' '}
+            {' '}sur{' '}
             <span className="font-semibold text-[#1a1a1a]">{filtered.length}</span>
-            {' '}products
+            {' '}produits
           </span>
 
           {/* Right: page buttons */}
@@ -387,13 +387,13 @@ export default function ProductsPage() {
       {/* DELETE MODAL */}
       {deleteTarget && (
         <DeleteConfirmModal
-          title="Delete Product"
-          description={<>Are you sure you want to delete <span className="font-semibold text-[#1a1a1a]">{deleteTarget.name}</span>? This action cannot be undone.</>}
+          title="Supprimer le produit"
+          description={<>Êtes-vous sûr de vouloir supprimer <span className="font-semibold text-[#1a1a1a]">{deleteTarget.name}</span> ? Cette action ne peut pas être annulée.</>}
           onConfirm={handleDelete}
           onCancel={() => setDeleteTarget(null)}
           deleting={deleteBusy}
-          confirmLabel="Delete"
-          cancelLabel="Cancel"
+          confirmLabel="Supprimer"
+          cancelLabel="Annuler"
         />
       )}
     </div>

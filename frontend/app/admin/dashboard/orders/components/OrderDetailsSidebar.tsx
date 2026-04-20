@@ -263,7 +263,7 @@ export default function OrderDetailsSidebar({
           {/* Customer Details */}
           <div className="mb-10">
             <h3 className="text-[16px] sm:text-[18px] font-serif font-bold text-[#444] tracking-wide mb-6">
-              Customer Details
+              Détails du client
             </h3>
 
             <div className="bg-white rounded-[20px] p-4 sm:p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#f5ebed]">
@@ -293,7 +293,7 @@ export default function OrderDetailsSidebar({
                       </span>
                     </div>
                     <span className="text-[10px] text-gray-400 font-medium">
-                      Order Total
+                      Total de la commande
                     </span>
                   </div>
 
@@ -305,7 +305,7 @@ export default function OrderDetailsSidebar({
                       </span>
                     </div>
                     <span className="text-[10px] text-gray-400 font-medium">
-                      Total Orders
+                      Commandes totales
                     </span>
                   </div>
                 </div>
@@ -327,7 +327,7 @@ export default function OrderDetailsSidebar({
           {/* Items Ordered */}
           <div className="mb-12">
             <h3 className="text-[16px] sm:text-[18px] font-serif font-bold text-[#444] tracking-wide mb-6">
-              Items Ordered
+              Articles commandés
             </h3>
 
             <div className="max-h-[420px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] space-y-4">

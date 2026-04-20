@@ -14,11 +14,13 @@ interface CartDrawerProps {
 
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const [isMounted, setIsMounted] = useState(false);
-  const items      = useCartStore((s) => s.items);
-  const removeItem = useCartStore((s) => s.removeItem);
-  const updateQty  = useCartStore((s) => s.updateQty);
-  const subtotal   = useCartStore((s) => s.subtotal());
-  const itemCount  = useCartStore((s) => s.itemCount());
+  const items         = useCartStore((s) => s.items);
+  const removeItem    = useCartStore((s) => s.removeItem);
+  const updateQty     = useCartStore((s) => s.updateQty);
+  const subtotal      = useCartStore((s) => s.subtotal());
+  const itemCount     = useCartStore((s) => s.itemCount());
+  const appliedCoupon = useCartStore((s) => s.appliedCoupon);
+  const setCoupon     = useCartStore((s) => s.setCoupon);
 
   // Coupon state
   const [couponCode, setCouponCode] = useState('');
@@ -38,6 +40,12 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       const result = await couponService.validate(couponCode.trim(), subtotal);
       if (result.valid) {
         setCouponResult(result);
+        // Sauvegarder le coupon validé dans le store pour persistance
+        setCoupon({
+          code: couponCode.trim(),
+          savingsAmount: result.savings_amount,
+          message: result.message,
+        });
       } else {
         setCouponError(result.message || 'Code invalide.');
       }
@@ -90,7 +98,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <div key={`${item.productId}-${item.sizeLabel}-${idx}`} className={`p-4 flex gap-4 ${idx < items.length - 1 ? 'border-b border-gray-100' : ''}`}>
                   <div className="relative w-24 h-24 bg-[#f8f8f8] shrink-0 border border-gray-100/50">
                     {item.imageUrl ? (
-                      <Image src={item.imageUrl} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
+                      <Image src={item.imageUrl.startsWith('http') ? item.imageUrl : '/' + item.imageUrl} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
                     ) : (
                       <div className="w-full h-full bg-gray-100" />
                     )}

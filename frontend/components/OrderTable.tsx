@@ -111,7 +111,7 @@ export function OrderTable({
       className: 'w-[15%]',
       render: (order: AdminOrder) => (
         <div className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[12px] font-bold ${getStatusBadge(order.status, 'order')}`}>
-          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${getStatusDot(order.status, 'order')}`} />
+          <span className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${getStatusDot(order.status, 'order')}`}></span>
           {getStatusLabel(order.status, 'order')}
         </div>
       ),
