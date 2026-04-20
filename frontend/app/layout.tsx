@@ -8,11 +8,11 @@ export const metadata: Metadata = {
     template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME ?? 'MyBloom'}`,
     default: 'Parfum Maroc - Fragrances Luxe Pas Cher | MyBloom',
   },
-  description: 'Découvrez les plus beaux parfums au Maroc. Fragrances originales pour femme et homme. Livraison gratuite à partir de 590 DH. 100% authentique.',
+  description: 'Découvrez les plus beaux parfums au Maroc. Fragrances originales pour femme et homme. Livraison gratuite à partir de 600 DH. 100% authentique.',
   keywords: ['parfum', 'maroc', 'femme', 'homme', 'pas cher', 'original', 'luxe', 'parfum maroc', 'acheter parfum en ligne'],
   openGraph: {
     title: 'Parfum Maroc - Fragrances Luxe Pas Cher | MyBloom',
-    description: 'Découvrez les plus beaux parfums au Maroc. Fragrances originales pour femme et homme. Livraison gratuite à partir de 590 DH. 100% authentique.',
+    description: 'Découvrez les plus beaux parfums au Maroc. Fragrances originales pour femme et homme. Livraison gratuite à partir de 600 DH. 100% authentique.',
     locale: 'fr_MA',
   },
 };

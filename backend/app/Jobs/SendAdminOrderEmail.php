@@ -150,7 +150,9 @@ class SendAdminOrderEmail implements ShouldQueue
         }
 
         $subtotalFmt  = number_format((float) $order->subtotal, 2);
-        $shippingFmt  = number_format((float) $order->shipping_cost, 2);
+        $shippingFmt  = (float) $order->shipping_cost === 0.0 
+            ? 'Gratuit (0 DH)' 
+            : number_format((float) $order->shipping_cost, 2) . ' DH';
         $totalFmt     = number_format((float) $order->total, 2);
         $shippingName = $order->shippingMethod?->name ?? 'Standard';
         $orderDate    = $order->created_at->format('d/m/Y à H:i');
@@ -294,7 +296,7 @@ class SendAdminOrderEmail implements ShouldQueue
                     Shipping ({$shippingName})
                   </td>
                   <td style="padding:6px 8px;text-align:right;font-size:13px;color:#333;">
-                    {$shippingFmt} DH
+                    {$shippingFmt}
                   </td>
                 </tr>
                 {$couponRow}

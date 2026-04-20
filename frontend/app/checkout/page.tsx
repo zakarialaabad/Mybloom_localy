@@ -6,8 +6,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { ErrorAlert } from '@/components/ErrorAlert';
 import useCartStore from '@/store/cart';
 import { shippingService, couponService, orderService, ShippingMethod, CouponValidateResult } from '@/services/api';
+import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants';
 
 export default function CheckoutPage() {
   const router        = useRouter();
@@ -49,9 +51,28 @@ export default function CheckoutPage() {
   const [couponError,   setCouponError]   = useState('');
   const [couponLoading, setCouponLoading] = useState(false);
   const [autoValidated, setAutoValidated] = useState(false);
+  const [couponAlert,   setCouponAlert]   = useState<string | null>(null);
+  const [shippingAlert, setShippingAlert] = useState<string | null>(null);
 
+  const isFreeShipping = subtotal >= FREE_SHIPPING_THRESHOLD;
   const couponDiscount = couponResult?.savings_amount ?? 0;
   const total          = Math.max(0, subtotal + shippingCost - couponDiscount);
+
+  // Auto-hide coupon alert after 4 seconds
+  useEffect(() => {
+    if (couponAlert) {
+      const timer = setTimeout(() => setCouponAlert(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [couponAlert]);
+
+  // Auto-hide shipping alert after 4 seconds
+  useEffect(() => {
+    if (shippingAlert) {
+      const timer = setTimeout(() => setShippingAlert(null), 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [shippingAlert]);
 
   // Auto-charger le coupon depuis le store au montage de la page (une seule fois)
   useEffect(() => {
@@ -66,13 +87,13 @@ export default function CheckoutPage() {
           if (result.valid) {
             setCouponResult(result);
           } else {
-            // Coupon invalide ou expiré - afficher une alerte
-            alert(`Code promo invalide ou expiré: ${result.message || 'Le code n\'est plus valide.'}`);
+            // Coupon invalide ou expiré - afficher une alerte stylisée
+            setCouponAlert(`Code promo invalide ou expiré: ${result.message || 'Le code n\'est plus valide.'}`);
             setCouponError(result.message || 'Code invalide.');
             clearCoupon();
           }
         } catch {
-          alert('Code promo invalide ou expiré.');
+          setCouponAlert('Code promo invalide ou expiré.');
           setCouponError('Code invalide ou expiré.');
           clearCoupon();
         } finally {
@@ -85,6 +106,7 @@ export default function CheckoutPage() {
 
   const handleCoupon = async () => {
     setCouponError('');
+    setCouponAlert(null);
     setCouponResult(null);
     if (!couponCode.trim()) return;
     setCouponLoading(true);
@@ -94,11 +116,11 @@ export default function CheckoutPage() {
         setCouponResult(result);
       } else {
         setCouponError(result.message || 'Code invalide.');
-        alert(`Code promo invalide: ${result.message || 'Le code n\'est pas valide.'}`);
+        setCouponAlert(`Code promo invalide: ${result.message || 'Le code n\'est pas valide.'}`);
       }
     } catch {
       setCouponError('Code invalide ou expiré.');
-      alert('Code promo invalide ou expiré.');
+      setCouponAlert('Code promo invalide ou expiré.');
     } finally {
       setCouponLoading(false);
     }
@@ -314,33 +336,62 @@ export default function CheckoutPage() {
                     {shippingMethods.length === 0 ? (
                       <p className="font-serif italic text-gray-400 text-sm">Chargement…</p>
                     ) : (
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {shippingMethods.map((method) => {
-                          const isFree       = method.free_over !== null && subtotal >= method.free_over;
-                          const displayPrice = isFree ? 0 : method.price;
-                          const isActive     = selectedMethodId === method.id;
-                          return (
-                            <label
-                              key={method.id}
-                              className={`border rounded-sm p-4 cursor-pointer transition-colors flex flex-col ${
-                                isActive ? 'border-2 border-[#b89b72] bg-[#fdfbf9]' : 'border-gray-200 hover:border-[#b89b72]'
-                              }`}
-                            >
-                              <input type="radio" name="shipping" className="sr-only" checked={isActive} onChange={() => setSelectedMethodId(method.id)} />
-                              <div className="flex justify-between items-start mb-1">
-                                <div className="flex items-center gap-2">
-                                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${isActive ? 'border-gray-800' : 'border-gray-400'}`}>
-                                    {isActive && <div className="w-2 h-2 rounded-full bg-gray-800" />}
+                      <>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {shippingMethods.map((method) => {
+                            const methodIsFree = method.free_over !== null && subtotal >= method.free_over;
+                            const displayPrice = methodIsFree ? 0 : method.price;
+                            const isActive     = selectedMethodId === method.id;
+                            const isDisabled   = isFreeShipping;
+                            
+                            return (
+                              <label
+                                key={method.id}
+                                className={`border rounded-sm p-4 transition-colors flex flex-col ${
+                                  isDisabled 
+                                    ? 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200' 
+                                    : isActive 
+                                      ? 'border-2 border-[#b89b72] bg-[#fdfbf9] cursor-pointer' 
+                                      : 'border-gray-200 hover:border-[#b89b72] cursor-pointer'
+                                }`}
+                                onClick={(e) => {
+                                  if (isDisabled) {
+                                    e.preventDefault();
+                                    setShippingAlert('🎉 Félicitations ! Votre commande bénéficie de la livraison gratuite car elle dépasse 600 DH.');
+                                  }
+                                }}
+                              >
+                                <input 
+                                  type="radio" 
+                                  name="shipping" 
+                                  className="sr-only" 
+                                  checked={isActive} 
+                                  onChange={() => !isDisabled && setSelectedMethodId(method.id)}
+                                  disabled={isDisabled}
+                                />
+                                <div className="flex justify-between items-start mb-1">
+                                  <div className="flex items-center gap-2">
+                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${isActive ? 'border-gray-800' : 'border-gray-400'}`}>
+                                      {isActive && <div className="w-2 h-2 rounded-full bg-gray-800" />}
+                                    </div>
+                                    <span className="font-serif font-bold text-gray-800 text-sm">{method.name}</span>
                                   </div>
-                                  <span className="font-serif font-bold text-gray-800 text-sm">{method.name}</span>
+                                  <span className="font-serif font-bold text-gray-900 text-sm">{displayPrice} Dh</span>
                                 </div>
-                                <span className="font-serif font-bold text-gray-900 text-sm">{displayPrice} Dh</span>
-                              </div>
-                              <span className="text-xs text-gray-500 font-serif ml-6">{method.description}</span>
-                            </label>
-                          );
-                        })}
-                      </div>
+                                <span className="text-xs text-gray-500 font-serif ml-6">{method.description}</span>
+                              </label>
+                            );
+                          })}
+                        </div>
+                        
+                        {isFreeShipping && (
+                          <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-sm">
+                            <p className="text-sm font-serif text-green-800">
+                              ✓ Vous bénéficiez de la livraison gratuite pour toute commande à partir de {FREE_SHIPPING_THRESHOLD} DH
+                            </p>
+                          </div>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>
@@ -377,6 +428,39 @@ export default function CheckoutPage() {
 
                 {/* Coupon */}
                 <div className="mb-6 md:mb-8">
+                  {/* Coupon Alert */}
+                  {couponAlert && (
+                    <div className="mb-4">
+                      <ErrorAlert 
+                        message={couponAlert}
+                        title="Erreur de code promo"
+                        onClose={() => setCouponAlert(null)}
+                        dismissible={true}
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Shipping Alert */}
+                  {shippingAlert && (
+                    <div className="mb-4">
+                      <div className="bg-green-50 border-2 border-green-500 rounded-sm p-4">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex-1">
+                            <h3 className="font-serif font-bold text-green-800 text-sm mb-1">Livraison Gratuite</h3>
+                            <p className="font-serif text-green-700 text-sm">{shippingAlert}</p>
+                          </div>
+                          <button
+                            onClick={() => setShippingAlert(null)}
+                            className="text-green-600 hover:text-green-800 font-bold text-lg leading-none"
+                            aria-label="Fermer"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
                   <p className="text-sm text-gray-600 font-serif mb-3">If you have a coupon code, please apply it below</p>
                   <div className="flex gap-2.5">
                     <input

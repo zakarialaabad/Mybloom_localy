@@ -80,10 +80,21 @@
   <div class="header">
     @php
       $logoPath = public_path('logo.png');
-      $logoData = base64_encode(file_get_contents($logoPath));
-      $logoSrc = 'data:image/png;base64,' . $logoData;
+      if (file_exists($logoPath)) {
+          $logoData = base64_encode(file_get_contents($logoPath));
+          $logoSrc = 'data:image/png;base64,' . $logoData;
+      } else {
+          // Fallback: use text if logo doesn't exist
+          $logoSrc = null;
+      }
     @endphp
-    <img src="{{ $logoSrc }}" alt="MyBloom" style="height: 90px; margin-bottom: 5px; display: block; margin-left: auto; margin-right: auto;">
+    @if($logoSrc)
+      <img src="{{ $logoSrc }}" alt="MyBloom" style="height: 90px; margin-bottom: 5px; display: block; margin-left: auto; margin-right: auto;">
+    @else
+      <div style="text-align: center; font-size: 32px; font-weight: bold; color: #da2966; margin-bottom: 10px; font-family: 'Times New Roman', serif;">
+        MyBloom
+      </div>
+    @endif
     <div class="invoice-title">INVOICE</div>
   </div>
 

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import useCartStore from '@/store/cart';
 import { couponService, CouponValidateResult } from '@/services/api';
+import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -150,9 +151,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             <div className="flex justify-between items-start text-sm">
               <div>
                 <div className="font-serif font-bold text-gray-800">Expédition</div>
-                <div className="font-serif italic text-[11px] text-gray-500 mt-0.5">Gratuit dès 590 DH</div>
+                <div className="font-serif italic text-[11px] text-gray-500 mt-0.5">Gratuit dès {FREE_SHIPPING_THRESHOLD} DH</div>
               </div>
-              <span className="font-serif font-bold italic text-gray-900">-- DH</span>
+              <span className="font-serif font-bold italic text-gray-900">{subtotal >= FREE_SHIPPING_THRESHOLD ? 'Gratuit' : '-- DH'}</span>
             </div>
             
             <div className="flex justify-between items-start text-sm">

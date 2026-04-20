@@ -159,16 +159,16 @@ export default function Header() {
         {/* Desktop: Static centered text */}
         <div className="hidden md:flex items-center justify-center">
           <span>
-            PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%
+            PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 600 DH &nbsp;|&nbsp; QUALITÉ 100%
           </span>
         </div>
         {/* Mobile: Infinite scroll marquee */}
         <div className="md:hidden flex">
           <div className="flex w-max animate-[scrollAnnounce_20s_linear_infinite] gap-8">
-            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
-            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
-            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
-            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 590 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 600 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 600 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 600 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
+            <span className="whitespace-nowrap">PROFITEZ DE LA LIVRAISON GRATUITE À PARTIR DE 600 DH &nbsp;|&nbsp; QUALITÉ 100%</span>
           </div>
         </div>
       </div>
@@ -592,11 +592,11 @@ export default function Header() {
           {/* Social Icons */}
           <div className="mt-6 pb-10 flex justify-center gap-3 w-full px-6">
             {[
-              { href: 'https://instagram.com',      icon: <Instagram className="w-[18px] h-[18px]" />,     label: 'Instagram' },
-              { href: 'https://facebook.com',        icon: <Facebook className="w-[18px] h-[18px]" />,      label: 'Facebook'  },
-              { href: 'https://tiktok.com',          icon: <TikTokIcon className="w-[16px] h-[16px]" />,    label: 'TikTok'    },
-              { href: 'https://snapchat.com',        icon: <SnapchatIcon className="w-[18px] h-[18px]" />,  label: 'Snapchat' },
-              { href: 'https://wa.me/212611955060',  icon: <WhatsAppIcon className="w-[17px] h-[17px]" />,  label: 'WhatsApp'  },
+              { href: 'https://www.instagram.com/my_bloom.ma?igsh=MTV4Y29odHI4b3NqNw%3D%3D&utm_source=qr',      icon: <Instagram className="w-[18px] h-[18px]" />,     label: 'Instagram' },
+              { href: 'https://www.facebook.com/share/1AzUrWv47t/?mibextid=wwXIfr',        icon: <Facebook className="w-[18px] h-[18px]" />,      label: 'Facebook'  },
+              { href: 'https://www.tiktok.com/@my.bloom.ma?_r=1&_t=ZS-95fpT2RLgaP',          icon: <TikTokIcon className="w-[16px] h-[16px]" />,    label: 'TikTok'    },
+              { href: 'https://www.snapchat.com/add/bloom_parfum?share_id=AAULxDsQR66nH9XmS_Hb_A&locale=fr_GB',        icon: <SnapchatIcon className="w-[18px] h-[18px]" />,  label: 'Snapchat' },
+              { href: 'https://wa.me/212608656271',  icon: <WhatsAppIcon className="w-[17px] h-[17px]" />,  label: 'WhatsApp'  },
             ].map(({ href, icon, label }) => (
               <a
                 key={label}

@@ -95,6 +95,7 @@ export default function CollectionPage() {
   const selectedCategories = useFilterStore((s) => s.selectedCategories);
   const selectedIngredients = useFilterStore((s) => s.selectedIngredients);
   const selectedRating     = useFilterStore((s) => s.selectedRating);
+  const selectedProductType = useFilterStore((s) => s.selectedProductType);
   const promotionOnly      = useFilterStore((s) => s.promotionOnly);
   const featuredOnly       = useFilterStore((s) => s.featuredOnly);
 
@@ -106,6 +107,8 @@ export default function CollectionPage() {
   const setSelectedCategories = useFilterStore((s) => s.setSelectedCategories);
   const setSelectedIngredients = useFilterStore((s) => s.setSelectedIngredients);
   const setSelectedRating     = useFilterStore((s) => s.setSelectedRating);
+  const setSelectedProductType = useFilterStore((s) => s.setSelectedProductType);
+  const toggleProductType     = useFilterStore((s) => s.toggleProductType);
   const setPromotionOnly      = useFilterStore((s) => s.setPromotionOnly);
   const setFeaturedOnly       = useFilterStore((s) => s.setFeaturedOnly);
   const ensureAggregates      = useFilterStore((s) => s.ensureAggregates);
@@ -114,6 +117,8 @@ export default function CollectionPage() {
   const setBrandCounts        = useFilterStore((s) => s.setBrandCounts);
   const ingredientCounts      = useFilterStore((s) => s.ingredientCounts);
   const setIngredientCounts   = useFilterStore((s) => s.setIngredientCounts);
+  const productTypeCounts     = useFilterStore((s) => s.productTypeCounts);
+  const setProductTypeCounts  = useFilterStore((s) => s.setProductTypeCounts);
   const toggleIngredient      = useFilterStore((s) => s.toggleIngredient);
 
   const ensureProductsCache = useCatalogStore((s) => s.ensureProducts);
@@ -154,6 +159,7 @@ export default function CollectionPage() {
     const categoryId    = searchParams.get('category');
     const ingredientIds = searchParams.getAll('ingredient');
     const featured      = searchParams.get('featured');
+    const productType   = searchParams.get('product_type');
 
     // Reset sidebar filters when the navbar category (cat slug) changes
     const prevCat = prevCatRef.current;
@@ -163,11 +169,13 @@ export default function CollectionPage() {
       setSelectedIngredients([]);
       setSelectedRating(null);
       setPromotionOnly(false);
+      setSelectedProductType(null);
     }
 
     const newCategories = categoryId ? [Number(categoryId)] : [];
     const newIngredients = ingredientIds.length > 0 ? ingredientIds.map((id) => Number(id)) : [];
     const newFeatured = featured === '1';
+    const newProductType = productType || null;
 
     // Only call setters when values actually changed — avoids creating
     // new array references that would cascade through dependency arrays.
@@ -179,6 +187,9 @@ export default function CollectionPage() {
     }
     if (newFeatured !== featuredOnly) {
       setFeaturedOnly(newFeatured);
+    }
+    if (newProductType !== selectedProductType) {
+      setSelectedProductType(newProductType);
     }
   }, [searchParams]);
 
@@ -302,7 +313,6 @@ export default function CollectionPage() {
     setIngredientCounts(ic);
   }, [products, setBrandCounts, setIngredientCounts]);
 
-  const [productTypeCounts, setProductTypeCounts] = useState<Record<string, { name: string; count: number }>>({});
   const slugify = (s: string) => s ? s.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : '';
   useEffect(() => {
     const pc: Record<string, { name: string; count: number }> = {};
@@ -316,14 +326,20 @@ export default function CollectionPage() {
       if (!pc[slug]) pc[slug] = { name, count: 0 };
       pc[slug].count += 1;
     });
-    setProductTypeCounts(pc);
-  }, [products]);
+    setProductTypeCounts(pc); // Sync to FilterStore
+  }, [products, setProductTypeCounts]);
 
-  const selectedProductType = searchParams.get('product_type');
-  const toggleProductType = (typeSlug: string) => {
+  // Wrapper for toggleProductType that also updates URL
+  const handleToggleProductType = (typeSlug: string) => {
+    toggleProductType(typeSlug);
     const params = new URLSearchParams(Array.from(searchParams.entries()));
-    if (searchParams.get('product_type') === typeSlug) params.delete('product_type');
-    else params.set('product_type', typeSlug);
+    // After toggle, check new state (toggling flips it)
+    const willBeSelected = selectedProductType !== typeSlug;
+    if (willBeSelected) {
+      params.set('product_type', typeSlug);
+    } else {
+      params.delete('product_type');
+    }
     const qs = params.toString();
     router.push(`${pathname}${qs ? `?${qs}` : ''}`);
   };
@@ -548,7 +564,7 @@ export default function CollectionPage() {
                           const cnt = productTypeCounts[slugKey]?.count ?? 0;
                           return (
                             <label key={slugKey} className="flex items-center gap-3 cursor-pointer group">
-                              <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedProductType === slugKey ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleProductType(slugKey)}>
+                              <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedProductType === slugKey ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => handleToggleProductType(slugKey)}>
                                 {selectedProductType === slugKey && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
                               </div>
                               <div className="flex items-baseline gap-2">
@@ -775,7 +791,7 @@ export default function CollectionPage() {
                       const cnt = productTypeCounts[slugKey]?.count ?? 0;
                       return (
                         <label key={slugKey} className="flex items-center gap-3 cursor-pointer">
-                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedProductType === slugKey ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleProductType(slugKey)}>{selectedProductType === slugKey && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}</div>
+                          <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedProductType === slugKey ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => handleToggleProductType(slugKey)}>{selectedProductType === slugKey && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}</div>
                           <div className="flex items-baseline gap-2"><span className={`text-xs ${selectedProductType === slugKey ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{pt.name}</span><span className="text-[11px] text-gray-400">({cnt})</span></div>
                         </label>
                       );

@@ -4,14 +4,13 @@ namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
-use App\Http\Resources\OrderResource;
 use App\Http\Resources\OrderTrackResource;
 use App\Models\Order;
 use App\Services\OrderService;
 use App\Services\InvoiceService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
@@ -80,33 +79,50 @@ class OrderController extends Controller
         $rawPhone    = preg_replace('/[\s\-]/', '', $request->phone);
         $normalPhone = preg_replace('/^0/', '+212', $rawPhone);
 
-        $order = Order::with(['items.product', 'shippingMethod'])
+        $order = Order::with(['items.product.images', 'shippingMethod', 'coupon'])
             ->where('order_number', $orderNumber)
             ->first();
 
         if (! $order) {
+            Log::warning("Invoice download failed: Order {$orderNumber} not found");
             return response()->json(['message' => 'Order not found. Please check your order number and phone.'], 404);
         }
 
         // Normalize both phones to digits-only local format for comparison
         if (! $this->phonesMatch($request->phone, $order->customer_phone)) {
+            Log::warning("Invoice download failed: Phone mismatch for order {$orderNumber}");
             return response()->json(['message' => 'Order not found. Please check your order number and phone.'], 404);
         }
 
-        // Generate the PDF
-        $pdfBinary = $this->invoiceService->generatePdf($order);
+        try {
+            // Generate the PDF
+            Log::info("Generating PDF for order {$orderNumber}");
+            $pdfBinary = $this->invoiceService->generatePdf($order);
+            Log::info("PDF generated successfully for order {$orderNumber}, size: " . strlen($pdfBinary) . " bytes");
 
-        // Return as downloadable file
-        return response()->streamDownload(
-            function () use ($pdfBinary) {
-                echo $pdfBinary;
-            },
-            "invoice-{$order->order_number}.pdf",
-            [
-                'Content-Type'        => 'application/pdf',
-                'Content-Disposition' => "attachment; filename=\"invoice-{$order->order_number}.pdf\"",
-            ]
-        );
+            // Return as downloadable file
+            return response()->streamDownload(
+                function () use ($pdfBinary) {
+                    echo $pdfBinary;
+                },
+                "invoice-{$order->order_number}.pdf",
+                [
+                    'Content-Type'        => 'application/pdf',
+                    'Content-Disposition' => "attachment; filename=\"invoice-{$order->order_number}.pdf\"",
+                ]
+            );
+        } catch (\Throwable $e) {
+            Log::error("PDF generation failed for order {$orderNumber}: " . $e->getMessage(), [
+                'exception' => $e,
+                'order_id' => $order->id ?? null,
+                'trace' => $e->getTraceAsString(),
+            ]);
+            
+            return response()->json([
+                'message' => 'Failed to generate invoice PDF. Please try again later or contact support.',
+                'error' => config('app.debug') ? $e->getMessage() : null,
+            ], 500);
+        }
     }
 
     /**

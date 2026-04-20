@@ -12,11 +12,21 @@ class InvoiceService
      */
     public function generatePdf(Order $order): string
     {
-        $order->loadMissing(['items.product', 'shippingMethod']);
+        // Ensure all necessary relations are loaded
+        $order->loadMissing(['items.product.images', 'shippingMethod', 'coupon']);
 
-        $pdf = Pdf::loadView('invoices.order', ['order' => $order])
-            ->setPaper('a4', 'portrait');
+        try {
+            $pdf = Pdf::loadView('invoices.order', ['order' => $order])
+                ->setPaper('a4', 'portrait');
 
-        return $pdf->output();
+            return $pdf->output();
+        } catch (\Throwable $e) {
+            \Log::error('PDF generation failed in InvoiceService: ' . $e->getMessage(), [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'exception' => $e,
+            ]);
+            throw $e;
+        }
     }
 }

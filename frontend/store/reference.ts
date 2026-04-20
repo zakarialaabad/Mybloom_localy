@@ -32,6 +32,12 @@
 import { create } from 'zustand';
 import { bannerService, brandService, categoryService, ingredientService, reviewService, resourceService, Banner, Brand, Category, Ingredient, ReviewItem, RatingSummary } from '@/services/api';
 
+export interface ProductType {
+  id: number | string;
+  name: string;
+  slug?: string | null;
+}
+
 interface ReferenceStore {
   // ── Brands ──────────────────────────────────────────────────────────────────
   brands: Brand[];
@@ -51,6 +57,12 @@ interface ReferenceStore {
   ingredientsReady: boolean;
   ingredientsLoading: boolean;
   ensureIngredients: () => void;  // idempotent
+
+  // ── Product Types ────────────────────────────────────────────────────────
+  productTypes: ProductType[];
+  productTypesReady: boolean;
+  productTypesLoading: boolean;
+  ensureProductTypes: () => void;  // idempotent
 
   // ── Homepage banners ─────────────────────────────────────────────────────
   banners: Banner[];

@@ -21,7 +21,7 @@ import { X, ChevronUp, Search, RotateCcw } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import useFilterStore from '@/store/filters';
-import useReferenceStore from '@/store/reference';
+import useReferenceStore, { ProductType } from '@/store/reference';
 import useCatalogStore from '@/store/catalog';
 import PriceHistogram from '@/components/ui/PriceHistogram';
 
@@ -44,6 +44,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const selectedCategories = useFilterStore((s) => s.selectedCategories);
   const selectedIngredients = useFilterStore((s) => s.selectedIngredients);
   const selectedRating     = useFilterStore((s) => s.selectedRating);
+  const selectedProductType = useFilterStore((s) => s.selectedProductType);
   const promotionOnly      = useFilterStore((s) => s.promotionOnly);
   const featuredOnly       = useFilterStore((s) => s.featuredOnly);
 
@@ -52,6 +53,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const toggleBrand       = useFilterStore((s) => s.toggleBrand);
   const toggleCategory    = useFilterStore((s) => s.toggleCategory);
   const toggleIngredient  = useFilterStore((s) => s.toggleIngredient);
+  const toggleProductType = useFilterStore((s) => s.toggleProductType);
   const setSelectedRating = useFilterStore((s) => s.setSelectedRating);
   const setPromotionOnly  = useFilterStore((s) => s.setPromotionOnly);
   const setFeaturedOnly   = useFilterStore((s) => s.setFeaturedOnly);
@@ -62,13 +64,17 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const brands           = useReferenceStore((s) => s.brands);
   const categories       = useReferenceStore((s) => s.categories);
   const ingredients      = useReferenceStore((s) => s.ingredients);
+  const productTypes     = useReferenceStore((s) => s.productTypes);
   const ensureBrands     = useReferenceStore((s) => s.ensureBrands);
   const ensureCategories = useReferenceStore((s) => s.ensureCategories);
   const ensureIngredients = useReferenceStore((s) => s.ensureIngredients);
+  const ensureProductTypes = useReferenceStore((s) => s.ensureProductTypes);
   const brandCounts      = useFilterStore((s) => s.brandCounts);
   const ingredientCounts = useFilterStore((s) => s.ingredientCounts);
+  const productTypeCounts = useFilterStore((s) => s.productTypeCounts);
   const setBrandCounts      = useFilterStore((s) => s.setBrandCounts);
   const setIngredientCounts = useFilterStore((s) => s.setIngredientCounts);
+  const setProductTypeCounts = useFilterStore((s) => s.setProductTypeCounts);
 
   const ensureProductsCache = useCatalogStore((s) => s.ensureProducts);
 
@@ -80,28 +86,44 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       ensureBrands();
       ensureCategories();
       ensureIngredients();
+      ensureProductTypes();
       ensureAggregates();
     }
-  }, [isOpen, ensureBrands, ensureCategories, ensureIngredients, ensureAggregates]);
+  }, [isOpen, ensureBrands, ensureCategories, ensureIngredients, ensureProductTypes, ensureAggregates]);
 
   // Compute brand/ingredient counts if they're empty (modal opened outside /collection)
   useEffect(() => {
     if (!isOpen) return;
     const hasBrandCounts = Object.keys(brandCounts).length > 0;
     const hasIngredientCounts = Object.keys(ingredientCounts).length > 0;
-    if (hasBrandCounts && hasIngredientCounts) return;
+    const hasProductTypeCounts = Object.keys(productTypeCounts).length > 0;
+    if (hasBrandCounts && hasIngredientCounts && hasProductTypeCounts) return;
 
     ensureProductsCache('all-products', {}).then((products) => {
       const bc: Record<number, number> = {};
       const ic: Record<number, number> = {};
+      const pc: Record<string, { name: string; count: number }> = {};
+      
+      const slugify = (s: string) => s ? s.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : '';
+      
       products.forEach((p) => {
         if (p.brand?.id) bc[p.brand.id] = (bc[p.brand.id] ?? 0) + 1;
         p.ingredients?.forEach((ing) => { if (ing.id) ic[ing.id] = (ic[ing.id] ?? 0) + 1; });
+        
+        // Product types
+        const nameFromType = p.product_type?.name ?? p.category?.name;
+        const slugFromType = p.product_type?.slug ?? null;
+        const name = nameFromType ?? 'Autre';
+        const slug = slugFromType ?? slugify(name);
+        if (!pc[slug]) pc[slug] = { name, count: 0 };
+        pc[slug].count += 1;
       });
+      
       if (!hasBrandCounts) setBrandCounts(bc);
       if (!hasIngredientCounts) setIngredientCounts(ic);
+      if (!hasProductTypeCounts) setProductTypeCounts(pc);
     });
-  }, [isOpen, brandCounts, ingredientCounts, ensureProductsCache, setBrandCounts, setIngredientCounts]);
+  }, [isOpen, brandCounts, ingredientCounts, productTypeCounts, ensureProductsCache, setBrandCounts, setIngredientCounts, setProductTypeCounts]);
 
   // Count active filters for the badge
   const activeFilterCount =
@@ -109,17 +131,67 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     selectedCategories.length +
     selectedIngredients.length +
     (selectedRating !== null ? 1 : 0) +
+    (selectedProductType !== null ? 1 : 0) +
     (promotionOnly ? 1 : 0) +
     (featuredOnly ? 1 : 0) +
     (selectedMin !== globalMin || selectedMax !== globalMax ? 1 : 0);
 
   const visibleBrands = brandSearch.trim()
-    ? brands.filter((b) => b.name.toLowerCase().includes(brandSearch.toLowerCase()))
-    : brands;
+    ? brands.filter((b) => b.name.toLowerCase().includes(brandSearch.toLowerCase()) && (brandCounts[b.id] ?? 0) > 0)
+    : brands.filter((b) => (brandCounts[b.id] ?? 0) > 0);
 
   const visibleIngredients = ingredientSearch.trim()
     ? ingredients.filter((i) => i.name.toLowerCase().includes(ingredientSearch.toLowerCase()))
     : ingredients;
+
+  // Build URL for "View results" button with all active filters
+  const buildCollectionUrl = () => {
+    const params = new URLSearchParams();
+    
+    // Brands
+    if (selectedBrands.length > 0) {
+      selectedBrands.forEach((id) => params.append('brand_ids[]', String(id)));
+    }
+    
+    // Categories
+    if (selectedCategories.length > 0) {
+      selectedCategories.forEach((id) => params.append('category_ids[]', String(id)));
+    }
+    
+    // Ingredients
+    if (selectedIngredients.length > 0) {
+      selectedIngredients.forEach((id) => params.append('ingredient_ids[]', String(id)));
+    }
+    
+    // Price range (only if changed from global min/max)
+    if (selectedMin > globalMin || selectedMax < globalMax) {
+      params.set('price_min', String(selectedMin));
+      params.set('price_max', String(selectedMax));
+    }
+    
+    // Rating
+    if (selectedRating !== null) {
+      params.set('min_rating', String(selectedRating));
+    }
+    
+    // Product Type
+    if (selectedProductType !== null) {
+      params.set('product_type', selectedProductType);
+    }
+    
+    // Promotions
+    if (promotionOnly) {
+      params.set('on_promotion', '1');
+    }
+    
+    // Featured
+    if (featuredOnly) {
+      params.set('is_featured', '1');
+    }
+    
+    const queryString = params.toString();
+    return queryString ? `/collection?${queryString}` : '/collection';
+  };
 
   if (!isMounted) return null;
 
@@ -232,7 +304,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               {visibleBrands.length === 0 && (
                 <p className="text-[13px] text-gray-400 font-serif italic">No brands found.</p>
               )}
-              {visibleBrands.map((brand, i) => (
+              {visibleBrands.map((brand) => (
                 <label key={brand.id} className="flex items-center gap-4 cursor-pointer group">
                   <div
                     className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
@@ -372,6 +444,88 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
             </div>
           </div>
 
+          {/* Product Types Section */}
+          <div className="bg-white p-6 pt-5">
+            <div className="flex justify-between items-center mb-5">
+              <h3 className="font-serif text-[17px] text-gray-500">Type de produit</h3>
+              <ChevronUp className="w-4 h-4 text-gray-800" />
+            </div>
+
+            <div className="space-y-[18px] max-h-64 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
+              {productTypes.length === 0 && Object.keys(productTypeCounts).length === 0 && (
+                <p className="text-[13px] text-gray-400 font-serif italic">No product types found.</p>
+              )}
+              
+              {/* Show productTypes from reference store if available */}
+              {productTypes.length > 0 && productTypes.map((pt: ProductType) => {
+                const slugify = (s: string) => s ? s.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : '';
+                const slugKey = pt.slug || slugify(pt.name || String(pt.id || ''));
+                const cnt = productTypeCounts[slugKey]?.count ?? 0;
+                
+                return (
+                  <label key={pt.id} className="flex items-center gap-4 cursor-pointer group">
+                    <div
+                      className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
+                        selectedProductType === slugKey
+                          ? 'border-[#333]'
+                          : 'border-gray-200 group-hover:border-gray-300'
+                      }`}
+                      onClick={() => toggleProductType(slugKey)}
+                    >
+                      {selectedProductType === slugKey && (
+                        <div className="w-2.5 h-2.5 bg-[#333] rounded-full" />
+                      )}
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span
+                        className={`font-serif text-[15px] ${
+                          selectedProductType === slugKey ? 'text-[#333]' : 'text-[#444]'
+                        }`}
+                      >
+                        {pt.name}
+                      </span>
+                      <span className="text-[12px] font-serif text-gray-400">
+                        ({cnt})
+                      </span>
+                    </div>
+                  </label>
+                );
+              })}
+              
+              {/* Fallback: show from productTypeCounts if productTypes is empty */}
+              {productTypes.length === 0 && Object.entries(productTypeCounts)
+                .sort(([, a], [, b]) => a.name.localeCompare(b.name))
+                .map(([slug, v]) => (
+                  <label key={slug} className="flex items-center gap-4 cursor-pointer group">
+                    <div
+                      className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
+                        selectedProductType === slug
+                          ? 'border-[#333]'
+                          : 'border-gray-200 group-hover:border-gray-300'
+                      }`}
+                      onClick={() => toggleProductType(slug)}
+                    >
+                      {selectedProductType === slug && (
+                        <div className="w-2.5 h-2.5 bg-[#333] rounded-full" />
+                      )}
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                      <span
+                        className={`font-serif text-[15px] ${
+                          selectedProductType === slug ? 'text-[#333]' : 'text-[#444]'
+                        }`}
+                      >
+                        {v.name}
+                      </span>
+                      <span className="text-[12px] font-serif text-gray-400">
+                        ({v.count})
+                      </span>
+                    </div>
+                  </label>
+                ))}
+            </div>
+          </div>
+
           {/* Rating Section */}
           <div className="bg-white p-6 pt-5">
             <div className="flex justify-between items-center mb-5">
@@ -444,7 +598,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
         {/* ── Footer / CTA ─────────────────────────────────────────────────── */}
         <div className="shrink-0 p-4 bg-white border-t border-gray-100 flex gap-3 shadow-[0_-4px_6px_-1px_rgb(0,0,0,0.05)] md:shadow-none z-10 pb-safe">
           <Link
-            href="/collection"
+            href={buildCollectionUrl()}
             onClick={onClose}
             className="flex-1 bg-[#4a403a] text-white py-3 rounded-sm text-sm font-serif italic text-center hover:bg-[#3a322d] transition-colors"
           >

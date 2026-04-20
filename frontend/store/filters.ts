@@ -40,6 +40,7 @@ interface FilterStore {
   selectedCategories: number[];
   selectedIngredients: number[];
   selectedRating: number | null;
+  selectedProductType: string | null;
   promotionOnly: boolean;
   featuredOnly: boolean;
 
@@ -48,6 +49,8 @@ interface FilterStore {
   setBrandCounts: (counts: Record<number, number>) => void;
   ingredientCounts: Record<number, number>; // ingredient_id -> product_count
   setIngredientCounts: (counts: Record<number, number>) => void;
+  productTypeCounts: Record<string, { name: string; count: number }>; // slug -> { name, count }
+  setProductTypeCounts: (counts: Record<string, { name: string; count: number }>) => void;
 
   // ── Mutations ───────────────────────────────────────────────────────
   setSelectedMin: (v: number) => void;
@@ -59,6 +62,8 @@ interface FilterStore {
   toggleIngredient: (id: number) => void;
   setSelectedIngredients: (ids: number[]) => void;
   setSelectedRating: (r: number | null) => void;
+  setSelectedProductType: (slug: string | null) => void;
+  toggleProductType: (slug: string) => void;
   setPromotionOnly: (v: boolean) => void;
   setFeaturedOnly: (v: boolean) => void;
   resetFilters: () => void;
@@ -99,6 +104,7 @@ const useFilterStore = create<FilterStore>((set, get) => ({
   selectedCategories: [],
   selectedIngredients: [],
   selectedRating: null,
+  selectedProductType: null,
   promotionOnly: false,
   featuredOnly: false,
 
@@ -107,6 +113,8 @@ const useFilterStore = create<FilterStore>((set, get) => ({
   setBrandCounts: (counts) => set({ brandCounts: counts }),
   ingredientCounts: {},
   setIngredientCounts: (counts) => set({ ingredientCounts: counts }),
+  productTypeCounts: {},
+  setProductTypeCounts: (counts) => set({ productTypeCounts: counts }),
 
   // ── Mutations ─────────────────────────────────────────────────────────────
   setSelectedMin: (v) => set({ selectedMin: v }),
@@ -128,9 +136,6 @@ const useFilterStore = create<FilterStore>((set, get) => ({
         : [...s.selectedCategories, id],
     })),
 
-  setSelectedRating: (r) => set({ selectedRating: r }),
-  setPromotionOnly: (v) => set({ promotionOnly: v }),
-  setFeaturedOnly: (v) => set({ featuredOnly: v }),
   setSelectedCategories: (ids) => set({ selectedCategories: ids }),
 
   toggleIngredient: (id) =>
@@ -142,6 +147,18 @@ const useFilterStore = create<FilterStore>((set, get) => ({
 
   setSelectedIngredients: (ids) => set({ selectedIngredients: ids }),
 
+  setSelectedRating: (r) => set({ selectedRating: r }),
+
+  setSelectedProductType: (slug) => set({ selectedProductType: slug }),
+  
+  toggleProductType: (slug) =>
+    set((s) => ({
+      selectedProductType: s.selectedProductType === slug ? null : slug,
+    })),
+
+  setPromotionOnly: (v) => set({ promotionOnly: v }),
+  setFeaturedOnly: (v) => set({ featuredOnly: v }),
+
   resetFilters: () => {
     const { globalMin, globalMax } = get();
     set({
@@ -151,6 +168,7 @@ const useFilterStore = create<FilterStore>((set, get) => ({
       selectedCategories: [],
       selectedIngredients: [],
       selectedRating: null,
+      selectedProductType: null,
       promotionOnly: false,
       featuredOnly: false,
     });

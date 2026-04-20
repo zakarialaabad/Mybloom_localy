@@ -37,8 +37,8 @@ function SnapchatIcon({ className }: { className?: string }) {
 
 export default function Footer() {
   const [contact, setContact] = useState<{ email: string | null; phone: string | null }>({
-    email: null,
-    phone: null,
+    email: 'Bloomparfums1@gmail.com',
+    phone: '06 08 65 62 71',
   });
 
   useEffect(() => {
@@ -67,11 +67,11 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-3">
               {[
-                { href: 'https://instagram.com', icon: <Instagram className="w-[18px] h-[18px]" />, label: 'Instagram' },
-                { href: 'https://facebook.com',  icon: <Facebook className="w-[18px] h-[18px]" />,  label: 'Facebook'  },
-                { href: 'https://tiktok.com',    icon: <TikTokIcon className="w-[16px] h-[16px]" />, label: 'TikTok'    },
-                { href: 'https://snapchat.com',  icon: <SnapchatIcon className="w-[18px] h-[18px]" />, label: 'Snapchat' },
-                { href: 'https://wa.me/212611955060', icon: <WhatsAppIcon className="w-[17px] h-[17px]" />, label: 'WhatsApp' },
+                { href: 'https://www.instagram.com/my_bloom.ma?igsh=MTV4Y29odHI4b3NqNw%3D%3D&utm_source=qr', icon: <Instagram className="w-[18px] h-[18px]" />, label: 'Instagram' },
+                { href: 'https://www.facebook.com/share/1AzUrWv47t/?mibextid=wwXIfr',  icon: <Facebook className="w-[18px] h-[18px]" />,  label: 'Facebook'  },
+                { href: 'https://www.tiktok.com/@my.bloom.ma?_r=1&_t=ZS-95fpT2RLgaP',    icon: <TikTokIcon className="w-[16px] h-[16px]" />, label: 'TikTok'    },
+                { href: 'https://www.snapchat.com/add/bloom_parfum?share_id=AAULxDsQR66nH9XmS_Hb_A&locale=fr_GB',  icon: <SnapchatIcon className="w-[18px] h-[18px]" />, label: 'Snapchat' },
+                { href: 'https://wa.me/212608656271', icon: <WhatsAppIcon className="w-[17px] h-[17px]" />, label: 'WhatsApp' },
               ].map(({ href, icon, label }) => (
                 <Link
                   key={label}
