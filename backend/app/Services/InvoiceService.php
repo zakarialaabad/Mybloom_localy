@@ -13,7 +13,7 @@ class InvoiceService
     public function generatePdf(Order $order): string
     {
         // Ensure all necessary relations are loaded
-        $order->loadMissing(['items.product.images', 'shippingMethod', 'coupon']);
+        $order->loadMissing(['items.product.images', 'items.product.productType', 'shippingMethod', 'coupon']);
 
         try {
             $pdf = Pdf::loadView('invoices.order', ['order' => $order])

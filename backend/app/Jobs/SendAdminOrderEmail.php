@@ -35,7 +35,7 @@ class SendAdminOrderEmail implements ShouldQueue
     public function handle(GmailService $gmailService, InvoiceService $invoiceService): void
     {
         // Load full order with all relations needed for email + invoice
-        $order = Order::with(['items.product.images', 'shippingMethod', 'coupon'])
+        $order = Order::with(['items.product.images', 'items.product.productType', 'shippingMethod', 'coupon'])
             ->where('order_number', $this->orderNumber)
             ->first();
 
@@ -105,13 +105,15 @@ class SendAdminOrderEmail implements ShouldQueue
         foreach ($order->items as $item) {
             $productName = $item->product->name ?? 'Unknown Product';
             $sizeLabel   = $item->size_label ? " ({$item->size_label})" : '';
+            $productType = $item->product?->productType?->name ?? '';
+            $typeHtml    = $productType ? "<br><span style='font-size:11px;color:#999;'>{$productType}</span>" : '';
             $subtotal    = number_format((float) $item->unit_price * $item->quantity, 2);
             $unitPrice   = number_format((float) $item->unit_price, 2);
 
             $itemsHtml .= "
             <tr>
               <td style='padding:10px 8px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#333;'>
-                {$productName}{$sizeLabel}
+                {$productName}{$sizeLabel}{$typeHtml}
               </td>
               <td style='padding:10px 8px;border-bottom:1px solid #f0f0f0;text-align:center;font-size:14px;color:#555;'>
                 {$item->quantity}

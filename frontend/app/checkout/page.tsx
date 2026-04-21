@@ -449,7 +449,8 @@ export default function CheckoutPage() {
                       </div>
                       <div className="flex-1">
                         <h4 className="font-serif font-bold text-gray-900 text-sm">{item.productName}</h4>
-                        <p className="font-serif italic text-xs text-gray-400 mt-0.5">{item.sizeLabel}</p>
+                        {item.sizeLabel && <p className="font-serif italic text-xs text-gray-400 mt-0.5">{item.sizeLabel}</p>}
+                        {item.productType && <p className="font-serif italic text-xs text-gray-400 mt-0.5">{item.productType}</p>}
                       </div>
                       <div className="font-serif font-bold italic text-gray-900 text-base">{item.unitPrice * item.quantity} DH</div>
                     </div>

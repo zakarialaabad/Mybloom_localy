@@ -146,6 +146,9 @@
           @if($item->size_label)
             <div class="product-details">{{ $item->size_label }}</div>
           @endif
+          @if($item->product?->productType?->name)
+            <div class="product-details">{{ $item->product->productType->name }}</div>
+          @endif
         </td>
         <td style="text-align: center;">{{ $item->quantity }}</td>
         <td style="text-align: right;">{{ number_format((float)$item->unit_price, 2, '.', '') }} DH</td>
@@ -186,8 +189,8 @@
   <div class="footer">
     <div class="thank-you">Thank you for your purchase with MyBloom</div>
     <div class="footer-contact">
-      &#9993; <a href="mailto:mybloom@gmail.com">mybloom@gmail.com</a><br>
-      <div style="margin-top: 6px;" class="phone">+212 600 000 000</div>
+      <a href="mailto:Bloomparfums1@gmail.com">Bloomparfums1@gmail.com</a><br>
+      <div style="margin-top: 6px;" class="phone">+212 608 656 271</div>
     </div>
   </div>
 
