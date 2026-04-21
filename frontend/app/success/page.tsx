@@ -45,25 +45,52 @@ export default function OrderSuccessPage() {
   const phone = orderData?.phone ?? '';
   const city  = orderData?.city  ?? 'MAROC';
 
+  const [downloadError, setDownloadError] = useState<string | null>(null);
+
+  const attemptDownload = async (): Promise<boolean> => {
+    if (!order || !phone) return false;
+    const pdfUrl = `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${order}/download?phone=${encodeURIComponent(phone)}`;
+    try {
+      const res = await fetch(pdfUrl);
+      if (res.ok) {
+        const contentType = res.headers.get('Content-Type') || '';
+        if (contentType.includes('application/pdf')) {
+          const blob = await res.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = blobUrl;
+          link.download = `invoice-${order}.pdf`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+          setDownloadError(null);
+          return true;
+        }
+
+        const text = await res.text();
+        try { console.error('Invoice endpoint returned non-pdf content:', JSON.parse(text)); } catch { console.error('Invoice endpoint returned non-pdf content:', text); }
+        setDownloadError('Le serveur a renvoyé un contenu inattendu.');
+      } else {
+        try {
+          const err = await res.json();
+          console.error('Invoice download failed:', res.status, err);
+          setDownloadError(err.message || 'Erreur lors du téléchargement de la facture.');
+        } catch (e) {
+          console.error('Invoice download failed with status', res.status);
+          setDownloadError('Erreur lors du téléchargement de la facture.');
+        }
+      }
+    } catch (e) {
+      console.error('Invoice download error:', e);
+      setDownloadError('Erreur réseau lors du téléchargement.');
+    }
+    return false;
+  };
+
   useEffect(() => {
     if (!order || !phone) return;
-    const timer = setTimeout(async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${order}/download?phone=${encodeURIComponent(phone)}`
-        );
-        if (!res.ok) return;
-        const blob = await res.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = blobUrl;
-        link.download = `invoice-${order}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(blobUrl);
-      } catch { /* non-critical */ }
-    }, 1500);
+    const timer = setTimeout(() => { void attemptDownload(); }, 1500);
     return () => clearTimeout(timer);
   }, [order, phone]);
 

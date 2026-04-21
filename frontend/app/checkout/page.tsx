@@ -218,23 +218,53 @@ export default function CheckoutPage() {
       // Télécharger automatiquement le PDF de la commande
       try {
         const pdfUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api'}/v1/invoices/${result.order_number}/download?phone=${encodeURIComponent(normalizedPhone)}`;
-        
-        // Fetch le PDF et le télécharger
-        const response = await fetch(pdfUrl);
-        if (response.ok) {
-          const blob = await response.blob();
-          const url = window.URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `invoice-${result.order_number}.pdf`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          window.URL.revokeObjectURL(url);
+        try {
+          const response = await fetch(pdfUrl);
+          if (response.ok) {
+            const contentType = response.headers.get('Content-Type') || '';
+            if (contentType.includes('application/pdf')) {
+              const blob = await response.blob();
+              const url = window.URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `invoice-${result.order_number}.pdf`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              window.URL.revokeObjectURL(url);
+            } else {
+              const text = await response.text();
+              try { console.error('Invoice endpoint returned non-pdf content:', JSON.parse(text)); } catch { console.error('Invoice endpoint returned non-pdf content:', text); }
+              // Fallback to let browser handle it
+              const fallback = document.createElement('a');
+              fallback.href = pdfUrl;
+              fallback.target = '_blank';
+              fallback.rel = 'noopener noreferrer';
+              document.body.appendChild(fallback);
+              fallback.click();
+              document.body.removeChild(fallback);
+            }
+          } else {
+            try {
+              const err = await response.json();
+              console.error('Invoice download failed:', response.status, err);
+            } catch (e) {
+              console.error('Invoice download failed with status', response.status);
+            }
+            const fallback = document.createElement('a');
+            fallback.href = pdfUrl;
+            fallback.target = '_blank';
+            fallback.rel = 'noopener noreferrer';
+            document.body.appendChild(fallback);
+            fallback.click();
+            document.body.removeChild(fallback);
+          }
+        } catch (e) {
+          console.error('Erreur lors du téléchargement du PDF:', e);
+          try { window.open(pdfUrl, '_blank', 'noopener'); } catch {}
         }
       } catch (pdfError) {
-        console.error('Erreur lors du téléchargement du PDF:', pdfError);
-        // Ne pas bloquer la redirection si le PDF échoue
+        console.error('Erreur inattendue lors du téléchargement du PDF:', pdfError);
       }
       
       // Store order details in sessionStorage to avoid PII in URL params
