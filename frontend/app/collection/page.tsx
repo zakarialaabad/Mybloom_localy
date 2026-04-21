@@ -235,7 +235,12 @@ export default function CollectionPage() {
     if (productType) params['product_type'] = productType;
 
     const isGift = searchParams.get('is_gift');
-    if (isGift === 'true' || isGift === '1') params['is_gift'] = 1;
+    if (isGift === 'true' || isGift === '1') {
+      console.log('[buildFilterParams] Adding is_gift=1 to params (URL param value:', isGift, ')');
+      params['is_gift'] = 1;
+    } else if (isGift !== null) {
+      console.log('[buildFilterParams] URL has is_gift but value is:', isGift, '(not matching "true" or "1")');
+    }
 
     if (featuredOnly) {
       params['is_featured'] = 1;
@@ -261,6 +266,7 @@ export default function CollectionPage() {
   // First load / cache hits → instant (0ms). Filter changes → debounced (400ms).
   useEffect(() => {
     const params = buildFilterParams();
+    console.log('[collection page] buildFilterParams result:', params);
     const cacheKey = `collection:${JSON.stringify(params)}`;
 
     // On first load or when cache is fresh, skip the 400ms debounce entirely.

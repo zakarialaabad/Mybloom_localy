@@ -296,13 +296,17 @@ class ProductJsonSeeder extends Seeder
 
         if ($existing) {
             $productId = $existing->id;
-            // Still update product_type_id if it was missing
+            // Update product_type_id and other important fields if they were missing or changed
+            $updateData = ['updated_at' => now()];
             if (!$existing->product_type_id && $productTypeId) {
-                DB::table('products')->where('id', $existing->id)->update([
-                    'product_type_id' => $productTypeId,
-                    'updated_at'      => now(),
-                ]);
+                $updateData['product_type_id'] = $productTypeId;
             }
+            // IMPORTANT: Always update these fields from JSON to ensure data integrity
+            $updateData['is_gift'] = $jsonProduct['is_gift'] ?? false;
+            $updateData['is_best_seller'] = $jsonProduct['is_best_seller'] ?? false;
+            $updateData['is_recommended'] = $jsonProduct['is_recommended'] ?? false;
+            
+            DB::table('products')->where('id', $existing->id)->update($updateData);
             // Continue to process images for existing products (don't return early)
         } else {
             // Generate unique slug
@@ -333,6 +337,7 @@ class ProductJsonSeeder extends Seeder
                 'price' => $jsonProduct['price'] ?? 0,
                 'original_price' => $jsonProduct['original_price'],
                 'stock' => $jsonProduct['stock'] ?? 0,
+                'unit' => $jsonProduct['unit'] ?? 'ml',
                 'is_active' => true,
                 'is_featured' => false,
                 'is_best_seller' => $jsonProduct['is_best_seller'] ?? false,
@@ -436,6 +441,7 @@ class ProductJsonSeeder extends Seeder
                 DB::table('product_variants')->insert([
                     'product_id' => $productId,
                     'size' => $variant['size'] ?? 0,
+                    'unit' => $variant['unit'] ?? 'ml',
                     'price' => $variant['price'] ?? $jsonProduct['price'] ?? 0,
                     'stock_quantity' => $variant['stock_quantity'] ?? $variant['stock'] ?? $jsonProduct['stock'] ?? 0,
                     'is_default' => $sortOrder === 0, // First variant is default

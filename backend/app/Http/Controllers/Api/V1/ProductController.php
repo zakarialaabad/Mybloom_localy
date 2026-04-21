@@ -21,6 +21,13 @@ class ProductController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection
     {
+        // DEBUG: Log all query parameters
+        \Log::info('ProductController::index - Query params: ' . json_encode($request->query()));
+        \Log::info('ProductController::index - is_gift param filled? ' . ($request->filled('is_gift') ? 'YES' : 'NO'));
+        if ($request->filled('is_gift')) {
+            \Log::info('ProductController::index - is_gift value: ' . $request->query('is_gift'));
+        }
+        
         $query = Product::with(['brand', 'category', 'productType', 'variants', 'ingredientItems', 'images' => fn ($q) => $q->orderBy('sort_order')])
             ->withAvg('reviews as avg_rating', 'rating')
             ->withCount('reviews as review_count')
@@ -63,7 +70,10 @@ class ProductController extends Controller
         }
 
         if ($request->filled('is_gift')) {
+            \Log::info('ProductController::index - Applying is_gift filter (value: ' . $request->query('is_gift') . ')');
             $query->where('is_gift', true);
+        } else {
+            \Log::info('ProductController::index - is_gift parameter NOT filled or not present');
         }
 
         if ($productType = $request->query('product_type')) {
@@ -152,7 +162,50 @@ class ProductController extends Controller
             return $query->get();
         });
 
+        \Log::info('ProductController::index - Returning ' . count($products) . ' products for cache key: ' . $cacheKey);
+
         return ProductResource::collection($products);
+    }
+
+    /**
+     * GET /api/v1/products/test/is-gift
+     * Diagnostic endpoint to test if is_gift filter works
+     */
+    public function testIsGiftFilter(Request $request): JsonResponse
+    {
+        $isGiftParam = $request->query('is_gift');
+        $isGiftFilled = $request->filled('is_gift');
+        
+        // Count all products
+        $totalProducts = Product::where('is_active', true)->count();
+        
+        // Count products with is_gift=true
+        $giftProducts = Product::where('is_active', true)->where('is_gift', true)->count();
+        
+        // Test the filter with direct query
+        $filteredQuery = Product::where('is_active', true);
+        if ($request->filled('is_gift')) {
+            $filteredQuery->where('is_gift', true);
+        }
+        $filteredCount = $filteredQuery->count();
+        
+        return response()->json([
+            'status' => 'ok',
+            'request' => [
+                'query_params' => $request->query(),
+                'is_gift_param_value' => $isGiftParam,
+                'is_gift_filled' => $isGiftFilled,
+            ],
+            'database' => [
+                'total_active_products' => $totalProducts,
+                'products_with_is_gift_true' => $giftProducts,
+                'filtered_results' => $filteredCount,
+            ],
+            'samples' => [
+                'product_with_is_gift_true' => Product::where('is_active', true)->where('is_gift', true)->select('id', 'name', 'is_gift')->first(),
+                'all_is_gift_values' => Product::where('is_active', true)->select('id', 'name', 'is_gift')->limit(5)->get(),
+            ],
+        ]);
     }
 
     /**

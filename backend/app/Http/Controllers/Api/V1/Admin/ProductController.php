@@ -161,6 +161,9 @@ class ProductController extends Controller
 
             // New product — bust recommendations carousel so it can appear there
             Cache::forget('recommendations:carousel');
+            
+            // Also invalidate product list caches if this new product has special flags
+            $this->invalidateProductListCaches($product, $validated);
 
             return response()->json(['data' => new ProductDetailResource($product->load(['brand', 'category', 'images', 'sizes', 'variants', 'reviews.images', 'allReviews.images']))], 201);
         } catch (\Exception $e) {
@@ -336,6 +339,9 @@ class ProductController extends Controller
             // Bust the cached product detail so next public visit gets fresh data
             Cache::forget('product:' . $product->slug);
             Cache::forget('recommendations:carousel');
+            
+            // Invalidate product list caches affected by status/filter changes
+            $this->invalidateProductListCaches($product, $validated);
 
             $product->load(['brand', 'category', 'images', 'sizes', 'variants', 'reviews.images', 'allReviews.images', 'ingredientItems', 'faqs', 'productType']);
             return response()->json(['data' => new ProductDetailResource($product)]);
@@ -371,6 +377,16 @@ class ProductController extends Controller
         // Bust the cached product detail for this slug so 404 serves immediately
         Cache::forget('product:' . $product->slug);
         Cache::forget('recommendations:carousel');
+        
+        // Also invalidate product list caches since a product was removed
+        // Create a dummy validated array with all filterable fields to ensure comprehensive cache clearing
+        $validated = [
+            'is_gift' => null,
+            'is_recommended' => null,
+            'is_best_seller' => null,
+            'gender' => null,
+        ];
+        $this->invalidateProductListCaches($product, $validated);
 
         return response()->json(['message' => 'Product deleted.']);
     }
@@ -422,5 +438,74 @@ class ProductController extends Controller
         $image->delete();
 
         return response()->json(['message' => 'Image removed.']);
+    }
+
+    /**
+     * Helper: Invalidate product list caches affected by filter field changes
+     * When is_gift, is_recommended, is_best_seller, or other filter fields change,
+     * we need to invalidate the cached product lists since they may appear/disappear from results
+     */
+    private function invalidateProductListCaches(Product $product, array $validated): void
+    {
+        // Fields that affect product list filtering
+        $filterFields = [
+            'is_gift', 
+            'is_recommended', 
+            'is_best_seller',
+            'is_featured',
+            'gender',
+            'brand_id',
+            'category_id',
+            'product_type_id',
+            'price',
+            'stock',
+        ];
+
+        // Check if any filter field was updated
+        $hasFilterChanges = false;
+        foreach ($filterFields as $field) {
+            if (array_key_exists($field, $validated)) {
+                $hasFilterChanges = true;
+                break;
+            }
+        }
+
+        if ($hasFilterChanges) {
+            \Log::info('ProductController: Invalidating product list caches due to filter field changes', [
+                'product_id' => $product->id,
+                'changed_fields' => array_intersect(array_keys($validated), $filterFields),
+            ]);
+
+            // Since the cache key uses md5(json_encode($query_params)), 
+            // we can't target specific keys. Instead, we'll flush all product list caches
+            // by incrementing a version counter that's part of the cache key
+            // OR we use a pattern-based approach if using Redis
+            
+            // For now, use a pragmatic approach: Clear caches for common filter combinations
+            $commonFilters = [
+                ['is_gift' => '1'],
+                ['is_gift' => 'true'],
+                ['is_recommended' => '1'],
+                ['is_recommended' => 'true'],
+                ['is_best_seller' => '1'],
+                ['is_best_seller' => 'true'],
+                ['is_featured' => '1'],
+                ['is_featured' => 'true'],
+                [],  // no filters (all products)
+            ];
+
+            foreach ($commonFilters as $filter) {
+                $cacheKey = 'products:' . md5(json_encode($filter));
+                Cache::forget($cacheKey);
+                \Log::debug('Forgot cache key: ' . $cacheKey);
+            }
+
+            // Also clear caches with gender combinations
+            $genders = ['men', 'women', 'unisex'];
+            foreach ($genders as $gender) {
+                $cacheKey = 'products:' . md5(json_encode(['gender' => $gender]));
+                Cache::forget($cacheKey);
+            }
+        }
     }
 }

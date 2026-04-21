@@ -147,6 +147,7 @@ const useCatalogStore = create<CatalogStore>((set, get) => ({
     
     // 3. Fetch fresh data from API
     console.log(`[CatalogStore] Cache MISS for key: ${key}, fetching...`);
+    console.log(`[CatalogStore] Parameters being sent to API:`, JSON.stringify(params));
     set((state) => ({
       loading: { ...state.loading, [key]: true }
     }));
@@ -155,7 +156,7 @@ const useCatalogStore = create<CatalogStore>((set, get) => ({
       try {
         console.log(`[CatalogStore] Calling productService.list with params:`, params);
         const result = await productService.list(params);
-        console.log(`[CatalogStore] API Response:`, result);
+        console.log(`[CatalogStore] API Response - received ${Array.isArray(result) ? result.length : result.data?.length || 0} products`);
         
         const data = Array.isArray(result) ? result : result.data || [];
         console.log(`[CatalogStore] Extracted ${data.length} products from response for key: ${key}`);

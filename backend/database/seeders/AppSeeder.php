@@ -16,7 +16,6 @@ class AppSeeder extends Seeder
             AdminSeeder::class,
             ProductJsonSeeder::class,
             IngredientImageSeeder::class,            // fix image_url=null left by ProductJsonSeeder
-            BrandLogoSeeder::class,
             ShippingMethodSeeder::class,
             RandomProductFlagsSeeder::class,
             CommentReviewSeeder::class,            

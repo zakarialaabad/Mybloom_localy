@@ -51,6 +51,7 @@ Route::prefix('api')->group(function () {
             // Catalogue
             Route::get('/products/aggregates',          [ProductController::class, 'aggregates']);
             Route::get('/products',                    [ProductController::class, 'index']);
+            Route::get('/products/test/is-gift',       [ProductController::class, 'testIsGiftFilter']);  // Diagnostic endpoint
             Route::get('/products/{slug}',             [ProductController::class, 'show']);
             Route::get('/brands',                      [BrandController::class, 'index']);
             Route::get('/categories',                  [CategoryController::class, 'index']);
