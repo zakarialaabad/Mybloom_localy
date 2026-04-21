@@ -180,17 +180,9 @@
     }
   }
 
-  /* Center last product card on mobile when grid has an odd number of items
-     (e.g. 1 or 3 items with grid-cols-2). Keeps desktop unchanged. */
-  @media (max-width: 767px) {
-    .product-grid > :nth-last-child(1):nth-child(odd) {
-      grid-column: 1 / -1;
-      justify-self: center;
-      /* allow the card to shrink from its default w-full so it can be centered */
-      width: auto !important;
-      max-width: 340px;
-    }
-  }
+  /* Center last product card on mobile when grid has an odd number of items.
+     Uses calc to ensure it exactly matches the width of the other columns 
+
 
   /* Utility for Hanken Grotesk font family */
   .font-hanken {
