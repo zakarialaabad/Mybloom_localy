@@ -230,7 +230,7 @@ export default function EditProductPage() {
         if (product.variants && product.variants.length > 0) {
           setVariants(product.variants.map(v => ({
             size: String(v.size),
-            unit: 'ml',
+            unit: v.unit ?? 'ml',
             price: String(v.price),
             promotion: String(v.promotion_percent ?? 0),
             stock: String(v.stock_quantity ?? ''),

@@ -83,6 +83,7 @@ class ProductResource extends JsonResource
                     return [
                         'id'                => $v->id,
                         'size'              => (int) $v->size,
+                        'unit'              => $v->unit ?? 'ml',
                         'price'             => $base,
                         'promotion_percent' => $promo,
                         'final_price'       => $final,

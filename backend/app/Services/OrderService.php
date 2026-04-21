@@ -53,6 +53,7 @@ class OrderService
                 $availableStock = $product->stock; // Default to product-level stock
                 $sizeLabel      = null;
                 $unitPrice      = (float) $product->price;
+                $variant        = null;
 
                 if ($sizeId > 0) {
                     // Try new ProductVariant system first
@@ -61,7 +62,8 @@ class OrderService
                     if ($variant && $variant->product_id === $product->id) {
                         // ✅ Use variant-level stock & price (both now correctly map to database columns)
                         $availableStock = (int) ($variant->stock_quantity ?? 0);
-                        $sizeLabel      = "{$variant->size}ml";
+                        $unit           = $variant->unit ?? 'ml';
+                        $sizeLabel      = "{$variant->size}{$unit}";
                         $unitPrice      = (float) $variant->price;  // ✅ FIX: price (not final_price)
                     } else {
                         // Fall back to legacy ProductSize system
@@ -87,6 +89,7 @@ class OrderService
 
                 return [
                     'product_id'  => $item['product_id'],
+                    'variant_id'  => $variant?->id,
                     'size_id'     => $sizeId,
                     'size_label'  => $sizeLabel,
                     'quantity'    => (int) $item['quantity'],
@@ -148,22 +151,20 @@ class OrderService
             foreach ($resolvedItems as $item) {
                 $order->items()->create([
                     'product_id' => $item['product_id'],
+                    'variant_id' => $item['variant_id'],
                     'size_label' => $item['size_label'],
                     'quantity'   => $item['quantity'],
                     'unit_price' => $item['unit_price'],
                 ]);
 
-                // ✅ Decrement stock at variant level if size_id provided
-                if ($item['size_id'] > 0) {
-                    // Try new ProductVariant system
-                    $variant = ProductVariant::find($item['size_id']);
-                    if ($variant) {
-                        $variant->decrement('stock_quantity', $item['quantity']);
-                    } else {
-                        // Fall back to legacy ProductSize (uses 'stock' column, not 'stock_quantity')
-                        ProductSize::where('id', $item['size_id'])
-                            ->decrement('stock', $item['quantity']);  // ✅ FIX: stock (not stock_quantity)
-                    }
+                // Decrement stock using the already-resolved variant_id
+                if ($item['variant_id']) {
+                    ProductVariant::where('id', $item['variant_id'])
+                        ->decrement('stock_quantity', $item['quantity']);
+                } elseif ($item['size_id'] > 0) {
+                    // Legacy ProductSize fallback
+                    ProductSize::where('id', $item['size_id'])
+                        ->decrement('stock', $item['quantity']);
                 } else {
                     // No variant → decrement product-level stock
                     Product::where('id', $item['product_id'])
@@ -200,6 +201,8 @@ class OrderService
     public function recordStatusChange(Order $order, string $newStatus, string $label, ?string $location = null): void
     {
         DB::transaction(function () use ($order, $newStatus, $label, $location) {
+            $previousStatus = $order->status;
+
             $order->update(['status' => $newStatus]);
 
             OrderStatusHistory::create([
@@ -208,6 +211,30 @@ class OrderService
                 'label'    => $label,
                 'location' => $location,
             ]);
+
+            // Restore stock when an order is cancelled (only once: skip if already cancelled)
+            if ($newStatus === 'cancelled' && $previousStatus !== 'cancelled') {
+                $this->restoreStock($order);
+            }
         });
+    }
+
+    /**
+     * Restore stock for all items of a cancelled order.
+     * Increments the same stock field that was decremented at order creation.
+     */
+    private function restoreStock(Order $order): void
+    {
+        $order->loadMissing('items');
+
+        foreach ($order->items as $item) {
+            if ($item->variant_id) {
+                ProductVariant::where('id', $item->variant_id)
+                    ->increment('stock_quantity', $item->quantity);
+            } else {
+                Product::where('id', $item->product_id)
+                    ->increment('stock', $item->quantity);
+            }
+        }
     }
 }

@@ -82,12 +82,15 @@ export default function WishlistPage() {
   };
 
   const handleAddToCart = (product: Product) => {
+    const defaultVariant = product.variants?.find(v => v.is_default) ?? product.variants?.[0];
+    const sizeLabel = defaultVariant ? `${defaultVariant.size}${defaultVariant.unit ?? 'ml'}` : null;
     addItem({
       productId: product.id,
       productName: product.name,
       slug: product.slug,
-      sizeId: 0,
-      sizeLabel: null,
+      productType: product.product_type?.name,
+      sizeId: defaultVariant?.id ?? 0,
+      sizeLabel,
       quantity: 1,
       unitPrice: product.min_price || 0,
       originalPrice: (product.original_price && product.original_price > (product.min_price || 0)) ? product.original_price : undefined,

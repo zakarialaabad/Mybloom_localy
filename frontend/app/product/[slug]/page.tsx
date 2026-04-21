@@ -31,6 +31,11 @@ const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea4779426
 function productToCard(p: Product): ProductCardProps {
   const imageUrl = p.primary_image || p.images?.[0]?.image_url || FALLBACK_IMG;
   const secondaryImageUrl = p.images?.[1]?.image_url || undefined;
+  const defaultVariant = p.variants?.find(v => v.is_default) ?? p.variants?.[0];
+  const defaultSizeLabel = defaultVariant ? `${defaultVariant.size}${defaultVariant.unit ?? 'ml'}` : undefined;
+  const defaultSizeId = defaultVariant?.id;
+  const defaultVariantPrice = defaultVariant?.final_price;
+  const defaultVariantOriginalPrice = defaultVariant?.original_price ?? undefined;
   
   return {
     id:            p.id,
@@ -38,8 +43,8 @@ function productToCard(p: Product): ProductCardProps {
     name:          p.name,
     subtitle:      p.brand?.name ?? '',
     description:   p.subtitle ?? '',
-    price:         p.min_price ?? 0,
-    originalPrice: p.max_price ?? p.min_price ?? 0,
+    price:         defaultVariantPrice ?? p.min_price ?? 0,
+    originalPrice: defaultVariantOriginalPrice ?? defaultVariantPrice ?? p.max_price ?? p.min_price ?? 0,
     rating:        p.avg_rating ?? 0,
     reviewCount:   p.review_count ?? 0,
     imageUrl,
@@ -48,6 +53,10 @@ function productToCard(p: Product): ProductCardProps {
     badge:         p.badges?.[0],
     category:      p.category?.name?.toLowerCase() === 'parfum' ? (p.product_type?.name ?? p.category?.name) : p.category?.name,
     productType:   p.category?.name?.toLowerCase() === 'parfum' ? (p.brand?.name ?? p.product_type?.name ?? '') : (p.product_type?.name ?? ''),
+    defaultSizeLabel,
+    defaultSizeId,
+    defaultVariantPrice,
+    defaultVariantOriginalPrice,
   };
 }
 
@@ -312,12 +321,13 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       return;
     }
     const sizeLabel = selectedSize.size > 0
-      ? `${selectedSize.size}ml`
+      ? `${selectedSize.size}${selectedSize.unit ?? 'ml'}`
       : null;
     addItem({
       productId:     product.id,
       productName:   product.name,
       slug:          product.slug,
+      productType:   product.product_type?.name,
       sizeId:        selectedSize.id,
       sizeLabel,
       quantity,
@@ -335,12 +345,13 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       return;
     }
     const sizeLabel = selectedSize.size > 0
-      ? `${selectedSize.size}ml`
+      ? `${selectedSize.size}${selectedSize.unit ?? 'ml'}`
       : null;
     addItem({
       productId:   product.id,
       productName: product.name,
       slug:        product.slug,
+      productType: product.product_type?.name,
       sizeId:      selectedSize.id,
       sizeLabel,
       quantity,
@@ -702,7 +713,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                         </div>
                       )}
                       <span className={`font-serif text-xl font-bold italic ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
-                        {variant.size}ml
+                        {variant.size}{variant.unit ?? 'ml'}
                       </span>
                       <span className={`font-serif text-base italic ${isSelected ? 'text-gray-600' : 'text-gray-400'}`}>
                         {variant.final_price} DH
@@ -748,7 +759,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                         </div>
                       )}
                       <span className={`font-serif text-xl font-bold italic ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
-                        {size.volume_ml}ml
+                        {size.volume_ml}{(size as any).unit ?? 'ml'}
                       </span>
                       <span className={`font-serif text-base italic ${isSelected ? 'text-gray-600' : 'text-gray-400'}`}>
                         {size.price} DH

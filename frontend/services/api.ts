@@ -143,7 +143,8 @@ export interface ProductSize {
 
 export interface ProductVariant {
   id: number;
-  size: number;           // in ml
+  size: number;           // in ml or g
+  unit?: 'ml' | 'g';     // unit of measure
   price: number;          // base price before promotion
   final_price: number;    // price after promotion
   original_price: number | null; // base price shown crossed-out (null if no promo)
@@ -516,6 +517,7 @@ export interface AdminProduct {
   category: { id: number; name: string; slug: string } | null;
   brand: { id: number; name: string; slug: string } | null;
   product_type: { id: number; name: string; slug: string } | null;
+  variants?: { id: number; size: number; unit?: 'ml' | 'g'; price: number; final_price: number; original_price: number | null; promotion_percent: number; is_default: boolean; stock_quantity: number }[];
   created_at: string;
 }
 
@@ -537,7 +539,7 @@ export interface AdminProductDetail {
   category: { id: number; name: string } | null;
   product_type: { id: number; name: string } | null;
   images: { id: number; image_url: string; is_primary: boolean; sort_order: number }[];
-  variants: { id: number; size: number; price: number; final_price: number; original_price: number | null; promotion_percent: number; is_default: boolean; stock_quantity: number }[];
+  variants: { id: number; size: number; unit?: 'ml' | 'g'; price: number; final_price: number; original_price: number | null; promotion_percent: number; is_default: boolean; stock_quantity: number }[];
   sizes: { id: number; label: string; price_modifier: number; promotion_percent: number; stock_quantity: number }[];
   ingredients: { id: number; name: string; image_url: string | null }[];
   faqs: { id: number; question: string; answer: string }[];

@@ -80,8 +80,8 @@ export function ProductTable({
       className: 'w-[24%]',
       render: (product: AdminProduct) => {
         // Get the first variant size for display
-        const firstVariantSize = product.variants?.[0]?.size;
-        const sizeDisplay = firstVariantSize ? `${firstVariantSize}ml` : 'N/A';
+        const firstVariant = product.variants?.[0];
+        const sizeDisplay = firstVariant ? `${firstVariant.size}${firstVariant.unit ?? 'ml'}` : 'N/A';
         const typeDisplay = product.product_type?.name || 'No type';
         
         return (

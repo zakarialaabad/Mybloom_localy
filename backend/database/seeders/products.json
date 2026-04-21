@@ -14,7 +14,7 @@
                 "id": 1,
                 "name": "Summer in Bali",
                 "type_produit": "Body Butter",
-                "img_main": "\/images\/Summer in Bali Body Butter\/summer-in-bali-body-butter-img_main.jpg",
+                "img_main": "/images/Summer in Bali Body Butter/summer-in-bali-body-butter-img_main.jpg",
                 "subtitle": "Plongez dans la chaleur d'une sérénité tropicale",
                 "description": "Découvrez notre beurre corporel Summer in Bali, formule 100% naturelle enrichie en huile de sésame et pépins de raisin. Unifie le teint, atténue les taches pigmentaires avec hydratation profonde. Livraison rapide au Maroc, produit 100% original. Parfait usage quotidien.",
                 "price": 80,
@@ -36,7 +36,8 @@
                         "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "g"
                     }
                 ],
                 "ingredients": [
@@ -75,7 +76,7 @@
                 "id": 2,
                 "name": "Summer in Bali",
                 "type_produit": "Body Scrub",
-                "img_main": "\/images\/Summer in Bali Body Scrub\/summer-in-bali-body-scrub-img_main.jpg",
+                "img_main": "/images/Summer in Bali Body Scrub/summer-in-bali-body-scrub-img_main.jpg",
                 "subtitle": "Une exfoliation luxueuse inspirée de Bali pour révéler une peau douce, éclatante et parfaitement unifiée",
                 "description": "Gommage corporel Summer in Bali 100% naturel enrichi en huile pépins raisin et sésame. Élimine cellules mortes, unifie teint naturellement. Peau douce, lisse, lumineuse en une application. Livraison Maroc, authentique. Idéal exfoliation luxueuse quotidienne.",
                 "price": 80,
@@ -97,7 +98,8 @@
                         "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 10
+                        "stock_quantity": 10,
+                        "unit": "g"
                     }
                 ],
                 "ingredients": [
@@ -140,7 +142,7 @@
                 "id": 3,
                 "name": "A Lot of Love",
                 "type_produit": "Body Scrub",
-                "img_main": "\/images\/A lot of love Body Scrub\/a-lot-of-love-body-scrub-img_main.jpg",
+                "img_main": "/images/A lot of love Body Scrub/a-lot-of-love-body-scrub-img_main.jpg",
                 "subtitle": "L'élixir gommant qui révèle la douceur naturelle de votre peau",
                 "description": "Gommage A Lot of Love 100% naturel allie huile théier et jojoba puissante. Exfolie douceur, traite peau poule efficacement. Peau soyeuse lumineuse garantie. Livraison gratuite Maroc, produit authentique. Usage 2-3 fois semaine pour résultats optimaux.",
                 "price": 80,
@@ -162,7 +164,8 @@
                         "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 0
+                        "stock_quantity": 0,
+                        "unit": "g"
                     }
                 ],
                 "ingredients": [
@@ -201,7 +204,7 @@
                 "id": 4,
                 "name": "A Lot of Love",
                 "type_produit": "Body Butter",
-                "img_main": "\/images\/A lot of Love -- Body Butter\/a-lot-of-love-body-butter-img_main.jpg",
+                "img_main": "/images/A lot of Love -- Body Butter/a-lot-of-love-body-butter-img_main.jpg",
                 "subtitle": "Enveloppez votre peau d'un charme fruité irrésistible",
                 "description": "Beurre corporel A Lot of Love formule exclusive 100% naturelle traite efficacement peau poule. Enrichi théier et jojoba. Lisse progressivement, restaure texture soyeuse. Résultats visibles 2-3 semaines. Produit original, livraison rapide Maroc.",
                 "price": 80,
@@ -223,7 +226,8 @@
                         "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "g"
                     }
                 ],
                 "ingredients": [
@@ -267,7 +271,7 @@
                 "id": 5,
                 "name": "Sugar Pop",
                 "type_produit": "Body Scrub",
-                "img_main": "\/images\/Sugar Pop Body Scrub\/sugar-pop-body-scrub-img_main.jpg",
+                "img_main": "/images/Sugar Pop Body Scrub/sugar-pop-body-scrub-img_main.jpg",
                 "subtitle": "La douceur sucrée qui transforme votre peau dès la première utilisation",
                 "description": "Sugar Pop gommage 100% naturel fusion huile amande douce coco. Exfolie délicatement, traite boutons corps. Usage polyvalent comme gel douche. Peau douce garantie. Livraison express Maroc, authentique. Idéal tous types peau.",
                 "price": 80,
@@ -289,7 +293,8 @@
                         "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 0
+                        "stock_quantity": 0,
+                        "unit": "g"
                     }
                 ],
                 "ingredients": [
@@ -328,7 +333,7 @@
                 "id": 6,
                 "name": "Sugar Pop",
                 "type_produit": "Body Butter",
-                "img_main": "\/images\/Sugar Pop -- Body Butter\/sugar-pop-body-butter-img_main.jpg",
+                "img_main": "/images/Sugar Pop -- Body Butter/sugar-pop-body-butter-img_main.jpg",
                 "subtitle": "Douceur sucrée et peau de soie dès la première application",
                 "description": "Beurre Sugar Pop riche formule 100% naturelle. Amande douce, coco, karité, cacao, vitamine E. Élimine imperfections, hydrate profondément. Texture riche non-grasse. Produit original livraison rapide Maroc. Soin complet quotidien.",
                 "price": 80,
@@ -350,7 +355,8 @@
                         "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "g"
                     }
                 ],
                 "ingredients": [
@@ -399,7 +405,7 @@
                 "id": 7,
                 "name": "Cherry Tint",
                 "type_produit": "Tint Visage",
-                "img_main": "\/images\/Cherry Tint\/cherry-tint-img_main.jpg",
+                "img_main": "/images/Cherry Tint/cherry-tint-img_main.jpg",
                 "subtitle": "L'éclat naturel à portée de main",
                 "description": "Tint Cherry Tint teinte cerise naturelle eau rose aloe. Sublime joues lèvres fraîcheur naturelle. Hydratation délicate persistante toute journée. Formule sûre peau. Livraison Maroc. Maquillage naturel quotidien.",
                 "price": 50,
@@ -421,7 +427,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -460,7 +467,7 @@
                 "id": 8,
                 "name": "Sexy Bloom Hair Mist",
                 "type_produit": "Hair Mist",
-                "img_main": "\/images\/Sexy Bloom Hair Mist\/sexy-bloom-hair-mist-img_main.jpg",
+                "img_main": "/images/Sexy Bloom Hair Mist/sexy-bloom-hair-mist-img_main.jpg",
                 "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
                 "description": "Brume capillaire Sexy Bloom eau rose vitamine E. Parfum féminin captivant cheveux. Persistance toute journée sans alourdir. Usage cheveux corps. Produit original Maroc. Fragrance sensuelle quotidienne.",
                 "price": 50,
@@ -482,7 +489,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -516,7 +524,7 @@
                 "id": 9,
                 "name": "The Secret Hair Mist",
                 "type_produit": "Hair Mist",
-                "img_main": "\/images\/Thes sucret Hair Mist\/the-secret-hair-mist-img_main.jpg",
+                "img_main": "/images/Thes sucret Hair Mist/the-secret-hair-mist-img_main.jpg",
                 "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
                 "description": "Brume Secret eau rose vitamine E. Cheveux fragrance captivante toute journée sans alourdir. Polyvalente cheveux corps. Produit original livraison Maroc. Parfum féminin discret quotidien.",
                 "price": 50,
@@ -538,7 +546,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -572,7 +581,7 @@
                 "id": 10,
                 "name": "Paradis Adress Hair Mist",
                 "type_produit": "Hair Mist",
-                "img_main": "\/images\/Paradis Adresse Hair Mist\/paradis-adress-hair-mist-img_main.jpg",
+                "img_main": "/images/Paradis Adresse Hair Mist/paradis-adress-hair-mist-img_main.jpg",
                 "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
                 "description": "Brume Paradis Adress eau rose vitamine E. Cheveux fragrance féminine captivante toute journée. Sans alourdir. Polyvalente cheveux corps. Produit original Maroc. Choix femmes marocaines.",
                 "price": 50,
@@ -594,7 +603,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -628,7 +638,7 @@
                 "id": 11,
                 "name": "Heartbeat Body Mist",
                 "type_produit": "Body Mist",
-                "img_main": "\/images\/Heartbeat Body Mist\/heart-rate-body-mist-img_main.jpg",
+                "img_main": "/images/Heartbeat Body Mist/heart-rate-body-mist-img_main.jpg",
                 "subtitle": "Chaque battement raconte une histoire d'amour",
                 "description": "Brume Heartbeat eau rose. Parfum frais captivant voile reflets scintillants. Persistance longue durée. Produit authentique livraison Maroc. Occasions spéciales, usage quotidien.",
                 "price": 75,
@@ -650,7 +660,8 @@
                         "final_price": 75,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -684,7 +695,7 @@
                 "id": 12,
                 "name": "Over Dose Body Mist",
                 "type_produit": "Body Mist",
-                "img_main": "\/images\/Over Dose Body Mist\/over-dose-body-mist-img_main.jpg",
+                "img_main": "/images/Over Dose Body Mist/over-dose-body-mist-img_main.jpg",
                 "subtitle": "Chaque battement raconte une histoire d'amour",
                 "description": "Over Dose brume corporelle eau rose. Voile reflets scintillants subtil. Parfum frais longue persistance. Présence naturelle. Produit original Maroc. Tous moments journée.",
                 "price": 75,
@@ -706,7 +717,8 @@
                         "final_price": 75,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -740,7 +752,7 @@
                 "id": 13,
                 "name": "Remember Body Mist",
                 "type_produit": "Body Mist",
-                "img_main": "\/images\/Remember Body Mist\/remember-body-mist-img_main.jpg",
+                "img_main": "/images/Remember Body Mist/remember-body-mist-img_main.jpg",
                 "subtitle": "Chaque battement raconte une histoire d'amour",
                 "description": "Remember brume corporelle eau rose. Parfum frais captivant voile scintillant subtil prestige. Toute journée. Produit original authentique Maroc. Moments précieux inoubliables.",
                 "price": 75,
@@ -762,7 +774,8 @@
                         "final_price": 75,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -796,7 +809,7 @@
                 "id": 14,
                 "name": "Deo Roll-On Femme",
                 "type_produit": "Déodorant",
-                "img_main": "\/images\/Deo Roll Femme\/deo-roll-on-femme-img_main.jpg",
+                "img_main": "/images/Deo Roll Femme/deo-roll-on-femme-img_main.jpg",
                 "subtitle": "Fraîcheur naturelle et douceur au quotidien",
                 "description": "Déodorant Deo femme protection 48h naturelle. Aloe vera oliban. Sans aluminium sulfates alcool. Unifie progressivement teint aisselles. Femme marocaine. Livraison rapide. Testé dermatologiquement.",
                 "price": 50,
@@ -818,7 +831,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -862,7 +876,7 @@
                 "id": 15,
                 "name": "Deo Roll-On Homme",
                 "type_produit": "Déodorant",
-                "img_main": "\/images\/Deo Roll Homme\/deo-roll-on-homme-img_main.jpg",
+                "img_main": "/images/Deo Roll Homme/deo-roll-on-homme-img_main.jpg",
                 "subtitle": "Protection efficace et fraîcheur masculine toute la journée",
                 "description": "Déodorant Deo homme protection 48h naturelle aloe oliban. Innovation fraîcheur masculine longue durée. Homme actif Maroc. Produit original livraison rapide. Protection quotidienne garantie.",
                 "price": 50,
@@ -884,7 +898,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -928,7 +943,7 @@
                 "id": 16,
                 "name": "La Luna Crème Parfumée",
                 "type_produit": "Crème Parfumée",
-                "img_main": "\/images\/La Luna Crème Parfumée\/la-luna-creme-parfumee-img_main.jpg",
+                "img_main": "/images/La Luna Crème Parfumée/la-luna-creme-parfumee-img_main.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Luna luxueuse coco amande. Corps cheveux parfum féminin captivant. Texture onctueuse sans gras. Persistance toute journée. Produit original Maroc. Soin fragrance parfait.",
                 "price": 60,
@@ -950,7 +965,8 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -989,7 +1005,7 @@
                 "id": 17,
                 "name": "Imperial Valley Crème Parfumée",
                 "type_produit": "Crème Parfumée",
-                "img_main": "\/images\/Imperial Valley Crème Parfumée\/imperial-valley-creme-parfumee-img_main.jpg",
+                "img_main": "/images/Imperial Valley Crème Parfumée/imperial-valley-creme-parfumee-img_main.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Imperial prestige coco amande. Corps cheveux fragrance féminine prestige. Texture riche douce sans résidu. Parfum longue durée. Authentique Maroc. Cadeau luxe femme.",
                 "price": 60,
@@ -1011,7 +1027,8 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1050,7 +1067,7 @@
                 "id": 18,
                 "name": "Bombshel Passion Crème Parfumée",
                 "type_produit": "Crème Parfumée",
-                "img_main": "\/images\/Bombshel Passion Crème Parfumée\/bombshel-passion-creme-parfumee-img_main.jpg",
+                "img_main": "/images/Bombshel Passion Crème Parfumée/bombshel-passion-creme-parfumee-img_main.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Bombshel luxueuse coco amande. Corps cheveux fragrance passion. Texture onctueuse sans gras. Persistance longue. Produit original Maroc. Femme confiante élégante.",
                 "price": 60,
@@ -1072,7 +1089,8 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1111,7 +1129,7 @@
                 "id": 19,
                 "name": "Eros Crème Parfumée",
                 "type_produit": "Crème Parfumée",
-                "img_main": "\/images\/Eros Crème Parfumée\/eros-creme-parfumee-img_main.jpg",
+                "img_main": "/images/Eros Crème Parfumée/eros-creme-parfumee-img_main.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Eros luxueuse coco amande. Corps cheveux parfum captivant sensuel. Texture riche onctueuse sans gras. Persistance excellente. Authentique Maroc. Cadeau prestige.",
                 "price": 60,
@@ -1133,7 +1151,8 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1172,7 +1191,7 @@
                 "id": 20,
                 "name": "One And Only Crème Parfumée",
                 "type_produit": "Crème Parfumée",
-                "img_main": "\/images\/One And Only Crème Parfumée\/one-and-only-creme-parfumee-img_main.jpg",
+                "img_main": "/images/One And Only Crème Parfumée/one-and-only-creme-parfumee-img_main.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème One coco amande. Corps cheveux parfum unique captivant. Texture luxueuse sans film. Persistance longue. Produit original Maroc. Femme unique spéciale.",
                 "price": 60,
@@ -1194,7 +1213,8 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1233,7 +1253,7 @@
                 "id": 21,
                 "name": "Nina Ricci Crème Parfumée",
                 "type_produit": "Crème Parfumée",
-                "img_main": "\/images\/Nina Ricci Crème Parfumée\/nina-ricci-creme-parfumee-img_main.jpg",
+                "img_main": "/images/Nina Ricci Crème Parfumée/nina-ricci-creme-parfumee-img_main.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Nina Ricci luxueuse coco amande. Corps cheveux fragrance féminine. Texture onctueuse subtile sans gras. Persistance excellent. Maroc authentique. Prestige garanti.",
                 "price": 60,
@@ -1255,7 +1275,8 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1294,7 +1315,7 @@
                 "id": 22,
                 "name": "Hudson Valley Crème Parfumée",
                 "type_produit": "Crème Parfumée",
-                "img_main": "\/images\/Hudson Valley Crème Parfumée\/hudson-valley-creme-parfumee-img_main.jpg",
+                "img_main": "/images/Hudson Valley Crème Parfumée/hudson-valley-creme-parfumee-img_main.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Hudson luxueuse coco amande. Corps cheveux parfum captivant douce. Texture riche onctueuse. Persistance journée. Produit original Maroc. Usage quotidien.",
                 "price": 60,
@@ -1316,7 +1337,8 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1355,7 +1377,7 @@
                 "id": 23,
                 "name": "Idol Crème Parfumée",
                 "type_produit": "Crème Parfumée",
-                "img_main": "\/images\/Idol Crème Parfumée\/idol-creme-parfumee-img_main.jpg",
+                "img_main": "/images/Idol Crème Parfumée/idol-creme-parfumee-img_main.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Idol luxueuse coco amande. Corps cheveux parfum captivant lumineux. Texture onctueuse persistante. Produit authentique Maroc. Idole beauté personnelle.",
                 "price": 60,
@@ -1377,7 +1399,8 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1416,7 +1439,7 @@
                 "id": 24,
                 "name": "Fruité des Bois Diffuseur",
                 "type_produit": "Diffuseur",
-                "img_main": "\/images\/Fruité des Bois Diffuseur\/fruite-des-bois-diffuseur-img_main.jpg",
+                "img_main": "/images/Fruité des Bois Diffuseur/fruite-des-bois-diffuseur-img_main.jpg",
                 "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
                 "description": "Diffuseur ambiance fruité délicate. Notes fraîches élégantes. Persiste progressivement heures. Intérieur havre bien-être olfactif. Maison maroc. Atmosphère agréable garantie.",
                 "price": 70,
@@ -1438,7 +1461,8 @@
                         "final_price": 70,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1468,7 +1492,7 @@
                 "id": 25,
                 "name": "Mange Péche Diffuseur",
                 "type_produit": "Diffuseur",
-                "img_main": "\/images\/Mange Péche Diffuseur\/mange-peche-diffuseur-img_main.jpg",
+                "img_main": "/images/Mange Péche Diffuseur/mange-peche-diffuseur-img_main.jpg",
                 "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
                 "description": "Diffuseur pêche ambiance fruité notes fraîches. Persiste heures progressif. Maison havre bien-être. Maroc authentique. Parfum ambiance garantie.",
                 "price": 70,
@@ -1490,7 +1514,8 @@
                         "final_price": 70,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1520,7 +1545,7 @@
                 "id": 26,
                 "name": "Coco Diffuseur",
                 "type_produit": "Diffuseur",
-                "img_main": "\/images\/Coco Diffuseur\/coco-diffuseur-img_main.jpg",
+                "img_main": "/images/Coco Diffuseur/coco-diffuseur-img_main.jpg",
                 "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
                 "description": "Diffuseur coco ambiance fruité tropical. Notes fraîches persistantes. Progressif heures. Maison agréable. Maroc. Parfum garantie.",
                 "price": 70,
@@ -1542,7 +1567,8 @@
                         "final_price": 70,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1572,7 +1598,7 @@
                 "id": 27,
                 "name": "My Bloom Spray d'Intérieur Tropical",
                 "type_produit": "Spray d'Intérieur",
-                "img_main": "\/images\/My Bloom Spray d'Intérieur Tropical\/my-bloom-spray-d-intérieur-tropical-img_main.jpg",
+                "img_main": "/images/My Bloom Spray d'Intérieur Tropical/my-bloom-spray-d-intérieur-tropical-img_main.jpg",
                 "subtitle": "L'évasion tropicale en un simple geste",
                 "description": "Spray ambiance tropical polyvalent rafraîchissant persistant. Intérieurs textiles vêtements bureau voiture maroc. Fragrance fraîche agréable. Produit original.",
                 "price": 60,
@@ -1594,7 +1620,8 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1633,7 +1660,7 @@
                 "id": 28,
                 "name": "My Bloom Spray d'Intérieur Caramel",
                 "type_produit": "Spray d'Intérieur",
-                "img_main": "\/images\/My Bloom Spray d'Intérieur Caramel\/my-bloom-spray-d-intérieur-caramel-img_main.jpg",
+                "img_main": "/images/My Bloom Spray d'Intérieur Caramel/my-bloom-spray-d-intérieur-caramel-img_main.jpg",
                 "subtitle": "L'évasion tropicale en un simple geste",
                 "description": "Spray caramel ambiance polyvalent doux persistant. Intérieurs textiles vêtements bureau voiture. Maroc authentique. Fragrance gourmande agréable.",
                 "price": 60,
@@ -1655,7 +1682,8 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1694,7 +1722,7 @@
                 "id": 29,
                 "name": "My Bloom Spray d'Intérieur Oud",
                 "type_produit": "Spray d'Intérieur",
-                "img_main": "\/images\/My Bloom Spray d'Intérieur Oud\/my-bloom-spray-d-intérieur-oud-img_main.jpg",
+                "img_main": "/images/My Bloom Spray d'Intérieur Oud/my-bloom-spray-d-intérieur-oud-img_main.jpg",
                 "subtitle": "L'évasion tropicale en un simple geste",
                 "description": "Spray oud ambiance polyvalent rafraîchissant persistant. Intérieurs textiles vêtements bureau voiture maroc. Fragrance prestigieuse agréable.",
                 "price": 60,
@@ -1716,7 +1744,8 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1755,7 +1784,7 @@
                 "id": 30,
                 "name": "Coffret Cadeau Bloom d'Amour",
                 "type_produit": "Coffret Cadeau",
-                "img_main": "\/images\/Coffret Cadeau Bloom d'Amour\/coffret-cadeau-bloom-d-amour-img_main.jpg",
+                "img_main": "/images/Coffret Cadeau Bloom d'Amour/coffret-cadeau-bloom-d-amour-img_main.jpg",
                 "subtitle": "L'expérience sensorielle complète pour rayonner de féminité",
                 "description": "Coffret exception réunit soins corporels harmonisés fragrance féminine envoûtante. Pochette cadeau élégante. Maroc livraison. Cadeau prestige femme.",
                 "price": 250,
@@ -1777,7 +1806,8 @@
                         "final_price": 250,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1821,7 +1851,7 @@
                 "id": 31,
                 "name": "قطرة دلع",
                 "type_produit": "Huile Parfumée",
-                "img_main": "\/images\/قطرة-دلع\/قطرة دلعimg_main.jpg",
+                "img_main": "/images/قطرة-دلع/قطرة دلعimg_main.jpg",
                 "subtitle": "L'élixir parfumé qui enveloppe votre peau d'une douceur irrésistible",
                 "description": "Huile Qatrat 100% naturelle coco amande. Hydratation intense sillage envoûtant toute journée. Maroc livraison rapide. Produit original authentique.",
                 "price": 50,
@@ -1843,7 +1873,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100
+                        "stock_quantity": 100,
+                        "unit": "ml"
                     }
                 ],
                 "ingredients": [
@@ -1882,7 +1913,7 @@
                 "id": 35,
                 "name": "212",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/212 femme\/212-femme-img_main.jpg",
+                "img_main": "/images/212 femme/212-femme-img_main.jpg",
                 "subtitle": "L'énergie urbaine de New York",
                 "description": "212 Carolina Herrera parfum floral musqué urbain moderne. Femme dynamique sophistiquée. Fleur oranger gardénia musc blanc. Frais pétillant. Maroc authentique. Best seller marque.",
                 "price": 50,
@@ -1903,7 +1934,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -1911,7 +1943,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -1934,7 +1967,7 @@
                 "id": 36,
                 "name": "Bad Boy",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Bad diesel\/Bad diesel.jpg",
+                "img_main": "/images/Bad diesel/Bad diesel.jpg",
                 "subtitle": "Osez être différent",
                 "description": "Bad Boy Diesel parfum oriental boisé audacieux. Homme modern confiant dualité. Poivre bergamote cèdre cacao. Maroc produit original. Best authentique Diesel.",
                 "price": 50,
@@ -1953,7 +1986,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -1961,7 +1995,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -1984,7 +2019,7 @@
                 "id": 37,
                 "name": "Burberry Goddess",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Burberry goddess\/burberry-goddess-img_main.jpg",
+                "img_main": "/images/Burberry goddess/burberry-goddess-img_main.jpg",
                 "subtitle": "La force féminine réinventée",
                 "description": "Goddess Burberry parfum gourmand floral moderne. Force féminité confiance. Vanille lavande cacao. Maroc produit original. Femme prestige incontournable.",
                 "price": 50,
@@ -2006,7 +2041,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2014,7 +2050,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2037,7 +2074,7 @@
                 "id": 38,
                 "name": "Cinema",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Cinema\/cinema-img_main.jpg",
+                "img_main": "/images/Cinema/cinema-img_main.jpg",
                 "subtitle": "L'élégance hollywoodienne",
                 "description": "Cinema YSL parfum oriental floral glamour hollywoodien. Élégance charme féminité. Mandarine jasmin ambre vanille. Maroc. Prestige soirée.",
                 "price": 50,
@@ -2058,7 +2095,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2066,7 +2104,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2089,7 +2128,7 @@
                 "id": 39,
                 "name": "Dior Addict",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Dior addict\/dior-addict-img_main.jpg",
+                "img_main": "/images/Dior addict/dior-addict-img_main.jpg",
                 "subtitle": "La séduction absolue",
                 "description": "Addict Dior parfum oriental floral sensuel addictif. Fleur oranger Tunisie jasmin vanille bourbon. Féminité moderne audacieuse irrésistible. Maroc iconique.",
                 "price": 50,
@@ -2111,7 +2150,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2119,7 +2159,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2142,7 +2183,7 @@
                 "id": 40,
                 "name": "Good Girl",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Good girl\/good-girl-img_main.jpg",
+                "img_main": "/images/Good girl/good-girl-img_main.jpg",
                 "subtitle": "Osez votre dualité",
                 "description": "Good Girl Carolina Herrera parfum oriental floral. Dualité féminine audacieuse. Jasmin tonka cacao. Flacon escarpin iconique. Maroc prestige femme moderne.",
                 "price": 50,
@@ -2164,7 +2205,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2172,7 +2214,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2195,7 +2238,7 @@
                 "id": 41,
                 "name": "Idôle",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Idole\/idole-img_main.jpg",
+                "img_main": "/images/Idole/idole-img_main.jpg",
                 "subtitle": "Soyez votre propre idole",
                 "description": "Idôle Lancôme parfum floral chypré moderne. Femme accomplie nouvelle génération. Poire rose jasmin praline vanille. Rechargeable écologique. Maroc féminité forte.",
                 "price": 50,
@@ -2217,7 +2260,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2225,7 +2269,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2248,7 +2293,7 @@
                 "id": 42,
                 "name": "La Nuit Trésor",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/La nuit tresor\/la-nuit-tresor-img_main.jpg",
+                "img_main": "/images/La nuit tresor/la-nuit-tresor-img_main.jpg",
                 "subtitle": "L'amour à son apogée",
                 "description": "Nuit Trésor Lancôme parfum oriental gourmand sensuel. Amour passion séduction. Framboise rose vanille praline. Maroc soirée romantique.",
                 "price": 50,
@@ -2269,7 +2314,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2277,7 +2323,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2300,7 +2347,7 @@
                 "id": 43,
                 "name": "Light Blue Femme",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/light bleu femme\/light-bleu-femme-img_main.jpg",
+                "img_main": "/images/light bleu femme/light-bleu-femme-img_main.jpg",
                 "subtitle": "L'esprit méditerranéen",
                 "description": "Light Blue DG parfum fruité floral frais lumineux. Été méditerranéen esprit. Citron sicile pomme jasmin. Maroc iconique summer.",
                 "price": 50,
@@ -2322,7 +2369,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2330,7 +2378,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2353,7 +2402,7 @@
                 "id": 44,
                 "name": "L'Interdit Rouge",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/l'interdit rouge\/l'interdit-rouge-img_main.jpg",
+                "img_main": "/images/l'interdit rouge/l'interdit-rouge-img_main.jpg",
                 "subtitle": "Osez l'interdit ultime",
                 "description": "Interdit Rouge Givenchy parfum floral épicé audacieux. Féminité ardente passionné. Gingembre fleur oranger tubéreuse santal. Maroc intense.",
                 "price": 50,
@@ -2375,7 +2424,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2383,7 +2433,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2406,7 +2457,7 @@
                 "id": 45,
                 "name": "Miss Dior",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Miss laverne\/Miss-laverne-img_main.jpg",
+                "img_main": "/images/Miss laverne/Miss-laverne-img_main.jpg",
                 "subtitle": "L'amour toujours",
                 "description": "Miss Dior parfum floral chypré frais romantique. Élégance parisienne intemporelle. Mandarine rose patchouli. Maroc iconique classique.",
                 "price": 50,
@@ -2429,7 +2480,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2437,7 +2489,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2460,7 +2513,7 @@
                 "id": 46,
                 "name": "Nina",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Nina Ricci\/nina-ricci-img_main.jpg",
+                "img_main": "/images/Nina Ricci/nina-ricci-img_main.jpg",
                 "subtitle": "Croquez la vie à pleines dents",
                 "description": "Nina Nina Ricci parfum fruité gourmand pétillant joyeux. Jeunesse fraîcheur gourmandise. Citron pomme caramel vanille. Marque flacon pomme. Maroc.",
                 "price": 50,
@@ -2482,7 +2535,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2490,7 +2544,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2513,7 +2568,7 @@
                 "id": 47,
                 "name": "Olympéa",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Olympeca\/Olympeca-img_main.jpg",
+                "img_main": "/images/Olympeca/Olympeca-img_main.jpg",
                 "subtitle": "La déesse moderne",
                 "description": "Olympéa Paco Rabanne parfum oriental floral aquatique puissant. Déesse triomphante divine. Mandarine jasmin sel marin ambre vanille. Maroc prestige.",
                 "price": 50,
@@ -2535,7 +2590,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2543,7 +2599,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2566,7 +2623,7 @@
                 "id": 48,
                 "name": "Panda",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Panda\/panda-img_main.jpg",
+                "img_main": "/images/Panda/panda-img_main.jpg",
                 "subtitle": "L'élégance contemporaine",
                 "description": "Panda Paco Rabanne parfum floral boisé moderne sophistiqué. Femme urbaine contemporaine. Fraîcheur sensualité équilibrée. Maroc.",
                 "price": 50,
@@ -2585,7 +2642,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2593,7 +2651,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2612,7 +2671,7 @@
                 "id": 49,
                 "name": "Quelques Notes d'Amour",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Quelque notees damour\/Quelque-notees-damour-img_main.jpg",
+                "img_main": "/images/Quelque notees damour/Quelque-notees-damour-img_main.jpg",
                 "subtitle": "Une déclaration olfactive",
                 "description": "Amour Van Cleef parfum floral fruité élégant romantique. Amour poésie. Jasmin rose pêche ambre. Flacon trèfle signature. Maroc prestige.",
                 "price": 50,
@@ -2634,7 +2693,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2642,7 +2702,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2665,7 +2726,7 @@
                 "id": 50,
                 "name": "Sì",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Si\/si-img_main.jpg",
+                "img_main": "/images/Si/si-img_main.jpg",
                 "subtitle": "Dites oui à la vie",
                 "description": "Sì Giorgio Armani parfum chypré fruité élégant moderne. Féminité affirmée indépendance. Cassis rose musc patchouli. Maroc femme moderne.",
                 "price": 50,
@@ -2687,7 +2748,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2695,7 +2757,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2718,7 +2781,7 @@
                 "id": 51,
                 "name": "Y pour Homme",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/YSI homme\/ysl-homme-img_main.jpg",
+                "img_main": "/images/YSI homme/ysl-homme-img_main.jpg",
                 "subtitle": "Osez poser la question",
                 "description": "Y YSL parfum aromatique fougère moderne audacieux. Homme accomplissement rêves réussite. Bergamote sauge géranium cèdre. Maroc prestige homme.",
                 "price": 50,
@@ -2739,7 +2802,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2747,7 +2811,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2770,7 +2835,7 @@
                 "id": 52,
                 "name": "Amira Al Arab",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/أميرة العرب\/أميرة العرب-img_main.jpg",
+                "img_main": "/images/أميرة العرب/أميرة العرب-img_main.jpg",
                 "subtitle": "La princesse des parfums arabes",
                 "description": "Amira Arab parfum oriental luxueux raffiné arab. Princesse richesse tradition. Rose oud safran ambre. Marque arabe. Maroc prestige royal.",
                 "price": 50,
@@ -2792,7 +2857,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2800,7 +2866,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2823,7 +2890,7 @@
                 "id": 53,
                 "name": "Azzaro Wanted Girl",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Azzaro wanted girl\/azzaro-wanted-girl-img_main.jpg",
+                "img_main": "/images/Azzaro wanted girl/azzaro-wanted-girl-img_main.jpg",
                 "subtitle": "Affichez vos désirs",
                 "description": "Wanted Girl Azzaro parfum oriental gourmand audacieux. Femme désirs audacieuse. Fleur oranger dulce leche tonka. Maroc prestige femme.",
                 "price": 50,
@@ -2845,7 +2912,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2853,7 +2921,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2876,7 +2945,7 @@
                 "id": 54,
                 "name": "Black Opium",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Black Opium\/black-opium-img_main.jpg",
+                "img_main": "/images/Black Opium/black-opium-img_main.jpg",
                 "subtitle": "L'addiction assumée",
                 "description": "Black Opium YSL parfum oriental gourmand addictif moderne. Féminité rock sensuelle. Café noir vanille fleur. Maroc iconique intense.",
                 "price": 50,
@@ -2899,7 +2968,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2907,7 +2977,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2930,7 +3001,7 @@
                 "id": 55,
                 "name": "Burberry Her",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Burberry her\/burberry-her-img_main.jpg",
+                "img_main": "/images/Burberry her/burberry-her-img_main.jpg",
                 "subtitle": "L'esprit de Londres",
                 "description": "Her Burberry parfum gourmand fruité pétillant joyeux. Londre énergie vibrante. Fruits rouges jasmin musc. Maroc prestige moderne.",
                 "price": 50,
@@ -2951,7 +3022,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -2959,7 +3031,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -2982,7 +3055,7 @@
                 "id": 56,
                 "name": "Coco Mademoiselle",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Coco Mademosseille\/Coco Mademosseille-img_main.jpg",
+                "img_main": "/images/Coco Mademosseille/Coco Mademosseille-img_main.jpg",
                 "subtitle": "L'esprit d'indépendance",
                 "description": "Coco Mademoiselle Chanel parfum oriental frais intemporel. Liberté audace élégance Coco. Orange rose jasmin patchouli. Maroc iconique classique.",
                 "price": 50,
@@ -3005,7 +3078,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3013,7 +3087,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3036,7 +3111,7 @@
                 "id": 57,
                 "name": "D&G L'Impératrice",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/D and G l'imperatrice\/D-and-G-l'imperatrice-img_main.jpg",
+                "img_main": "/images/D and G l'imperatrice/D-and-G-l'imperatrice-img_main.jpg",
                 "subtitle": "La fraîcheur impériale",
                 "description": "Impératrice DG parfum fruité aquatique pétillant méditerranéen. Exotisme joie vivre. Kiwi pastèque musc rose. Maroc fraîcheur prestige.",
                 "price": 50,
@@ -3058,7 +3133,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3066,7 +3142,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3089,7 +3166,7 @@
                 "id": 58,
                 "name": "Evidence",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Evidence\/evidence-img_main.jpg",
+                "img_main": "/images/Evidence/evidence-img_main.jpg",
                 "subtitle": "L'évidence de la féminité",
                 "description": "Evidence Yves Rocher parfum oriental boisé sensuel. Féminité naturelle magnétique. Bois jasmin musc. Maroc accessible prestige.",
                 "price": 50,
@@ -3110,7 +3187,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3118,7 +3196,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3141,7 +3220,7 @@
                 "id": 59,
                 "name": "Hypnotic Poison",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Hypnotic poison\/hypnotic-poison-img_main.jpg",
+                "img_main": "/images/Hypnotic poison/hypnotic-poison-img_main.jpg",
                 "subtitle": "Le philtre envoûtant",
                 "description": "Poison Dior parfum oriental ambré mystérieux captivant. Envoûtement fascination sensualité. Vanille amande jasmin santal. Maroc iconic sensuel.",
                 "price": 50,
@@ -3164,7 +3243,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3172,7 +3252,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3195,7 +3276,7 @@
                 "id": 60,
                 "name": "La Lune",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/La luna\/la-luna-img_main.jpg",
+                "img_main": "/images/La luna/la-luna-img_main.jpg",
                 "subtitle": "La lumière nocturne",
                 "description": "Lune Prada parfum floral aldéhydé élégant raffiné. Lune mystique. Citron mimosa ambre gris. Maroc prestige lumière.",
                 "price": 50,
@@ -3217,7 +3298,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3225,7 +3307,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3244,7 +3327,7 @@
                 "id": 61,
                 "name": "La Vie Est Belle",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/La vie est belle\/la-vie-est-belle-img_main.jpg",
+                "img_main": "/images/La vie est belle/la-vie-est-belle-img_main.jpg",
                 "subtitle": "Choisissez le bonheur",
                 "description": "Vie Lancôme parfum gourmand floral iris luxueux. Vie bonheur élégance. Cassis poire iris praline vanille. Maroc iconic gourmand.",
                 "price": 50,
@@ -3267,7 +3350,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3275,7 +3359,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3298,7 +3383,7 @@
                 "id": 62,
                 "name": "L'Interdit",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/l'interdit\/l'interdit-img_main.jpg",
+                "img_main": "/images/l'interdit/l'interdit-img_main.jpg",
                 "subtitle": "Osez l'inattendu",
                 "description": "Interdit Givenchy parfum floral blanc audacieux lumineux. Féminité conventions libre. Oranger jasmin tubéreuse sésame. Maroc prestige.",
                 "price": 50,
@@ -3320,7 +3405,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3328,7 +3414,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3351,7 +3438,7 @@
                 "id": 63,
                 "name": "Miss Dior Chérie",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Miss dior cherie\/miss-dior-cherie-img_main.jpg",
+                "img_main": "/images/Miss dior cherie/miss-dior-cherie-img_main.jpg",
                 "subtitle": "La douceur pétillante",
                 "description": "Chérie Dior parfum fruité chypré pétillant romantique. Jeunesse parisienne carefree. Fraise framboise cerise jasmin patchouli. Maroc iconic.",
                 "price": 50,
@@ -3373,7 +3460,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3381,7 +3469,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3404,7 +3493,7 @@
                 "id": 64,
                 "name": "Mon Paris",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/mon paris\/mon-paris-img_main.jpg",
+                "img_main": "/images/mon paris/mon-paris-img_main.jpg",
                 "subtitle": "L'amour à Paris",
                 "description": "Paris YSL parfum chypré fruité passionné. Amour Paris. Fraise framboise poire patchouli musc. Maroc romantique prestige.",
                 "price": 50,
@@ -3426,7 +3515,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3434,7 +3524,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3457,7 +3548,7 @@
                 "id": 65,
                 "name": "The One",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/One and only\/one-and-only-img_main.jpg",
+                "img_main": "/images/One and only/one-and-only-img_main.jpg",
                 "subtitle": "L'unique",
                 "description": "One DG parfum oriental floral luxueux enveloppant. Féminité sophistiquée sensuelle. Litchi pêche jasmin musc ambre. Maroc prestige unique.",
                 "price": 50,
@@ -3479,7 +3570,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3487,7 +3579,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3510,7 +3603,7 @@
                 "id": 66,
                 "name": "Pure XS",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Pur xs\/pur-xs-img_main.jpg",
+                "img_main": "/images/Pur xs/pur-xs-img_main.jpg",
                 "subtitle": "L'excès assumé",
                 "description": "XS Paco Rabanne parfum oriental vanillé audacieux addictif. Masculinité excessive sensuelle. Gingembre cannelle vanille myrrhe. Maroc intense prestige.",
                 "price": 50,
@@ -3532,7 +3625,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3540,7 +3634,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3563,7 +3658,7 @@
                 "id": 67,
                 "name": "Scandal",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Scandal\/scandal-img_main.jpg",
+                "img_main": "/images/Scandal/scandal-img_main.jpg",
                 "subtitle": "Osez le scandale",
                 "description": "Scandal JPG parfum floral gourmand audacieux addictif. Féminité provocante irrésistible. Miel patchouli gardénia caramel. Flacon jambe. Maroc iconic.",
                 "price": 50,
@@ -3585,7 +3680,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3593,7 +3689,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3616,7 +3713,7 @@
                 "id": 68,
                 "name": "Bombshell Passion",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Victoria sucret bombshell passion\/Victoria-sucret-bombshell-passion-img_main.jpg",
+                "img_main": "/images/Victoria sucret bombshell passion/Victoria-sucret-bombshell-passion-img_main.jpg",
                 "subtitle": "La passion incarnée",
                 "description": "Passion Victoria parfum fruité floral passionné séduisant. Féminité audacieuse. Pivoine vanille cerise. Maroc prestige casual.",
                 "price": 50,
@@ -3638,7 +3735,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3646,7 +3744,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3669,7 +3768,7 @@
                 "id": 69,
                 "name": "Zara Woman",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Zara\/zara-img_main.jpg",
+                "img_main": "/images/Zara/zara-img_main.jpg",
                 "subtitle": "L'élégance accessible",
                 "description": "Woman Zara parfum floral frais moderne polyvalent. Femme urbaine contemporaine. Signature olfactive élégante abordable. Maroc accessible.",
                 "price": 50,
@@ -3690,7 +3789,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3698,7 +3798,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3721,7 +3822,7 @@
                 "id": 70,
                 "name": "Yara",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/يارا\/يارا-img_main.jpg",
+                "img_main": "/images/يارا/يارا-img_main.jpg",
                 "subtitle": "L'élégance orientale",
                 "description": "Yara Lattafa parfum oriental gourmand riche envoûtant. Grande fragrance luxe. Vanille orchidée sucré. Maroc prestige abordable.",
                 "price": 50,
@@ -3743,7 +3844,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3751,7 +3853,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3774,7 +3877,7 @@
                 "id": 71,
                 "name": "Baccarat Rouge 540",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Baccarat rouge\/baccarat-rouge-img_main.jpg",
+                "img_main": "/images/Baccarat rouge/baccarat-rouge-img_main.jpg",
                 "subtitle": "L'excellence olfactive",
                 "description": "Rouge FKM parfum ambré floral lumineux sophistiqué. Excellence olfactive créativité. Jasmin safran cèdre ambre gris. Maroc luxe absolu.",
                 "price": 50,
@@ -3797,7 +3900,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3805,7 +3909,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3828,7 +3933,7 @@
                 "id": 72,
                 "name": "Black Orchid",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Black orchid\/black-orchid-img_main.jpg",
+                "img_main": "/images/Black orchid/black-orchid-img_main.jpg",
                 "subtitle": "Le luxe sombre",
                 "description": "Orchid Tom Ford parfum oriental chypré luxueux mystérieux. Sensualité opulente sophistiquée. Orchidée truffe ylang ambre. Maroc prestige sombre.",
                 "price": 50,
@@ -3851,7 +3956,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3859,7 +3965,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3882,7 +3989,7 @@
                 "id": 73,
                 "name": "Chance",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Chanel chance\/chanel-chance-img_main.jpg",
+                "img_main": "/images/Chanel chance/chanel-chance-img_main.jpg",
                 "subtitle": "Saisissez votre chance",
                 "description": "Chance Chanel parfum floral pétillant joyeux imprévisible. Chance opportunités. Pamplemousse rose jasmin iris musc. Maroc classique.",
                 "price": 50,
@@ -3904,7 +4011,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3912,7 +4020,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3935,7 +4044,7 @@
                 "id": 74,
                 "name": "Eros Femme",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Eros femme\/eros-femme-img_main.jpg",
+                "img_main": "/images/Eros femme/eros-femme-img_main.jpg",
                 "subtitle": "La déesse de l'amour",
                 "description": "Eros Versace parfum floral boisé sensuel lumineux. Déesse amour passion. Citron jasmin pivoine musc. Maroc prestige élégant.",
                 "price": 50,
@@ -3956,7 +4065,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -3964,7 +4074,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -3987,7 +4098,7 @@
                 "id": 75,
                 "name": "Flora",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Gucci Hora\/Gucci-hora-img_main.jpg",
+                "img_main": "/images/Gucci Hora/Gucci-hora-img_main.jpg",
                 "subtitle": "Le jardin de Gucci",
                 "description": "Flora Gucci parfum floral moderne lumineux joyeux. Féminité radieuse beauté. Pivoine osmanthus rose santal. Maroc prestige jardin.",
                 "price": 50,
@@ -4009,7 +4120,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -4017,7 +4129,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -4040,7 +4153,7 @@
                 "id": 76,
                 "name": "La Belle",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/la belle\/la-belle-img_main.jpg",
+                "img_main": "/images/la belle/la-belle-img_main.jpg",
                 "subtitle": "La beauté réinventée",
                 "description": "Belle JPG parfum oriental gourmand sensuel audacieux. Beauté rebelle affirmée. Poire vanille vétiver santal. Flacon buste. Maroc prestige.",
                 "price": 50,
@@ -4062,7 +4175,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -4070,7 +4184,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -4093,7 +4208,7 @@
                 "id": 77,
                 "name": "La Petite Robe Noire",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/La petite robe noire\/la-petite-robe-noire-img_main.jpg",
+                "img_main": "/images/La petite robe noire/la-petite-robe-noire-img_main.jpg",
                 "subtitle": "L'audace en flacon",
                 "description": "Robe Guerlain parfum fruité gourmand pétillant moderne. Féminité parisienne audacieuse rock. Cerise amande rose thé réglisse. Maroc iconic.",
                 "price": 50,
@@ -4115,7 +4230,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -4123,7 +4239,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -4146,7 +4263,7 @@
                 "id": 78,
                 "name": "Light Blue Homme",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Light blue Homme\/light-blue-homme-img_main.jpg",
+                "img_main": "/images/Light blue Homme/light-blue-homme-img_main.jpg",
                 "subtitle": "L'été méditerranéen masculin",
                 "description": "Light Blue DG parfum aromatique fruité frais vibrante. Été méditerranéen virilité. Pamplemousse genévrier romarin rose. Maroc prestige.",
                 "price": 50,
@@ -4167,7 +4284,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -4175,7 +4293,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -4198,7 +4317,7 @@
                 "id": 79,
                 "name": "My Way",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/May way\/may-way-img_main.jpg",
+                "img_main": "/images/May way/may-way-img_main.jpg",
                 "subtitle": "Tracez votre propre chemin",
                 "description": "Way Armani parfum floral blanc lumineux durable. Chemin découverte élégance. Bergamote oranger tubéreuse jasmin vanille. Maroc moderne prestige.",
                 "price": 50,
@@ -4220,7 +4339,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -4228,7 +4348,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -4251,7 +4372,7 @@
                 "id": 80,
                 "name": "Mon Guerlain",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Mon gurlain\/Mon-gurlain-img_main.jpg",
+                "img_main": "/images/Mon gurlain/Mon-gurlain-img_main.jpg",
                 "subtitle": "Ma femme, mon Guerlain",
                 "description": "Guerlain parfum oriental raffiné envoûtant femme. Liberté passionnée. Lavande vanille tahitienne jasmin santal. Maroc prestige intemporel.",
                 "price": 50,
@@ -4273,7 +4394,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -4281,7 +4403,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -4304,7 +4427,7 @@
                 "id": 81,
                 "name": "Poison Girl",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Poisson girl\/poisson-girl-img_main.jpg",
+                "img_main": "/images/Poisson girl/poisson-girl-img_main.jpg",
                 "subtitle": "L'arme de séduction",
                 "description": "Girl Dior parfum oriental gourmand audacieux addictif. Jeune femme séductrice spontanée. Oranger amère rose vanille tonka. Maroc prestige.",
                 "price": 50,
@@ -4326,7 +4449,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -4334,7 +4458,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -4357,7 +4482,7 @@
                 "id": 82,
                 "name": "Sauvage",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Sauvage\/sauvage-img_main.jpg",
+                "img_main": "/images/Sauvage/sauvage-img_main.jpg",
                 "subtitle": "L'instinct sauvage",
                 "description": "Sauvage Dior parfum aromatique fougère frais puissant. Masculinité naturelle libre noble. Bergamote poivre Sichuab lavande ambroxan. Maroc prestige n°1.",
                 "price": 50,
@@ -4380,7 +4505,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -4388,7 +4514,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -4411,7 +4538,7 @@
                 "id": 83,
                 "name": "Sì Rouge",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/Si rouge\/si-rouge-img_main.jpg",
+                "img_main": "/images/Si rouge/si-rouge-img_main.jpg",
                 "subtitle": "La passion affirmée",
                 "description": "Rouge Armani parfum chypré fruité intense passionné. Féminité passion audace. Cassis rose davana patchouli. Maroc intense prestige.",
                 "price": 50,
@@ -4432,7 +4559,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -4440,7 +4568,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -4463,7 +4592,7 @@
                 "id": 84,
                 "name": "Libre",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/ysl libre\/ysl-libre-img_main.jpg",
+                "img_main": "/images/ysl libre/ysl-libre-img_main.jpg",
                 "subtitle": "La liberté affichée",
                 "description": "Libre YSL parfum floral fougère audacieux moderne. Femme libre forte. Mandarine lavande oranger jasmin musc. Maroc iconic prestige.",
                 "price": 50,
@@ -4485,7 +4614,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -4493,7 +4623,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [
@@ -4516,7 +4647,7 @@
                 "id": 85,
                 "name": "Kalimat",
                 "type_produit": "Eau de Parfum",
-                "img_main": "\/images\/كلمات\/كلمات.jpg",
+                "img_main": "/images/كلمات/كلمات.jpg",
                 "subtitle": "Les mots précieux",
                 "description": "Kalimat Arabian parfum oriental luxueux riche captivant arabe. Tradition splendeur. Oud rose safran ambre musc. Maroc prestige arabe.",
                 "price": 50,
@@ -4538,7 +4669,8 @@
                         "final_price": 30,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 30
+                        "stock_quantity": 30,
+                        "unit": "ml"
                     },
                     {
                         "size": 100,
@@ -4546,7 +4678,8 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
                 "faqs": [

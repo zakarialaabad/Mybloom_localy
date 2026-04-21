@@ -180,6 +180,18 @@
     }
   }
 
+  /* Center last product card on mobile when grid has an odd number of items
+     (e.g. 1 or 3 items with grid-cols-2). Keeps desktop unchanged. */
+  @media (max-width: 767px) {
+    .product-grid > :nth-last-child(1):nth-child(odd) {
+      grid-column: 1 / -1;
+      justify-self: center;
+      /* allow the card to shrink from its default w-full so it can be centered */
+      width: auto !important;
+      max-width: 340px;
+    }
+  }
+
   /* Utility for Hanken Grotesk font family */
   .font-hanken {
     font-family: 'Hanken Grotesk', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;

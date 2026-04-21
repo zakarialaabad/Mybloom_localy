@@ -241,10 +241,17 @@ export default function OrderSuccessPage() {
         {/* Left – Image */}
         <div className="w-1/2 relative bg-[#f4ece3]">
           <Image src="/public_Image/order_packaging.jpg" alt="Order Packaging" fill className="object-cover" />
-          <div className="absolute bottom-12 left-12 bg-white/90 backdrop-blur-sm p-4 rounded-sm shadow-lg border border-gray-200 max-w-[240px] transform -rotate-2">
+          <div className="absolute bottom-12 right-12 bg-white/90 backdrop-blur-sm p-4 rounded-sm shadow-lg border border-gray-200 max-w-[240px] transform -rotate-2">
             <div className="text-[10px] text-gray-500 font-mono mb-1">TO: MyBloom Client</div>
             <div className="text-sm font-bold text-gray-800 font-mono mb-2">{city.toUpperCase()}, MAROC</div>
-            <div className="w-full h-8 bg-[url('https://www.freepnglogos.com/uploads/barcode-png/barcode-laser-code-vector-graphic-pixabay-3.png')] bg-contain bg-no-repeat bg-center opacity-70" />
+            <Image
+              src="https://www.freepnglogos.com/uploads/barcode-png/barcode-laser-code-vector-graphic-pixabay-3.png"
+              alt="Barcode"
+              width={236}
+              height={29}
+              className="mx-auto opacity-70"
+              style={{ objectFit: 'contain' }}
+            />
           </div>
         </div>
 

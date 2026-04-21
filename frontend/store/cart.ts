@@ -6,6 +6,7 @@ export interface CartItem {
   productId     : number;
   productName   : string;
   slug          : string;
+  productType  ?: string;
   sizeId        : number;
   sizeLabel     : string | null;
   quantity      : number;

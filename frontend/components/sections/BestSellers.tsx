@@ -15,6 +15,11 @@ function productToCard(p: Product): ProductCardProps {
   // Ensure imageUrl falls back to first image if primary_image is null
   const imageUrl = p.primary_image || p.images?.[0]?.image_url || FALLBACK_IMG;
   const secondaryImageUrl = p.images?.[1]?.image_url || undefined;
+  const defaultVariant = p.variants?.find(v => v.is_default) ?? p.variants?.[0];
+  const defaultSizeLabel = defaultVariant ? `${defaultVariant.size}${defaultVariant.unit ?? 'ml'}` : undefined;
+  const defaultSizeId = defaultVariant?.id;
+  const defaultVariantPrice = defaultVariant?.final_price;
+  const defaultVariantOriginalPrice = defaultVariant?.original_price ?? undefined;
   
   return {
     id:            p.id,
@@ -22,8 +27,8 @@ function productToCard(p: Product): ProductCardProps {
     name:          p.name,
     subtitle:      p.brand?.name ?? '',
     description:   p.subtitle ?? '',
-    price:         p.min_price,
-    originalPrice: p.max_price ?? p.min_price,
+    price:         defaultVariantPrice ?? p.min_price,
+    originalPrice: defaultVariantOriginalPrice ?? defaultVariantPrice ?? p.max_price ?? p.min_price,
     rating:        p.avg_rating,
     reviewCount:   p.review_count,
     imageUrl,
@@ -32,6 +37,10 @@ function productToCard(p: Product): ProductCardProps {
     badge:         p.badges?.[0],
     category:      p.category?.name?.toLowerCase() === 'parfum' ? (p.product_type?.name ?? p.category?.name) : p.category?.name,
     productType:   p.category?.name?.toLowerCase() === 'parfum' ? (p.brand?.name ?? p.product_type?.name ?? '') : (p.product_type?.name ?? ''),
+    defaultSizeLabel,
+    defaultSizeId,
+    defaultVariantPrice,
+    defaultVariantOriginalPrice,
   };
 }
 

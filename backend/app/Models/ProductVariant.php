@@ -10,6 +10,7 @@ class ProductVariant extends Model
     protected $fillable = [
         'product_id',
         'size',
+        'unit',
         'price',
         'promotion_percent',
         'stock_quantity',
@@ -20,6 +21,7 @@ class ProductVariant extends Model
     {
         return [
             'size'              => 'integer',
+            'unit'              => 'string',
             'price'             => 'decimal:2',
             'promotion_percent' => 'decimal:2',
             'stock_quantity'    => 'integer',

@@ -35,6 +35,10 @@ export interface ProductCardProps {
   isBestSeller?: boolean;
   category?: string;
   productType?: string;
+  defaultSizeLabel?: string;
+  defaultSizeId?: number;
+  defaultVariantPrice?: number;
+  defaultVariantOriginalPrice?: number;
   onWishlistToggle?: (id: number) => void;
 }
 
@@ -53,7 +57,9 @@ function StarIcon({ filled }: { filled: boolean }) {
 
 export default function ProductCard({
   id, slug, name, subtitle, description, price, originalPrice,
-  rating, reviewCount, imageUrl, secondaryImageUrl, badge, isBestSeller, category, productType, onWishlistToggle,
+  rating, reviewCount, imageUrl, secondaryImageUrl, badge, isBestSeller, category, productType,
+  defaultSizeLabel, defaultSizeId, defaultVariantPrice, defaultVariantOriginalPrice,
+  onWishlistToggle,
 }: ProductCardProps) {
   const [wished, setWished] = useState(() => isInWishlist(id));
   const [isHovered, setIsHovered] = useState(false);
@@ -121,15 +127,18 @@ export default function ProductCard({
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    const cartPrice         = defaultVariantPrice ?? price;
+    const cartOriginalPrice = defaultVariantOriginalPrice ?? (originalPrice > price ? originalPrice : undefined);
     addItem({
       productId:     id,
       productName:   name,
       slug,
-      sizeId:        0,
-      sizeLabel:     null,
+      productType,
+      sizeId:        defaultSizeId ?? 0,
+      sizeLabel:     defaultSizeLabel ?? null,
       quantity:      1,
-      unitPrice:     price,
-      originalPrice: originalPrice > price ? originalPrice : undefined,
+      unitPrice:     cartPrice,
+      originalPrice: cartOriginalPrice !== undefined && cartOriginalPrice > cartPrice ? cartOriginalPrice : undefined,
       imageUrl,
     });
     setToast({ show: true, message: 'Produit ajouté au panier avec succès !', type: 'cart' });

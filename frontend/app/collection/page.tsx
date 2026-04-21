@@ -32,20 +32,29 @@ const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea4779426
 function productToCard(p: Product) {
   const imageUrl = p.primary_image || p.images?.[0]?.image_url || FALLBACK_IMG;
   const secondaryImageUrl = p.images?.[1]?.image_url || undefined;
+  const defaultVariant = p.variants?.find(v => v.is_default) ?? p.variants?.[0];
+  const defaultSizeLabel = defaultVariant ? `${defaultVariant.size}${defaultVariant.unit ?? 'ml'}` : undefined;
+  const defaultSizeId = defaultVariant?.id;
+  const defaultVariantPrice = defaultVariant?.final_price;
+  const defaultVariantOriginalPrice = defaultVariant?.original_price ?? undefined;
   return {
     id: p.id,
     slug: p.slug,
     name: p.name,
     subtitle: p.brand?.name ?? '',
     description: p.subtitle ?? '',
-    price: p.min_price ?? 0,
-    originalPrice: p.min_price ?? 0,
+    price: defaultVariantPrice ?? p.min_price ?? 0,
+    originalPrice: defaultVariantOriginalPrice ?? defaultVariantPrice ?? p.min_price ?? 0,
     rating: p.avg_rating ?? 0,
     reviewCount: p.review_count ?? 0,
     imageUrl,
     secondaryImageUrl,
     category: p.category?.name?.toLowerCase() === 'parfum' ? (p.product_type?.name ?? p.category?.name) : p.category?.name,
     productType: p.category?.name?.toLowerCase() === 'parfum' ? (p.brand?.name ?? p.product_type?.name ?? '') : (p.product_type?.name ?? ''),
+    defaultSizeLabel,
+    defaultSizeId,
+    defaultVariantPrice,
+    defaultVariantOriginalPrice,
   };
 }
 
@@ -665,7 +674,7 @@ export default function CollectionPage() {
               ) : (
                 <>
                   {viewMode === 'grid' ? (
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-6">
+                    <div className="product-grid grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-6 justify-items-stretch">
                       {paginatedProducts.map(p => <ProductCard key={p.id} {...productToCard(p)} />)}
                     </div>
                   ) : (

@@ -44,6 +44,7 @@ class UpdateProductRequest extends FormRequest
             'variants'           => ['nullable', 'string'],
             'variants_array'                       => ['nullable', 'array', 'max:3'],
             'variants_array.*.size'                => ['required', 'numeric', 'min:1', 'distinct'],
+            'variants_array.*.unit'                => ['nullable', Rule::in(['ml', 'g'])],
             'variants_array.*.price'               => ['required', 'numeric', 'min:0'],
             'variants_array.*.promotion_percent'   => ['nullable', 'numeric', 'min:0', 'max:100'],
             'variants_array.*.promotion'           => ['nullable', 'numeric', 'min:0', 'max:100'],

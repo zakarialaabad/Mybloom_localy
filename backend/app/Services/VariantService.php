@@ -48,6 +48,7 @@ class VariantService
 
             $product->variants()->create([
                 'size'              => $variantData['size'],
+                'unit'              => $variantData['unit'] ?? 'ml',
                 'price'             => $variantData['price'],
                 'promotion_percent' => $promoPercent,
                 'stock_quantity'    => (int) ($variantData['stock'] ?? $variantData['stock_quantity'] ?? 0),

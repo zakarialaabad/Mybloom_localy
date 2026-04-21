@@ -108,7 +108,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     <div className="flex justify-between items-start">
                       <div>
                         <h4 className="font-serif tracking-wider uppercase font-bold text-sm text-gray-900">{item.productName}</h4>
-                        <p className="font-serif italic text-xs text-gray-500 mt-0.5">Body Mist</p>
+                        <p className="font-serif italic text-xs text-gray-500 mt-0.5">{item.productType ?? 'Product'}</p>
                       </div>
                       <div className="text-right flex flex-col items-end">
                         <div className="font-serif font-bold italic text-base text-gray-900">{item.unitPrice * item.quantity} DH</div>
@@ -118,7 +118,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       </div>
                     </div>
                     
-                    <div className="text-[11px] text-gray-500 mt-2 font-serif">Size {item.sizeLabel}</div>
+                    {item.sizeLabel && (
+                      <div className="text-[11px] text-gray-500 mt-2 font-serif">Size {item.sizeLabel}</div>
+                    )}
                     
                     <div className="flex justify-between items-center mt-3 border-t border-transparent">
                       <div className="flex items-center gap-3">
