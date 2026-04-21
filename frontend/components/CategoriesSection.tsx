@@ -153,8 +153,8 @@ export default function CategoriesSection() {
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#4a403a] font-serif">
               Découvrez par <span className="text-[#e63a6c] italic font-light ml-1 text-4xl md:text-5xl" style={{ fontFamily: 'var(--font-serif-italic), cursive' }}>Notes</span>
             </h2>
-            <p className="mt-3 md:mt-4 text-xs md:text-base text-gray-700 max-w-xl leading-relaxed">
-              Explorez les fragrances par leurs notes olfactives uniques et découvrez le mélange parfait floral, boisé, citronné et épicé qui correspond à votre style.
+            <p className="text-gray-500 text-sm mt-4 max-w-3xl leading-relaxed">
+              Plongez dans nos collections et laissez-vous guider par vos sens. Des notes florales, boisées, fruitées ou orientales soigneusement sélectionnées pour sublimer chaque moment de votre journée.
             </p>
             {/* Mobile button under text */}
             <div className="mt-6 md:hidden">

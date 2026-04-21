@@ -187,14 +187,14 @@ export default function HeroSection() {
       {/* Content */}
       <div className="relative z-30 w-full flex h-full flex-col justify-center px-4 md:px-[69px] text-white text-center md:text-left md:items-start items-center">
         <h2 className="mb-4 md:mb-6 font-serif text-5xl md:text-7xl uppercase tracking-wider">
-          Aura Scents
+          L'ART DE SENTIR BON
         </h2>
         <p className="mb-8 md:mb-10 max-w-xl text-sm md:text-xl font-light px-4 md:px-0">
-          Découvrez les plus prestigieuses marques de parfum du monde à des prix imbattables
+          Parfums, gommages et soins corps soigneusement sélectionnés pour sublimer votre quotidien
         </p>
         <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto px-8 md:px-0 items-center">
           <Link
-            href="#best-sellers"
+            href="/collection"
             className="flex w-max items-center justify-center rounded-full bg-white/40 md:bg-white px-8 md:px-10 py-2.5 md:py-3 text-xs md:text-sm font-semibold tracking-widest text-white md:text-gray-900 backdrop-blur-sm transition-colors hover:bg-[#da2966] hover:text-white"
           >
             ACHETER MAINTENANT <span className="ml-2 text-[10px] md:hidden">▶</span>
