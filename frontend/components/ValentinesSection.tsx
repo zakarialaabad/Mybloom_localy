@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Banner } from '@/services/api';
 import { sanitizeImageUrl, FALLBACK_IMG } from '@/lib/utils';
 import useReferenceStore from '@/store/reference';
+import ImageGalleryModal from '@/components/ui/ImageGalleryModal';
+import { Eye } from 'lucide-react';
 
 // ── Skeleton placeholder shown while banners are loading ──────────────────────
 function BannerSkeleton({ className }: { className?: string }) {
@@ -23,11 +25,13 @@ function BannerTile({
   fill = true,
   priority = false,
   className = '',
+  onOpen,
 }: {
   banner: Banner;
   fill?: boolean;
   priority?: boolean;
   className?: string;
+  onOpen?: (img: string) => void;
 }) {
   const [imgError, setImgError] = useState(false);
   
@@ -49,9 +53,33 @@ function BannerTile({
 
   if (banner.link) {
     return (
-      <Link href={banner.link} className="absolute inset-0 z-10" aria-label={banner.title ?? 'View offer'}>
+      <div className="absolute inset-0 z-0">
+        <Link href={banner.link} className="absolute inset-0 z-10" aria-label={banner.title ?? 'View offer'}>
+          {img}
+        </Link>
+        {onOpen && (
+          <button
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); onOpen(banner.image_path); }}
+            className="absolute top-3 right-3 z-30 p-2 bg-white/90 hover:bg-white rounded-full shadow-md transition-all pointer-events-auto"
+            aria-label="Voir l'image en grand"
+          >
+            <Eye className="h-5 w-5 text-gray-800" />
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  // No link — make the whole tile clickable to open the lightbox when provided
+  if (onOpen) {
+    return (
+      <button
+        onClick={() => onOpen(banner.image_path)}
+        className="absolute inset-0 z-10 text-left"
+        aria-label={banner.title ?? 'View banner'}
+      >
         {img}
-      </Link>
+      </button>
     );
   }
 
@@ -66,6 +94,24 @@ export default function ValentinesSection() {
   useEffect(() => { ensureBanners(); }, [ensureBanners]);
 
   const loading = !bannersReady;
+
+  // Lightbox / gallery state for viewing banners full-size
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [galleryImages, setGalleryImages] = useState<string[]>([]);
+  const [currentImage, setCurrentImage] = useState<string>('');
+
+  const openGallery = (img: string) => {
+    const safe = sanitizeImageUrl(img);
+    setGalleryImages([safe]);
+    setCurrentImage(safe);
+    setGalleryOpen(true);
+  };
+
+  const closeGallery = () => {
+    setGalleryOpen(false);
+    setGalleryImages([]);
+    setCurrentImage('');
+  };
 
   // Slots indexed by position (1-based). Pad to 4 with undefined.
   const slots: (Banner | undefined)[] = [1, 2, 3, 4].map(
@@ -87,7 +133,7 @@ export default function ValentinesSection() {
             {loading ? (
               <BannerSkeleton className="absolute inset-0" />
             ) : slots[0] ? (
-              <BannerTile banner={slots[0]} priority />
+                <BannerTile banner={slots[0]} priority onOpen={openGallery} />
             ) : (
               <div className="absolute inset-0 bg-gray-50" />
             )}
@@ -103,7 +149,7 @@ export default function ValentinesSection() {
               {loading ? (
                 <BannerSkeleton className="absolute inset-0" />
               ) : slots[1] ? (
-                <BannerTile banner={slots[1]} />
+                <BannerTile banner={slots[1]} onOpen={openGallery} />
               ) : (
                 <div className="absolute inset-0 bg-gray-50" />
               )}
@@ -119,7 +165,7 @@ export default function ValentinesSection() {
                 {loading ? (
                   <BannerSkeleton className="absolute inset-0" />
                 ) : slots[2] ? (
-                  <BannerTile banner={slots[2]} />
+                  <BannerTile banner={slots[2]} onOpen={openGallery} />
                 ) : (
                   <div className="absolute inset-0 bg-gray-50" />
                 )}
@@ -131,7 +177,7 @@ export default function ValentinesSection() {
                 {loading ? (
                   <BannerSkeleton className="absolute inset-0" />
                 ) : slots[3] ? (
-                  <BannerTile banner={slots[3]} />
+                  <BannerTile banner={slots[3]} onOpen={openGallery} />
                 ) : (
                   <div className="absolute inset-0 bg-gray-50" />
                 )}
@@ -144,6 +190,15 @@ export default function ValentinesSection() {
         </div>
 
       </div>
+      {/* Image gallery modal for viewing banners full-size */}
+      <ImageGalleryModal
+        isOpen={galleryOpen}
+        onClose={closeGallery}
+        images={galleryImages}
+        currentImage={currentImage}
+        onImageChange={(img) => setCurrentImage(img)}
+        altText="Bannière"
+      />
     </section>
   );
 }

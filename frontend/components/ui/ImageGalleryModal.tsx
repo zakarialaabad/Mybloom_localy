@@ -43,6 +43,28 @@ export default function ImageGalleryModal({
     };
   }, [isOpen]);
 
+  // Keyboard support: Esc to close, left/right to navigate
+  useEffect(() => {
+    if (!isOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+      const currentIndex = images.indexOf(currentImage);
+      if (e.key === 'ArrowLeft') {
+        const prev = currentIndex > 0 ? images[currentIndex - 1] : images[images.length - 1];
+        onImageChange(prev);
+      }
+      if (e.key === 'ArrowRight') {
+        const next = currentIndex < images.length - 1 ? images[currentIndex + 1] : images[0];
+        onImageChange(next);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, images, currentImage, onClose, onImageChange]);
+
   if (!isOpen) return null;
 
   const currentIndex = images.indexOf(currentImage);
