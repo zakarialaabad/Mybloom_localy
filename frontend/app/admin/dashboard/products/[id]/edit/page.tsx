@@ -64,7 +64,7 @@ const ToggleRow = ({ label, active, border, onClick }: { label: string, active: 
   <div onClick={onClick} className={`flex items-center justify-between px-6 py-4 w-full h-[60px] ${border ? 'bg-white border border-dashed border-gray-200' : 'bg-[#f8f8f8]'} rounded-full cursor-pointer`}>
     <span className="text-[14px] font-bold text-[#333]">{label}</span>
     <div className="flex items-center gap-3">
-      {active && <span className="text-[12px] font-bold text-[#da2966]">Actif</span>}}
+      {active && <span className="text-[12px] font-bold text-[#da2966]">Actif</span>}
       <div className={`w-11 h-6 rounded-full flex items-center px-1 transition-colors ${active ? 'bg-[#da2966]' : 'bg-gray-200'}`}>
         <div className={`w-4 h-4 bg-white rounded-full transition-transform transform shadow-sm ${active ? 'translate-x-5' : 'translate-x-0'}`} />
       </div>
@@ -119,7 +119,9 @@ export default function EditProductPage() {
   const [gender, setGender] = useState('Women');
 
   // --- Status Settings ---
-  const [activeStatus, setActiveStatus] = useState<string>('none');
+  const [isBestSeller, setIsBestSeller] = useState(false);
+  const [isGift, setIsGift] = useState(false);
+  const [isRecommended, setIsRecommended] = useState(false);
 
   // --- Ingredients State ---
   const [ingredients, setIngredients] = useState<any[]>([]);
@@ -214,10 +216,9 @@ export default function EditProductPage() {
         }
 
         // Status
-        if (product.is_featured) setActiveStatus('best_seller');
-        else if (product.is_gift) setActiveStatus('gift');
-        else if (product.is_recommended) setActiveStatus('recommended');
-        else setActiveStatus('none');
+        setIsBestSeller(product.is_featured ?? false);
+        setIsGift(product.is_gift ?? false);
+        setIsRecommended(product.is_recommended ?? false);
 
         // Images
         setImageEntries(
@@ -450,9 +451,9 @@ export default function EditProductPage() {
       data.append('category_id', formData.category_id);
       data.append('brand_id', formData.brand_id);
       data.append('gender', gender.toLowerCase());
-      data.append('is_featured', activeStatus === 'best_seller' ? '1' : '0');
-      data.append('is_gift', activeStatus === 'gift' ? '1' : '0');
-      data.append('is_recommended', activeStatus === 'recommended' ? '1' : '0');
+      data.append('is_featured', isBestSeller ? '1' : '0');
+      data.append('is_gift', isGift ? '1' : '0');
+      data.append('is_recommended', isRecommended ? '1' : '0');
 
       const selectedType = productTypes.find((t: any) => t.name === productType);
       if (selectedType) data.append('product_type_id', String(selectedType.id));
@@ -861,9 +862,9 @@ export default function EditProductPage() {
       <div className="flex flex-col lg:grid lg:grid-cols-[1fr_1.5fr] gap-4 sm:p-6">
         <Card title="Status Settings" icon={<SettingsIcon />}>
           <div className="space-y-4">
-            <ToggleRow label="Make as Best Seller" active={activeStatus === 'best_seller'} onClick={() => setActiveStatus(activeStatus === 'best_seller' ? 'none' : 'best_seller')} />
-            <ToggleRow label="Make as Gift" active={activeStatus === 'gift'} border={true} onClick={() => setActiveStatus(activeStatus === 'gift' ? 'none' : 'gift')} />
-            <ToggleRow label="Make as Recommendation" active={activeStatus === 'recommended'} onClick={() => setActiveStatus(activeStatus === 'recommended' ? 'none' : 'recommended')} />
+            <ToggleRow label="Make as Best Seller" active={isBestSeller} onClick={() => setIsBestSeller(!isBestSeller)} />
+            <ToggleRow label="Make as Gift" active={isGift} border={true} onClick={() => setIsGift(!isGift)} />
+            <ToggleRow label="Make as Recommendation" active={isRecommended} onClick={() => setIsRecommended(!isRecommended)} />
           </div>
         </Card>
 

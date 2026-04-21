@@ -271,7 +271,6 @@ class ProductController extends Controller
                 ->withAvg('reviews as avg_rating', 'rating')
                 ->withCount('reviews as review_count')
                 ->orderBy('id')
-                ->limit(8)
                 ->get();
         });
     }
