@@ -555,24 +555,6 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               <h3 className="font-serif text-[17px] text-gray-500">Promotions</h3>
               <ChevronUp className="w-4 h-4 text-gray-800" />
             </div>
-            <label className="flex items-center gap-4 cursor-pointer group mb-4">
-              <div
-                className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
-                  promotionOnly
-                    ? 'border-[#333]'
-                    : 'border-gray-200 group-hover:border-gray-300'
-                }`}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setPromotionOnly(!promotionOnly);
-                }}
-              >
-                {promotionOnly && (
-                  <div className="w-2.5 h-2.5 bg-[#333] rounded-full" />
-                )}
-              </div>
-              <span className="text-[15px] text-[#444] font-serif">Offres Spéciales uniquement</span>
-            </label>
             <label className="flex items-center gap-4 cursor-pointer group">
               <div
                 className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
