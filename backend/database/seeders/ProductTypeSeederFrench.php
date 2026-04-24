@@ -27,6 +27,7 @@ class ProductTypeSeederFrench extends Seeder
             ['name' => 'Coffret Cadeau', 'slug' => 'coffret_cadeau'],
             ['name' => 'Huile Parfumée', 'slug' => 'huile_parfumee'],
             ['name' => 'Eau de Parfum', 'slug' => 'eau_de_parfum'],
+            ['name' => 'Musc', 'slug' => 'musc'],
         ];
 
         foreach ($types as $type) {

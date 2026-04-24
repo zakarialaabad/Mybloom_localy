@@ -30,12 +30,41 @@ class ReviewController extends Controller
      */
     private function bustHomepageCache(): void
     {
-        // Matches the cache key built in the public ReviewController::index()
-        // for the frontend call: reviewService.list({ source: 'admin' })
-        // only(['product_id','source','featured','limit']) → ['source' => 'admin']
         $params = ['source' => 'admin'];
         ksort($params);
         Cache::forget('reviews:' . md5(json_encode($params)));
+    }
+
+    /**
+     * Invalidate all caches tied to a specific product after a review mutation.
+     * Ensures avg_rating, review_count, and rating_distribution are fresh.
+     */
+    private function bustProductCaches(Review $review): void
+    {
+        if (! $review->product_id) return;
+
+        // Load product relation if not already loaded
+        $review->loadMissing('product');
+
+        // Bust the product detail cache
+        $slug = $review->product?->slug ?? '';
+        if ($slug) {
+            Cache::forget('product:' . $slug);
+        }
+
+        // Bust product-scoped review caches (all source / featured combinations)
+        $productId = $review->product_id;
+        foreach (['client', 'admin', null] as $src) {
+            foreach ([null, '1'] as $featured) {
+                $params = array_filter([
+                    'product_id' => $productId,
+                    'source'     => $src,
+                    'featured'   => $featured,
+                ], fn ($v) => $v !== null);
+                ksort($params);
+                Cache::forget('reviews:' . md5(json_encode($params)));
+            }
+        }
     }
 
     /**
@@ -50,7 +79,7 @@ class ReviewController extends Controller
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Review::with(['product', 'images'])
+        $query = Review::with(['product', 'images', 'order'])
             ->orderBy('created_at', 'desc');
 
         // Status filter: approved | pending | all
@@ -177,9 +206,12 @@ class ReviewController extends Controller
         $review->update($validated);
 
         $this->bustHomepageCache();
+        $this->bustProductCaches($review->fresh());
+        \App\Http\Controllers\Api\V1\ProductController::bustListCaches();
 
         return response()->json([
             'message' => 'Review updated.',
+
             'data'    => new ReviewResource($review->fresh(['product', 'images'])),
         ]);
     }
@@ -192,9 +224,12 @@ class ReviewController extends Controller
         $review->update([
             'is_approved' => true,
             'approved_at' => now(),
+            'status'      => 'approved',
         ]);
 
         $this->bustHomepageCache();
+        $this->bustProductCaches($review);
+        \App\Http\Controllers\Api\V1\ProductController::bustListCaches();
 
         return response()->json(['message' => 'Review approved.', 'data' => new ReviewResource($review)]);
     }
@@ -207,11 +242,31 @@ class ReviewController extends Controller
         $review->update([
             'is_approved' => false,
             'approved_at' => null,
+            'status'      => 'pending',
         ]);
 
         $this->bustHomepageCache();
+        $this->bustProductCaches($review);
+        \App\Http\Controllers\Api\V1\ProductController::bustListCaches();
 
         return response()->json(['message' => 'Review rejected.']);
+    }
+
+    /**
+     * PATCH /api/v1/admin/reviews/{review}/traiter
+     * Mark a low-rated (1-2★) review as "traiter" for admin handling
+     */
+    public function traiter(Review $review): JsonResponse
+    {
+        $review->update([
+            'status' => 'traiter',
+        ]);
+
+        $this->bustHomepageCache();
+        $this->bustProductCaches($review);
+        \App\Http\Controllers\Api\V1\ProductController::bustListCaches();
+
+        return response()->json(['message' => 'Review marked as traiter.', 'data' => new ReviewResource($review)]);
     }
 
     /**
@@ -219,9 +274,11 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review): JsonResponse
     {
+        $this->bustProductCaches($review); // bust before delete while relation still exists
         $review->delete();
 
         $this->bustHomepageCache();
+        \App\Http\Controllers\Api\V1\ProductController::bustListCaches();
 
         return response()->json(['message' => 'Review deleted.']);
     }

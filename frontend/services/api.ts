@@ -692,9 +692,22 @@ export const adminVideoService = {
 
 export const adminProfileService = {
   getProfile: async (): Promise<any> => {
-    const { data } = await apiClient.get('/v1/admin/profile');
-    return data.data;
+    // Request deduplication: prevent multiple simultaneous API calls
+    if (!adminProfileService._profilePromise) {
+      adminProfileService._profilePromise = apiClient
+        .get('/v1/admin/profile')
+        .then((response) => {
+          adminProfileService._profilePromise = null;
+          return response.data.data;
+        })
+        .catch((error) => {
+          adminProfileService._profilePromise = null;
+          throw error;
+        });
+    }
+    return adminProfileService._profilePromise;
   },
+  _profilePromise: null as Promise<any> | null,
   updateProfile: async (formData: FormData): Promise<any> => {
     // Use raw axios (NOT apiClient) to avoid the default Content-Type: application/json
     // which prevents the browser from setting multipart/form-data with the required boundary.
@@ -773,14 +786,19 @@ export interface AdminOrderFull {
   customer_name: string;
   customer_email: string;
   customer_phone: string;
+  subtotal: number;
+  discount_amount: number;
+  shipping_cost: number;
   total: number;
   status: string;
   items_count: number;
   customer_total_orders?: number;
+  customer_total_spent?: number;
+  customer_total_items?: number;
   created_at: string;
   items: AdminOrderItem[];
   shipping_method?: { id: number; name: string };
-  coupon?: { id: number; code: string } | null;
+  coupon?: { id: number; code: string; type?: string } | null;
   status_histories?: Array<{
     status: string;
     label: string;

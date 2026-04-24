@@ -167,7 +167,12 @@ export default function CustomerReviewsSection() {
                       {getInitials(review.reviewer_name)}
                     </div>
                     <div className="flex flex-col min-w-0">
-                      <span className="text-[13px] font-medium text-gray-900 truncate">{review.reviewer_name}</span>
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:gap-1.5 flex-wrap">
+                        <span className="text-[13px] font-medium text-gray-900">{review.reviewer_name}</span>
+                        {review.customer_phone && (
+                          <span className="text-[11px] text-gray-500 font-normal">{review.customer_phone}</span>
+                        )}
+                      </div>
                       <div className="flex items-center gap-1.5">
                         <span className="text-[11px] text-gray-400">{new Date(review.created_at).toLocaleDateString('fr-MA')}</span>
                         <span className="text-[10px] font-medium text-[#2ecc71] flex items-center gap-0.5">

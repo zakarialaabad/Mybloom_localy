@@ -267,33 +267,33 @@ export default function OrderDetailsSidebar({
             </h3>
 
             <div className="bg-white rounded-[20px] p-4 sm:p-6 shadow-[0_4px_20px_rgba(0,0,0,0.03)] border border-[#f5ebed]">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
-                <div className="flex items-center gap-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-start justify-between mb-6 gap-4">
+                <div className="flex items-start gap-4">
                   <div className="w-14 h-14 rounded-full bg-[#fdf2f4] text-[#da2966] flex items-center justify-center text-[16px] sm:text-[18px] sm:text-[20px] font-serif font-bold uppercase shrink-0">
                     {order.customer_name
                       ? order.customer_name.substring(0, 2)
                       : '??'}
                   </div>
-                  <div>
-                    <h4 className="text-[16px] font-serif font-bold text-[#444] break-all">
+                  <div className="min-w-0 pt-0.5">
+                    <h4 className="text-[16px] font-serif font-bold text-[#444] truncate">
                       {order.customer_name}
                     </h4>
-                    <p className="text-[14px] text-gray-500 mt-0.5 break-all">
+                    <p className="text-[14px] text-gray-500 mt-0.5 truncate">
                       {order.customer_phone}
                     </p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 w-full sm:w-auto flex-wrap">
+                <div className="flex items-start gap-3 w-full sm:w-auto flex-wrap sm:flex-nowrap">
                   <div className="flex-1 sm:flex-none bg-[#fcf9f9] rounded-[12px] px-4 py-2 text-center shadow-[0_2px_10px_rgba(0,0,0,0.02)] border border-[#f5ebed]">
                     <div className="flex items-center gap-2 mb-1 justify-center">
                       <PackageCheck size={14} className="text-[#da2966]" />
                       <span className="text-[16px] font-serif font-bold text-[#da2966]">
-                        {order.total} DH
+                        {(order.customer_total_spent || 0).toLocaleString()} DH
                       </span>
                     </div>
                     <span className="text-[10px] text-gray-400 font-medium">
-                      Total de la commande
+                      Montant total dépensé
                     </span>
                   </div>
 
@@ -301,11 +301,11 @@ export default function OrderDetailsSidebar({
                     <div className="flex items-center gap-2 mb-1 justify-center">
                       <ShoppingCart size={14} className="text-[#da2966]" />
                       <span className="text-[16px] font-serif font-bold text-[#da2966]">
-                        {order.customer_total_orders || 0}
+                        {order.customer_total_items || 0}
                       </span>
                     </div>
                     <span className="text-[10px] text-gray-400 font-medium">
-                      Commandes totales
+                      Produits totaux
                     </span>
                   </div>
                 </div>
@@ -405,7 +405,7 @@ export default function OrderDetailsSidebar({
                   Your Price
                 </span>
                 <span className="text-[16px] font-serif font-bold text-[#222] italic">
-                  {order.total} DH
+                  {Number(order.subtotal || 0).toLocaleString('fr-MA', { minimumFractionDigits: 2 })} DH
                 </span>
               </div>
 
@@ -414,18 +414,20 @@ export default function OrderDetailsSidebar({
                   Expédition
                 </span>
                 <span className="text-[16px] font-serif font-bold text-[#222] italic">
-                  Free
+                  {Number(order.shipping_cost || 0) === 0 ? 'Free' : `${Number(order.shipping_cost || 0).toLocaleString('fr-MA', { minimumFractionDigits: 2 })} DH`}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between">
-                <span className="text-[15px] font-serif font-bold text-[#444]">
-                  Coupon
-                </span>
-                <span className="text-[16px] font-serif font-bold text-[#222] italic">
-                  - 0 DH
-                </span>
-              </div>
+              {order.discount_amount > 0 && (
+                <div className="flex items-center justify-between">
+                  <span className="text-[15px] font-serif font-bold text-[#444]">
+                    Coupon {order.coupon?.code && `(${order.coupon.code})`}
+                  </span>
+                  <span className="text-[16px] font-serif font-bold text-[#da2966] italic">
+                    - {Number(order.discount_amount).toLocaleString('fr-MA', { minimumFractionDigits: 2 })} DH
+                  </span>
+                </div>
+              )}
 
               <hr className="border-[#e1ced3] my-4" />
 
@@ -434,7 +436,7 @@ export default function OrderDetailsSidebar({
                   Total
                 </span>
                 <span className="text-[16px] sm:text-[18px] font-serif font-bold text-[#222] italic">
-                  {order.total} DH
+                  {Number(order.total).toLocaleString('fr-MA', { minimumFractionDigits: 2 })} DH
                 </span>
               </div>
             </div>

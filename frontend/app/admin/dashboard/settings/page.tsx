@@ -45,29 +45,41 @@ export default function GeneralSettingsPage() {
   const [message, setMessage] = useState<{type: 'success'|'error', text: string} | null>(null);
 
   useEffect(() => {
-    fetchProfile();
+    // Use a guard to prevent fetching in React Strict Mode development
+    let isMounted = true;
+    
+    const loadProfile = async () => {
+      try {
+        const data = await adminProfileService.getProfile();
+        if (isMounted) {
+          setProfile({
+            username: data.username || '',
+            email: data.email || '',
+            phone: data.phone || ''
+          });
+          if (data.profile_image) {
+            setImagePreview(data.profile_image);
+          } else {
+            setImagePreview(null);
+          }
+          setIsLoading(false);
+        }
+      } catch (err) {
+        if (isMounted) {
+          console.error('Failed to load profile', err);
+          setIsLoading(false);
+        }
+      }
+    };
+    
+    loadProfile();
+    
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  const fetchProfile = async () => {
-    try {
-      const data = await adminProfileService.getProfile();
-      setProfile({
-        username: data.username || '',
-        email: data.email || '',
-        phone: data.phone || ''
-      });
-      if (data.profile_image) {
-        // Backend now returns full URL like http://localhost:8000/storage/admin_profiles/...
-        setImagePreview(data.profile_image);
-      } else {
-        setImagePreview(null);
-      }
-    } catch (err) {
-      console.error('Failed to load profile', err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+
 
   const handleProfileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setProfile({ ...profile, [e.target.name]: e.target.value });

@@ -126,6 +126,11 @@ export function ReviewTable({
             <p className="text-[14px] font-semibold text-[#111] truncate">
               {review.reviewer_name}
             </p>
+            {review.customer_phone && (
+              <p className="text-[12px] text-gray-500 truncate">
+                {review.customer_phone}
+              </p>
+            )}
             <div className="flex sm:hidden gap-0.5 mt-1">
               <StarRating rating={review.rating} size={10} />
             </div>

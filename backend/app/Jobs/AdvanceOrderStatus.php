@@ -45,8 +45,8 @@ class AdvanceOrderStatus implements ShouldQueue
         }
 
         $statusLabels = [
-            'preparing' => 'Your order is being carefully prepared and packed.',
-            'shipped'   => 'Your order is out for delivery and on the way to you.',
+            'preparing' => 'Préparation de votre colis',
+            'shipped'   => 'En cours de livraison',
         ];
 
         $orderService->recordStatusChange(
@@ -55,10 +55,10 @@ class AdvanceOrderStatus implements ShouldQueue
             $statusLabels[$this->toStatus] ?? ucfirst($this->toStatus),
         );
 
-        // Chain: if we just set "preparing", schedule the next advance to "shipped" in 1 minute
+        // Chain: if we just set "preparing", schedule the next advance to "shipped" in 3 hours
         if ($this->toStatus === 'preparing') {
             self::dispatch($order->id, 'preparing', 'shipped')
-                ->delay(now()->addMinutes(1));
+                ->delay(now()->addHours(3));
         }
     }
 }

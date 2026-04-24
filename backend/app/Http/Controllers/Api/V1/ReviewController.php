@@ -67,24 +67,42 @@ class ReviewController extends Controller
 
     /**
      * Inner query builder extracted so it can be wrapped by Cache::remember cleanly.
+     *
+     * ── Aggregate vs Display split ──────────────────────────────────────────
+     * The rating_summary (total, average, distribution) is computed from ALL
+     * approved positive reviews regardless of source (admin-curated OR client
+     * feedback with order_number). This ensures client 3★/4★/5★ feedback reviews
+     * are reflected in the homepage percentage bars.
+     *
+     * The carousel `data` array only contains admin-curated reviews
+     * (order_number IS NULL) when source=admin — keeping the display clean while
+     * the aggregate numbers tell the full truth.
      */
     private function buildReviewsResponse(Request $request): array
     {
-        $baseQuery = Review::where('is_approved', true);
+        $source = $request->query('source');
+
+        // ── Aggregate query: ALL approved positive reviews (any source) ─────
+        // For product-scoped queries we honour the source filter so the summary
+        // matches what the product detail page expects. For homepage calls
+        // (no product_id) we always aggregate across all sources so every
+        // approved client feedback review is counted in the distribution.
+        $aggQuery = Review::where('is_approved', true)
+            ->where('rating', '>=', 3);
 
         if ($request->filled('product_id')) {
-            $baseQuery->where('product_id', $request->integer('product_id'));
+            $aggQuery->where('product_id', $request->integer('product_id'));
+            // Respect source for product-scoped aggregates
+            if ($source === 'client') {
+                $aggQuery->whereNotNull('order_number');
+            } elseif ($source === 'admin') {
+                $aggQuery->whereNull('order_number');
+            }
         }
-
-        $source = $request->query('source');
-        if ($source === 'client') {
-            $baseQuery->whereNotNull('order_number');
-        } elseif ($source === 'admin' || ! $request->filled('product_id')) {
-            $baseQuery->whereNull('order_number');
-        }
+        // Homepage (no product_id): no source filter — aggregate ALL approved positive
 
         // ── Collapse 3 separate COUNT/AVG queries into 1 aggregate query ──
-        $agg = (clone $baseQuery)
+        $agg = (clone $aggQuery)
             ->selectRaw('COUNT(*) as total, AVG(rating) as average,
                 SUM(rating = 5) as r5, SUM(rating = 4) as r4,
                 SUM(rating = 3) as r3, SUM(rating = 2) as r2,
@@ -106,18 +124,32 @@ class ReviewController extends Controller
 
         $ratingSummary = ['average' => $average, 'total' => $total, 'distribution' => $distribution];
 
-        $query = (clone $baseQuery)->with('images');
+        // ── Carousel query: apply source filter for display only ────────────
+        $displayQuery = Review::where('is_approved', true)
+            ->where('rating', '>=', 3)
+            ->with(['images', 'order', 'product']);
+
+        if ($request->filled('product_id')) {
+            $displayQuery->where('product_id', $request->integer('product_id'));
+        }
+
+        if ($source === 'client') {
+            $displayQuery->whereNotNull('order_number');
+        } elseif ($source === 'admin' || ! $request->filled('product_id')) {
+            // Homepage and explicit admin source: show only admin-curated cards
+            $displayQuery->whereNull('order_number');
+        }
 
         if (filter_var($request->query('featured'), FILTER_VALIDATE_BOOLEAN)) {
-            $query->orderByRaw(
+            $displayQuery->orderByRaw(
                 'EXISTS(SELECT 1 FROM review_images WHERE review_images.review_id = reviews.id) DESC'
             );
         }
 
-        $query->orderBy('rating', 'desc')->latest();
+        $displayQuery->orderBy('rating', 'desc')->latest();
 
         $limit = $request->integer('limit', 15);
-        $collection = $query->paginate(min($limit, 50));
+        $collection = $displayQuery->paginate(min($limit, 50));
 
         return ['collection' => $collection, 'rating_summary' => $ratingSummary];
     }
@@ -145,13 +177,16 @@ class ReviewController extends Controller
         // Extract uploaded images before creating — they are not DB columns on reviews
         $uploadedFiles = $request->file('images', []);
 
+        // Auto-approve any review with rating >= 3 (no manual dashboard action required)
+        $autoApprove = ($data['rating'] >= 3);
         $review = Review::create([
             'product_id'    => $data['product_id'],
             'order_number'  => $data['order_number'] ?? null,
             'reviewer_name' => $data['reviewer_name'],
             'rating'        => $data['rating'],
             'body'          => $data['body'] ?? null,
-            'is_approved'   => false,
+            'is_approved'   => $autoApprove,
+            'approved_at'   => $autoApprove ? now() : null,
         ]);
 
         // Persist each uploaded photo and link it to the review using ImageService
@@ -167,7 +202,7 @@ class ReviewController extends Controller
             }
         }
 
-        $review->load('images');
+        $review->load(['images', 'order', 'product']);
 
         // Bust the product's review cache so the new review appears within 5 min.
         // We recompute the likely cache keys the frontend would request for this product.
@@ -187,8 +222,18 @@ class ReviewController extends Controller
         // Also bust the product detail cache so avg_rating / review_count refresh
         Cache::forget('product:' . ($review->product->slug ?? ''));
 
+        // Bust the homepage reviews cache (source=admin, no product_id) so the
+        // CustomerReviewsSection rating_summary updates after a new review is approved
+        $homepageParams = ['source' => 'admin'];
+        ksort($homepageParams);
+        Cache::forget('reviews:' . md5(json_encode($homepageParams)));
+
+        // Bust ALL product list caches (homepage sections, collection page, etc.)
+        // so review_count and avg_rating on every product card refresh immediately.
+        \App\Http\Controllers\Api\V1\ProductController::bustListCaches();
+
         return response()->json([
-            'message' => 'Review submitted and pending approval.',
+            'message' => $review->is_approved ? 'Review submitted and auto-approved.' : 'Review submitted and pending approval.',
             'data'    => new ReviewResource($review),
         ], 201);
     }

@@ -27,6 +27,24 @@ class ProductResource extends JsonResource
 
     public function toArray(Request $request): array
     {
+        // Default to attributes (provided by withAvg/withCount) so resources
+        // that do not load the relation still have sensible values.
+        $avgRating = $this->avg_rating ?? 0;
+        $reviewCount = $this->review_count ?? 0;
+
+        // Prefer computing aggregates from the loaded `approvedReviews` relation
+        // (this includes feedback reviews for counting/averaging). Fall back to
+        // `reviews` for backward compatibility when `approvedReviews` is not loaded.
+        if ($this->relationLoaded('approvedReviews') && $this->approvedReviews instanceof \Illuminate\Support\Collection) {
+            $validReviews = $this->approvedReviews;
+            $avgRating = $validReviews->avg('rating') ?: 0;
+            $reviewCount = $validReviews->count();
+        } elseif ($this->relationLoaded('reviews') && $this->reviews instanceof \Illuminate\Support\Collection) {
+            $validReviews = $this->reviews;
+            $avgRating = $validReviews->avg('rating') ?: 0;
+            $reviewCount = $validReviews->count();
+        }
+
         return [
             'id'             => $this->id,
             'name'           => $this->name,
@@ -39,9 +57,9 @@ class ProductResource extends JsonResource
             'original_price' => $this->original_price ? (float) $this->original_price : null,
             'min_price'      => (float) $this->price,
             'max_price'      => $this->original_price ? (float) $this->original_price : (float) $this->price,
-            // review aggregates injected by withAvg / withCount in the controller
-            'avg_rating'     => round((float) ($this->avg_rating ?? 0), 1),
-            'review_count'   => (int) ($this->review_count ?? 0),
+            // review aggregates (filtered)
+            'avg_rating'     => round((float) $avgRating, 1),
+            'review_count'   => (int) $reviewCount,
             'stock'          => $this->stock,
             'is_active'      => $this->is_active,
             'is_featured'    => $this->is_featured,
@@ -99,7 +117,7 @@ class ProductResource extends JsonResource
                     'name' => $ing->name,
                 ])
             ),
-            'created_at'     => $this->created_at?->toISOString(),
         ];
     }
+
 }

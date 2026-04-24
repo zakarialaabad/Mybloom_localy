@@ -19,6 +19,7 @@ class Review extends Model
         'body',
         'is_approved',
         'approved_at',
+        'status',
     ];
 
     protected function casts(): array
@@ -27,6 +28,7 @@ class Review extends Model
             'rating'      => 'integer',
             'is_approved' => 'boolean',
             'approved_at' => 'datetime',
+            'status'      => 'string', // pending, approved, traiter
         ];
     }
 
@@ -35,6 +37,15 @@ class Review extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    /**
+     * Lookup order by order_number to get customer phone
+     * Used when displaying review author contact info
+     */
+    public function order(): BelongsTo
+    {
+        return $this->belongsTo(Order::class, 'order_number', 'order_number');
     }
 
     public function images(): HasMany

@@ -4734,6 +4734,153 @@
                 "unit": "ml"
             },
             {
+    "id": 86,
+    "name": "Musc blanc",
+    "type_produit": "Musc",
+    "img_main": "/images/musc blanc/musc-blanc-img_main.jpg",
+    "subtitle": "Pureté et douceur dans une fragrance intemporelle",
+    "description": "Le Musc Blanc offre une fragrance douce, propre et apaisante. Idéal pour un usage quotidien, il enveloppe la peau d’un parfum subtil et élégant qui dure toute la journée. Un indispensable pour celles qui recherchent simplicité et raffinement.",
+    "price": 30,
+    "original_price": null,
+    "stock": 40,
+    "is_best_seller": true,
+    "is_gift": false,
+    "is_recommended": true,
+    "gender": "female",
+    "badges": ["100% Naturel"],
+    "category": "parfum",
+    "type": "corps",
+    "variants": [
+      {
+        "size": 10,
+        "price": 30,
+        "final_price": 30,
+        "original_price": null,
+        "promotion_percent": 0,
+        "stock_quantity": 40,
+        "unit": "ml"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Ce musc convient-il à une utilisation quotidienne ?",
+        "answer": "Oui, sa fragrance douce et légère est parfaite pour une utilisation quotidienne."
+      },
+      {
+        "question": "Combien de temps dure le parfum sur la peau ?",
+        "answer": "Le parfum peut durer plusieurs heures selon le type de peau et les conditions."
+      },
+      {
+        "question": "Peut-on appliquer ce musc sur les vêtements ?",
+        "answer": "Il est recommandé de l’appliquer directement sur la peau pour un meilleur rendu."
+      },
+      {
+        "question": "Ce produit est-il naturel ?",
+        "answer": "Oui, il est formulé avec des ingrédients sélectionnés pour une expérience naturelle."
+      }
+    ],
+    "brand": "My Bloom",
+    "unit": "ml"
+  },
+  {
+    "id": 87,
+    "name": "Musc à la grenade",
+    "type_produit": "Musc",
+    "img_main": "/images/musc grenade/musc-a-la-grenade-img_main.jpg",
+    "subtitle": "Une touche fruitée et sensuelle qui éveille les sens",
+    "description": "Le Musc à la Grenade séduit par ses notes fruitées et légèrement acidulées. Il apporte fraîcheur et féminité, tout en laissant un sillage délicat et captivant. Parfait pour celles qui aiment les parfums dynamiques et modernes.",
+    "price": 30,
+    "original_price": null,
+    "stock": 40,
+    "is_best_seller": true,
+    "is_gift": false,
+    "is_recommended": true,
+    "gender": "female",
+    "badges": ["100% Naturel"],
+    "category": "parfum",
+    "type": "corps",
+    "variants": [
+      {
+        "size": 10,
+        "price": 30,
+        "final_price": 30,
+        "original_price": null,
+        "promotion_percent": 0,
+        "stock_quantity": 40,
+        "unit": "ml"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Ce musc a-t-il une odeur sucrée ?",
+        "answer": "Oui, il possède une note fruitée légèrement sucrée grâce à la grenade."
+      },
+      {
+        "question": "Est-il adapté pour toutes les saisons ?",
+        "answer": "Oui, sa fraîcheur le rend agréable toute l’année."
+      },
+      {
+        "question": "Combien de temps tient-il sur la peau ?",
+        "answer": "Il offre une bonne tenue de plusieurs heures selon votre peau."
+      },
+      {
+        "question": "Peut-on l’offrir comme cadeau ?",
+        "answer": "Oui, c’est un excellent choix pour un petit cadeau parfumé."
+      }
+    ],
+    "brand": "My Bloom",
+    "unit": "ml"
+  },
+  {
+    "id": 88,
+    "name": "Musc de féminité",
+    "type_produit": "Musc",
+    "img_main": "/images/musc de féminité/musc-de-feminite-img_main.jpg",
+    "subtitle": "Une signature olfactive élégante et irrésistiblement féminine",
+    "description": "Le Musc de Féminité incarne élégance et sensualité. Sa fragrance envoûtante sublime votre présence avec une touche raffinée et chaleureuse. Idéal pour les occasions spéciales ou pour affirmer votre charme au quotidien.",
+    "price": 30,
+    "original_price": null,
+    "stock": 40,
+    "is_best_seller": true,
+    "is_gift": false,
+    "is_recommended": true,
+    "gender": "female",
+    "badges": ["100% Naturel"],
+    "category": "parfum",
+    "type": "corps",
+    "variants": [
+      {
+        "size": 10,
+        "price": 30,
+        "final_price": 30,
+        "original_price": null,
+        "promotion_percent": 0,
+        "stock_quantity": 40,
+        "unit": "ml"
+      }
+    ],
+    "faqs": [
+      {
+        "question": "Ce musc est-il adapté pour les soirées ?",
+        "answer": "Oui, sa fragrance élégante est parfaite pour les occasions spéciales."
+      },
+      {
+        "question": "Le parfum est-il intense ?",
+        "answer": "Il est modérément intense avec une touche sophistiquée."
+      },
+      {
+        "question": "Peut-on l’utiliser tous les jours ?",
+        "answer": "Oui, il convient aussi bien pour un usage quotidien que pour des événements."
+      },
+      {
+        "question": "Convient-il à tous les âges ?",
+        "answer": "Oui, il s’adapte à toutes les femmes recherchant une fragrance élégante."
+      }
+    ],
+    "brand": "My Bloom",
+    "unit": "ml"
+  },
+            {
                 "id": 85,
                 "name": "Kalimat",
                 "type_produit": "Eau de Parfum",
@@ -4791,4 +4938,5 @@
             }
         ]
     }
+    
 }

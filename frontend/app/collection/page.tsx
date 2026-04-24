@@ -618,6 +618,10 @@ export default function CollectionPage() {
                     {expandedSections.promotions && (
                       <div className="space-y-3">
                         <label className="flex items-center gap-3 cursor-pointer group">
+                          <input type="checkbox" checked={promotionOnly} onChange={(e) => setPromotionOnly(e.target.checked)} className="w-3.5 h-3.5" />
+                          <span className="text-xs text-gray-500">Offre Speciales</span>
+                        </label>
+                        <label className="flex items-center gap-3 cursor-pointer group">
                           <input type="checkbox" checked={featuredOnly} onChange={(e) => setFeaturedOnly(e.target.checked)} className="w-3.5 h-3.5" />
                           <span className="text-xs text-gray-500">Best Sellers</span>
                         </label>
@@ -823,6 +827,7 @@ export default function CollectionPage() {
                 <div className="border-t border-gray-100 pt-6 pb-2">
                   <h3 className="font-serif text-gray-700 mb-4">Promotions</h3>
                   <div className="space-y-3">
+                    <label className="flex items-center gap-3 cursor-pointer"><input type="checkbox" checked={promotionOnly} onChange={(e) => setPromotionOnly(e.target.checked)} className="w-3.5 h-3.5" /><span className="text-xs text-gray-500">Offre Speciales</span></label>
                     <label className="flex items-center gap-3 cursor-pointer"><input type="checkbox" checked={featuredOnly} onChange={(e) => setFeaturedOnly(e.target.checked)} className="w-3.5 h-3.5" /><span className="text-xs text-gray-500">Best Sellers</span></label>
                   </div>
                 </div>

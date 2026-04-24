@@ -29,7 +29,7 @@ class AdminProfileController extends Controller
             return response()->json(['message' => 'Unauthenticated.'], 401);
         }
 
-        return response()->json([
+        $response = response()->json([
             'data' => [
                 'id' => $admin->id,
                 'username' => $admin->username,
@@ -42,6 +42,11 @@ class AdminProfileController extends Controller
                 'created_at' => $admin->created_at,
             ]
         ]);
+
+        // Cache for 5 minutes on client side to prevent redundant requests
+        return $response
+            ->header('Cache-Control', 'private, max-age=300')
+            ->header('ETag', '"admin-profile-' . $admin->id . '-' . $admin->updated_at->timestamp . '"');
     }
 
     /**

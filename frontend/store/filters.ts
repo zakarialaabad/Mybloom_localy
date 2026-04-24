@@ -49,6 +49,8 @@ interface FilterStore {
   setBrandCounts: (counts: Record<number, number>) => void;
   ingredientCounts: Record<number, number>; // ingredient_id -> product_count
   setIngredientCounts: (counts: Record<number, number>) => void;
+  categoryCounts: Record<number, number>; // category_id -> product_count
+  setCategoryCounts: (counts: Record<number, number>) => void;
   productTypeCounts: Record<string, { name: string; count: number }>; // slug -> { name, count }
   setProductTypeCounts: (counts: Record<string, { name: string; count: number }>) => void;
 
@@ -113,6 +115,8 @@ const useFilterStore = create<FilterStore>((set, get) => ({
   setBrandCounts: (counts) => set({ brandCounts: counts }),
   ingredientCounts: {},
   setIngredientCounts: (counts) => set({ ingredientCounts: counts }),
+  categoryCounts: {},
+  setCategoryCounts: (counts) => set({ categoryCounts: counts }),
   productTypeCounts: {},
   setProductTypeCounts: (counts) => set({ productTypeCounts: counts }),
 

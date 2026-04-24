@@ -71,9 +71,11 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const ensureProductTypes = useReferenceStore((s) => s.ensureProductTypes);
   const brandCounts      = useFilterStore((s) => s.brandCounts);
   const ingredientCounts = useFilterStore((s) => s.ingredientCounts);
+  const categoryCounts   = useFilterStore((s) => s.categoryCounts);
   const productTypeCounts = useFilterStore((s) => s.productTypeCounts);
   const setBrandCounts      = useFilterStore((s) => s.setBrandCounts);
   const setIngredientCounts = useFilterStore((s) => s.setIngredientCounts);
+  const setCategoryCounts   = useFilterStore((s) => s.setCategoryCounts);
   const setProductTypeCounts = useFilterStore((s) => s.setProductTypeCounts);
 
   const ensureProductsCache = useCatalogStore((s) => s.ensureProducts);
@@ -96,12 +98,36 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     if (!isOpen) return;
     const hasBrandCounts = Object.keys(brandCounts).length > 0;
     const hasIngredientCounts = Object.keys(ingredientCounts).length > 0;
+    const hasCategoryCounts = Object.keys(categoryCounts).length > 0;
     const hasProductTypeCounts = Object.keys(productTypeCounts).length > 0;
-    if (hasBrandCounts && hasIngredientCounts && hasProductTypeCounts) return;
+    if (hasBrandCounts && hasIngredientCounts && hasCategoryCounts && hasProductTypeCounts) return;
 
-    ensureProductsCache('all-products', {}).then((products) => {
+    // Build filter params from current filter state (same as collection page)
+    const buildFilterParams = () => {
+      const params: Record<string, unknown> = {};
+      
+      if (featuredOnly) {
+        params['is_featured'] = 1;
+      } else {
+        if (selectedBrands.length > 0) params['brand_ids[]'] = selectedBrands;
+        if (selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
+        if (selectedIngredients.length > 0) params['ingredient_ids[]'] = selectedIngredients;
+        if (globalMax && (selectedMin > globalMin || selectedMax < globalMax)) {
+          params['price_min'] = selectedMin;
+          params['price_max'] = selectedMax;
+        }
+        if (selectedRating !== null) params['min_rating'] = selectedRating;
+        if (selectedProductType !== null) params['product_type'] = selectedProductType;
+        if (promotionOnly) params['on_promotion'] = 1;
+      }
+      return params;
+    };
+
+    const params = buildFilterParams();
+    ensureProductsCache('modal-filter', params).then((products) => {
       const bc: Record<number, number> = {};
       const ic: Record<number, number> = {};
+      const cc: Record<number, number> = {};
       const pc: Record<string, { name: string; count: number }> = {};
       
       const slugify = (s: string) => s ? s.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '') : '';
@@ -109,6 +135,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       products.forEach((p) => {
         if (p.brand?.id) bc[p.brand.id] = (bc[p.brand.id] ?? 0) + 1;
         p.ingredients?.forEach((ing) => { if (ing.id) ic[ing.id] = (ic[ing.id] ?? 0) + 1; });
+        if (p.category?.id) cc[p.category.id] = (cc[p.category.id] ?? 0) + 1;
         
         // Product types
         const nameFromType = p.product_type?.name ?? p.category?.name;
@@ -121,9 +148,10 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
       
       if (!hasBrandCounts) setBrandCounts(bc);
       if (!hasIngredientCounts) setIngredientCounts(ic);
+      if (!hasCategoryCounts) setCategoryCounts(cc);
       if (!hasProductTypeCounts) setProductTypeCounts(pc);
     });
-  }, [isOpen, brandCounts, ingredientCounts, productTypeCounts, ensureProductsCache, setBrandCounts, setIngredientCounts, setProductTypeCounts]);
+  }, [isOpen, selectedBrands, selectedCategories, selectedIngredients, selectedMin, selectedMax, globalMin, globalMax, selectedRating, selectedProductType, promotionOnly, featuredOnly, brandCounts, ingredientCounts, categoryCounts, productTypeCounts, ensureProductsCache, setBrandCounts, setIngredientCounts, setCategoryCounts, setProductTypeCounts]);
 
   // Count active filters for the badge
   const activeFilterCount =
@@ -436,7 +464,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                       {cat.name}
                     </span>
                     <span className="text-[12px] font-serif text-gray-400">
-                      ({15 + (i % 20)})
+                      ({categoryCounts[cat.id] ?? 0})
                     </span>
                   </div>
                 </label>
@@ -555,6 +583,24 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               <h3 className="font-serif text-[17px] text-gray-500">Promotions</h3>
               <ChevronUp className="w-4 h-4 text-gray-800" />
             </div>
+            <label className="flex items-center gap-4 cursor-pointer group mb-4">
+              <div
+                className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
+                  promotionOnly
+                    ? 'border-[#333]'
+                    : 'border-gray-200 group-hover:border-gray-300'
+                }`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setPromotionOnly(!promotionOnly);
+                }}
+              >
+                {promotionOnly && (
+                  <div className="w-2.5 h-2.5 bg-[#333] rounded-full" />
+                )}
+              </div>
+              <span className="text-[15px] text-[#444] font-serif">Offres Spéciales uniquement</span>
+            </label>
             <label className="flex items-center gap-4 cursor-pointer group">
               <div
                 className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${

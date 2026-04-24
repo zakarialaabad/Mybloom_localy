@@ -217,7 +217,7 @@ export default function CheckoutPage() {
       
       // Télécharger automatiquement le PDF de la commande
       try {
-        const pdfUrl = `${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api'}/v1/invoices/${result.order_number}/download?phone=${encodeURIComponent(normalizedPhone)}`;
+        const pdfUrl = `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${result.order_number}/download?phone=${encodeURIComponent(normalizedPhone)}`;
         try {
           const response = await fetch(pdfUrl);
           if (response.ok) {

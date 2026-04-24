@@ -29,8 +29,25 @@ class ProductController extends Controller
         }
         
         $query = Product::with(['brand', 'category', 'productType', 'variants', 'ingredientItems', 'images' => fn ($q) => $q->orderBy('sort_order')])
-            ->withAvg('reviews as avg_rating', 'rating')
-            ->withCount('reviews as review_count')
+            // Use approvedReviews for aggregates so feedback reviews are included in counts/averages
+            ->withAvg('approvedReviews as avg_rating', 'rating')
+            ->withCount([
+                'approvedReviews as review_count',
+                'approvedReviews as rating_5_count' => fn ($q) => $q->where('rating', 5),
+                'approvedReviews as rating_4_count' => fn ($q) => $q->where('rating', 4),
+                'approvedReviews as rating_3_count' => fn ($q) => $q->where('rating', 3),
+                'approvedReviews as rating_2_count' => fn ($q) => $q->where('rating', 2),
+                'approvedReviews as rating_1_count' => fn ($q) => $q->where('rating', 1),
+            ])
+            // Per-star counts for approvedReviews so the frontend can compute
+            // accurate percentage bars (includes feedback reviews as well).
+            ->withCount([
+                'approvedReviews as rating_5_count' => fn ($q) => $q->where('rating', 5),
+                'approvedReviews as rating_4_count' => fn ($q) => $q->where('rating', 4),
+                'approvedReviews as rating_3_count' => fn ($q) => $q->where('rating', 3),
+                'approvedReviews as rating_2_count' => fn ($q) => $q->where('rating', 2),
+                'approvedReviews as rating_1_count' => fn ($q) => $q->where('rating', 1),
+            ])
             ->where('is_active', true);
 
         // Search
@@ -143,8 +160,10 @@ class ProductController extends Controller
         }
 
         // Build cache key from query parameters (15-min cache for product lists)
-        // Cache key includes all filters, sort, limit to ensure exact same queries are cached together
-        $cacheKey = 'products:' . md5(json_encode($request->query()));
+        // Includes a version integer so bustListCaches() invalidates ALL list entries
+        // atomically without needing cache tags or pattern-based deletion.
+        $listVersion = (int) Cache::get('products_list_version', 0);
+        $cacheKey = 'products:' . $listVersion . ':' . md5(json_encode($request->query()));
         $cacheTTL = 15; // minutes
 
         // If a specific limit is requested (e.g. BestSellers widget), honour it.
@@ -228,11 +247,19 @@ class ProductController extends Controller
                 'sizes',
                 'variants',
                 'ingredientItems',
-                'reviews'        => fn ($q) => $q->where('is_approved', true)->with('images')->latest()->limit(20),
+                // 'reviews' relation already filters to public, approved, positive reviews
+                'reviews'        => fn ($q) => $q->with('images')->latest()->limit(20),
                 'faqs',
             ])
-            ->withAvg('reviews as avg_rating', 'rating')
-            ->withCount('reviews as review_count')
+            ->withAvg('approvedReviews as avg_rating', 'rating')
+            ->withCount([
+                'approvedReviews as review_count',
+                'approvedReviews as rating_5_count' => fn ($q) => $q->where('rating', 5),
+                'approvedReviews as rating_4_count' => fn ($q) => $q->where('rating', 4),
+                'approvedReviews as rating_3_count' => fn ($q) => $q->where('rating', 3),
+                'approvedReviews as rating_2_count' => fn ($q) => $q->where('rating', 2),
+                'approvedReviews as rating_1_count' => fn ($q) => $q->where('rating', 1),
+            ])
             ->where('slug', $slug)
             ->where('is_active', true)
             ->first();
@@ -268,11 +295,27 @@ class ProductController extends Controller
                     'brand'   => fn ($q) => $q->select(['id', 'name', 'slug']),
                     'images'  => fn ($q) => $q->orderBy('sort_order')->limit(2),
                 ])
-                ->withAvg('reviews as avg_rating', 'rating')
-                ->withCount('reviews as review_count')
+                // Use approvedReviews for aggregates so feedback reviews are counted
+                ->withAvg('approvedReviews as avg_rating', 'rating')
+                ->withCount('approvedReviews as review_count')
                 ->orderBy('id')
                 ->get();
         });
+    }
+
+    /**
+     * Bump the product-list cache version so every 'products:*' entry is
+     * treated as stale on the next request. Called whenever a review is
+     * added/updated/deleted — review_count and avg_rating change for the
+     * affected product and all list responses must be regenerated.
+     */
+    public static function bustListCaches(): void
+    {
+        // Incrementing a version key is O(1) and requires no knowledge of
+        // which specific md5-keyed entries exist in the cache store.
+        Cache::increment('products_list_version');
+        // Also clear the recommendations carousel — it carries avg_rating/review_count
+        Cache::forget('recommendations:carousel');
     }
 
     /**

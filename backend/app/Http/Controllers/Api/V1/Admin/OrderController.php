@@ -97,11 +97,11 @@ class OrderController extends Controller
         );
 
         // Schedule automatic status advances:
-        //   confirmed  --[1min]--> preparing  --[1min]--> shipped
+        //   confirmed  --[6h]--> preparing  --[3h]--> shipped
         // (The shipped→delivered transition is always manual.)
         if ($newStatus === 'confirmed') {
             AdvanceOrderStatus::dispatch($order->id, 'confirmed', 'preparing')
-                ->delay(now()->addMinutes(1));
+                ->delay(now()->addHours(6));
         }
 
         return response()->json([

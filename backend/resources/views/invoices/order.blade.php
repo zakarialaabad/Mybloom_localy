@@ -6,12 +6,30 @@
 <title>Invoice – {{ $order->order_number }}</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 11px; color: #333; background: #fff; }
+  
+  /* ── Base Styles ────────────────────────────────────────────────────── */
+  /* Font stack: DejaVuSans for Arabic, fallback to system fonts for Latin */
+  body { 
+    font-family: 'DejaVuSans', 'Segoe UI', Arial, sans-serif; 
+    font-size: 11px; 
+    color: #333; 
+    background: #fff;
+  }
+  
   .page { padding: 50px 60px; max-width: 900px; margin: 0 auto; }
 
   /* ── Header ─────────────────────────────────────────────────────────── */
   .header { text-align: center; margin-bottom: 50px; }
-  .invoice-title { font-size: 15px; font-weight: 700; color: #da2966; letter-spacing: 1px; margin-top: 10px; margin-bottom: 40px; text-transform: uppercase; font-family: 'Times New Roman', serif;}
+  .invoice-title { 
+    font-size: 15px; 
+    font-weight: 700; 
+    color: #da2966; 
+    letter-spacing: 1px; 
+    margin-top: 10px; 
+    margin-bottom: 40px; 
+    text-transform: uppercase; 
+    font-family: 'DejaVuSans', 'Times New Roman', serif;
+  }
 
   /* ── Info grid ────────────────────────────────────────────────────────── */
   .info-wrapper { padding: 20px 0; margin-bottom: 10px; }
@@ -20,8 +38,29 @@
   .info-block.left { text-align: left; width: 35%; }
   .info-block.center { text-align: left; width: 40%; border-left: 1px solid #f0e0e6; padding-left: 24px; }
   .info-block.right { text-align: right; width: 25%; border-left: 1px solid #f0e0e6; padding-left: 24px; }
-  .info-label { font-size: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; font-weight: 600; }
-  .info-value { font-size: 13px; font-weight: bold; color: #222; margin-bottom: 14px; line-height: 1.4; }
+  
+  /* RTL Support for Arabic content */
+  .info-label { 
+    font-size: 10px; 
+    color: #aaa; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    margin-bottom: 6px; 
+    font-weight: 600;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
+  .info-value { 
+    font-size: 13px; 
+    font-weight: bold; 
+    color: #222; 
+    margin-bottom: 14px; 
+    line-height: 1.4;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
   .info-value.pink { color: #da2966; }
   .info-value.normal { font-weight: normal; color: #444; }
   
@@ -29,48 +68,165 @@
   .divider { height: 1.5px; background: #da2966; margin: 10px 0 24px 0; }
 
   /* ── Delivery address ────────────────────────────────────────────────────── */
-  .delivery-section { background: #f0ebe3; padding: 20px 24px 24px 24px; margin-bottom: 30px; border-radius: 3px; width: 100%; }
-  .delivery-label { font-size: 10px; color: #aaa; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; margin-bottom: 10px; }
-  .delivery-address { font-size: 14px; color: #333; line-height: 1.6; font-weight: normal; }
+  .delivery-section { 
+    background: #f0ebe3; 
+    padding: 20px 24px 24px 24px; 
+    margin-bottom: 30px; 
+    border-radius: 3px; 
+    width: 100%;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
+  .delivery-label { 
+    font-size: 10px; 
+    color: #aaa; 
+    text-transform: uppercase; 
+    letter-spacing: 1.5px; 
+    font-weight: 600; 
+    margin-bottom: 10px;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
+  .delivery-address { 
+    font-size: 14px; 
+    color: #333; 
+    line-height: 1.6; 
+    font-weight: normal;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
 
   /* ── Items table ─────────────────────────────────────────────────────── */
-  table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+  table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-bottom: 20px;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
   thead tr { background: #333; color: #fff; }
-  thead th { padding: 10px 15px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  thead th { 
+    padding: 10px 15px; 
+    text-align: left; 
+    font-size: 10px; 
+    text-transform: uppercase; 
+    letter-spacing: 0.5px; 
+    font-weight: 600;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
   thead th:nth-child(2) { text-align: center; }
   thead th:nth-child(3) { text-align: right; }
   thead th:nth-child(4) { text-align: right; }
+  
   tbody tr { border-bottom: 1px solid #eee; }
   tbody tr:last-child { border-bottom: none; }
-  tbody td { padding: 12px 15px; font-size: 12px; vertical-align: top; }
+  
+  tbody td { 
+    padding: 12px 15px; 
+    font-size: 12px; 
+    vertical-align: top;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
   tbody td:nth-child(2) { text-align: center; font-weight: 700; color: #333; vertical-align: middle; }
   tbody td:nth-child(3) { text-align: right; color: #666; vertical-align: middle; }
   tbody td:nth-child(4) { text-align: right; font-weight: 700; color: #333; vertical-align: middle; }
-  tbody .product-name { font-weight: 700; color: #333; margin-bottom: 2px; text-transform: uppercase; font-size: 11px; }
-  tbody .product-details { font-size: 10px; color: #999; }
+  
+  tbody .product-name { 
+    font-weight: 700; 
+    color: #333; 
+    margin-bottom: 2px; 
+    font-size: 11px;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+    /* text-transform: uppercase intentionally removed — it corrupts Arabic multi-byte characters */
+  }
+  
+  tbody .product-details { 
+    font-size: 10px; 
+    color: #999;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
 
   /* ── Totals section ──────────────────────────────────────────────────── */
-  .totals-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-  .totals-table td { padding: 8px 15px; font-size: 12px; border-bottom: 1px solid #eee; }
+  .totals-table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-top: 10px;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
+  .totals-table td { 
+    padding: 8px 15px; 
+    font-size: 12px; 
+    border-bottom: 1px solid #eee;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
   .totals-table tr:last-child td { border-bottom: none; }                 
-  .totals-table .label { color: #666; width: 50%; border-right: 1px solid #eee; }
-  .totals-table .value { text-align: right; font-weight: 600; color: #666; }
+  .totals-table .label { 
+    color: #666; 
+    width: 50%; 
+    border-right: 1px solid #eee;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
+  .totals-table .value { 
+    text-align: right; 
+    font-weight: 600; 
+    color: #666;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
   .totals-table .shipping .value { color: #da2966; }
   .totals-table .discount .value { color: #da2966; }
   .totals-table .discount .label { color: #999; }
   
   .total-row { background: #222; }
-  .total-row td { padding: 12px 15px; border: none; }
-  .total-row .label { color: #fff; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; font-size: 11px; border-right: none; }
-  .total-row .value { color: #fff; font-size: 14px; font-weight: 700; }
+  .total-row td { padding: 12px 15px; border: none; font-family: 'DejaVuSans', Arial, sans-serif; }
+  .total-row .label { 
+    color: #fff; 
+    font-weight: 700; 
+    text-transform: uppercase; 
+    letter-spacing: 1px; 
+    font-size: 11px; 
+    border-right: none;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  .total-row .value { 
+    color: #fff; 
+    font-size: 14px; 
+    font-weight: 700;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
 
   /* ── Footer ──────────────────────────────────────────────────────────── */
   .divider-footer { height: 1px; background: #da2966; margin: 30px 0 20px 0; }
-  .footer { text-align: center; }
-  .thank-you { font-size: 12px; font-style: italic; color: #333; margin-bottom: 12px; }
-  .footer-contact { font-size: 11px; color: #1976d2; }
-  .footer-contact a { color: #1976d2; text-decoration: none; }
-  .footer-contact .phone { color: #1976d2; }
+  
+  .footer { 
+    text-align: center;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
+  .thank-you { 
+    font-size: 12px; 
+    font-style: italic; 
+    color: #333; 
+    margin-bottom: 12px;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
+  .footer-contact { 
+    font-size: 11px; 
+    color: #1976d2;
+    font-family: 'DejaVuSans', Arial, sans-serif;
+  }
+  
+  .footer-contact a { color: #1976d2; text-decoration: none; font-family: 'DejaVuSans', Arial, sans-serif; }
+  .footer-contact .phone { color: #1976d2; font-family: 'DejaVuSans', Arial, sans-serif; }
 </style>
 </head>
 <body>
@@ -109,7 +265,8 @@
       </div>
       <div class="info-block center">
         <div class="info-label">CUSTOMER DETAILS</div>
-        <div class="info-value">{{ $order->customer_name }}</div>
+        @php $nameIsRtl = preg_match('/[\x{0600}-\x{06FF}]/u', $order->customer_name ?? ''); @endphp
+        <div class="info-value" @if($nameIsRtl) dir="rtl" style="text-align:right;" @endif>{!! $order->customer_name !!}</div>
         <div class="info-value normal">{{ $order->customer_phone }}</div>
       </div>
       <div class="info-block right">
@@ -122,10 +279,10 @@
   {{-- ── DIVIDER ─────────────────────────────────────────────────────────── --}}
   <div class="divider"></div>
 
-  {{-- ── DELIVERY ADDRESS ────────────────────────────────────────────────── --}}
+  @php $addrIsRtl = preg_match('/[\x{0600}-\x{06FF}]/u', $order->shipping_address_full ?? $order->shipping_address ?? ''); @endphp
   <div class="delivery-section">
     <div class="delivery-label">Delivery Address</div>
-    <div class="delivery-address">{{ $order->shipping_address_full ?? $order->shipping_address }}</div>
+    <div class="delivery-address" @if($addrIsRtl) dir="rtl" style="text-align:right;" @endif>{!! $order->shipping_address_full ?? $order->shipping_address !!}</div>
   </div>
 
   {{-- ── ITEMS TABLE ─────────────────────────────────────────────────────── --}}
@@ -140,9 +297,13 @@
     </thead>
     <tbody>
       @foreach($order->items as $item)
+      @php
+        $productName = $item->product->name ?? 'Product';
+        $isRtl = preg_match('/[\x{0600}-\x{06FF}]/u', $productName);
+      @endphp
       <tr>
         <td>
-          <div class="product-name">{{ $item->product->name ?? 'Product' }}</div>
+          <div class="product-name" @if($isRtl) dir="rtl" style="text-align:right;" @endif>{!! $productName !!}</div>
           @if($item->size_label)
             <div class="product-details">{{ $item->size_label }}</div>
           @endif

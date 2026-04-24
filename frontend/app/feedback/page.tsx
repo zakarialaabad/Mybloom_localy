@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import ReviewModal from '@/components/ReviewModal';
 import { orderService, reviewService, OrderTrackResult } from '@/services/api';
+import useCatalogStore from '@/store/catalog';
 
 export default function FeedbackPage() {
   const searchParams = useSearchParams();
@@ -25,6 +26,10 @@ export default function FeedbackPage() {
   const [errorMsg, setErrorMsg] = useState<string | undefined>(undefined);
   const [successBanner, setSuccessBanner] = useState<string | null>(null);
 
+  // Invalidate the frontend product-list cache after a review is submitted
+  // so homepage sections (BestSellers, etc.) re-fetch and show updated review_count
+  const invalidateProductLists = useCatalogStore((s) => s.clearCache);
+
   useEffect(() => {
     if (!successBanner) return;
     const t = setTimeout(() => setSuccessBanner(null), 3500);
@@ -35,7 +40,11 @@ export default function FeedbackPage() {
     if (!orderNumber || !phone) return;
     orderService.track(orderNumber, phone)
       .then(data => setOrderData(data))
-      .catch(() => {});
+      .catch((err) => {
+        console.error('[FeedbackPage] Failed to load order:', err);
+        // Don't block the user from submitting reviews if order lookup fails
+        // (e.g., 404 for invalid order, 429 for rate limit, network error, etc.)
+      });
   }, [orderNumber, phone]);
 
   // ── Bloque le scroll du body sur mobile uniquement ──
@@ -78,6 +87,8 @@ export default function FeedbackPage() {
       setUserReviews(prev => new Map(prev).set(selectedProduct.productId, { rating, text: body, images }));
       setSuccessBanner(selectedProduct.name);
       setIsModalOpen(false);
+      // Clear the frontend product-list cache so homepage cards re-fetch updated review_count
+      invalidateProductLists();
     } catch (err: unknown) {
       const apiError = err as { message?: string; errors?: Record<string, string[]> };
       const detail = apiError?.errors

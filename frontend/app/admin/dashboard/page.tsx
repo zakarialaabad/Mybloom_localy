@@ -289,9 +289,30 @@ function SalesChart({ chart }: { chart: DashboardChartData }) {
  * ═══════════════════════════════════════════════════════════════════════════ */
 
 export default function AdminDashboardPage() {
+  const [search, setSearch] = useState('');
   const { data, isLoading, error, isError, refetch } = useDashboardMetrics();
 
   const s = data?.summary;
+
+  // Filter recent orders based on search query
+  const filteredOrders = data?.recent_orders.filter((order) => {
+    const query = search.toLowerCase();
+    return (
+      order.order_number.toLowerCase().includes(query) ||
+      order.customer.toLowerCase().includes(query) ||
+      order.status.toLowerCase().includes(query) ||
+      order.date.toLowerCase().includes(query)
+    );
+  }) ?? [];
+
+  // Filter top customers based on search query
+  const filteredCustomers = data?.top_customers.filter((customer) => {
+    const query = search.toLowerCase();
+    return (
+      customer.name.toLowerCase().includes(query) ||
+      customer.phone.toLowerCase().includes(query)
+    );
+  }) ?? [];
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -307,7 +328,12 @@ export default function AdminDashboardPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Rechercher…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Escape') setSearch('');
+              }}
+              placeholder="Rechercher commande, client…"
               className="w-full h-9 sm:h-10 pl-8 sm:pl-10 pr-3 sm:pr-4 rounded-full bg-white border border-gray-200 text-[12px] sm:text-[13px] focus:outline-none focus:border-[#da2966]/30 shadow-sm placeholder:text-gray-400"
             />
           </div>
@@ -406,8 +432,8 @@ export default function AdminDashboardPage() {
               {/* Top Customers */}
               <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100 flex flex-col">
                 <h3 className="text-[16px] font-bold text-[#1a1a1a] mb-4">Meilleurs clients</h3>
-                <div className="flex-1 divide-y divide-gray-100">
-                  {data.top_customers.map((c, i) => (
+                <div className="divide-y divide-gray-100 overflow-y-auto max-h-[230px] pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+                  {filteredCustomers.map((c, i) => (
                     <div key={i} className="flex items-center gap-3 py-3.5">
                       <CustomerAvatar name={c.name} />
                       <div className="flex-1 min-w-0">
@@ -420,8 +446,8 @@ export default function AdminDashboardPage() {
                       </div>
                     </div>
                   ))}
-                  {data.top_customers.length === 0 && (
-                    <p className="text-[13px] text-gray-400 py-4">Aucun client pour l'instant.</p>
+                  {filteredCustomers.length === 0 && (
+                    <p className="text-[13px] text-gray-400 py-4">{search ? 'Aucun client trouvé.' : 'Aucun client pour l\'instant.'}</p>
                   )}
                 </div>
               </div>
@@ -452,14 +478,14 @@ export default function AdminDashboardPage() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-50">
-                    {data.recent_orders.length === 0 ? (
+                    {filteredOrders.length === 0 ? (
                       <tr>
                         <td colSpan={6} className="px-6 py-16 text-center text-[14px] text-gray-400">
-                          Aucune commande pour l'instant.
+                          {search ? 'Aucune commande trouvée.' : 'Aucune commande pour l\'instant.'}
                         </td>
                       </tr>
                     ) : (
-                      data.recent_orders.map((order) => (
+                      filteredOrders.slice(0, 5).map((order) => (
                         <tr key={order.id} className="hover:bg-[#fefbfb] transition-colors">
                           <td className="px-6 py-4 text-[13px] font-semibold text-[#333]">
                             {order.order_number}
@@ -487,12 +513,12 @@ export default function AdminDashboardPage() {
 
               {/* ── MOBILE CARDS ── */}
               <div className="md:hidden flex flex-col divide-y divide-gray-50 border-t border-gray-100">
-                {data.recent_orders.length === 0 ? (
+                {filteredOrders.length === 0 ? (
                   <div className="px-6 py-16 text-center text-[14px] text-gray-400">
-                    Aucune commande pour l'instant.
+                    {search ? 'Aucune commande trouvée.' : 'Aucune commande pour l\'instant.'}
                   </div>
                 ) : (
-                  data.recent_orders.map((order) => (
+                  filteredOrders.slice(0, 5).map((order) => (
                     <div key={order.id} className="p-4 flex flex-col gap-3 hover:bg-gray-50/50 active:bg-gray-50 transition-colors cursor-pointer">
                       <div className="flex items-center justify-between">
                         <span className="text-[14px] font-bold text-[#111]">{order.order_number}</span>

@@ -75,6 +75,33 @@ class ProductDetailResource extends JsonResource
             // review aggregates injected by withAvg / withCount in the controller
             'avg_rating'     => round((float) ($this->avg_rating ?? 0), 1),
             'review_count'   => (int) ($this->review_count ?? 0),
+            // Rating distribution (5..1) computed from per-star counts injected
+            // by the controller using withCount on `approvedReviews` so feedback
+            // reviews are included in the percentages.
+            'rating_distribution' => (function () {
+                $total = (int) ($this->review_count ?? 0);
+
+                $counts = [
+                    5 => (int) ($this->rating_5_count ?? 0),
+                    4 => (int) ($this->rating_4_count ?? 0),
+                    3 => (int) ($this->rating_3_count ?? 0),
+                    2 => (int) ($this->rating_2_count ?? 0),
+                    1 => (int) ($this->rating_1_count ?? 0),
+                ];
+
+                $result = [];
+                for ($star = 5; $star >= 1; $star--) {
+                    $count = $counts[$star] ?? 0;
+                    // Use string keys so PHP json_encodes this as an object
+                    // {"5":{...},"4":{...},...} — matching the /v1/reviews distribution shape
+                    $result[(string) $star] = [
+                        'count'      => $count,
+                        'percentage' => $total > 0 ? round(($count / $total) * 100) : 0,
+                    ];
+                }
+
+                return (object) $result;
+            })(),
             'badges'         => $this->is_featured ? ['Bestseller'] : [],
             'brand'          => $this->whenLoaded('brand', fn () => [
                 'id'       => $this->brand?->id,
@@ -130,7 +157,11 @@ class ProductDetailResource extends JsonResource
                     'image_url' => $this->resolveUrl($ing->image_url),
                 ])
             ),
-            'reviews'        => $this->whenLoaded('reviews', fn () => ReviewResource::collection($this->reviews)),
+            // Public reviews to display in the UI: the `reviews` relation is
+            // already constrained to approved, positive and non-feedback items.
+            'reviews'        => $this->whenLoaded('reviews', fn () =>
+                ReviewResource::collection($this->reviews)
+            ),
             'all_reviews'    => $this->whenLoaded('allReviews', fn () =>
                 $this->allReviews->map(fn ($r) => [
                     'id'            => $r->id,

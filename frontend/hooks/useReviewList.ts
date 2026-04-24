@@ -39,6 +39,6 @@ export const useReviewList = (options?: UseReviewListOptions): UseReviewListRetu
     isLoading,
     error: error as Error | null,
     isError: !!error,
-    refetch: () => mutate(),
+    refetch: () => mutate(undefined, { revalidate: true }),
   };
 };

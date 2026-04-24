@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
 import useCartStore from '@/store/cart';
 import useCatalogStore from '@/store/catalog';
+import Tooltip from './Tooltip';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
@@ -154,7 +155,7 @@ export default function ProductCard({
     >
       <article className="cursor-pointer bg-white border border-t-0 border-gray-200">
         {/* Image container */}
-        <div className="relative mb-0 aspect-[4/5] overflow-hidden bg-[#f8f5f1]">
+        <div className="relative mb-0 aspect-[4/5] overflow-visible bg-[#f8f5f1]">
 
           {/* Header overlay – favorite icon + discount badge */}
           <div className="absolute top-0 left-0 right-0 z-10 p-2 sm:p-2.5 flex items-start justify-between">
@@ -226,40 +227,47 @@ export default function ProductCard({
             shadow-[0_-2px_10px_rgba(0,0,0,0.05)]
             transition-all duration-300 ease-out
             will-change-transform
+            overflow-visible
             ${isHovered ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'}
           `}>
-            <button onClick={handleAddToCart} className="flex-1 flex justify-center text-gray-600 hover:text-black transition-colors" aria-label="Add to cart">
-              <svg className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-            </button>
-            <button className="flex-1 flex justify-center text-gray-600 hover:text-black transition-colors" aria-label="Quick view">
-              <svg className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-              </svg>
-            </button>
-            <button
-              onClick={handleWishlistClick}
-              aria-label="Toggle wishlist"
-              className={`flex-1 flex justify-center transition-colors ${
-                wished 
-                  ? 'text-red-500' 
-                  : 'text-gray-400 hover:text-red-500'
-              }`}
-            >
-              <svg
-                className="h-5 w-5 md:h-6 md:w-6 fill-current"
-                stroke="currentColor"
-                strokeWidth={1.5}
-                viewBox="0 0 24 24"
+            <Tooltip text="Ajouter au panier" position="top" align="left">
+              <button onClick={handleAddToCart} className="flex-1 flex justify-center text-gray-600 hover:text-black transition-colors" aria-label="Add to cart">
+                <svg className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+              </button>
+            </Tooltip>
+            <Tooltip text="Voir les détails" position="top">
+              <Link href={`/product/${slug}`} className="flex-1 flex justify-center text-gray-600 hover:text-black transition-colors" aria-label="Quick view">
+                <svg className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                </svg>
+              </Link>
+            </Tooltip>
+            <Tooltip text="Ajouter aux favoris" position="top" align="right">
+              <button
+                onClick={handleWishlistClick}
+                aria-label="Toggle wishlist"
+                className={`flex-1 flex justify-center transition-colors ${
+                  wished 
+                    ? 'text-red-500' 
+                    : 'text-gray-400 hover:text-red-500'
+                }`}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
-                />
-              </svg>
-            </button>
+                <svg
+                  className="h-5 w-5 md:h-6 md:w-6 fill-current"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"
+                  />
+                </svg>
+              </button>
+            </Tooltip>
           </div>
         </div>
 

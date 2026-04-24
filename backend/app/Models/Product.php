@@ -94,7 +94,37 @@ class Product extends Model
 
     public function reviews(): HasMany
     {
-        return $this->hasMany(Review::class)->where('is_approved', true);
+        // Public-facing reviews: approved, positive (>=3★), and feedback (no order_number)
+        // These are the reviews shown on product pages; order-related reviews
+        // are counted in aggregates but not displayed here.
+        return $this->hasMany(Review::class)
+            ->where('is_approved', true)
+            ->where('rating', '>=', 3)
+            ->whereNull('order_number');
+    }
+
+    /**
+     * All approved positive reviews — used for aggregates (counts / averages).
+     * Includes feedback reviews (order_number IS NULL) so counts reflect them,
+     * but these feedback reviews are not shown in product review lists.
+     */
+    public function approvedReviews(): HasMany
+    {
+        return $this->hasMany(Review::class)
+            ->where('is_approved', true)
+            ->where('rating', '>=', 3);
+    }
+
+    /**
+     * Feedback reviews only (approved, positive, no order_number).
+     * Kept for clarity and possible future use.
+     */
+    public function feedbackReviews(): HasMany
+    {
+        return $this->hasMany(Review::class)
+            ->where('is_approved', true)
+            ->where('rating', '>=', 3)
+            ->whereNull('order_number');
     }
 
     public function ingredientItems(): BelongsToMany

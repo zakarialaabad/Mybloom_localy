@@ -79,6 +79,8 @@ class SendContactFormEmail implements ShouldQueue
     private function buildEmailHtml(ContactSubmission $submission): string
     {
         $storeName = config('app.name', 'Parfum Store');
+        $appUrl = config('app.url', 'https://mybloom.ma');
+        $logoUrl = "{$appUrl}/logo.png";
         $visitorName = e($submission->visitor_name);
         $visitorPhone = e($submission->visitor_phone);
         $visitorSubject = e($submission->visitor_subject);
@@ -114,7 +116,7 @@ class SendContactFormEmail implements ShouldQueue
           <!-- Logo -->
           <tr>
             <td align="center" style="padding:20px 32px;">
-              <img src="https://mybloom.ma/logo.png" alt="MyBloom" style="max-width:120px;height:auto;display:block;" />
+              <img src="{$logoUrl}" alt="{$storeName}" style="max-width:120px;height:auto;display:block;" />
             </td>
           </tr>
 

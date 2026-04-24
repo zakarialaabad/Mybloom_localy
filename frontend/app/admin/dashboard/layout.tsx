@@ -45,29 +45,19 @@ export default function AdminDashboardLayout({
   useEffect(() => {
     fetchAdminProfile();
 
-    // Set up polling: refetch every 30 seconds
-    const interval = setInterval(fetchAdminProfile, 30 * 1000);
+    // Set up polling: refetch every 5 minutes (300 seconds)
+    // This matches the backend cache duration
+    const interval = setInterval(fetchAdminProfile, 5 * 60 * 1000);
 
-    // Refetch when window becomes visible/focused
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') {
-        fetchAdminProfile();
-      }
-    };
-    
-    // Listen for profile update event from settings page
+    // Listen for profile update event from settings page (only real updates, not initial load)
     const handleProfileUpdated = () => {
       fetchAdminProfile();
     };
     
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('focus', fetchAdminProfile);
     window.addEventListener('profileUpdated', handleProfileUpdated);
 
     return () => {
       clearInterval(interval);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('focus', fetchAdminProfile);
       window.removeEventListener('profileUpdated', handleProfileUpdated);
     };
   }, []);

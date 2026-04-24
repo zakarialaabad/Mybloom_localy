@@ -140,7 +140,7 @@ class DashboardController extends Controller
             )
             ->groupBy('customer_phone', 'customer_name')
             ->orderByDesc('total_spent')
-            ->limit(5)
+            ->limit(12)
             ->get()
             ->map(fn ($row) => [
                 'phone'       => $row->customer_phone,

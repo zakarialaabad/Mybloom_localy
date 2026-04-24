@@ -134,12 +134,17 @@ export default function ReviewsPage() {
   // ── Moderation actions ──────────────────────────────────────────────────────
   const handleApprove = async (id: number) => {
     setActionLoading(id);
+    const element = document.getElementById(`review-${id}`);
     try {
       await adminReviewService.approve(id);
       refetch();
       // Refresh stats
       const res = await adminReviewService.stats();
       setStats(res);
+      // Scroll back to review
+      setTimeout(() => {
+        element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
     } catch (e) {
       console.error(e);
     } finally {
@@ -149,12 +154,38 @@ export default function ReviewsPage() {
 
   const handleReject = async (id: number) => {
     setActionLoading(id);
+    const element = document.getElementById(`review-${id}`);
     try {
       await adminReviewService.reject(id);
       refetch();
       // Refresh stats
       const res = await adminReviewService.stats();
       setStats(res);
+      // Scroll back to review
+      setTimeout(() => {
+        element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  const handleTraiter = async (id: number) => {
+    setActionLoading(id);
+    const element = document.getElementById(`review-${id}`);
+    const scrollPosition = element?.getBoundingClientRect().top || 0;
+    try {
+      await adminReviewService.traiter(id);
+      refetch();
+      // Refresh stats
+      const res = await adminReviewService.stats();
+      setStats(res);
+      // Scroll back to review
+      setTimeout(() => {
+        element?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 100);
     } catch (e) {
       console.error(e);
     } finally {
@@ -174,6 +205,7 @@ export default function ReviewsPage() {
   const confirmDelete = async () => {
     if (deletingId === null) return;
     setIsDeleting(true);
+    const element = document.getElementById(`review-${deletingId}`);
     try {
       await adminReviewService.destroy(deletingId);
       setDeletingId(null);
@@ -428,7 +460,7 @@ export default function ReviewsPage() {
             </div>
           </div>
           <p className="text-[14px] text-gray-400 font-bold mb-2">Most Reviewed</p>
-          <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-serif font-bold text-[#111] tracking-tight line-clamp-1 h-8 flex items-center">
+          <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-serif font-bold text-[#111] tracking-tight truncate">
             {stats
               ? (stats.most_reviewed?.product_name ?? '—')
               : <span className="h-6 w-32 bg-gray-200 rounded animate-pulse inline-block" />}
@@ -646,7 +678,7 @@ export default function ReviewsPage() {
               {reviews.map((review) => {
                 const isActing = actionLoading === review.id;
                 return (
-                  <div key={review.id} className="bg-white rounded-[16px] border border-[#f2e6ea] p-4 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-sm transition-shadow">
+                  <div key={review.id} id={`review-${review.id}`} className="bg-white rounded-[16px] border border-[#f2e6ea] p-4 sm:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.02)] hover:shadow-sm transition-shadow">
                     <div className="flex items-start gap-4">
                       {/* Avatar */}
                       <div className="w-12 h-12 rounded-full bg-[#fdf2f4] text-[#da2966] flex items-center justify-center text-[14px] font-bold shrink-0 border-2 border-white shadow-sm">
@@ -659,13 +691,17 @@ export default function ReviewsPage() {
                         <div className="flex items-start justify-between gap-3 flex-wrap">
                           <div>
                             <p className="font-bold text-[#111] text-[15px]">{review.reviewer_name}</p>
-                            {review.order_number && (
-                              <p className="text-[11px] text-gray-400 font-mono mt-0.5">Commande #{review.order_number}</p>
+                            {review.customer_phone && (
+                              <p className="text-[12px] text-gray-500 mt-0.5">{review.customer_phone}</p>
                             )}
                           </div>
                           <div className="flex items-center gap-2 shrink-0">
                             <span className="text-[12px] text-gray-400">{formatDate(review.created_at)}</span>
-                            {review.is_approved ? (
+                            {review.status === 'traiter' ? (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[5px] text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                                <span className="w-1.5 h-1.5 rounded-full bg-blue-500" /> Traiter
+                              </span>
+                            ) : review.is_approved ? (
                               <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[5px] text-[11px] font-bold bg-green-50 text-green-700 border border-green-200">
                                 <span className="w-1.5 h-1.5 rounded-full bg-green-500" /> Approuvé
                               </span>
@@ -685,7 +721,7 @@ export default function ReviewsPage() {
                             ))}
                           </div>
                           {review.product && (
-                            <span className="text-[12px] font-semibold text-[#423835] bg-[#fdf8f4] border border-[#ede0d4] px-2.5 py-0.5 rounded-[5px]">
+                            <span className="text-[12px] font-semibold text-[#423835] bg-[#fdf8f4] border border-[#ede0d4] px-2.5 py-0.5 rounded-[5px] truncate max-w-[200px]">
                               {review.product.name}
                             </span>
                           )}
@@ -712,13 +748,31 @@ export default function ReviewsPage() {
 
                         {/* Actions */}
                         <div className="flex items-center gap-2 mt-4 pt-4 border-t border-gray-100">
-                          {!review.is_approved ? (
+                          {!review.is_approved && review.status !== 'traiter' ? (
+                            review.rating <= 2 ? (
+                              <button
+                                onClick={() => handleTraiter(review.id)}
+                                disabled={isActing}
+                                className="flex items-center gap-1.5 px-4 py-1.5 rounded-[7px] bg-blue-50 text-blue-700 border border-blue-200 text-[12px] font-bold hover:bg-blue-100 transition-colors disabled:opacity-50"
+                              >
+                                <Check size={13} strokeWidth={2.5} /> Traiter
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleApprove(review.id)}
+                                disabled={isActing}
+                                className="flex items-center gap-1.5 px-4 py-1.5 rounded-[7px] bg-green-50 text-green-700 border border-green-200 text-[12px] font-bold hover:bg-green-100 transition-colors disabled:opacity-50"
+                              >
+                                <Check size={13} strokeWidth={2.5} /> Approuver
+                              </button>
+                            )
+                          ) : review.status === 'traiter' ? (
                             <button
-                              onClick={() => handleApprove(review.id)}
+                              onClick={() => handleReject(review.id)}
                               disabled={isActing}
-                              className="flex items-center gap-1.5 px-4 py-1.5 rounded-[7px] bg-green-50 text-green-700 border border-green-200 text-[12px] font-bold hover:bg-green-100 transition-colors disabled:opacity-50"
+                              className="flex items-center gap-1.5 px-4 py-1.5 rounded-[7px] bg-red-50 text-red-700 border border-red-200 text-[12px] font-bold hover:bg-red-100 transition-colors disabled:opacity-50"
                             >
-                              <Check size={13} strokeWidth={2.5} /> Approuver
+                              <X size={13} strokeWidth={2.5} /> Rejeter
                             </button>
                           ) : (
                             <button

@@ -83,6 +83,19 @@ class OrderResource extends JsonResource
                     ->orWhere('customer_phone', $this->customer_phone)
                     ->count()
             ),
+            'customer_total_spent' => $this->when(
+                request()->is('*/admin/*'),
+                fn () => Order::where('customer_email', $this->customer_email)
+                    ->orWhere('customer_phone', $this->customer_phone)
+                    ->sum('total')
+            ),
+            'customer_total_items' => $this->when(
+                request()->is('*/admin/*'),
+                fn () => \App\Models\OrderItem::whereHas('order', function ($q) {
+                    $q->where('customer_email', $this->customer_email)
+                      ->orWhere('customer_phone', $this->customer_phone);
+                })->sum('quantity')
+            ),
             'created_at'           => $this->created_at?->toISOString(),
         ];
     }

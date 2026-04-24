@@ -64,7 +64,8 @@ Route::prefix('api')->group(function () {
 
             // Orders — create + track (no auth)
             Route::post('/orders',                                [OrderController::class, 'store'])->middleware('throttle:place-order');
-            Route::get('/orders/{orderNumber}/track',             [OrderController::class, 'track']);
+            // Track is self-limiting (requires valid order_number + phone) so no strict rate limit needed
+            Route::get('/orders/{orderNumber}/track',             [OrderController::class, 'track'])->withoutMiddleware('throttle');
             Route::get('/invoices/{orderNumber}/download',        [OrderController::class, 'downloadInvoice']);
 
             // Reviews — GET (approved, optional product_id scope) | POST (submit, no auth)
@@ -140,6 +141,7 @@ Route::prefix('api')->group(function () {
                 Route::patch('reviews/{review}',           [AdminReviewController::class, 'update']);
                 Route::patch('reviews/{review}/approve',   [AdminReviewController::class, 'approve']);
                 Route::patch('reviews/{review}/reject',    [AdminReviewController::class, 'reject']);
+                Route::patch('reviews/{review}/traiter',   [AdminReviewController::class, 'traiter']);
                 Route::delete('reviews/{review}',          [AdminReviewController::class, 'destroy']);
 
                 // Banners

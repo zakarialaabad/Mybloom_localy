@@ -925,11 +925,12 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                         <div className="text-xs text-gray-400 uppercase tracking-widest font-light">{product.review_count} Avis</div>
                       </div>
 
-                      {/* Distribution bars */}
+                      {/* Distribution bars — uses API rating_distribution so
+                           feedback reviews (no order_number) are included in counts */}
                       <div className="w-full sm:w-auto sm:min-w-[200px] space-y-2.5">
                         {[5,4,3,2,1].map((star) => {
-                          const count = product.reviews!.filter((r) => Math.round(r.rating) === star).length;
-                          const pct   = product.reviews!.length > 0 ? (count / product.reviews!.length) * 100 : 0;
+                          const entry = product.rating_distribution?.[star];
+                          const pct   = entry?.percentage ?? 0;
                           return (
                             <div key={star} className="flex items-center gap-3">
                               <span className="text-xs font-serif text-gray-600 w-3">{star}</span>
