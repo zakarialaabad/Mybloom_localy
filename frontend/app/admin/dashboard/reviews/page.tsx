@@ -1,11 +1,9 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { AdminSelect } from '@/components/admin/AdminSelect';
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 import type { ReviewFormSaveData } from '@/components/admin/ReviewFormModal';
 import {
   adminReviewService,
@@ -32,7 +30,7 @@ import {
 } from 'lucide-react';
 
 // ── Lazy load the modal to reduce initial bundle ────────────────────────────
-const ReviewFormModal = dynamic(
+const ReviewFormModal = dynamicImport(
   () => import('@/components/admin/ReviewFormModal'),
   { ssr: false }
 );
