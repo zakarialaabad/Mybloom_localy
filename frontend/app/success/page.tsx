@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { Headphones, ArrowLeft, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';

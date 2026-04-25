@@ -908,6 +908,9 @@ export const adminReviewService = {
   reject: async (id: number): Promise<void> => {
     await apiClient.patch(`/v1/admin/reviews/${id}/reject`);
   },
+  traiter: async (id: number): Promise<void> => {
+    await apiClient.patch(`/v1/admin/reviews/${id}/traiter`);
+  },
   destroy: async (id: number): Promise<void> => {
     await apiClient.delete(`/v1/admin/reviews/${id}`);
   },

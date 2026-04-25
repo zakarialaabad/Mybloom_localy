@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import Header from '@/components/layout/Header';
 import Link from 'next/link';
 import { ChevronRight, Mail, Phone, MapPin, Clock, Loader } from 'lucide-react';
