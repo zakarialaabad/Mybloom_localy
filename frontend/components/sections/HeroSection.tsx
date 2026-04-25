@@ -152,7 +152,7 @@ export default function HeroSection() {
     fetch('/api/hero-videos?first=1')
       .then((res) => res.json())
       .then((data: HeroVideos) => {
-        if (!cancelled) setVideos(data);
+        if (!cancelled) setVideos(data.data || data);
       })
       .catch(() => {});
 
@@ -162,7 +162,7 @@ export default function HeroSection() {
       fetch('/api/hero-videos')
         .then((res) => res.json())
         .then((data: HeroVideos) => {
-          if (!cancelled) setVideos(data);
+          if (!cancelled) setVideos(data.data || data);
         })
         .catch(() => {});
     }, 3000);
