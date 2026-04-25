@@ -20,6 +20,7 @@ class AppSeeder extends Seeder
             RandomProductFlagsSeeder::class,
             CommentReviewSeeder::class,            
             RandomProductReviewSeeder::class,
+            HeroVideoSeeder::class
         ]);
     }
 }
