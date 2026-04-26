@@ -396,7 +396,7 @@ export default function Header() {
 
       {/* ── Mobile Menu Overlay ───────────────────────────────────────── */}
       {isMenuOpen && (
-        <div className="fixed inset-0 z-[200] bg-white flex flex-col pt-safe pb-safe overflow-y-auto">
+        <div className="fixed inset-0 z-[200] bg-white flex flex-col pt-safe pb-safe overflow-y-auto overflow-x-hidden">
           {/* Header inside menu */}
           <div className="flex items-center justify-between px-4 py-4 mb-[20px]">
             <button 
@@ -442,7 +442,7 @@ export default function Header() {
                   }
                 }}
                 placeholder="Search for a scent..." 
-                className="flex-1 bg-transparent focus:outline-none placeholder-gray-400"
+                className="flex-1 min-w-0 w-full bg-transparent focus:outline-none placeholder-gray-400"
                 style={{ fontFamily: "'Akhbar MT', 'Amiri', serif", fontSize: 18 }}
               />
               <svg 
