@@ -421,9 +421,9 @@ export default function Header() {
           </div>
 
           {/* Search */}
-          <div ref={mobileSearchRef} className="py-2 mb-[45px] relative" style={{ marginLeft: 35, marginRight: 35 }}>
-            <div className="relative border-b border-gray-300 pb-2 flex items-center">
-              <svg className="w-4 h-4 text-gray-400 mr-3 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div ref={mobileSearchRef} className="py-2 mb-[30px] relative" style={{ marginLeft: 35, marginRight: 35 }}>
+            <div className="relative border-b border-gray-300 pb-2 flex items-center gap-2">
+              <svg className="w-4 h-4 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
               <input 
@@ -442,7 +442,7 @@ export default function Header() {
                   }
                 }}
                 placeholder="Search for a scent..." 
-                className="flex-1 bg-transparent focus:outline-none placeholder-gray-400"
+                className="flex-1 bg-transparent focus:outline-none placeholder-gray-400 min-w-0"
                 style={{ fontFamily: "'Akhbar MT', 'Amiri', serif", fontSize: 18 }}
               />
               <svg 
@@ -450,7 +450,7 @@ export default function Header() {
                   closeMenu();
                   setIsFilterOpen(true);
                 }}
-                className="w-[18px] h-[18px] text-gray-500 ml-3 cursor-pointer hover:text-gray-900 transition-colors" 
+                className="w-[18px] h-[18px] text-gray-500 cursor-pointer hover:text-gray-900 transition-colors shrink-0" 
                 viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"
               >
                 <line x1="4" y1="21" x2="4" y2="14" />
@@ -517,7 +517,7 @@ export default function Header() {
           </div>
 
           {/* Navigation Links */}
-          <div className="flex flex-col px-6 mb-auto" style={{ gap: 22 }}>
+          <div className="flex flex-col px-6 mb-auto" style={{ gap: 14 }}>
             {NAV_LINKS.map(({ label, href }) => {
               const [basePath, qs] = href.split('?');
               let isActive = false;
@@ -541,9 +541,9 @@ export default function Header() {
                   className={`uppercase transition-colors duration-200 ease-in-out ${isActive ? 'text-[#da2966]' : 'text-[#111827] hover:text-[#da2966]'}`}
                   style={{
                     fontFamily: "'Sitka Banner', serif",
-                    fontSize: 24,
+                    fontSize: 18,
                     fontWeight: 'bold',
-                    lineHeight: 1.2,
+                    lineHeight: 1.1,
                   }}
                 >
                   {label}
@@ -553,11 +553,11 @@ export default function Header() {
           </div>
 
           {/* Collection Highlights */}
-          <div className="mt-12 px-6">
-            <div className="flex items-center justify-between mb-5">
+          <div className="mt-8 px-6">
+            <div className="flex items-center justify-between mb-3">
               <h3
                 className="uppercase tracking-[1px] text-[#999999]"
-                style={{ fontFamily: "'Akhbar MT', 'Amiri', serif", fontSize: 18 }}
+                style={{ fontFamily: "'Akhbar MT', 'Amiri', serif", fontSize: 14 }}
               >
                 COLLECTION HIGHLIGHTS
               </h3>
@@ -565,38 +565,38 @@ export default function Header() {
                 href="/collection"
                 onClick={closeMenu}
                 className="text-[#C9527A]"
-                style={{ fontFamily: "'Akhbar MT', 'Amiri', serif", fontSize: 16 }}
+                style={{ fontFamily: "'Akhbar MT', 'Amiri', serif", fontSize: 13 }}
               >
                 View All
               </Link>
             </div>
             
-            <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-              <Link href="/collection?featured=1" onClick={closeMenu} className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
+            <div className="flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <Link href="/collection?featured=1" onClick={closeMenu} className="relative flex-none w-[140px] h-[80px] rounded-lg overflow-hidden snap-start group border border-gray-100">
                 <Image src="/Best Sellers.jpg" alt="Best Sellers" fill className="object-cover transition-transform group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent p-4 flex flex-col justify-end">
-                  <h4 className="font-serif font-bold text-white text-xl drop-shadow">Best Sellers</h4>
-                  <p className="text-[11px] text-white/80 mt-1 font-medium">Shop Now</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent p-3 flex flex-col justify-end">
+                  <h4 className="font-serif font-bold text-white text-sm drop-shadow">Best Sellers</h4>
+                  <p className="text-[9px] text-white/80 mt-0.5 font-medium">Shop Now</p>
                 </div>
               </Link>
-              <Link href="/collection?is_gift=true" onClick={closeMenu} className="relative flex-none w-[200px] h-[110px] rounded-xl overflow-hidden snap-start group border border-gray-100">
+              <Link href="/collection?is_gift=true" onClick={closeMenu} className="relative flex-none w-[140px] h-[80px] rounded-lg overflow-hidden snap-start group border border-gray-100">
                 <Image src="/Gift Sets.jpg" alt="Gift Sets" fill className="object-cover transition-transform group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent p-4 flex flex-col justify-end">
-                  <h4 className="font-serif font-bold text-white text-xl drop-shadow">Gift Sets</h4>
-                  <p className="text-[11px] text-white/80 mt-1 font-medium">Discover</p>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent p-3 flex flex-col justify-end">
+                  <h4 className="font-serif font-bold text-white text-sm drop-shadow">Gift Sets</h4>
+                  <p className="text-[9px] text-white/80 mt-0.5 font-medium">Discover</p>
                 </div>
               </Link>
             </div>
           </div>
 
           {/* Social Icons */}
-          <div className="mt-6 pb-10 flex justify-center gap-3 w-full px-6">
+          <div className="mt-4 pb-6 flex justify-center gap-2.5 w-full px-6">
             {[
-              { href: 'https://www.instagram.com/my_bloom.ma?igsh=MTV4Y29odHI4b3NqNw%3D%3D&utm_source=qr',      icon: <Instagram className="w-[18px] h-[18px]" />,     label: 'Instagram' },
-              { href: 'https://www.facebook.com/share/1AzUrWv47t/?mibextid=wwXIfr',        icon: <Facebook className="w-[18px] h-[18px]" />,      label: 'Facebook'  },
-              { href: 'https://www.tiktok.com/@my.bloom.ma?_r=1&_t=ZS-95fpT2RLgaP',          icon: <TikTokIcon className="w-[16px] h-[16px]" />,    label: 'TikTok'    },
-              { href: 'https://www.snapchat.com/add/bloom_parfum?share_id=AAULxDsQR66nH9XmS_Hb_A&locale=fr_GB',        icon: <SnapchatIcon className="w-[18px] h-[18px]" />,  label: 'Snapchat' },
-              { href: 'https://wa.me/212608656271',  icon: <WhatsAppIcon className="w-[17px] h-[17px]" />,  label: 'WhatsApp'  },
+              { href: 'https://www.instagram.com/my_bloom.ma?igsh=MTV4Y29odHI4b3NqNw%3D%3D&utm_source=qr',      icon: <Instagram className="w-4 h-4" />,     label: 'Instagram' },
+              { href: 'https://www.facebook.com/share/1AzUrWv47t/?mibextid=wwXIfr',        icon: <Facebook className="w-4 h-4" />,      label: 'Facebook'  },
+              { href: 'https://www.tiktok.com/@my.bloom.ma?_r=1&_t=ZS-95fpT2RLgaP',          icon: <TikTokIcon className="w-3.5 h-3.5" />,    label: 'TikTok'    },
+              { href: 'https://www.snapchat.com/add/bloom_parfum?share_id=AAULxDsQR66nH9XmS_Hb_A&locale=fr_GB',        icon: <SnapchatIcon className="w-4 h-4" />,  label: 'Snapchat' },
+              { href: 'https://wa.me/212608656271',  icon: <WhatsAppIcon className="w-3.5 h-3.5" />,  label: 'WhatsApp'  },
             ].map(({ href, icon, label }) => (
               <a
                 key={label}
@@ -604,7 +604,7 @@ export default function Header() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={label}
-                className="w-[38px] h-[38px] rounded-full bg-[#f1f1f1] flex items-center justify-center text-gray-700 hover:bg-[#da2966] hover:text-white transition-colors"
+                className="w-8 h-8 rounded-full bg-[#f1f1f1] flex items-center justify-center text-gray-700 hover:bg-[#da2966] hover:text-white transition-colors"
               >
                 {icon}
               </a>
