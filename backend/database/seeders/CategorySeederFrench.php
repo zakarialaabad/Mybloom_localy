@@ -15,8 +15,8 @@ class CategorySeederFrench extends Seeder
     {
         $categories = [
             [
-                'name' => 'Beurre',
-                'slug' => 'beurre',
+                'name' => 'Beurre Corporel',
+                'slug' => 'beurre-corporel',
                 'description' => 'Beurres corporels et crèmes riches',
             ],
             [
