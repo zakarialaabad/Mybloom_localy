@@ -14,24 +14,37 @@ class OrderResource extends JsonResource
         // Precompute per-customer metrics (admin-only).
         $customerEmail = $this->customer_email;
         $customerPhone = $this->customer_phone;
-        $isAdminContext = $request->is('*/admin/*');
+        // Use the global request helper like other parts of the resource to ensure
+        // the same admin-detection behaviour used elsewhere in the app.
+        $isAdminContext = request()->is('*/admin/*');
+
+        // Normalize phone on PHP side (digits only) to help match different
+        // storage formats (spaces, +, dashes, parentheses).
+        $normalizedPhone = $customerPhone ? preg_replace('/\D+/', '', $customerPhone) : null;
+
+        // SQL expression to strip common non-digit characters from stored phone
+        // numbers so we can compare normalized values reliably.
+        $sqlPhoneNormalized = "REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(customer_phone, ' ', ''), '+', ''), '-', ''), '.', ''), '(', ''), ')', '')";
 
         // Build a base query scoped to this customer (match by email or phone).
+        $customerQuery = Order::query();
         if ($customerEmail || $customerPhone) {
-            $customerQuery = Order::query();
-            if ($customerEmail && $customerPhone) {
-                $customerQuery->where(function ($q) use ($customerEmail, $customerPhone) {
-                    $q->where('customer_email', $customerEmail)
-                      ->orWhere('customer_phone', $customerPhone);
-                });
-            } elseif ($customerEmail) {
-                $customerQuery->where('customer_email', $customerEmail);
-            } else {
-                $customerQuery->where('customer_phone', $customerPhone);
-            }
+            $customerQuery->where(function ($q) use ($customerEmail, $customerPhone, $normalizedPhone, $sqlPhoneNormalized) {
+                if ($customerEmail) {
+                    $q->where('customer_email', $customerEmail);
+                }
+
+                if ($customerPhone) {
+                    // try exact match first, then compare normalized forms
+                    $q->orWhere('customer_phone', $customerPhone);
+                    if ($normalizedPhone) {
+                        $q->orWhereRaw("{$sqlPhoneNormalized} = ?", [$normalizedPhone]);
+                    }
+                }
+            });
         } else {
-            // No identifier — create an impossible query so counts/sums return 0
-            $customerQuery = Order::whereRaw('0 = 1');
+            // No identifier — make query impossible so aggregates return 0
+            $customerQuery->whereRaw('0 = 1');
         }
 
         // Exclude transient/cancelled orders from lifetime "spent" calculation
@@ -40,19 +53,18 @@ class OrderResource extends JsonResource
         $customer_total_orders = $isAdminContext ? $spendableOrdersQuery->count() : null;
         $customer_total_spent = $isAdminContext ? (float) $spendableOrdersQuery->sum('total') : null;
         $customer_total_items = $isAdminContext
-            ? (int) \App\Models\OrderItem::whereHas('order', function ($q) use ($customerEmail, $customerPhone) {
-                if ($customerEmail && $customerPhone) {
-                    $q->where(function ($sub) use ($customerEmail, $customerPhone) {
-                        $sub->where('customer_email', $customerEmail)
-                            ->orWhere('customer_phone', $customerPhone);
-                    });
-                } elseif ($customerEmail) {
-                    $q->where('customer_email', $customerEmail);
-                } elseif ($customerPhone) {
-                    $q->where('customer_phone', $customerPhone);
-                } else {
-                    $q->whereRaw('0 = 1');
-                }
+            ? (int) \App\Models\OrderItem::whereHas('order', function ($q) use ($customerEmail, $customerPhone, $normalizedPhone, $sqlPhoneNormalized) {
+                $q->where(function ($sub) use ($customerEmail, $customerPhone, $normalizedPhone, $sqlPhoneNormalized) {
+                    if ($customerEmail) {
+                        $sub->where('customer_email', $customerEmail);
+                    }
+                    if ($customerPhone) {
+                        $sub->orWhere('customer_phone', $customerPhone);
+                        if ($normalizedPhone) {
+                            $sub->orWhereRaw("{$sqlPhoneNormalized} = ?", [$normalizedPhone]);
+                        }
+                    }
+                });
             })->sum('quantity')
             : null;
 
