@@ -47,11 +47,17 @@ class OrderResource extends JsonResource
             $customerQuery->whereRaw('0 = 1');
         }
 
-        // Exclude transient/cancelled orders from lifetime "spent" calculation
+        // Prepare both queries: all orders for this customer, and spendable (exclude pending/cancelled)
+        $allOrdersQuery = clone $customerQuery;
         $spendableOrdersQuery = (clone $customerQuery)->whereNotIn('status', ['pending', 'cancelled']);
 
-        $customer_total_orders = $isAdminContext ? $spendableOrdersQuery->count() : null;
-        $customer_total_spent = $isAdminContext ? (float) $spendableOrdersQuery->sum('total') : null;
+        // customer_total_spent (default): sum of all orders for this customer
+        $customer_total_orders = $isAdminContext ? $allOrdersQuery->count() : null;
+        $customer_total_spent_all = $isAdminContext ? (float) $allOrdersQuery->sum('total') : null;
+        // Additional metric: sum excluding pending/cancelled (useful for "spent" meaning completed spend)
+        $customer_total_spent_completed = $isAdminContext ? (float) $spendableOrdersQuery->sum('total') : null;
+        // Keep compatibility: return `customer_total_spent` as the total across all orders
+        $customer_total_spent = $customer_total_spent_all;
         $customer_total_items = $isAdminContext
             ? (int) \App\Models\OrderItem::whereHas('order', function ($q) use ($customerEmail, $customerPhone, $normalizedPhone, $sqlPhoneNormalized) {
                 $q->where(function ($sub) use ($customerEmail, $customerPhone, $normalizedPhone, $sqlPhoneNormalized) {
@@ -141,6 +147,10 @@ class OrderResource extends JsonResource
             'customer_total_spent' => $this->when(
                 $isAdminContext,
                 fn () => $customer_total_spent
+            ),
+            'customer_total_spent_completed' => $this->when(
+                $isAdminContext,
+                fn () => $customer_total_spent_completed
             ),
             'customer_total_items' => $this->when(
                 $isAdminContext,
