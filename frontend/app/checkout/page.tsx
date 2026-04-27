@@ -313,27 +313,27 @@ export default function CheckoutPage() {
 
                 <div className="space-y-6">
                   {/* Name */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Prénom *</label>
-                      <input required value={firstName} onChange={(e) => setFirstName(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif" />
+                      <input required value={firstName} onChange={(e) => setFirstName(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif bg-[#FAFAFA]" />
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Nom de famille *</label>
-                      <input required value={lastName} onChange={(e) => setLastName(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif" />
+                      <input required value={lastName} onChange={(e) => setLastName(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif bg-[#FAFAFA]" />
                     </div>
                   </div>
 
                   {/* Phone */}
-                  <div>
+                    <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Numéro de téléphone *</label>
                     <div className={`flex border rounded-sm focus-within:border-[#b89b72] ${
                       phoneTouched && phone && !isValidPhone(phone)
                         ? 'border-red-400'
                         : 'border-gray-200'
                     }`}>
-                      <span className="bg-gray-50 border-r border-gray-200 px-4 py-3 font-serif text-gray-700 text-sm">MAR</span>
-                      <input required value={phone} onChange={handlePhoneChange} onBlur={() => setPhoneTouched(true)} type="tel" placeholder="06 12 34 56 78" className="flex-1 px-4 py-3 focus:outline-none font-serif text-gray-600" />
+                      <span className="bg-[#FAFAFA] border-r border-gray-200 px-4 py-3 font-serif text-gray-700 text-sm">MAR</span>
+                      <input required value={phone} onChange={handlePhoneChange} onBlur={() => setPhoneTouched(true)} type="tel" placeholder="06 12 34 56 78" className="flex-1 px-4 py-3 focus:outline-none font-serif text-gray-600 bg-[#FAFAFA]" />
                     </div>
                     {phoneTouched && phone && !isValidPhone(phone) && (
                       <p className="mt-1 text-xs text-red-600 font-serif">Numéro invalide. Entrez 06XXXXXXXX ou +212612345678</p>
@@ -341,25 +341,25 @@ export default function CheckoutPage() {
                   </div>
 
                   {/* City / Quartier / Zip */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Ville *</label>
-                      <input required value={city} onChange={(e) => setCity(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600" />
+                      <input required value={city} onChange={(e) => setCity(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600 bg-[#FAFAFA]" />
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Quartier *</label>
-                      <input required value={quartier} onChange={(e) => setQuartier(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600" />
+                      <input required value={quartier} onChange={(e) => setQuartier(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600 bg-[#FAFAFA]" />
                     </div>
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Code postal</label>
-                      <input value={zip} onChange={(e) => setZip(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600" />
+                      <input value={zip} onChange={(e) => setZip(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600 bg-[#FAFAFA]" />
                     </div>
                   </div>
 
                   {/* Address */}
                   <div>
                     <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Adresse *</label>
-                    <input required value={address} onChange={(e) => setAddress(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600" />
+                    <input required value={address} onChange={(e) => setAddress(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600 bg-[#FAFAFA]" />
                   </div>
 
                   {/* Shipping Methods */}
@@ -502,7 +502,7 @@ export default function CheckoutPage() {
                       onChange={(e) => { setCouponCode(e.target.value); setCouponResult(null); setCouponError(''); }}
                       placeholder="Coupon"
                       className={`min-w-0 flex-1 border-2 border-dashed rounded-sm px-3 md:px-4 py-3 text-sm focus:outline-none font-serif ${
-                        couponResult ? 'border-[#2e7d32] text-[#2e7d32] bg-[#f4fbf5]' : 'border-gray-200 bg-white'
+                        couponResult ? 'border-[#2e7d32] text-[#2e7d32] bg-[#f4fbf5]' : 'border-gray-200 bg-[#FAFAFA]'
                       }`}
                     />
                     <button
