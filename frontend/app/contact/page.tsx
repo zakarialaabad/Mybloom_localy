@@ -152,7 +152,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-[16px] font-bold text-[#403531] mb-1">Adresse</h3>
-                    <p className="text-[14px] text-[#888]">123 Luxury Avenue, Casablanca, Morocco</p>
+                    <p className="text-[14px] text-[#888]">Rue Chaouya, Laâyoune, Morocco</p>
                   </div>
                 </div>
 
@@ -162,7 +162,13 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <h3 className="text-[16px] font-bold text-[#403531] mb-1">Heures d'ouverture</h3>
-                    <p className="text-[14px] text-[#888]">Lundi - Vendredi : 9h - 18h</p>
+                    <div className="text-[14px] text-[#888] space-y-1">
+                      <div>Lundi à dimanche :</div>
+                      <div>Matin : 11h – 14h</div>
+                      <div>Soir : 18h – 23h</div>
+                      <div className="mt-2 font-semibold">Fermeture :</div>
+                      <div>Vendredi matin et dimanche matin, le magasin est fermé.</div>
+                    </div>
                   </div>
                 </div>
               </div>
