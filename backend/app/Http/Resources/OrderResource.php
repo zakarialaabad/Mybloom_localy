@@ -11,6 +11,51 @@ class OrderResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
+        // Precompute per-customer metrics (admin-only).
+        $customerEmail = $this->customer_email;
+        $customerPhone = $this->customer_phone;
+        $isAdminContext = $request->is('*/admin/*');
+
+        // Build a base query scoped to this customer (match by email or phone).
+        if ($customerEmail || $customerPhone) {
+            $customerQuery = Order::query();
+            if ($customerEmail && $customerPhone) {
+                $customerQuery->where(function ($q) use ($customerEmail, $customerPhone) {
+                    $q->where('customer_email', $customerEmail)
+                      ->orWhere('customer_phone', $customerPhone);
+                });
+            } elseif ($customerEmail) {
+                $customerQuery->where('customer_email', $customerEmail);
+            } else {
+                $customerQuery->where('customer_phone', $customerPhone);
+            }
+        } else {
+            // No identifier — create an impossible query so counts/sums return 0
+            $customerQuery = Order::whereRaw('0 = 1');
+        }
+
+        // Exclude transient/cancelled orders from lifetime "spent" calculation
+        $spendableOrdersQuery = (clone $customerQuery)->whereNotIn('status', ['pending', 'cancelled']);
+
+        $customer_total_orders = $isAdminContext ? $spendableOrdersQuery->count() : null;
+        $customer_total_spent = $isAdminContext ? (float) $spendableOrdersQuery->sum('total') : null;
+        $customer_total_items = $isAdminContext
+            ? (int) \App\Models\OrderItem::whereHas('order', function ($q) use ($customerEmail, $customerPhone) {
+                if ($customerEmail && $customerPhone) {
+                    $q->where(function ($sub) use ($customerEmail, $customerPhone) {
+                        $sub->where('customer_email', $customerEmail)
+                            ->orWhere('customer_phone', $customerPhone);
+                    });
+                } elseif ($customerEmail) {
+                    $q->where('customer_email', $customerEmail);
+                } elseif ($customerPhone) {
+                    $q->where('customer_phone', $customerPhone);
+                } else {
+                    $q->whereRaw('0 = 1');
+                }
+            })->sum('quantity')
+            : null;
+
         return [
             'id'                   => $this->id,
             'order_number'         => $this->order_number,
@@ -78,23 +123,16 @@ class OrderResource extends JsonResource
             ),
             'items_count'          => $this->whenHas('items_count'),
             'customer_total_orders' => $this->when(
-                request()->is('*/admin/*'),
-                fn () => Order::where('customer_email', $this->customer_email)
-                    ->orWhere('customer_phone', $this->customer_phone)
-                    ->count()
+                $isAdminContext,
+                fn () => $customer_total_orders
             ),
             'customer_total_spent' => $this->when(
-                request()->is('*/admin/*'),
-                fn () => Order::where('customer_email', $this->customer_email)
-                    ->orWhere('customer_phone', $this->customer_phone)
-                    ->sum('total')
+                $isAdminContext,
+                fn () => $customer_total_spent
             ),
             'customer_total_items' => $this->when(
-                request()->is('*/admin/*'),
-                fn () => \App\Models\OrderItem::whereHas('order', function ($q) {
-                    $q->where('customer_email', $this->customer_email)
-                      ->orWhere('customer_phone', $this->customer_phone);
-                })->sum('quantity')
+                $isAdminContext,
+                fn () => $customer_total_items
             ),
             'created_at'           => $this->created_at?->toISOString(),
         ];
