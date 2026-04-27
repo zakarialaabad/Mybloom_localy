@@ -21,7 +21,7 @@ class ProductTypeSeederFrench extends Seeder
             ['name' => 'Hair Mist', 'slug' => 'hair_mist'],
             ['name' => 'Body Mist', 'slug' => 'body_mist'],
             ['name' => 'Déodorant', 'slug' => 'deodorant'],
-            ['name' => 'Crème Parfumée', 'slug' => 'creme_parfumee'],
+            ['name' => 'Makhmaria', 'slug' => 'makhmaria'],
             ['name' => 'Diffuseur', 'slug' => 'diffuseur'],
             ['name' => "Spray d'Intérieur", 'slug' => 'spray_dinterieur'],
             ['name' => 'Coffret Cadeau', 'slug' => 'coffret_cadeau'],
