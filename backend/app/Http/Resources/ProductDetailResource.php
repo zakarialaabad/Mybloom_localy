@@ -232,6 +232,16 @@ class ProductDetailResource extends JsonResource
                 'name' => $product->brand->name,
                 'slug' => $product->brand->slug,
             ] : null,
+            'category'        => $product->category ? [
+                'id'   => $product->category->id,
+                'name' => $product->category->name,
+                'slug' => $product->category->slug,
+            ] : null,
+            'product_type'    => $product->productType ? [
+                'id'   => $product->productType->id,
+                'name' => $product->productType->name,
+                'slug' => $product->productType->slug,
+            ] : null,
             'badges'          => $product->is_best_seller ? ['Best Seller'] : [],
         ])->toArray();
     }

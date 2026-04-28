@@ -285,15 +285,17 @@ class ProductController extends Controller
      */
     private function getCachedRecommendations(): \Illuminate\Support\Collection
     {
-        return Cache::remember('recommendations:carousel', now()->addMinutes(30), function () {
+        return Cache::remember('recommendations:carousel:v2', now()->addMinutes(30), function () {
             return Product::where('is_recommended', true)
                 ->where('is_active', true)
                 ->select(['id', 'name', 'slug', 'subtitle', 'price', 'original_price', 'stock',
                           'is_active', 'is_featured', 'is_best_seller', 'is_gift', 'is_recommended',
-                          'brand_id'])
+                          'brand_id', 'category_id', 'product_type_id'])
                 ->with([
-                    'brand'   => fn ($q) => $q->select(['id', 'name', 'slug']),
-                    'images'  => fn ($q) => $q->orderBy('sort_order')->limit(2),
+                    'brand'        => fn ($q) => $q->select(['id', 'name', 'slug']),
+                    'category'     => fn ($q) => $q->select(['id', 'name', 'slug']),
+                    'productType'  => fn ($q) => $q->select(['id', 'name', 'slug']),
+                    'images'       => fn ($q) => $q->orderBy('sort_order')->limit(2),
                 ])
                 // Use approvedReviews for aggregates so feedback reviews are counted
                 ->withAvg('approvedReviews as avg_rating', 'rating')
@@ -315,7 +317,7 @@ class ProductController extends Controller
         // which specific md5-keyed entries exist in the cache store.
         Cache::increment('products_list_version');
         // Also clear the recommendations carousel — it carries avg_rating/review_count
-        Cache::forget('recommendations:carousel');
+        Cache::forget('recommendations:carousel:v2');
     }
 
     /**
