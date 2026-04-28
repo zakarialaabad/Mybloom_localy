@@ -273,16 +273,39 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
   const handleRecommendations = (product: Product, allCachedProducts: Product[]) => {
     if (product.recommendations && product.recommendations.length > 0) {
-      const transformedRecs = product.recommendations.map(productToCard);
+      const transformedRecs = product.recommendations.map((rec) => {
+        // Try to enrich using any cached product data
+        const cached = allCachedProducts?.find((p) => p.id === rec.id || p.slug === rec.slug);
+        const source = cached ?? rec;
+        // Build a Product-like object with safe defaults
+        const enriched: Product = {
+          ...rec,
+          ...source,
+          id: source.id ?? rec.id ?? 0,
+          name: source.name ?? rec.name ?? '',
+          slug: source.slug ?? rec.slug ?? '',
+          brand: source.brand ?? rec.brand ?? undefined,
+          category: source.category ?? rec.category ?? undefined,
+          product_type: source.product_type ?? rec.product_type ?? undefined,
+          primary_image: source.primary_image ?? rec.primary_image ?? null,
+          images: source.images ?? rec.images ?? [],
+          variants: source.variants ?? rec.variants ?? [],
+          min_price: source.min_price ?? rec.min_price ?? 0,
+          max_price: source.max_price ?? rec.max_price ?? 0,
+          avg_rating: source.avg_rating ?? rec.avg_rating ?? 0,
+          review_count: source.review_count ?? rec.review_count ?? 0,
+          subtitle: source.brand?.name ?? rec.brand?.name ?? '',
+          description: source.subtitle ?? rec.subtitle ?? '',
+        };
+        return productToCard(enriched);
+      });
       setRecommendations(transformedRecs);
       setRecommendationCount(transformedRecs.length);
-      
       const verification = testRecommendationCount.logRecommendationData(
         product.id,
         transformedRecs.length,
         product.recommendations
       );
-      
       if (!verification.passed) {
         console.warn('⚠️ Recommendation count mismatch detected!', verification);
       }
