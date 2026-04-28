@@ -241,7 +241,13 @@ export default function OrderStatusPage() {
                   {trackData?.items.map((item, idx) => (
                     <div key={idx} className="flex gap-5 items-center">
                       <div className="relative w-[65px] h-[65px] bg-[#f2f2f2] rounded-md shrink-0 shadow-[0_2px_8px_rgba(0,0,0,0.06)] border border-gray-100">
-                        <Image src={item.image_url ? (item.image_url.startsWith('http') ? item.image_url : '/' + item.image_url) : 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=200'} alt={item.product_name} fill className="object-cover mix-blend-multiply p-1.5 rounded-md" />
+                        <Image 
+                          src={item.image_url ? (item.image_url.startsWith('http') ? item.image_url : `https://mybloom.ma/api/${item.image_url}`) : 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=200'} 
+                          alt={item.product_name} 
+                          fill 
+                          className="object-cover mix-blend-multiply p-1.5 rounded-md" 
+                          unoptimized 
+                        />
                         <span className="absolute -top-[7px] -right-[7px] w-[20px] h-[20px] bg-[#4a4846] text-white text-[10px] flex items-center justify-center rounded-full font-serif"><span className="num">{item.quantity}</span></span>
                       </div>
                       <div className="flex-1 flex justify-between items-center">
