@@ -6,7 +6,7 @@
 
 # testing
 /coverage
-
+/frontend/.env.local
 # next.js
 /.next/
 /out/
