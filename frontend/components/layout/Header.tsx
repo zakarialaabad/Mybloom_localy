@@ -43,9 +43,9 @@ function SnapchatIcon({ className }: { className?: string }) {
 
 const NAV_LINKS = [
   { label: 'PACK',                href: '/collection?is_gift=true', highlight: true },
-  { label: 'BEURRE',              href: '/collection?cat=beurre' },
+  { label: 'BEURRE',              href: '/collection?cat=beurre-corporel' },
   { label: 'PARFUM',              href: '/collection?cat=parfum' },
-  { label: 'GOMMAGE',             href: '/collection?cat=gommage' },
+  { label: 'GOMMAGE',             href: '/collection?cat=gommage-corporel' },
   { label: 'MAQUILLAGE',          href: '/collection?cat=maquillage' },
   { label: 'HYGIÈNE CORPORELLE',  href: '/collection?cat=hygiene-corporelle' },
 ];

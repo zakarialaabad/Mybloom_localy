@@ -3,8 +3,8 @@
         "brand": "My Bloom",
         "total_products": 82,
         "categories": [
-            "beurre",
-            "gommage",
+            "Beurre corporel",
+            "Gommage Corporel",
             "maquillage",
             "parfum",
             "hygiène corporelle"
@@ -90,7 +90,7 @@
                 "badges": [
                     "100% Naturel"
                 ],
-                "category": "gommage",
+                "category": "Gommage Corporel",
                 "type": "corps",
                 "variants": [
                     {
@@ -288,7 +288,7 @@
                 "badges": [
                     "100% Naturel"
                 ],
-                "category": "gommage",
+                "category": "Gommage Corporel",
                 "type": "corps",
                 "variants": [
                     {

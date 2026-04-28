@@ -423,7 +423,7 @@ export default function CollectionPage() {
                 const isGift     = searchParams.get('is_gift');
                 const search     = searchParams.get('search');
                 const featured   = searchParams.get('featured');
-                const catMap: Record<string, string> = { beurre: 'Beurre', parfum: 'Parfum', gommage: 'Gommage', maquillage: 'Maquillage', 'hygiene-corporelle': 'Hygiène Corporelle' };
+                const catMap: Record<string, string> = { 'beurre-corporel': 'Beurre Corporel', parfum: 'Parfum', 'gommage-corporel': 'Gommage Corporel', maquillage: 'Maquillage', 'hygiene-corporelle': 'Hygiène Corporelle' };
 
                 if (catSlug) {
                   const catLabel = catMap[catSlug] ?? catSlug.charAt(0).toUpperCase() + catSlug.slice(1);
