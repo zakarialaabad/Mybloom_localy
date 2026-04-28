@@ -280,25 +280,27 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       return;
     }
 
+    // Normalize each recommendation into a full Product-like object so
+    // `productToCard` produces the same structured card as on home/collection.
     const transformedRecs = recs.map((rec: any) => {
-      // Try to enrich recommendation with a full cached product when available
+      // Try to enrich using any cached product data
       const cached = allCachedProducts?.find((p) => p.id === rec.id || p.slug === rec.slug);
       const source = cached ?? rec;
 
-      // Normalize to Product shape (safe fallbacks) so productToCard receives consistent data
+      // Build a Product-shaped fallback with safe defaults
       const pLike: Product = {
         id: source.id ?? rec.id ?? 0,
-        name: source.name ?? rec.name ?? '',
-        slug: source.slug ?? rec.slug ?? '',
-        subtitle: source.subtitle ?? rec.subtitle ?? '',
-        description: source.description ?? rec.description ?? '',
+        name: source.name ?? rec.name ?? rec.title ?? '',
+        slug: source.slug ?? rec.slug ?? (rec.name ? String(rec.name).toLowerCase().replace(/\s+/g, '-') : ''),
+        subtitle: source.subtitle ?? rec.subtitle ?? rec.brand_name ?? '',
+        description: source.description ?? rec.description ?? rec.subtitle ?? '',
         gender: (source.gender ?? rec.gender ?? 'unisex') as 'men' | 'women' | 'unisex',
         is_featured: source.is_featured ?? rec.is_featured ?? false,
         brand: source.brand ?? (rec.brand_name ? { id: 0, name: rec.brand_name, slug: '' } : { id: 0, name: '', slug: '' }),
         category: source.category ?? (rec.category_name ? { id: 0, name: rec.category_name, slug: '' } : { id: 0, name: '', slug: '' }),
         product_type: source.product_type ?? (rec.product_type_name ? { id: 0, name: rec.product_type_name, slug: '' } : undefined),
-        primary_image: source.primary_image ?? rec.primary_image ?? (rec.image_url ?? null),
-        images: source.images ?? (rec.images ? rec.images.map((img: any, idx: number) => ({ id: idx, image_url: img.image_url ?? img, is_primary: idx === 0, sort_order: idx })) : undefined),
+        primary_image: source.primary_image ?? rec.primary_image ?? rec.image_url ?? null,
+        images: source.images ?? (rec.images ? rec.images.map((img: any, i: number) => ({ id: i, image_url: img.image_url ?? img, is_primary: i === 0, sort_order: i })) : undefined),
         sizes: source.sizes ?? undefined,
         variants: source.variants ?? undefined,
         reviews: source.reviews ?? undefined,
