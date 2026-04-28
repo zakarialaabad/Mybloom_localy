@@ -286,9 +286,9 @@ export default function ProductCard({
             </p>
           </div>
 
-          {/* CATEGORY — Single line, 16px height */}
+          {/* SUBTITLE — Single line, 16px height */}
           <p className="text-xs text-gray-500 line-clamp-1 h-4">
-            {category || description}
+            {description}
           </p>
 
           {/* FOOTER BLOCK — Price & Rating */}
