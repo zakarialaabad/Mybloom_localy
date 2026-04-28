@@ -272,24 +272,60 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   };
 
   const handleRecommendations = (product: Product, allCachedProducts: Product[]) => {
-    if (product.recommendations && product.recommendations.length > 0) {
-      const transformedRecs = product.recommendations.map(productToCard);
-      setRecommendations(transformedRecs);
-      setRecommendationCount(transformedRecs.length);
-      
-      const verification = testRecommendationCount.logRecommendationData(
-        product.id,
-        transformedRecs.length,
-        product.recommendations
-      );
-      
-      if (!verification.passed) {
-        console.warn('⚠️ Recommendation count mismatch detected!', verification);
-      }
-    } else {
+    const recs = (product as any).recommendations ?? [];
+    if (!Array.isArray(recs) || recs.length === 0) {
       setRecommendations([]);
       setRecommendationCount(0);
       console.log('ℹ️ No recommended products for this product');
+      return;
+    }
+
+    const transformedRecs = recs.map((rec: any) => {
+      // Try to enrich recommendation with a full cached product when available
+      const cached = allCachedProducts?.find((p) => p.id === rec.id || p.slug === rec.slug);
+      const source = cached ?? rec;
+
+      // Normalize to Product shape (safe fallbacks) so productToCard receives consistent data
+      const pLike: Product = {
+        id: source.id ?? rec.id ?? 0,
+        name: source.name ?? rec.name ?? '',
+        slug: source.slug ?? rec.slug ?? '',
+        subtitle: source.subtitle ?? rec.subtitle ?? '',
+        description: source.description ?? rec.description ?? '',
+        gender: (source.gender ?? rec.gender ?? 'unisex') as 'men' | 'women' | 'unisex',
+        is_featured: source.is_featured ?? rec.is_featured ?? false,
+        brand: source.brand ?? (rec.brand_name ? { id: 0, name: rec.brand_name, slug: '' } : { id: 0, name: '', slug: '' }),
+        category: source.category ?? (rec.category_name ? { id: 0, name: rec.category_name, slug: '' } : { id: 0, name: '', slug: '' }),
+        product_type: source.product_type ?? (rec.product_type_name ? { id: 0, name: rec.product_type_name, slug: '' } : undefined),
+        primary_image: source.primary_image ?? rec.primary_image ?? (rec.image_url ?? null),
+        images: source.images ?? (rec.images ? rec.images.map((img: any, idx: number) => ({ id: idx, image_url: img.image_url ?? img, is_primary: idx === 0, sort_order: idx })) : undefined),
+        sizes: source.sizes ?? undefined,
+        variants: source.variants ?? undefined,
+        reviews: source.reviews ?? undefined,
+        faqs: source.faqs ?? undefined,
+        avg_rating: source.avg_rating ?? rec.avg_rating ?? 0,
+        review_count: source.review_count ?? rec.review_count ?? 0,
+        stock: source.stock ?? rec.stock ?? 0,
+        min_price: source.min_price ?? rec.min_price ?? rec.price ?? 0,
+        max_price: source.max_price ?? rec.max_price ?? rec.price ?? 0,
+        original_price: source.original_price ?? rec.original_price ?? undefined,
+        badges: source.badges ?? rec.badges ?? undefined,
+      } as Product;
+
+      return productToCard(pLike);
+    });
+
+    setRecommendations(transformedRecs);
+    setRecommendationCount(transformedRecs.length);
+
+    const verification = testRecommendationCount.logRecommendationData(
+      product.id,
+      transformedRecs.length,
+      recs
+    );
+
+    if (!verification.passed) {
+      console.warn('⚠️ Recommendation count mismatch detected!', verification);
     }
   };
 

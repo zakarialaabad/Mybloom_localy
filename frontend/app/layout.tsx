@@ -35,6 +35,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap"
           rel="stylesheet"
         />
+        {/* Favicon used only in the browser tab. Place logo_tap.jpg in frontend/Public/ (do not replace the on-page logo). */}
+        <link rel="icon" href="/logo_tap.jpg" type="image/jpeg" />
+        {/* Fallback to existing logo if logo_tap.jpg isn't present */}
+        <link rel="icon" href="/logo.png" type="image/png" />
       </head>
       <body className="pb-[64px] md:pb-0">
         <Providers>
