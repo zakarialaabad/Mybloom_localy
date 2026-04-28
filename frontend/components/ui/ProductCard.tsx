@@ -74,7 +74,7 @@ export default function ProductCard({
   const hasSecondary = !!safeSecondaryUrl;
 
   const stars = [1, 2, 3, 4, 5];
-  const categoryDisplay = category || productType || subtitle || description;
+  const categoryDisplay = category || productType || description;
 
   useEffect(() => {
     if (toast.show) {
@@ -282,7 +282,7 @@ export default function ProductCard({
             
             {/* Product Type — 1 line, 16px height */}
             <p className="text-xs text-gray-600 line-clamp-1 h-4 capitalize">
-              {categoryDisplay}
+              {productType || subtitle}
             </p>
           </div>
 
