@@ -203,7 +203,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             setImages(allImages);
           }
 
-          handleRecommendations(fullData, []);
+          handleRecommendations(fullData, getAllCachedProducts());
         })
         .catch(() => {
           console.warn('[ProductPage] Detail API failed — using cached data');
@@ -228,7 +228,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
         selectVariantFromProduct(data);
         setWished(isInWishlist(data.id));
-        handleRecommendations(data, []);
+        handleRecommendations(data, getAllCachedProducts());
       })
       .catch((err) => {
         console.error('[ProductPage] Error fetching product:', err);
