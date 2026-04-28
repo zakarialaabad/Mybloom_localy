@@ -186,7 +186,7 @@ export default function FeedbackPage() {
                     >
                       <div className="relative w-[64px] h-[64px] bg-gray-50 rounded-lg border border-gray-100 shrink-0 overflow-hidden shadow-sm">
                         {item.image_url ? (
-                          <Image src={item.image_url.startsWith('http') ? item.image_url : '/' + item.image_url} alt={item.product_name} fill className="object-cover mix-blend-multiply p-1" />
+                          <Image src={item.image_url} alt={item.product_name} fill className="object-cover mix-blend-multiply p-1" />
                         ) : (
                           <div className="w-full h-full bg-gray-100 rounded-lg" />
                         )}
