@@ -492,7 +492,7 @@ export default function CollectionPage() {
                           <input type="text" placeholder="Rechercher une marque..." value={brandSearchTerm} onChange={(e) => setBrandSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" />
                         </div>
                         <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
-                          {brands.filter(b => b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (brandCounts[b.id] ?? 0) > 0).map(brand => (
+                          {brands.filter(b => b.name.toLowerCase() !== 'my boom' && b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (brandCounts[b.id] ?? 0) > 0).map(brand => (
                             <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
                               <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleBrand(brand.id)}>
                                 {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
@@ -505,46 +505,6 @@ export default function CollectionPage() {
                           ))}
                         </div>
                       </>
-                    )}
-                  </div>
-
-                  {/* Ingredients */}
-                  <div className="mb-6 border-t border-gray-100 pt-6">
-                    <div className="flex justify-between items-center mb-4 cursor-pointer hover:opacity-70 transition-opacity" onClick={() => toggleSection('ingredients')}>
-                      <h3 className="font-serif text-gray-700">Ingrédients</h3>
-                      <ChevronUp className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedSections.ingredients ? 'rotate-0' : 'rotate-180'}`} />
-                    </div>
-                    {expandedSections.ingredients && (
-                      <>
-                        <div className="relative mb-4">
-                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
-                          <input type="text" placeholder="Rechercher un ingrédient..." value={ingredientSearchTerm} onChange={(e) => setIngredientSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" />
-                        </div>
-                        <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
-                          {ingredients.filter(i => i.name.toLowerCase().includes(ingredientSearchTerm.toLowerCase())).map(ingredient => (
-                            <label key={ingredient.id} className="flex items-center gap-3 cursor-pointer group">
-                              <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedIngredients.includes(ingredient.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleIngredient(ingredient.id)}>
-                                {selectedIngredients.includes(ingredient.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
-                              </div>
-                              <div className="flex items-baseline gap-2">
-                                <span className={`text-xs ${selectedIngredients.includes(ingredient.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{ingredient.name}</span>
-                                <span className="text-[11px] text-gray-400">({ingredientCounts[ingredient.id] ?? 0})</span>
-                              </div>
-                            </label>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </div>
-
-                  {/* Price */}
-                  <div className="mb-6 border-t border-gray-100 pt-6">
-                    <div className="flex justify-between items-center mb-4 cursor-pointer hover:opacity-70 transition-opacity" onClick={() => toggleSection('price')}>
-                      <h3 className="font-serif text-gray-700">Price</h3>
-                      <ChevronUp className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedSections.price ? 'rotate-0' : 'rotate-180'}`} />
-                    </div>
-                    {expandedSections.price && (
-                      <PriceHistogram globalMin={globalMin} globalMax={globalMax} selectedMin={selectedMin} selectedMax={selectedMax} onMinChange={setSelectedMin} onMaxChange={setSelectedMax} />
                     )}
                   </div>
 
@@ -592,6 +552,46 @@ export default function CollectionPage() {
                           );
                         })}
                       </div>
+                    )}
+                  </div>
+
+                  {/* Ingredients */}
+                  <div className="mb-6 border-t border-gray-100 pt-6">
+                    <div className="flex justify-between items-center mb-4 cursor-pointer hover:opacity-70 transition-opacity" onClick={() => toggleSection('ingredients')}>
+                      <h3 className="font-serif text-gray-700">Ingrédients</h3>
+                      <ChevronUp className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedSections.ingredients ? 'rotate-0' : 'rotate-180'}`} />
+                    </div>
+                    {expandedSections.ingredients && (
+                      <>
+                        <div className="relative mb-4">
+                          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" />
+                          <input type="text" placeholder="Rechercher un ingrédient..." value={ingredientSearchTerm} onChange={(e) => setIngredientSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" />
+                        </div>
+                        <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
+                          {ingredients.filter(i => i.name.toLowerCase().includes(ingredientSearchTerm.toLowerCase())).map(ingredient => (
+                            <label key={ingredient.id} className="flex items-center gap-3 cursor-pointer group">
+                              <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedIngredients.includes(ingredient.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleIngredient(ingredient.id)}>
+                                {selectedIngredients.includes(ingredient.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
+                              </div>
+                              <div className="flex items-baseline gap-2">
+                                <span className={`text-xs ${selectedIngredients.includes(ingredient.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{ingredient.name}</span>
+                                <span className="text-[11px] text-gray-400">({ingredientCounts[ingredient.id] ?? 0})</span>
+                              </div>
+                            </label>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Price */}
+                  <div className="mb-6 border-t border-gray-100 pt-6">
+                    <div className="flex justify-between items-center mb-4 cursor-pointer hover:opacity-70 transition-opacity" onClick={() => toggleSection('price')}>
+                      <h3 className="font-serif text-gray-700">Price</h3>
+                      <ChevronUp className={`h-4 w-4 text-gray-400 transition-transform duration-300 ${expandedSections.price ? 'rotate-0' : 'rotate-180'}`} />
+                    </div>
+                    {expandedSections.price && (
+                      <PriceHistogram globalMin={globalMin} globalMax={globalMax} selectedMin={selectedMin} selectedMax={selectedMax} onMinChange={setSelectedMin} onMaxChange={setSelectedMax} />
                     )}
                   </div>
 
@@ -761,31 +761,13 @@ export default function CollectionPage() {
                   <h3 className="font-serif text-gray-700 mb-4">Brand</h3>
                   <div className="relative mb-4"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" /><input type="text" placeholder="Search brand..." value={brandSearchTerm} onChange={(e) => setBrandSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none" /></div>
                     <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
-                    {brands.filter(b => b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (brandCounts[b.id] ?? 0) > 0).map(brand => (
+                    {brands.filter(b => b.name.toLowerCase() !== 'my boom' && b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (brandCounts[b.id] ?? 0) > 0).map(brand => (
                       <label key={brand.id} className="flex items-center gap-3 cursor-pointer">
                         <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleBrand(brand.id)}>{selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}</div>
                         <div className="flex items-baseline gap-2"><span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span><span className="text-[11px] text-gray-400">({brandCounts[brand.id] ?? 0})</span></div>
                       </label>
                     ))}
                   </div>
-                </div>
-                {/* Ingrédients */}
-                <div className="mb-6 border-t border-gray-100 pt-6">
-                  <h3 className="font-serif text-gray-700 mb-4">Ingrédients</h3>
-                  <div className="relative mb-4"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" /><input type="text" placeholder="Search ingredient..." value={ingredientSearchTerm} onChange={(e) => setIngredientSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none" /></div>
-                  <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
-                    {ingredients.filter(i => i.name.toLowerCase().includes(ingredientSearchTerm.toLowerCase())).map(ingredient => (
-                      <label key={ingredient.id} className="flex items-center gap-3 cursor-pointer">
-                        <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedIngredients.includes(ingredient.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleIngredient(ingredient.id)}>{selectedIngredients.includes(ingredient.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}</div>
-                        <div className="flex items-baseline gap-2"><span className={`text-xs ${selectedIngredients.includes(ingredient.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{ingredient.name}</span><span className="text-[11px] text-gray-400">({ingredientCounts[ingredient.id] ?? 0})</span></div>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                {/* Price */}
-                <div className="mb-6 border-t border-gray-100 pt-6">
-                  <h3 className="font-serif text-gray-700 mb-4">Price</h3>
-                  <PriceHistogram globalMin={globalMin} globalMax={globalMax} selectedMin={selectedMin} selectedMax={selectedMax} onMinChange={setSelectedMin} onMaxChange={setSelectedMax} />
                 </div>
                 {/* Category */}
                 <div className="mb-6 border-t border-gray-100 pt-6">
@@ -814,6 +796,24 @@ export default function CollectionPage() {
                       );
                     })}
                   </div>
+                </div>
+                {/* Ingrédients */}
+                <div className="mb-6 border-t border-gray-100 pt-6">
+                  <h3 className="font-serif text-gray-700 mb-4">Ingrédients</h3>
+                  <div className="relative mb-4"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" /><input type="text" placeholder="Search ingredient..." value={ingredientSearchTerm} onChange={(e) => setIngredientSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none" /></div>
+                  <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
+                    {ingredients.filter(i => i.name.toLowerCase().includes(ingredientSearchTerm.toLowerCase())).map(ingredient => (
+                      <label key={ingredient.id} className="flex items-center gap-3 cursor-pointer">
+                        <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedIngredients.includes(ingredient.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleIngredient(ingredient.id)}>{selectedIngredients.includes(ingredient.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}</div>
+                        <div className="flex items-baseline gap-2"><span className={`text-xs ${selectedIngredients.includes(ingredient.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{ingredient.name}</span><span className="text-[11px] text-gray-400">({ingredientCounts[ingredient.id] ?? 0})</span></div>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                {/* Price */}
+                <div className="mb-6 border-t border-gray-100 pt-6">
+                  <h3 className="font-serif text-gray-700 mb-4">Price</h3>
+                  <PriceHistogram globalMin={globalMin} globalMax={globalMax} selectedMin={selectedMin} selectedMax={selectedMax} onMinChange={setSelectedMin} onMaxChange={setSelectedMax} />
                 </div>
                 {/* ── Notes — #da2966 (mobile drawer) ─────────────────────── */}
                 <div className="mb-6 border-t border-gray-100 pt-6">

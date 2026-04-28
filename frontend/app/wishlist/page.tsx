@@ -18,6 +18,36 @@ import useCartStore from '@/store/cart';
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
+// ─── Unified product→card transform (matches collection & recommendations) ────
+function productToCard(p: Product) {
+  const imageUrl = p.primary_image || p.images?.[0]?.image_url || FALLBACK_IMG;
+  const secondaryImageUrl = p.images?.[1]?.image_url || undefined;
+  const defaultVariant = p.variants?.find(v => v.is_default) ?? p.variants?.[0];
+  const defaultSizeLabel = defaultVariant ? `${defaultVariant.size}${defaultVariant.unit ?? 'ml'}` : undefined;
+  const defaultSizeId = defaultVariant?.id;
+  const defaultVariantPrice = defaultVariant?.final_price;
+  const defaultVariantOriginalPrice = defaultVariant?.original_price ?? undefined;
+  return {
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+    subtitle: p.brand?.name ?? '',
+    description: p.subtitle ?? '',
+    price: defaultVariantPrice ?? p.min_price ?? 0,
+    originalPrice: defaultVariantOriginalPrice ?? defaultVariantPrice ?? p.original_price ?? p.min_price ?? 0,
+    rating: p.avg_rating ?? 0,
+    reviewCount: p.review_count ?? 0,
+    imageUrl,
+    secondaryImageUrl,
+    category: p.category?.name?.toLowerCase() === 'parfum' ? (p.product_type?.name ?? p.category?.name) : p.category?.name,
+    productType: p.category?.name?.toLowerCase() === 'parfum' ? (p.brand?.name ?? p.product_type?.name ?? '') : (p.product_type?.name ?? ''),
+    defaultSizeLabel,
+    defaultSizeId,
+    defaultVariantPrice,
+    defaultVariantOriginalPrice,
+  };
+}
+
 type SortKey = 'relevance' | 'price-asc' | 'price-desc' | 'name-asc' | 'name-desc' | 'rating';
 type ViewMode = 'grid' | 'list';
 
@@ -218,19 +248,7 @@ export default function WishlistPage() {
                 <div key={product.id} className="relative flex flex-col h-full group">
                   <div className="flex-grow">
                     <ProductCard
-                      id={product.id}
-                      slug={product.slug}
-                      name={product.name}
-                      subtitle={product.brand?.name || ''}
-                      description={product.subtitle || ''}
-                      price={product.min_price ?? 0}
-                      originalPrice={product.original_price ?? 0}
-                      rating={product.avg_rating ?? 0}
-                      reviewCount={product.review_count ?? 0}
-                      imageUrl={product.primary_image || product.images?.[0]?.image_url || FALLBACK_IMG}
-                      secondaryImageUrl={product.images?.[1]?.image_url}
-                      category={product.category?.name}
-                      productType={product.gender}
+                      {...productToCard(product)}
                       onWishlistToggle={handleRemove}
                     />
                   </div>

@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import Cookies from 'js-cookie';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -34,13 +35,44 @@ interface CartStore {
   clearCoupon   : () => void;
 }
 
+// ─── Cookie persistence (same pattern as wishlist) ────────────────────────────
+
+const CART_COOKIE   = 'bloom_cart';
+const EXPIRY_DAYS   = 30;
+
+const COOKIE_OPTIONS: Cookies.CookieAttributes = {
+  expires : EXPIRY_DAYS,
+  path    : '/',
+  sameSite: 'Lax',
+  secure  : process.env.NODE_ENV === 'production',
+};
+
+function loadCartFromCookie(): CartItem[] {
+  try {
+    const raw = Cookies.get(CART_COOKIE);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCartToCookie(items: CartItem[]): void {
+  if (items.length === 0) {
+    Cookies.remove(CART_COOKIE, { path: '/' });
+  } else {
+    Cookies.set(CART_COOKIE, JSON.stringify(items), COOKIE_OPTIONS);
+  }
+}
+
 // ─── Store ────────────────────────────────────────────────────────────────────
-// Cart is in-memory only. Never persisted to backend.
-// Contents are consumed at checkout as the `items[]` payload of POST /api/v1/orders.
+// Cart items are persisted in a cookie for 30 days (same as wishlist).
+// Coupon is session-only — not persisted (coupons are single-use & time-sensitive).
 // Server always re-resolves prices from DB — unitPrice here is for display only.
 
 const useCartStore = create<CartStore>((set, get) => ({
-  items: [],
+  items: loadCartFromCookie(),
   appliedCoupon: null,
 
   addItem: (incoming) => {
@@ -49,25 +81,30 @@ const useCartStore = create<CartStore>((set, get) => ({
         (i) => i.productId === incoming.productId && i.sizeLabel === incoming.sizeLabel,
       );
 
+      let updated: CartItem[];
       if (existingIndex >= 0) {
-        const updated = [...state.items];
+        updated = [...state.items];
         updated[existingIndex] = {
           ...updated[existingIndex],
           quantity: updated[existingIndex].quantity + incoming.quantity,
         };
-        return { items: updated };
+      } else {
+        updated = [...state.items, incoming];
       }
 
-      return { items: [...state.items, incoming] };
+      saveCartToCookie(updated);
+      return { items: updated };
     });
   },
 
   removeItem: (productId, sizeLabel) => {
-    set((state) => ({
-      items: state.items.filter(
+    set((state) => {
+      const updated = state.items.filter(
         (i) => !(i.productId === productId && i.sizeLabel === sizeLabel),
-      ),
-    }));
+      );
+      saveCartToCookie(updated);
+      return { items: updated };
+    });
   },
 
   updateQty: (productId, sizeLabel, qty) => {
@@ -75,14 +112,19 @@ const useCartStore = create<CartStore>((set, get) => ({
       get().removeItem(productId, sizeLabel);
       return;
     }
-    set((state) => ({
-      items: state.items.map((i) =>
+    set((state) => {
+      const updated = state.items.map((i) =>
         i.productId === productId && i.sizeLabel === sizeLabel ? { ...i, quantity: qty } : i,
-      ),
-    }));
+      );
+      saveCartToCookie(updated);
+      return { items: updated };
+    });
   },
 
-  clearCart: () => set({ items: [], appliedCoupon: null }),
+  clearCart: () => {
+    saveCartToCookie([]);
+    set({ items: [], appliedCoupon: null });
+  },
 
   itemCount: () => get().items.length,
 

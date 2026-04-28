@@ -25,9 +25,9 @@ class CategorySeederFrench extends Seeder
                 'description' => 'Parfums, brumes et fragrances',
             ],
             [
-                'name' => 'Gommage',
-                'slug' => 'gommage',
-                'description' => 'Gommages et exfoliants',
+                'name' => 'Gommage Corporel',
+                'slug' => 'gommage-corporel',
+                'description' => 'Gommages corporels et exfoliants',
             ],
             [
                 'name' => 'Maquillage',
