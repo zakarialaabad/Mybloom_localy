@@ -2,12 +2,13 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import ReviewFormModal, { ReviewFormSaveData } from '@/components/admin/ReviewFormModal';
 import { AdminSelect } from '@/components/admin/AdminSelect';
 import IngredientSelectModal from '@/components/admin/IngredientSelectModal';
 import CreateIngredientModal from '@/components/admin/CreateIngredientModal';
 import ProductTypeSelector from '@/components/admin/ProductTypeSelector';
+import { adminProductService, adminCategoryService, adminProductTypeService, brandService } from '@/services/api';
 
 // === Icons ===
 const ArrowLeft = () => (
@@ -29,7 +30,6 @@ const CheckIcon = () => <svg width="14" height="14" viewBox="0 0 24 24" fill="no
 const CloudUploadIcon = () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none"><path d="M7 16V12M7 12L5 14M7 12L9 14" stroke="#da2966" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/><path d="M20 16.2C21.2 15.6 22 14.4 22 13c0-2-1.5-3.5-3.5-3.5h-.4C17.3 6.9 14.8 5 12 5c-3.3 0-6 2.7-6 6 0 .2 0 .4.1.6C4.4 11.9 3 13.3 3 15c0 1.6 1.3 3 3 3h13c1.7 0 3-1.3 3-3z" fill="#da2966" stroke="#da2966" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 const ChevronDown = () => <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 4.5l3.5 3.5 3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 const ChevronUp = () => <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2.5 7.5L6 4l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
-const ChevronRight = () => <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M4.5 9.5l3.5-3.5-3.5-3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
 
 const FaceIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>;
 const HairIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2c-4 0-7 2-7 6 0 7 7 14 7 14s7-7 7-14c0-4-3-6-7-6z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>;
@@ -72,41 +72,37 @@ const ToggleRow = ({ label, active, border, onClick }: { label: string, active: 
   </div>
 );
 
-const IngredientCircle = ({ thumb, add }: { thumb?: string, add?: boolean }) => {
-  if (add) {
-    return (
-      <div className="flex flex-col items-center gap-4">
-        <button className="w-[150px] h-[150px] rounded-full border-[2.5px] border-dashed border-[#da2966] bg-white flex flex-col items-center justify-center gap-1.5 hover:bg-[#fff0f3] transition-colors shrink-0">
-          <span className="text-[#da2966] font-bold text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] leading-none mb-1">+</span>
-          <span className="text-[#da2966] text-[13px] font-bold">AJOUTER</span>
-        </button>
-        {/* Invisible spacer to perfectly align the circles with the text row */}
-        <span className="text-[14px] font-bold text-transparent select-none whitespace-nowrap" aria-hidden="true">&nbsp;</span>
-      </div>
-    );
-  }
-  return (
-    <div className="flex flex-col items-center gap-4 group">
-      <div className="w-[150px] h-[150px] rounded-full border-[2.5px] border-[#da2966] p-1.5 bg-white relative cursor-pointer shrink-0">
-        <div className="w-full h-full rounded-full overflow-hidden relative">
-          <img src={thumb} alt="Ingredient" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2.5 transition-opacity z-10">
-            <button className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:text-[#da2966] transition-colors"><EditIcon/></button>
-            <button className="w-10 h-10 rounded-full bg-white text-gray-700 flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:text-red-500 transition-colors"><TrashIcon/></button>
-          </div>
-        </div>
-      </div>
-      <span className="text-[14px] font-bold text-[#333]">Cocoa Butter</span>
-    </div>
-  );
-};
+// --- Image entry types --------------------------------------------------------
+type ImageEntry =
+  | { type: 'existing'; id: number; url: string }
+  | { type: 'new'; file: File; preview: string };
 
+// --- Review entry types -------------------------------------------------------
+interface ReviewEntry {
+  id?: number;
+  reviewer_name: string;
+  rating: number;
+  date: string;
+  photoUrl: string;
+  photoFile?: File;
+}
 
-export default function AddProductPage() {
+// --- FAQ entry types ----------------------------------------------------------
+interface FaqEntry {
+  id?: number;
+  question: string;
+  answer: string;
+}
+
+export default function EditProductPage() {
   const router = useRouter();
+  const params = useParams();
+  const productId = Number(params.id);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // --- Phase 2: Product Data State ---
+  const [isLoading, setIsLoading] = useState(true);
+
+  // --- Product Data State ---
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     category_id: '',
@@ -115,149 +111,58 @@ export default function AddProductPage() {
     short_description: '',
     full_description: ''
   });
-  
-  const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
+
+  const [categories, setCategories] = useState<any[]>([]);
+  const [brands, setBrands] = useState<any[]>([]);
   const [productTypes, setProductTypes] = useState<any[]>([]);
   const [productType, setProductType] = useState('Corps');
   const [gender, setGender] = useState('Women');
 
-  // --- Phase 5: Status Settings ---
-  // Allow multiple independent status selections
+  // --- Status Settings ---
   const [isBestSeller, setIsBestSeller] = useState(false);
   const [isGift, setIsGift] = useState(false);
   const [isRecommended, setIsRecommended] = useState(false);
 
-  // --- Phase 6: Ingredients State ---
-  const [ingredients, setIngredients] = useState<any[]>([]); 
+  // --- Ingredients State ---
+  const [ingredients, setIngredients] = useState<any[]>([]);
   const [availableIngredients, setAvailableIngredients] = useState<{id: number; name: string; image_url: string | null}[]>([]);
   const [isIngredientModalOpen, setIsIngredientModalOpen] = useState(false);
   const [isCreateIngredientModalOpen, setIsCreateIngredientModalOpen] = useState(false);
   const [editingIngredientSlot, setEditingIngredientSlot] = useState<number | null>(null);
   const [ingredientInitialId, setIngredientInitialId] = useState('');
 
-  const openIngredientModal = (slot?: number) => {
-    const actualSlot = slot ?? ingredients.length;
-    setEditingIngredientSlot(actualSlot);
-    const ing = ingredients[actualSlot];
+  const openIngredientModal = (slot: number) => {
+    setEditingIngredientSlot(slot);
+    const ing = ingredients[slot];
     const matched = ing ? availableIngredients.find(a => a.name === ing.name) : undefined;
     setIngredientInitialId(matched ? String(matched.id) : '');
     setIsIngredientModalOpen(true);
   };
 
-  // --- Phase 7: Reviews State ---
-  const [reviews, setReviews] = useState<any[]>([]);
+  // --- Reviews State ---
+  const [reviews, setReviews] = useState<ReviewEntry[]>([]);
+  const [deletedReviewIds, setDeletedReviewIds] = useState<number[]>([]);
   const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
 
+  const [reviewPage, setReviewPage] = useState(0);
 
-  // --- Phase 8: FAQs State ---
-  const [faqs, setFaqs] = useState<any[]>([]);
-  const [newFaq, setNewFaq] = useState({ question: '', answer: '' });
+  // --- FAQs State ---
+  const [faqs, setFaqs] = useState<FaqEntry[]>([]);
+  const [newFaq, setNewFaq] = useState<FaqEntry>({ question: '', answer: '' });
   const [editingFaqIndex, setEditingFaqIndex] = useState<number | null>(null);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  useEffect(() => {
-    // Fetch categories and brands from API on mount
-    const fetchSelectData = async () => {
-      const apiBase = process.env.NEXT_PUBLIC_API_URL;
-      const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
-      const authHeaders: Record<string, string> = { Accept: 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) };
-      try {
-        const catRes = await fetch(`${apiBase}/v1/categories`, { headers: authHeaders });
-        const brandRes = await fetch(`${apiBase}/v1/brands`, { headers: authHeaders });
-        const typeRes = await fetch(`${apiBase}/v1/product-types`, { headers: authHeaders });
-        const ingrRes = await fetch(`${apiBase}/v1/ingredients`, { headers: authHeaders });
-        
-        if (catRes.ok) {
-          const catData = await catRes.json();
-          setCategories(catData.data || []);
-        }
-        if (brandRes.ok) {
-          const brandData = await brandRes.json();
-          setBrands(brandData.data || []);
-        }
-        if (typeRes.ok) {
-          const typeData = await typeRes.json();
-          const types = typeData.data || [];
-          setProductTypes(types);
-          if (types.length > 0) setProductType(types.find((t: any) => t.name === 'Corps')?.name || types[0].name);
-        }
-        if (ingrRes.ok) {
-          const ingrData = await ingrRes.json();
-          setAvailableIngredients(ingrData.data || []);
-        }
-      } catch (error) {
-        console.error("Error fetching dependencies:", error);
-      }
-    };
-    fetchSelectData();
-  }, []);
+  // --- Image State ---
+  const [imageEntries, setImageEntries] = useState<ImageEntry[]>([]);
+  const [deletedImageIds, setDeletedImageIds] = useState<number[]>([]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    const errorKey = e.target.name === 'short_description' ? 'subtitle' : 
-                     e.target.name === 'full_description' ? 'description' : 
-                     e.target.name;
-    setErrors(prev => ({ ...prev, [errorKey]: '' }));
-  };
-
-  // --- Phase 3: Product Media State ---
-  const [images, setImages] = useState<File[]>([]);
-  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
-
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const selectedFiles = Array.from(e.target.files);
-
-      if (images.length >= 4) {
-        showToast('Vous avez atteint le maximum de 4 photos.');
-        e.target.value = '';
-        return;
-      }
-
-      const duplicates: string[] = [];
-      const unique = selectedFiles.filter(f => {
-        const isDup = images.some(existing => existing.name === f.name && existing.size === f.size);
-        if (isDup) duplicates.push(f.name);
-        return !isDup;
-      });
-
-      if (duplicates.length > 0) {
-        showToast(`"${duplicates[0]}" est déjà ajouté.`);
-      }
-
-      const remainingSlots = 4 - images.length;
-      const filesToAdd = unique.slice(0, remainingSlots);
-
-      if (unique.length > remainingSlots) {
-        showToast(`Il ne reste que ${remainingSlots} emplacement${remainingSlots !== 1 ? 's' : ''} — les photos supplémentaires ont été ignorées.`);
-      }
-
-      if (filesToAdd.length > 0) {
-        setImages([...images, ...filesToAdd]);
-        setImagePreviews([...imagePreviews, ...filesToAdd.map(f => URL.createObjectURL(f))]);
-      }
-
-      e.target.value = '';
-    }
-  };
-
-  const removeImage = (index: number) => {
-    const newImages = [...images];
-    const newPreviews = [...imagePreviews];
-    newImages.splice(index, 1);
-    newPreviews.splice(index, 1);
-    setImages(newImages);
-    setImagePreviews(newPreviews);
-  };
-
-  // --- Phase 4: Pricing Variants State ---
+  // --- Variant State ---
   type Variant = { size: string; unit: string; price: string; promotion: string; stock: string };
   const emptyVariant = (): Variant => ({ size: '', unit: 'ml', price: '', promotion: '0', stock: '' });
   const [variants, setVariants] = useState<Variant[]>([]);
   const [editingVariantIndex, setEditingVariantIndex] = useState<number | null>(null);
   const [draftVariant, setDraftVariant] = useState<Variant | null>(null);
-
   const [entryRowHighlight, setEntryRowHighlight] = useState(false);
   const [toastMsg, setToastMsg] = useState('');
   const [toastVisible, setToastVisible] = useState(false);
@@ -268,13 +173,165 @@ export default function AddProductPage() {
     setTimeout(() => setToastVisible(false), 3200);
   };
 
+  // -- Load select data + product data on mount ------------------------------
+  useEffect(() => {
+    const fetchAll = async () => {
+      const apiBase = process.env.NEXT_PUBLIC_API_URL;
+      const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+      const authHeaders: Record<string, string> = { Accept: 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) };
+      try {
+        const [cats, brnds, types, ingrData] = await Promise.all([
+          adminCategoryService.list(),
+          brandService.list(),
+          adminProductTypeService.list(),
+          fetch(`${apiBase}/v1/ingredients`, { headers: authHeaders }).then(r => r.ok ? r.json() : { data: [] }).catch(() => ({ data: [] })),
+        ]);
+
+        setCategories(cats);
+        setBrands(brnds);
+        setProductTypes(types);
+        setAvailableIngredients(ingrData.data || []);
+
+        // Now fetch the product
+        const product = await adminProductService.get(productId);
+
+        // Prefill basic fields
+        setFormData({
+          category_id: String(product.category?.id ?? ''),
+          brand_id: String(product.brand?.id ?? ''),
+          name: product.name ?? '',
+          short_description: product.subtitle ?? '',
+          full_description: product.description ?? '',
+        });
+
+        // Gender (capitalize)
+        const g = product.gender ?? 'women';
+        setGender(g.charAt(0).toUpperCase() + g.slice(1));
+
+        // Product type
+        if (product.product_type?.name) {
+          setProductType(product.product_type.name);
+        } else if (types.length > 0) {
+          setProductType(types[0].name);
+        }
+
+        // Status
+        setIsBestSeller(product.is_featured ?? false);
+        setIsGift(product.is_gift ?? false);
+        setIsRecommended(product.is_recommended ?? false);
+
+        // Images
+        setImageEntries(
+          (product.images ?? [])
+            .sort((a, b) => a.sort_order - b.sort_order)
+            .map(img => ({ type: 'existing', id: img.id, url: img.image_url }))
+        );
+
+        // Variants ´┐¢ prefill from product.variants (new system)
+        if (product.variants && product.variants.length > 0) {
+          setVariants(product.variants.map(v => ({
+            size: String(v.size),
+            unit: v.unit ?? 'ml',
+            price: String(v.price),
+            promotion: String(v.promotion_percent ?? 0),
+            stock: String(v.stock_quantity ?? ''),
+          })));
+        }
+
+        // Ingredients
+        setIngredients(
+          (product.ingredients ?? []).map(ing => ({
+            name: ing.name,
+            thumb: ing.image_url || `https://placehold.co/150x150?text=${encodeURIComponent(ing.name)}`,
+            file: undefined,
+            existingId: ing.id,
+          }))
+        );
+
+        // Reviews (existing from DB)
+        setReviews(
+          (product.all_reviews ?? []).map(r => ({
+            id: r.id,
+            reviewer_name: r.reviewer_name,
+            rating: r.rating,
+                  date: r.date ?? '',
+            photoUrl: r.photo_url ?? '',
+          }))
+        );
+
+        // FAQs
+        setFaqs(
+          (product.faqs ?? []).map(f => ({
+            id: f.id,
+            question: f.question,
+            answer: f.answer,
+          }))
+        );
+
+      } catch (err) {
+        console.error('Error loading product:', err);
+        showToast('Failed to load product data.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAll();
+  }, [productId]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const errorKey = e.target.name === 'short_description' ? 'subtitle' : 
+                     e.target.name === 'full_description' ? 'description' : 
+                     e.target.name;
+    setErrors(prev => ({ ...prev, [errorKey]: '' }));
+  };
+
+  // -- Image handlers --------------------------------------------------------
+  const allImagePreviews = imageEntries.map(e => e.type === 'existing' ? e.url : e.preview);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const total = imageEntries.length;
+      if (total >= 4) {
+        showToast('You have reached the maximum of 4 photos.');
+        e.target.value = '';
+        return;
+      }
+      const selectedFiles = Array.from(e.target.files);
+      const remaining = 4 - total;
+      const filesToAdd = selectedFiles.slice(0, remaining);
+      if (selectedFiles.length > remaining) {
+        showToast(`Only ${remaining} slot${remaining !== 1 ? 's' : ''} remaining ´┐¢ extra photos were skipped.`);
+      }
+      const newEntries: ImageEntry[] = filesToAdd.map(f => ({
+        type: 'new',
+        file: f,
+        preview: URL.createObjectURL(f),
+      }));
+      setImageEntries([...imageEntries, ...newEntries]);
+      e.target.value = '';
+    }
+  };
+
+  const removeImageAt = (index: number) => {
+    const entry = imageEntries[index];
+    if (entry.type === 'existing') {
+      setDeletedImageIds([...deletedImageIds, entry.id]);
+    } else {
+      URL.revokeObjectURL(entry.preview);
+    }
+    setImageEntries(imageEntries.filter((_, i) => i !== index));
+  };
+
+  // -- Variant handlers ------------------------------------------------------
   const handleAddVariantClick = () => {
     if (variants.length >= 3) {
-      showToast('Maximum 3 variantes de taille autorisées.');
+      showToast('Maximum 3 size variants allowed.');
       return;
     }
     if (draftVariant !== null) {
-      showToast('Veuillez valider la ligne ouverte avant d\'en ajouter une autre.');
+      showToast('Please validate the open row before adding another.');
       setEntryRowHighlight(true);
       setTimeout(() => setEntryRowHighlight(false), 2000);
       return;
@@ -285,7 +342,7 @@ export default function AddProductPage() {
 
   const handleValidateDraft = () => {
     if (!draftVariant || !draftVariant.size || !draftVariant.price) {
-      showToast('Veuillez remplir au moins Taille et Prix.');
+      showToast('Please fill in at least Size and Price.');
       return;
     }
     setVariants([...variants, draftVariant]);
@@ -305,8 +362,7 @@ export default function AddProductPage() {
     if (editingVariantIndex === index) setEditingVariantIndex(null);
   };
 
-  // --- Handlers for Phases 6, 7 & 8 ---
-  // Confirm selection from dropdown (IngredientSelectModal callback)
+  // -- Ingredient handlers ---------------------------------------------------
   const handleIngredientConfirmed = (ingredient: { id: number; name: string; image_url: string | null }) => {
     if (editingIngredientSlot === null) return;
     const thumb = ingredient.image_url ?? `https://placehold.co/150x150?text=${encodeURIComponent(ingredient.name)}`;
@@ -317,7 +373,6 @@ export default function AddProductPage() {
     setEditingIngredientSlot(null);
   };
 
-  // New ingredient saved to backend (CreateIngredientModal callback)
   const handleIngredientCreated = (ingredient: { id: number; name: string; image_url: string | null }) => {
     setAvailableIngredients(prev => [...prev, ingredient]);
     const thumb = ingredient.image_url ?? `https://placehold.co/150x150?text=${encodeURIComponent(ingredient.name)}`;
@@ -335,6 +390,7 @@ export default function AddProductPage() {
     }
   };
 
+  // -- Review handlers -------------------------------------------------------
   const handleAddReview = (data: ReviewFormSaveData) => {
     const photoUrl = data.photoFile ? URL.createObjectURL(data.photoFile) : '';
     setReviews(prev => [...prev, {
@@ -344,30 +400,36 @@ export default function AddProductPage() {
       photoUrl,
       photoFile: data.photoFile ?? undefined,
     }]);
+    setReviewPage(Math.floor((reviews.length + 1) / 4));
   };
 
+  const handleDeleteReview = (idx: number) => {
+    const rev = reviews[idx];
+    if (rev.id) setDeletedReviewIds([...deletedReviewIds, rev.id]);
+    const updated = reviews.filter((_, i) => i !== idx);
+    setReviews(updated);
+    const maxPage = Math.floor(updated.length / 4);
+    if (reviewPage > maxPage) setReviewPage(maxPage);
+  };
+
+  // -- FAQ handlers ----------------------------------------------------------
   const handleAddFaq = () => {
     if (!newFaq.question && !newFaq.answer) {
       showToast('Please fill in both the question and answer fields.');
       return;
     }
-    if (!newFaq.question) {
-      showToast('Please fill in the question field.');
-      return;
-    }
-    if (!newFaq.answer) {
-      showToast('Please fill in the answer field.');
-      return;
-    }
+    if (!newFaq.question) { showToast('Please fill in the question field.'); return; }
+    if (!newFaq.answer) { showToast('Please fill in the answer field.'); return; }
+
     if (editingFaqIndex !== null) {
-      const uf = [...faqs];
-      if (uf[editingFaqIndex]) {
-         uf[editingFaqIndex] = newFaq;
-         setFaqs(uf);
+      const updated = [...faqs];
+      if (updated[editingFaqIndex]) {
+        updated[editingFaqIndex] = { ...updated[editingFaqIndex], ...newFaq };
+        setFaqs(updated);
       }
       setEditingFaqIndex(null);
     } else {
-      setFaqs([...faqs, newFaq]);
+      setFaqs([...faqs, { question: newFaq.question, answer: newFaq.answer }]);
     }
     setNewFaq({ question: '', answer: '' });
   };
@@ -377,10 +439,12 @@ export default function AddProductPage() {
     setEditingFaqIndex(index);
   };
 
+  // -- Submit ----------------------------------------------------------------
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
       const data = new FormData();
+      data.append('_method', 'PUT');
       data.append('name', formData.name);
       data.append('subtitle', formData.short_description);
       data.append('description', formData.full_description);
@@ -390,49 +454,64 @@ export default function AddProductPage() {
       data.append('is_featured', isBestSeller ? '1' : '0');
       data.append('is_gift', isGift ? '1' : '0');
       data.append('is_recommended', isRecommended ? '1' : '0');
+
       const selectedType = productTypes.find((t: any) => t.name === productType);
       if (selectedType) data.append('product_type_id', String(selectedType.id));
+
       const validVariants = variants.filter(v => v.size && v.price);
-        data.append('variants', JSON.stringify(validVariants));
-        data.append('faqs', JSON.stringify(faqs));
-        // Strip non-serializable File objects before encoding reviews to JSON
-        data.append('reviews_array', JSON.stringify(reviews.map((r) => ({
-          reviewer_name: r.reviewer_name,
-          rating: r.rating,
-          date: r.date,
-          comment: r.comment || '',
-        }))));
-        // Append each review's photo file as review_photos_{i} — backend reads this key
-        reviews.forEach((review, i) => {
-          if (review.photoFile instanceof File) {
-            data.append(`review_photos_${i}`, review.photoFile);
-          }
-        });
-        const processedIngredients = ingredients.map((ing) => ({ name: ing.name }));
-        data.append('manual_ingredients', JSON.stringify(processedIngredients));
-        ingredients.forEach((ing, i) => {
-          if (ing.file) data.append(`ingredient_images_${i}`, ing.file);
-        });
-        images.forEach((img, i) => {
-          data.append(`images[${i}]`, img);
-        });
-        if (validVariants.length > 0) {
-          // Mirror backend rule: 1 variant → index 0; 2 variants → largest (index 1); 3 variants → middle (index 1)
-          const sorted = [...validVariants].sort((a, b) => Number(a.size) - Number(b.size));
-          const defaultV = sorted.length === 1 ? sorted[0] : sorted[1];
-          data.append('price', defaultV.price);
-          data.append('stock', defaultV.stock);
-        } else {
-          data.append('price', '0');
-          data.append('stock', '0');
+      data.append('variants', JSON.stringify(validVariants));
+      if (validVariants.length > 0) {
+        // Mirror backend rule: 1 variant ? index 0; 2 variants ? largest (index 1); 3 variants ? middle (index 1)
+        const sorted = [...validVariants].sort((a, b) => Number(a.size) - Number(b.size));
+        const defaultV = sorted.length === 1 ? sorted[0] : sorted[1];
+        data.append('price', defaultV.price);
+        data.append('stock', defaultV.stock);
+      }
+
+      data.append('faqs', JSON.stringify(faqs));
+
+      // Only send new reviews (without id)
+      const newReviews = reviews.filter(r => !r.id);
+      const sanitizedNewReviews = newReviews.map(r => ({
+        reviewer_name: r.reviewer_name,
+        rating: r.rating,
+        date: r.date,
+      }));
+      data.append('reviews_array', JSON.stringify(sanitizedNewReviews));
+      // Send review photo files for new reviews
+      newReviews.forEach((review, i) => {
+        if (review.photoFile) {
+          data.append(`review_photos_${i}`, review.photoFile);
         }
+      });
+      data.append('deleted_review_ids', JSON.stringify(deletedReviewIds));
+
+      // Ingredients
+      const processedIngredients = ingredients.map(ing => ({ name: ing.name }));
+      data.append('manual_ingredients', JSON.stringify(processedIngredients));
+      ingredients.forEach((ing, i) => {
+        if (ing.file) data.append(`ingredient_images_${i}`, ing.file);
+      });
+
+      // Images
+      data.append('deleted_image_ids', JSON.stringify(deletedImageIds));
+      let newImgIndex = 0;
+      imageEntries.forEach(entry => {
+        if (entry.type === 'new') {
+          data.append(`images[${newImgIndex}]`, entry.file);
+          newImgIndex++;
+        }
+      });
+
       const apiBase = process.env.NEXT_PUBLIC_API_URL;
       const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
-      const res = await fetch(`${apiBase}/v1/admin/products`, {
+
+      const res = await fetch(`${apiBase}/v1/admin/products/${productId}`, {
         method: 'POST',
         headers: { Accept: 'application/json', ...(token ? { Authorization: 'Bearer ' + token } : {}) },
         body: data,
       });
+
       const jsonData = await res.json();
       if (!res.ok) {
         if (jsonData.errors) {
@@ -447,7 +526,7 @@ export default function AddProductPage() {
         }
         return;
       }
-      showToast('Product created successfully!');
+      showToast('Product updated successfully!');
       setTimeout(() => router.push('/gestion-bloom-secure/dashboard/products'), 1200);
     } catch (err) {
       console.error('Network Error:', err);
@@ -456,6 +535,24 @@ export default function AddProductPage() {
       setIsSubmitting(false);
     }
   };
+
+  // -- Review pagination -----------------------------------------------------
+  const reviewAddButtonPage = Math.floor(reviews.length / 4);
+  const reviewTotalPages = reviewAddButtonPage + 1;
+  const currentPageReviews = reviews.slice(reviewPage * 4, (reviewPage + 1) * 4);
+  const showAddOnCurrentPage = reviewPage === reviewAddButtonPage;
+
+  // -- Render ----------------------------------------------------------------
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#fcfcfc] flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-[#da2966] border-t-transparent rounded-full animate-spin" />
+          <p className="text-[14px] text-gray-400 font-medium">Loading product...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 sm:px-8 py-6 sm:py-8 space-y-6 min-h-screen bg-[#fcfcfc] max-w-7xl mx-auto">
@@ -483,16 +580,20 @@ export default function AddProductPage() {
 
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-4">
-        <div className="min-w-0">
+        <div>
           <Link href="/gestion-bloom-secure/dashboard/products" className="inline-flex items-center gap-2 text-[#da2966] text-[14px] font-semibold hover:underline mb-3">
             <ArrowLeft /> Back to Products
           </Link>
-          <h1 className="text-[22px] sm:text-[28px] lg:text-[32px] font-bold text-[#333] leading-tight font-serif tracking-tight">Add New Product</h1>
-          <p className="text-[13px] sm:text-[15px] text-gray-400 mt-1">Create a new listing for your luxury collection</p>
+          <h1 className="text-[22px] sm:text-[28px] lg:text-[32px] font-bold text-[#333] leading-tight font-serif tracking-tight">Edit Product</h1>
+          <p className="text-[13px] sm:text-[15px] text-gray-400 mt-1">Update the details for this listing</p>
         </div>
         <div className="flex items-center gap-3 sm:mt-8 shrink-0">
-          <button onClick={handleSubmit} disabled={isSubmitting} className={`flex-1 sm:flex-none px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl bg-[#da2966] text-white text-[13px] sm:text-[14px] font-semibold flex items-center justify-center gap-2 shadow-[0_4px_12px_rgba(218,41,102,0.25)] transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#c22158]'}`}>
-            <SaveIcon /> {isSubmitting ? 'Saving...' : 'Save Product'}
+          <button
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className={`px-6 py-3 rounded-xl bg-[#da2966] text-white text-[14px] font-semibold flex items-center gap-2 shadow-[0_4px_12px_rgba(218,41,102,0.25)] transition-colors ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:bg-[#c22158]'}`}
+          >
+            <SaveIcon /> {isSubmitting ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </div>
@@ -515,7 +616,7 @@ export default function AddProductPage() {
                 ))}
               </AdminSelect>
             </div>
-            
+
             <div className="flex flex-col gap-2">
               <label className="text-[13px] font-bold text-[#333]">Brand <span className="font-normal text-gray-400 text-[11px]">(Optional)</span></label>
               <AdminSelect
@@ -534,13 +635,13 @@ export default function AddProductPage() {
 
           <div className="flex flex-col gap-2 mb-6">
             <label className="text-[13px] font-bold text-[#333]">Product Name</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="name"
               value={formData.name}
               onChange={handleInputChange}
-              placeholder="e.g Rose Damascena Elixir" 
-              className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40" 
+              placeholder="e.g Rose Damascena Elixir"
+              className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
             />
               {errors.name && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.name}</span>}
           </div>
@@ -548,18 +649,11 @@ export default function AddProductPage() {
           <div className="flex flex-col gap-2 mb-6">
             <label className="text-[13px] font-bold text-[#333]">Gender</label>
             <div className="flex items-center gap-3">
-              {[
-                { name: 'Women', icon: <WomenIcon/> },
-                { name: 'Men', icon: <MenIcon/> }
-              ].map(g => (
+              {[{ name: 'Women', icon: <WomenIcon /> }, { name: 'Men', icon: <MenIcon /> }].map(g => (
                 <button
                   key={g.name}
                   onClick={() => setGender(g.name)}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[14px] font-semibold transition-colors ${
-                    gender === g.name 
-                      ? 'bg-[#fff0f3] text-[#da2966]' 
-                      : 'border border-gray-200 bg-white text-gray-500 hover:border-gray-300'
-                  }`}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[14px] font-semibold transition-colors ${gender === g.name ? 'bg-[#fff0f3] text-[#da2966]' : 'border border-gray-200 bg-white text-gray-500 hover:border-gray-300'}`}
                 >
                   <span className={gender === g.name ? 'text-[#da2966]' : 'text-gray-400'}>{g.icon}</span> {g.name}
                 </button>
@@ -569,31 +663,36 @@ export default function AddProductPage() {
 
           <div className="flex flex-col gap-2 mb-6">
             <label className="text-[13px] font-bold text-[#333]">Product Type</label>
-            <ProductTypeSelector productTypes={productTypes} selected={productType} onSelect={setProductType} icon={TYPE_ICON_MAP[productType] ?? <BodyIcon />} />
+            <ProductTypeSelector
+              productTypes={productTypes}
+              selected={productType}
+              onSelect={setProductType}
+              icon={TYPE_ICON_MAP[productType] ?? <BodyIcon />}
+            />
           </div>
 
           <div className="flex flex-col gap-2 mb-6">
             <label className="text-[13px] font-bold text-[#333]">Short Description</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               name="short_description"
               value={formData.short_description}
               onChange={handleInputChange}
-              placeholder="One sentence summary ..." 
-              className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40" 
+              placeholder="One sentence summary ..."
+              className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
             />
               {errors.subtitle && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.subtitle}</span>}
           </div>
 
           <div className="flex flex-col gap-2">
             <label className="text-[13px] font-bold text-[#333]">Full Description</label>
-            <textarea 
+            <textarea
               name="full_description"
               value={formData.full_description}
               onChange={handleInputChange}
-              placeholder="Describe the fragrance notes , key ingredients, and benefits..." 
+              placeholder="Describe the fragrance notes, key ingredients, and benefits..."
               className="w-full h-32 px-4 py-3 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40 resize-none resize-y"
-            ></textarea>
+            />
               {errors.description && <span className="text-red-500 text-[12px] font-bold mt-1 block">{errors.description}</span>}
             <div className="flex justify-end pr-1"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M9 1L1 9" stroke="#888" strokeWidth="1.5" strokeLinecap="round"/><path d="M5 9H9V5" stroke="#888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
           </div>
@@ -602,171 +701,164 @@ export default function AddProductPage() {
         <Card title="Product Media" icon={<CameraIcon />}>
           <div className="flex gap-4 mb-6">
             <div className="w-[84px] flex flex-col gap-3 shrink-0">
-              {imagePreviews.slice(1, 4).map((preview, idx) => (
+              {allImagePreviews.slice(1, 4).map((preview, idx) => (
                 <div key={idx} className="w-[84px] h-[84px] rounded-[16px] overflow-hidden relative border border-gray-100 p-1 bg-white shadow-sm">
                   <div className="w-full h-full rounded-[10px] overflow-hidden">
                     <img src={preview} className="w-full h-full object-cover" alt="" />
                   </div>
-                  <button onClick={() => removeImage(idx + 1)} className="absolute top-1 right-1 w-5 h-5 bg-white text-[#da2966] rounded-full flex items-center justify-center shadow-sm">
-                     <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 2.5l5 5m0-5l-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                  <button onClick={() => removeImageAt(idx + 1)} className="absolute top-1 right-1 w-5 h-5 bg-white text-[#da2966] rounded-full flex items-center justify-center shadow-sm">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2.5 2.5l5 5m0-5l-5 5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
                   </button>
                 </div>
               ))}
-              
-              {images.length < 4 && (
+              {imageEntries.length < 4 && (
                 <button onClick={() => fileInputRef.current?.click()} className="w-[84px] h-[84px] rounded-[16px] border-2 border-dashed border-[#da2966] bg-white flex flex-col items-center justify-center gap-1 hover:bg-[#fff0f3] transition-colors">
                   <span className="text-[#da2966] font-bold text-[16px] leading-none">+</span>
                   <span className="text-[#da2966] text-[10px] font-bold">ADD</span>
                 </button>
               )}
             </div>
-            
+
             <div className="flex-1 bg-gray-50 rounded-[20px] relative overflow-hidden flex flex-col items-center justify-center border border-gray-100">
-               {imagePreviews.length > 0 ? (
-                 <>
-                   <img src={imagePreviews[0]} className="w-full h-full object-cover" alt="Cover" />
-                   <button onClick={() => removeImage(0)} className="absolute top-4 left-4 w-8 h-8 bg-white text-red-500 rounded-full flex items-center justify-center shadow-md">
-                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6m0-6l-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
-                   </button>
-                   <span className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-[#da2966] text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm tracking-wider uppercase">Cover Photo</span>
-                 </>
-               ) : (
-                 <span className="text-gray-400 text-sm font-medium">No Cover Photo</span>
-               )}
+              {allImagePreviews.length > 0 ? (
+                <>
+                  <img src={allImagePreviews[0]} className="w-full h-full object-cover" alt="Cover" />
+                  <button onClick={() => removeImageAt(0)} className="absolute top-4 left-4 w-8 h-8 bg-white text-red-500 rounded-full flex items-center justify-center shadow-md">
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6m0-6l-6 6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                  </button>
+                  <span className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm text-[#da2966] text-[10px] font-bold px-3 py-1.5 rounded-full shadow-sm tracking-wider uppercase">Cover Photo</span>
+                </>
+              ) : (
+                <span className="text-gray-400 text-sm font-medium">No Cover Photo</span>
+              )}
             </div>
           </div>
-          
-          <input 
-            type="file" 
+
+          <input
+            type="file"
             ref={fileInputRef}
             onChange={handleImageUpload}
-            className="hidden" 
-            multiple 
+            className="hidden"
+            multiple
             accept="image/jpeg, image/png"
           />
           <div onClick={() => fileInputRef.current?.click()} className="w-full min-h-[120px] rounded-2xl border-2 border-dashed border-[#da2966] bg-[#fcfcfc] flex flex-col items-center justify-center py-4 px-4 hover:bg-[#fff0f3] transition-colors cursor-pointer overflow-hidden">
             <CloudUploadIcon />
-            <p className="text-[13px] sm:text-[14px] font-bold text-[#333] mt-2 mb-1 text-center leading-snug">Glissez-déposez des photos ici</p>
-            <p className="text-[11px] font-medium text-gray-400 text-center">Maximum 4 photos autorisées</p>
-            <p className="text-[10px] text-gray-400 mt-1 text-center">JPG ou PNG · 10 Mo max</p>
+            <p className="text-[13px] sm:text-[14px] font-bold text-[#333] mt-2 mb-1 text-center leading-snug">Glissez-d´┐¢posez des photos ici</p>
+            <p className="text-[11px] font-medium text-gray-400 text-center">Maximum 4 photos autoris´┐¢es</p>
+            <p className="text-[10px] text-gray-400 mt-1 text-center">JPG ou PNG ┬À 10 Mo max</p>
           </div>
         </Card>
       </div>
 
       {/* SEC 2: Pricing */}
-      <Card 
-        title="Pricing & Variants" 
-        icon={<TagIcon />} 
+      <Card
+        title="Pricing & Variants"
+        icon={<TagIcon />}
         action={<button onClick={handleAddVariantClick} className="text-[#da2966] text-[13px] font-bold hover:underline">+ Add Size Variant</button>}
       >
-        <div className="w-full text-left overflow-x-auto no-scrollbar pb-2">
-          <div className="min-w-[900px]">
-            <div className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 text-[13px] font-bold text-[#da2966] capitalize opacity-90 items-center border-b border-gray-50 mb-3">
-              <div>Size</div>
-              <div>Unit</div>
-              <div>Base Price (DH)</div>
-              <div>Promotion (%)</div>
-              <div>Final Price</div>
-              <div>Stock</div>
-              <div>Actions</div>
-            </div>
-            
-            {/* Saved variants rows */}
-            {variants.map((v, index) => (
-              <div key={index} className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 items-center rounded-[20px] bg-[#f8f8f8] mb-2">
-                <input type="text" value={v.size}
-                  readOnly={editingVariantIndex !== index}
-                  onChange={e => { const u = [...variants]; u[index] = {...u[index], size: e.target.value}; setVariants(u); }}
-                  className={`w-full h-12 text-center rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
-                <AdminSelect
-                  variant="row"
-                  value={v.unit}
-                  disabled={editingVariantIndex !== index}
-                  onChange={e => { const u = [...variants]; u[index] = {...u[index], unit: e.target.value}; setVariants(u); }}
-                  className={editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}
-                >
-                  <option value="ml">ml</option>
-                  <option value="g">g</option>
-                </AdminSelect>
-                <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
-                  <input type="text" value={v.price}
-                    readOnly={editingVariantIndex !== index}
-                    onChange={e => { const u = [...variants]; u[index] = {...u[index], price: e.target.value}; setVariants(u); }}
-                    placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                  <div className="h-6 w-px bg-gray-200"></div>
-                  <span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
-                </div>
-                <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
-                  <input type="text" value={v.promotion}
-                    readOnly={editingVariantIndex !== index}
-                    onChange={e => { const u = [...variants]; u[index] = {...u[index], promotion: e.target.value}; setVariants(u); }}
-                    placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                  <div className="h-6 w-px bg-gray-200"></div>
-                  <span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
-                </div>
-                <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold">
-                  {(Number(v.price || 0) * (1 - Number(v.promotion || 0) / 100)).toFixed(2)} DH
-                </div>
-                <input type="text" value={v.stock}
-                  readOnly={editingVariantIndex !== index}
-                  onChange={e => { const u = [...variants]; u[index] = {...u[index], stock: e.target.value}; setVariants(u); }}
-                  className={`w-full text-center h-12 rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
-                <div className="flex items-center gap-2">
-                  {editingVariantIndex === index
-                    ? <button onClick={() => handleSaveEditVariant(index)} className="h-10 px-3 bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[12px] font-bold rounded-xl flex items-center gap-1"><CheckIcon /> Save</button>
-                    : <button onClick={() => handleEditVariant(index)} className="flex items-center justify-center text-gray-500 hover:text-[#da2966] w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><EditIcon/></button>
-                  }
-                  <button onClick={() => handleDeleteVariant(index)} className="flex items-center justify-center text-gray-500 hover:text-red-500 w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><TrashIcon/></button>
-                </div>
-              </div>
-            ))}
-
-            {/* Draft (new) row */}
-            {draftVariant !== null && (
-              <div
-                className={`grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-5 items-center rounded-[20px] transition-colors duration-300 ${entryRowHighlight ? 'bg-[#fff0f3]' : 'bg-[#ffffe9]'}`}
-                style={entryRowHighlight ? { animation: 'rowPulse 2s ease-out forwards' } : {}}
-              >
-                <input type="text" value={draftVariant.size} onChange={e => setDraftVariant({...draftVariant, size: e.target.value})} placeholder="20" className="w-full h-12 text-center rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm" />
-                <AdminSelect
-                  variant="row"
-                  value={draftVariant.unit}
-                  onChange={e => setDraftVariant({...draftVariant, unit: e.target.value})}
-                  className="bg-white border border-yellow-100/50 shadow-sm"
-                >
-                  <option value="ml">ml</option>
-                  <option value="g">g</option>
-                </AdminSelect>
-                <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
-                  <input type="text" value={draftVariant.price} onChange={e => setDraftVariant({...draftVariant, price: e.target.value})} placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                  <div className="h-6 w-px bg-gray-200"></div>
-                  <span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
-                </div>
-                <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
-                  <input type="text" value={draftVariant.promotion} onChange={e => setDraftVariant({...draftVariant, promotion: e.target.value})} placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                  <div className="h-6 w-px bg-gray-200"></div>
-                  <span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
-                </div>
-                <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold shadow-sm">
-                  {(Number(draftVariant.price || 0) * (1 - Number(draftVariant.promotion || 0) / 100)).toFixed(2)} DH
-                </div>
-                <input type="text" value={draftVariant.stock} onChange={e => setDraftVariant({...draftVariant, stock: e.target.value})} placeholder="33" className="w-full text-center h-12 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] shadow-sm focus:outline-none" />
-                <button onClick={handleValidateDraft} className="h-12 w-full max-w-[100px] bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors">
-                  <CheckIcon /> Validate
-                </button>
-              </div>
-            )}
-
-            {variants.length === 0 && draftVariant === null && (
-              <div className="py-8 text-center text-[14px] text-gray-400 font-medium">
-                No variants yet — click &ldquo;+ Add Size Variant&rdquo; to add one.
-              </div>
-            )}
+        <div className="w-full text-left">
+          <div className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 text-[13px] font-bold text-[#da2966] capitalize opacity-90 items-center border-b border-gray-50 mb-3">
+            <div>Size</div>
+            <div>Unit</div>
+            <div>Base Price (DH)</div>
+            <div>Promotion (%)</div>
+            <div>Final Price</div>
+            <div>Stock</div>
+            <div>Actions</div>
           </div>
+
+          {/* Saved variants rows */}
+          {variants.map((v, index) => (
+            <div key={index} className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 items-center rounded-[20px] bg-[#f8f8f8] mb-2">
+              <input type="text" value={v.size}
+                readOnly={editingVariantIndex !== index}
+                onChange={e => { const u = [...variants]; u[index] = { ...u[index], size: e.target.value }; setVariants(u); }}
+                className={`w-full h-12 text-center rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
+              <AdminSelect
+                variant="row"
+                value={v.unit}
+                disabled={editingVariantIndex !== index}
+                onChange={e => { const u = [...variants]; u[index] = { ...u[index], unit: e.target.value }; setVariants(u); }}
+                className={editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}
+              >
+                <option value="ml">ml</option>
+                <option value="g">g</option>
+              </AdminSelect>
+              <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
+                <input type="text" value={v.price}
+                  readOnly={editingVariantIndex !== index}
+                  onChange={e => { const u = [...variants]; u[index] = { ...u[index], price: e.target.value }; setVariants(u); }}
+                  placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                <div className="h-6 w-px bg-gray-200" /><span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
+              </div>
+              <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
+                <input type="text" value={v.promotion}
+                  readOnly={editingVariantIndex !== index}
+                  onChange={e => { const u = [...variants]; u[index] = { ...u[index], promotion: e.target.value }; setVariants(u); }}
+                  placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                <div className="h-6 w-px bg-gray-200" /><span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
+              </div>
+              <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold">
+                {(Number(v.price || 0) * (1 - Number(v.promotion || 0) / 100)).toFixed(2)} DH
+              </div>
+              <input type="text" value={v.stock}
+                readOnly={editingVariantIndex !== index}
+                onChange={e => { const u = [...variants]; u[index] = { ...u[index], stock: e.target.value }; setVariants(u); }}
+                className={`w-full text-center h-12 rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
+              <div className="flex items-center gap-2">
+                {editingVariantIndex === index
+                  ? <button onClick={() => handleSaveEditVariant(index)} className="h-10 px-3 bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[12px] font-bold rounded-xl flex items-center gap-1"><CheckIcon /> Save</button>
+                  : <button onClick={() => handleEditVariant(index)} className="flex items-center justify-center text-gray-500 hover:text-[#da2966] w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><EditIcon /></button>
+                }
+                <button onClick={() => handleDeleteVariant(index)} className="flex items-center justify-center text-gray-500 hover:text-red-500 w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><TrashIcon /></button>
+              </div>
+            </div>
+          ))}
+
+          {/* Draft (new) row */}
+          {draftVariant !== null && (
+            <div
+              className={`grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-5 items-center rounded-[20px] transition-colors duration-300 ${entryRowHighlight ? 'bg-[#fff0f3]' : 'bg-[#ffffe9]'}`}
+              style={entryRowHighlight ? { animation: 'rowPulse 2s ease-out forwards' } : {}}
+            >
+              <input type="text" value={draftVariant.size} onChange={e => setDraftVariant({ ...draftVariant, size: e.target.value })} placeholder="20" className="w-full h-12 text-center rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm" />
+              <AdminSelect
+                variant="row"
+                value={draftVariant.unit}
+                onChange={e => setDraftVariant({ ...draftVariant, unit: e.target.value })}
+                className="bg-white border border-yellow-100/50 shadow-sm"
+              >
+                <option value="ml">ml</option>
+                <option value="g">g</option>
+              </AdminSelect>
+              <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
+                <input type="text" value={draftVariant.price} onChange={e => setDraftVariant({ ...draftVariant, price: e.target.value })} placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                <div className="h-6 w-px bg-gray-200" /><span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
+              </div>
+              <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
+                <input type="text" value={draftVariant.promotion} onChange={e => setDraftVariant({ ...draftVariant, promotion: e.target.value })} placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                <div className="h-6 w-px bg-gray-200" /><span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
+              </div>
+              <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold shadow-sm">
+                {(Number(draftVariant.price || 0) * (1 - Number(draftVariant.promotion || 0) / 100)).toFixed(2)} DH
+              </div>
+              <input type="text" value={draftVariant.stock} onChange={e => setDraftVariant({ ...draftVariant, stock: e.target.value })} placeholder="33" className="w-full text-center h-12 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] shadow-sm focus:outline-none" />
+              <button onClick={handleValidateDraft} className="h-12 w-full max-w-[100px] bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors">
+                <CheckIcon /> Validate
+              </button>
+            </div>
+          )}
+
+          {variants.length === 0 && draftVariant === null && (
+            <div className="py-8 text-center text-[14px] text-gray-400 font-medium">
+              No variants yet ´┐¢ click &ldquo;+ Add Size Variant&rdquo; to add one.
+            </div>
+          )}
         </div>
       </Card>
 
-      {/* SEC 3: Stats & Ingredients */}
+      {/* SEC 3: Status & Ingredients */}
       <div className="flex flex-col lg:grid lg:grid-cols-[1fr_1.5fr] gap-4 sm:p-6">
         <Card title="Status Settings" icon={<SettingsIcon />}>
           <div className="space-y-4">
@@ -775,41 +867,27 @@ export default function AddProductPage() {
             <ToggleRow label="Make as Recommendation" active={isRecommended} onClick={() => setIsRecommended(!isRecommended)} />
           </div>
         </Card>
-        
+
         <Card title="Ingredients" icon={<LeafIcon />} action={<button onClick={() => { const emptySlot = ingredients.findIndex((ing, i) => i < 3 && !ing); if (emptySlot < 3) { setEditingIngredientSlot(emptySlot); setIsCreateIngredientModalOpen(true); } else { showToast('Maximum 3 ingredients allowed.'); } }} className="text-[#da2966] text-[13px] font-bold hover:underline">+ New Ingredient</button>}>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:p-6 mt-2 w-full">
             {[0, 1, 2].map((slot) => {
               const ing = ingredients[slot];
               return (
                 <div key={slot} className="flex flex-col items-center gap-3 group">
-                  {/* Single fixed circle — shape never changes */}
                   <div className={`relative w-full aspect-square rounded-full overflow-hidden transition-colors ${ing ? 'border-[2.5px] border-[#da2966]' : 'border-[2.5px] border-dashed border-[#da2966]'}`}>
-                    {/* +ADD layer — always underneath */}
                     <button
-                      onClick={() => !ing && openIngredientModal(slot)}
+                      onClick={() => openIngredientModal(slot)}
                       className="absolute inset-0 rounded-full bg-white flex flex-col items-center justify-center hover:bg-[#fff0f3] transition-colors"
                     >
                       <span className="text-[#da2966] font-bold text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] leading-none mb-1">+</span>
                       <span className="text-[#da2966] text-[12px] font-bold">ADD</span>
                     </button>
-                    {/* Image layer — sits on top and covers +ADD completely */}
                     {ing && (
                       <>
                         <img src={ing.thumb} alt={ing.name} className="absolute inset-0 w-full h-full object-cover" />
-                        {/* Hover edit + delete overlay */}
                         <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 flex items-center justify-center gap-2 transition-opacity z-10">
-                          <button
-                            onClick={(e) => { e.stopPropagation(); openIngredientModal(slot); }}
-                            className="w-9 h-9 rounded-full bg-white text-gray-700 flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:text-[#da2966] transition-colors"
-                          >
-                            <EditIcon />
-                          </button>
-                          <button
-                            onClick={(e) => { e.stopPropagation(); setIngredients(ingredients.filter((_, i) => i !== slot)); }}
-                            className="w-9 h-9 rounded-full bg-white text-gray-700 flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:text-red-500 transition-colors"
-                          >
-                            <TrashIcon />
-                          </button>
+                          <button onClick={(e) => { e.stopPropagation(); openIngredientModal(slot); }} className="w-9 h-9 rounded-full bg-white text-gray-700 flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:text-[#da2966] transition-colors"><EditIcon /></button>
+                          <button onClick={(e) => { e.stopPropagation(); const u = [...ingredients]; u[slot] = null; setIngredients(u); }} className="w-9 h-9 rounded-full bg-white text-gray-700 flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.1)] hover:text-red-500 transition-colors"><TrashIcon /></button>
                         </div>
                       </>
                     )}
@@ -825,91 +903,135 @@ export default function AddProductPage() {
       </div>
 
       {/* SEC 4: Reviews */}
-      <Card 
-        title="Curated Reviews" 
+      <Card
+        title="Curated Reviews"
         icon={<StarIcon />}
         action={<button onClick={() => setIsReviewFormOpen(true)} className="text-[#da2966] text-[13px] font-bold hover:underline">+ Add Manual Review</button>}
       >
-        <div className="flex items-center gap-4 sm:p-6 py-6 overflow-x-auto w-full px-4 scrollbar-hide">
-          {reviews.map((rev, idx) => (
-            <div key={idx} className="relative group shrink-0 w-[240px] flex flex-col">
-              <div className="border-[2.5px] border-[#da2966] p-4 pb-5 bg-white flex flex-col items-center relative" style={{ borderRadius: '0px 64px 0px 64px' }}>
-                <div className="relative rounded-[20px] overflow-hidden mb-4 w-full aspect-[5/4] bg-[#f3f3f3]">
-                  {rev.photoUrl ? (
-                    <img src={rev.photoUrl} alt={rev.reviewer_name} className="w-full h-full object-cover" />
-                  ) : (
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-300">
-                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.5"/><circle cx="12" cy="13" r="3" stroke="currentColor" strokeWidth="1.5"/><path d="M8 6V5a2 2 0 012-2h4a2 2 0 012 2v1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+        <div>
+          {/* Reviews row ´┐¢ up to 4 cards per page */}
+          <div className="flex items-stretch gap-4 sm:p-6 py-6 px-4 flex-wrap">
+            {currentPageReviews.map((rev, i) => {
+              const idx = reviewPage * 4 + i;
+              return (
+                <div key={rev.id ?? idx} className="relative group shrink-0 w-[240px] flex flex-col">
+                  <div className="border-[2.5px] border-[#da2966] p-4 pb-5 bg-white flex flex-col items-center relative" style={{ borderRadius: '0px 64px 0px 64px' }}>
+                    <div className="relative rounded-[20px] overflow-hidden mb-4 w-full aspect-[5/4] bg-[#f3f3f3]">
+                      {rev.photoUrl ? (
+                        <img src={rev.photoUrl} alt={rev.reviewer_name} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-gray-300">
+                          <svg width="40" height="40" viewBox="0 0 24 24" fill="none"><rect x="3" y="6" width="18" height="14" rx="2" stroke="currentColor" strokeWidth="1.5"/><circle cx="12" cy="13" r="3" stroke="currentColor" strokeWidth="1.5"/><path d="M8 6V5a2 2 0 012-2h4a2 2 0 012 2v1" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+                        </div>
+                      )}
+                      <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-10">
+                        <button onClick={() => handleDeleteReview(idx)} className="w-10 h-10 rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.1)] flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors"><TrashIcon /></button>
+                      </div>
                     </div>
-                  )}
-                  <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-10">
-                    <button onClick={() => setReviews(reviews.filter((_, i) => i !== idx))} className="w-10 h-10 rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.1)] flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors"><TrashIcon/></button> 
+                    <div className="space-y-[4px] text-center w-full flex flex-col items-center">
+                    </div>
+                  </div>
+                  <div className="mt-4 text-center px-2">
+                    <p className="text-[13px] font-bold text-[#333]">{rev.reviewer_name}</p>
+                    <div className="text-[#facc15] text-[13px] space-x-[2px] mt-1 tracking-widest flex justify-center">
+                      {'?'.repeat(rev.rating)}{'?'.repeat(5 - rev.rating)}
+                    </div>
+                    <p className="text-[10px] text-gray-400 mt-1 font-medium">{rev.date}</p>
                   </div>
                 </div>
-                <div className="space-y-[4px] text-center w-full flex flex-col items-center">
-                </div>
-              </div>
-              <div className="mt-4 text-center px-2">
-                <p className="text-[13px] font-bold text-[#333]">{rev.reviewer_name}</p>
-                <div className="text-[#facc15] text-[13px] space-x-[2px] mt-1 tracking-widest flex justify-center">
-                  {'★'.repeat(rev.rating)}{'☆'.repeat(5 - rev.rating)}
-                </div>
-                <p className="text-[10px] text-gray-400 mt-1 font-medium">{rev.date}</p>
-              </div>
-            </div>
-          ))}
+              );
+            })}
 
-          <div onClick={() => setIsReviewFormOpen(true)} className="w-[180px] h-[180px] rounded-full border-[2.5px] border-dashed border-[#da2966] bg-white flex flex-col items-center justify-center gap-2 hover:bg-[#fff0f3] transition-colors shrink-0 cursor-pointer">
-            <span className="text-[#da2966] font-bold text-[28px] leading-none mb-1">+</span>
-            <span className="text-[#da2966] text-[14px] font-bold">ADD</span>
+            {showAddOnCurrentPage && (
+              <div
+                onClick={() => setIsReviewFormOpen(true)}
+                className="w-[180px] h-[180px] self-center rounded-full border-[2.5px] border-dashed border-[#da2966] bg-white flex flex-col items-center justify-center gap-2 hover:bg-[#fff0f3] transition-colors shrink-0 cursor-pointer"
+              >
+                <span className="text-[#da2966] font-bold text-[28px] leading-none mb-1">+</span>
+                <span className="text-[#da2966] text-[14px] font-bold">ADD</span>
+              </div>
+            )}
           </div>
+
+          {/* Pagination ´┐¢ only visible when there are multiple pages */}
+          {reviewTotalPages > 1 && (
+            <div className="flex items-center justify-between px-4 pb-4 pt-2 border-t border-gray-50 mt-2">
+              <button
+                onClick={() => setReviewPage(p => Math.max(0, p - 1))}
+                disabled={reviewPage === 0}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-colors ${
+                  reviewPage === 0 ? 'text-gray-300 cursor-not-allowed' : 'text-[#da2966] hover:bg-[#fff0f3]'
+                }`}
+              >
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 4L6 8l4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                Previous
+              </button>
+
+              <div className="flex items-center gap-2">
+                {Array.from({ length: reviewTotalPages }, (_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setReviewPage(i)}
+                    className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                      i === reviewPage ? 'bg-[#da2966]' : 'bg-gray-200 hover:bg-gray-300'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={() => setReviewPage(p => Math.min(reviewTotalPages - 1, p + 1))}
+                disabled={reviewPage === reviewTotalPages - 1}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[13px] font-bold transition-colors ${
+                  reviewPage === reviewTotalPages - 1 ? 'text-gray-300 cursor-not-allowed' : 'text-[#da2966] hover:bg-[#fff0f3]'
+                }`}
+              >
+                Next
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              </button>
+            </div>
+          )}
         </div>
       </Card>
 
       {/* SEC 5: FAQ */}
       <Card title="Product FAQ" icon={<ChatIcon />}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:p-6 md:gap-10">
-          
           <div className="space-y-4">
             {faqs.map((faq, idx) => (
               <div key={idx} className="bg-[#ffffe9] rounded-[20px] border border-yellow-100 px-6 py-5 shadow-sm">
                 <div className="flex items-center justify-between">
                   <h4 className="font-bold text-[14px] text-[#333]">{faq.question}</h4>
                   <div className="flex items-center gap-3">
-                    <button onClick={() => handleEditFaq(idx)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow text-gray-500 hover:text-[#da2966]"><EditIcon/></button>
-                    <button onClick={() => setFaqs(faqs.filter((_, i) => i !== idx))} className="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow text-gray-500 hover:text-red-500"><TrashIcon/></button>
+                    <button onClick={() => handleEditFaq(idx)} className="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow text-gray-500 hover:text-[#da2966]"><EditIcon /></button>
+                    <button onClick={() => setFaqs(faqs.filter((_, i) => i !== idx))} className="w-8 h-8 flex items-center justify-center rounded-full bg-white shadow text-gray-500 hover:text-red-500"><TrashIcon /></button>
                   </div>
                 </div>
-                <p className="text-[13px] font-bold text-[#555] mt-4 leading-relaxed pr-8">
-                  {faq.answer}
-                </p>
+                <p className="text-[13px] font-bold text-[#555] mt-4 leading-relaxed pr-8">{faq.answer}</p>
               </div>
             ))}
-            
-            {faqs.length === 0 && (
-              <p className="text-[13px] text-gray-400 font-medium">No FAQs added yet.</p>
-            )}
+            {faqs.length === 0 && <p className="text-[13px] text-gray-400 font-medium">No FAQs added yet.</p>}
           </div>
 
           <div className="flex flex-col h-full">
             <div className="flex flex-col gap-2 mb-6">
               <label className="text-[13px] font-bold text-[#333]">Question</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={newFaq.question}
                 onChange={e => setNewFaq({ ...newFaq, question: e.target.value })}
-                placeholder="e.g. Is this suitable for sensitive skin?" 
-                className="w-full h-12 px-5 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40" 
+                placeholder="e.g. Is this suitable for sensitive skin?"
+                className="w-full h-12 px-5 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
               />
             </div>
             <div className="flex flex-col gap-2 flex-1 relative mb-6">
               <label className="text-[13px] font-bold text-[#333]">Answer</label>
-              <textarea 
+              <textarea
                 value={newFaq.answer}
                 onChange={e => setNewFaq({ ...newFaq, answer: e.target.value })}
-                placeholder="Provide a detailed and helpful answer..." 
+                placeholder="Provide a detailed and helpful answer..."
                 className="w-full flex-1 min-h-[140px] px-5 py-4 rounded-xl bg-[#f8f8f8] border-none text-[14px] font-medium text-[#333] placeholder:text-[#ccc] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40 resize-none"
-              ></textarea>
+              />
               <div className="absolute right-3 bottom-3 text-gray-400"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M9 1L1 9" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/><path d="M5 9H9V5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg></div>
             </div>
             <div className="flex justify-end">
@@ -918,14 +1040,13 @@ export default function AddProductPage() {
               </button>
             </div>
           </div>
-          
         </div>
       </Card>
-      
-      <div className="pb-10"></div>
 
-      {/* --- MODALS --- */}
-      
+      <div className="pb-10" />
+
+      {/* -- MODALS -- */}
+
       {/* 1. Select Ingredient Modal */}
       <IngredientSelectModal
         isOpen={isIngredientModalOpen}
