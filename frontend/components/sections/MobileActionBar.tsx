@@ -27,7 +27,7 @@ export default function MobileActionBar() {
     };
   }, []);
 
-  if (pathname?.startsWith('/admin')) {
+  if (pathname?.startsWith('/admin') || pathname?.startsWith('/gestion-bloom-secure')) {
     return null;
   }
 
