@@ -165,8 +165,8 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
     (selectedMin !== globalMin || selectedMax !== globalMax ? 1 : 0);
 
   const visibleBrands = brandSearch.trim()
-    ? brands.filter((b) => b.name.toLowerCase() !== 'my boom' && b.name.toLowerCase().includes(brandSearch.toLowerCase()) && (brandCounts[b.id] ?? 0) > 0)
-    : brands.filter((b) => b.name.toLowerCase() !== 'my boom' && (brandCounts[b.id] ?? 0) > 0);
+    ? brands.filter((b) => b.name.toLowerCase() !== 'my bloom' && b.name.toLowerCase().includes(brandSearch.toLowerCase()) && (brandCounts[b.id] ?? 0) > 0)
+    : brands.filter((b) => b.name.toLowerCase() !== 'my bloom' && (brandCounts[b.id] ?? 0) > 0);
 
   const visibleIngredients = ingredientSearch.trim()
     ? ingredients.filter((i) => i.name.toLowerCase().includes(ingredientSearch.toLowerCase()))

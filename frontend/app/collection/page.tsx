@@ -492,7 +492,7 @@ export default function CollectionPage() {
                           <input type="text" placeholder="Rechercher une marque..." value={brandSearchTerm} onChange={(e) => setBrandSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" />
                         </div>
                         <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
-                          {brands.filter(b => b.name.toLowerCase() !== 'my boom' && b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (brandCounts[b.id] ?? 0) > 0).map(brand => (
+                          {brands.filter(b => b.name.toLowerCase() !== 'my bloom' && b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (brandCounts[b.id] ?? 0) > 0).map(brand => (
                             <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
                               <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleBrand(brand.id)}>
                                 {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
