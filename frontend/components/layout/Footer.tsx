@@ -94,8 +94,8 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4">
               {[
-                { label: 'Cadeaux', href: '/collection?is_gift=true' },
-                { label: 'Parfums', href: '/collection?product_type=parfums' },
+                { label: 'Pack', href: '/collection?is_gift=true' },
+                { label: 'Parfum', href: '/collection?cat=parfum' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <Link
@@ -116,9 +116,9 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4">
               {[
-                { label: 'Corps', href: '/collection?product_type=corps' },
-                { label: 'Cheveux', href: '/collection?product_type=cheveux' },
-                { label: 'Visage', href: '/collection?product_type=visage' },
+                { label: 'Body Butter', href: '/collection?product_type=body_butter' },
+                { label: 'Hair Mist', href: '/collection?product_type=hair_mist' },
+                { label: 'Tint Visage', href: '/collection?product_type=tint_visage' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <Link
