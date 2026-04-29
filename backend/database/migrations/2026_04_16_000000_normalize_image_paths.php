@@ -95,10 +95,7 @@ return new class extends Migration
                         $column => DB::raw("CONCAT('/storage/', $column)")
                     ]);
 
-                \Illuminate\Support\Facades\Log::info("Reversed image path normalization in {$table}.{$column}");
             }
         }
-
-        \Illuminate\Support\Facades\Log::info('Image path normalization rollback completed');
     }
 };

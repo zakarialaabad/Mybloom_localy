@@ -21,13 +21,10 @@ return new class extends Migration
         // This migration doesn't actually fix the existing images
         // Instead, it documents that old paths are now served via a fallback mechanism
         // New images use the ImageService and store relative paths like "products/hash.webp"
-        
-        \Illuminate\Support\Facades\Log::info('Image path format migration - old paths documented for fallback resolution');
     }
 
     public function down(): void
     {
         // No down action needed - this is just documentation
-        \Illuminate\Support\Facades\Log::info('Image path format migration rolled back');
     }
 };

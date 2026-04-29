@@ -24,8 +24,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        // Log for audit trail
-        \Illuminate\Support\Facades\Log::info('Image path migration rolled back');
     }
 
     private function migrateImagePaths(): void
@@ -67,16 +65,9 @@ return new class extends Migration
                         ->where('id', $record->id)
                         ->update([$column => $newPath]);
 
-                    \Illuminate\Support\Facades\Log::info('Migrated image path', [
-                        'table' => $table,
-                        'old' => $oldPath,
-                        'new' => $newPath,
-                    ]);
                 }
             }
         }
-
-        \Illuminate\Support\Facades\Log::info('Image path migration completed');
     }
 
     private function convertPath(string $oldPath, string $table): string
