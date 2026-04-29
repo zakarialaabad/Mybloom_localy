@@ -50,12 +50,8 @@ return new class extends Migration
                     ->update([
                         $column => DB::raw("SUBSTRING($column, 10)") // Remove first 9 characters (/storage/)
                     ]);
-
-                \Illuminate\Support\Facades\Log::info("Normalized image paths in {$table}.{$column}");
             }
         }
-
-        \Illuminate\Support\Facades\Log::info('Image path normalization migration completed');
     }
 
     /**
