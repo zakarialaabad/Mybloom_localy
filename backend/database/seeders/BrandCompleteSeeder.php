@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class BrandCompleteSeeder extends Seeder
@@ -71,5 +72,7 @@ class BrandCompleteSeeder extends Seeder
         }
 
         $this->command->info("✅ BrandCompleteSeeder done — inserted: {$inserted}, skipped (already exist): {$skipped}");
+        Cache::forget('api.brands');
+        $this->command->info('🗑  Cache api.brands cleared.');
     }
 }

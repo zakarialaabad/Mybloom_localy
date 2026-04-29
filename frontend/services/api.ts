@@ -212,6 +212,7 @@ export interface Brand {
   name: string;
   slug: string;
   logo_url: string | null;
+  products_count?: number;
 }
 
 export interface Category {
