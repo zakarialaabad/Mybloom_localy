@@ -116,9 +116,9 @@ export default function Footer() {
             </h4>
             <ul className="space-y-4">
               {[
-                { label: 'Body Butter', href: '/collection?product_type=body_butter' },
-                { label: 'Hair Mist', href: '/collection?product_type=hair_mist' },
-                { label: 'Tint Visage', href: '/collection?product_type=tint_visage' },
+                { label: 'Beurre corporel', href: '/collection?cat=beurre-corporel' },
+                { label: 'Gommage Corporel', href: '/collection?cat=gommage-corporel' },
+                { label: 'Hygiène corporelle', href: '/collection?cat=hygiene-corporelle' },
               ].map(({ label, href }) => (
                 <li key={label}>
                   <Link
