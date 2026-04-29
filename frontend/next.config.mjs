@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: { missingSuspenseWithCSRBailout: false },
   // Output mode for production deployment
   output: 'standalone',
 

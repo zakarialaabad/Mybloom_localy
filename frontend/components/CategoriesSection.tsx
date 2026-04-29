@@ -222,6 +222,7 @@ export default function CategoriesSection() {
                             alt={ingredient.name}
                             width={120}
                             height={120}
+                            unoptimized
                             className="h-full w-full object-cover opacity-90 mix-blend-multiply group-hover/item:opacity-100 transition-opacity"
                         />
                     </div>

@@ -149,7 +149,7 @@ export default function HeroSection() {
 
     // Step 1: Fetch only the first video immediately so the hero renders fast
     // and the rest of the page (BestSellers, Categories, Reviews) is not blocked.
-    fetch('/api/hero-videos?first=1')
+    fetch('/api/v1/videos/hero?first=1')
       .then((res) => res.json())
       .then((data: HeroVideos) => {
         if (!cancelled) setVideos(data.data || data);
@@ -159,7 +159,7 @@ export default function HeroSection() {
     // Step 2: After page content is visible, fetch all remaining videos in the background.
     const timer = setTimeout(() => {
       if (cancelled) return;
-      fetch('/api/hero-videos')
+      fetch('/api/v1/videos/hero')
         .then((res) => res.json())
         .then((data: HeroVideos) => {
           if (!cancelled) setVideos(data.data || data);

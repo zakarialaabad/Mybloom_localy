@@ -443,7 +443,7 @@ export default function CheckoutPage() {
                     <div key={`${item.productId}-${item.sizeLabel}-${idx}`} className="flex gap-4 items-center">
                       <div className="relative w-20 h-20 bg-gray-100 rounded-sm shrink-0 border border-gray-200">
                         {item.imageUrl ? (
-                          <Image src={item.imageUrl && item.imageUrl.startsWith('http') ? item.imageUrl : item.imageUrl ? '/' + item.imageUrl : 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&q=80&w=200'} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
+                          <Image src={item.imageUrl.startsWith('http') ? item.imageUrl : item.imageUrl.startsWith('/') ? item.imageUrl : '/' + item.imageUrl} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
                         ) : (
                           <div className="w-full h-full bg-gray-100 rounded-sm" />
                         )}

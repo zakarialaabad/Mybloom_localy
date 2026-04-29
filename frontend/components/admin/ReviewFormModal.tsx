@@ -303,7 +303,7 @@ export default function ReviewFormModal({
                     className="text-[36px] leading-none transition-transform hover:scale-110"
                     style={{ color: star <= (hoverRating || rating) ? '#facc15' : '#d1d5db' }}
                   >
-                    ★
+                    {"\u2605"}
                   </button>
                 ))}
               </div>

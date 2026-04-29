@@ -99,7 +99,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <div key={`${item.productId}-${item.sizeLabel}-${idx}`} className={`p-4 flex gap-4 ${idx < items.length - 1 ? 'border-b border-gray-100' : ''}`}>
                   <div className="relative w-24 h-24 bg-[#f8f8f8] shrink-0 border border-gray-100/50">
                     {item.imageUrl ? (
-                      <Image src={item.imageUrl.startsWith('http') ? item.imageUrl : '/' + item.imageUrl} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
+                      <Image src={item.imageUrl.startsWith('http') ? item.imageUrl : item.imageUrl.startsWith('/') ? item.imageUrl : '/' + item.imageUrl} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
                     ) : (
                       <div className="w-full h-full bg-gray-100" />
                     )}

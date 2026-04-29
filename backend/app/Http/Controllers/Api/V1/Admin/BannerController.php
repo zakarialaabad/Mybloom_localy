@@ -47,7 +47,7 @@ class BannerController extends Controller
             'position'      => 'nullable|integer|min:1|max:4',
             'link'          => 'nullable|url|max:500',
             'is_active'     => 'nullable|boolean',
-            'image'         => 'required|image|mimes:jpg,jpeg,png,webp|max:10240',
+            'image'         => 'required|image|mimes:jpg,jpeg,png,webp,gif,bmp,svg,heic|max:20480',
         ]);
 
         $banner = $this->service->store($data, $request->file('image'));
@@ -81,7 +81,7 @@ class BannerController extends Controller
             'position'      => 'nullable|integer|min:1|max:4',
             'link'          => 'nullable|url|max:500',
             'is_active'     => 'nullable|boolean',
-            'image'         => 'nullable|image|mimes:jpg,jpeg,png,webp|max:10240',
+            'image'         => 'nullable|image|mimes:jpg,jpeg,png,webp,gif,bmp,svg,heic|max:20480',
         ]);
 
         $banner = $this->service->update($banner, $data, $request->file('image'));
