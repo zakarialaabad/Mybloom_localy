@@ -45,6 +45,8 @@ class BrandCompleteSeeder extends Seeder
             ['name' => 'Versace',                    'slug' => 'versace'],
             ['name' => 'Gucci',                      'slug' => 'gucci'],
             ['name' => 'Guerlain',                   'slug' => 'guerlain'],
+            ['name' => 'Gissah',                     'slug' => 'gissah'],
+
         ];
 
         $inserted = 0;
