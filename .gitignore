@@ -20,5 +20,5 @@ frontend/out/
 backend/.env
 frontend/.env
 frontend/.env.local
-frontend/Public/
+frontend/public/
 frontend/.next/
