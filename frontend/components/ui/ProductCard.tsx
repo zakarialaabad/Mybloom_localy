@@ -65,12 +65,14 @@ export default function ProductCard({
   const [wished, setWished] = useState(() => isInWishlist(id));
   const [isHovered, setIsHovered] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'cart' | 'favorite' }>({ show: false, message: '', type: 'cart' });
+  const [primaryError, setPrimaryError] = useState(false);
+  const [secondaryError, setSecondaryError] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
   const prefetchProductDetail = useCatalogStore((s) => s.prefetchProductDetail);
   const prefetchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const safeImageUrl = sanitizeImageUrl(imageUrl);
-  const safeSecondaryUrl = secondaryImageUrl ? sanitizeImageUrl(secondaryImageUrl) : undefined;
+  const safeImageUrl = primaryError ? FALLBACK_IMG : sanitizeImageUrl(imageUrl);
+  const safeSecondaryUrl = secondaryImageUrl && !secondaryError ? sanitizeImageUrl(secondaryImageUrl) : undefined;
   const hasSecondary = !!safeSecondaryUrl;
 
   const stars = [1, 2, 3, 4, 5];
@@ -197,10 +199,12 @@ export default function ProductCard({
               alt={name}
               fill
               unoptimized
+              sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
               className={`object-cover transition-opacity duration-500 ease-in-out will-change-opacity ${
                 hasSecondary && isHovered ? 'opacity-0' : 'opacity-100'
               }`}
               loading="lazy"
+              onError={() => setPrimaryError(true)}
             />
             {/* Secondary image — fades in on hover */}
             {hasSecondary && safeSecondaryUrl && (
@@ -209,10 +213,12 @@ export default function ProductCard({
                 alt={`${name} hover`}
                 fill
                 unoptimized
+                sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
                 className={`object-cover absolute inset-0 transition-opacity duration-500 ease-in-out will-change-opacity ${
                   isHovered ? 'opacity-100' : 'opacity-0'
                 }`}
                 loading="lazy"
+                onError={() => setSecondaryError(true)}
               />
             )}
           </div>
