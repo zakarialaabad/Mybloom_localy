@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
@@ -457,7 +457,7 @@ export default function AdminDashboardPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="flex items-center justify-between px-6 py-5">
                 <h3 className="text-[16px] font-bold text-[#1a1a1a]">Commandes récentes</h3>
-                <Link href="/admin/dashboard/orders" className="text-[13px] font-bold text-[#da2966] hover:underline">
+                <Link href="/gestion-bloom-secure/dashboard/orders" className="text-[13px] font-bold text-[#da2966] hover:underline">
                   Voir toutes les commandes
                 </Link>
               </div>

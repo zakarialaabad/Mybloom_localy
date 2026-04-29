@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -184,7 +184,7 @@ export default function CouponsPage() {
         </div>
         <div className="mt-4 md:mt-0">
           <Link
-            href="/admin/dashboard/coupons/create"
+            href="/gestion-bloom-secure/dashboard/coupons/create"
             className="flex items-center gap-2 bg-[#423835] text-white px-5 py-3 rounded-[8px] text-[13px] font-bold shadow-sm hover:bg-[#2d2624] transition-colors"
           >
             <Plus size={16} strokeWidth={3} />

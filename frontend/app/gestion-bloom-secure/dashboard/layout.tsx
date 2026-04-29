@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -92,12 +92,12 @@ export default function AdminDashboardLayout({
   };
 
   const navItems = [
-    { name: 'Tableau de bord', href: '/admin/dashboard', icon: LayoutDashboard },
-    { name: 'Produits', href: '/admin/dashboard/products', icon: Package },
-    { name: 'Commandes', href: '/admin/dashboard/orders', icon: ShoppingCart },
-    { name: 'Codes promo', href: '/admin/dashboard/coupons', icon: Ticket },
-    { name: 'Bannières', href: '/admin/dashboard/banners', icon: ImageIcon },
-    { name: 'Avis', href: '/admin/dashboard/reviews', icon: MessageSquare },
+    { name: 'Tableau de bord', href: '/gestion-bloom-secure/dashboard', icon: LayoutDashboard },
+    { name: 'Produits', href: '/gestion-bloom-secure/dashboard/products', icon: Package },
+    { name: 'Commandes', href: '/gestion-bloom-secure/dashboard/orders', icon: ShoppingCart },
+    { name: 'Codes promo', href: '/gestion-bloom-secure/dashboard/coupons', icon: Ticket },
+    { name: 'Bannières', href: '/gestion-bloom-secure/dashboard/banners', icon: ImageIcon },
+    { name: 'Avis', href: '/gestion-bloom-secure/dashboard/reviews', icon: MessageSquare },
   ];
 
   const isFullScreenPage = pathname.endsWith('/create') || pathname.includes('/edit');
@@ -145,7 +145,7 @@ export default function AdminDashboardLayout({
             <div className="space-y-7">
               {navItems.map((item) => {
                 const isActive =
-                  item.href === '/admin/dashboard'
+                  item.href === '/gestion-bloom-secure/dashboard'
                     ? pathname === item.href
                     : pathname.startsWith(item.href);
                 return (
@@ -167,7 +167,7 @@ export default function AdminDashboardLayout({
 
             <div className="space-y-7">
               <Link
-                href="/admin/dashboard/settings"
+                href="/gestion-bloom-secure/dashboard/settings"
                 onClick={() => setSidebarOpen(false)}
                 className="flex items-center gap-4 text-[15px] font-serif tracking-[0.03em] uppercase text-[#444]"
               >
@@ -226,7 +226,7 @@ export default function AdminDashboardLayout({
           <div className="space-y-[2px]">
             {navItems.map((item) => {
               const isActive =
-                item.href === '/admin/dashboard'
+                item.href === '/gestion-bloom-secure/dashboard'
                   ? pathname === item.href
                   : pathname.startsWith(item.href);
               return (
@@ -256,7 +256,7 @@ export default function AdminDashboardLayout({
             </p>
             <div className="space-y-[2px]">
               <Link
-                href="/admin/dashboard/settings"
+                href="/gestion-bloom-secure/dashboard/settings"
                 className="flex items-center gap-3 px-5 py-3 rounded-xl text-[15px] font-bold text-[#333] hover:bg-gray-50 transition-all"
               >
                 <Settings size={20} strokeWidth={2} className="text-[#555]" />
@@ -312,7 +312,7 @@ export default function AdminDashboardLayout({
         <div className="flex items-center h-full">
           {navItems.map((item) => {
             const isActive =
-              item.href === '/admin/dashboard'
+              item.href === '/gestion-bloom-secure/dashboard'
                 ? pathname === item.href
                 : pathname.startsWith(item.href);
             return (

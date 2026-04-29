@@ -173,7 +173,7 @@ export default function ProductsPage() {
   /* ── Table callbacks ────────────────────────────────────────────────────── */
 
   const handleEdit = (product: AdminProduct) => {
-    router.push(`/admin/dashboard/products/${product.id}/edit`);
+    router.push(`/gestion-bloom-secure/dashboard/products/${product.id}/edit`);
   };
 
   const handleDeleteClick = (product: AdminProduct) => {
@@ -194,7 +194,7 @@ export default function ProductsPage() {
           </p>
         </div>
         <Link 
-          href="/admin/dashboard/products/add" 
+          href="/gestion-bloom-secure/dashboard/products/add" 
           className="flex items-center gap-2 px-5 py-3 bg-[#2b2b2b] text-white text-[14px] font-semibold rounded-xl hover:bg-[#1a1a1a] transition-colors shadow-sm"
         >
           + Ajouter un produit

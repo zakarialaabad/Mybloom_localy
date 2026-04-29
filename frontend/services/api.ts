@@ -56,7 +56,7 @@ apiClient.interceptors.request.use((config) => {
 });
 
 // â”€â”€â”€ Response interceptor â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
-// 401 â†’ redirect to /admin/login. No retry. No token refresh.
+// 401 → redirect to /gestion-bloom-secure/authentification. No retry. No token refresh.
 
 apiClient.interceptors.response.use(
   (response: AxiosResponse) => response,
@@ -65,7 +65,7 @@ apiClient.interceptors.response.use(
       if (typeof window !== 'undefined') {
         localStorage.removeItem('admin_token');
         document.cookie = 'admin_logged_in=; path=/; max-age=0; SameSite=Lax';
-        window.location.href = '/admin/login';
+        window.location.href = '/gestion-bloom-secure/authentification';
       }
     }
     // Always rethrow the full AxiosError so callers can access error.response

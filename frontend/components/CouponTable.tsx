@@ -1,4 +1,4 @@
-/**
+﻿/**
  * CouponTable Component
  * Reusable table component for displaying coupons
  * Wraps DataTable with coupon-specific columns and rendering logic
@@ -208,7 +208,7 @@ export function CouponTable({
             </button>
           )}
           <Link
-            href={`/admin/dashboard/coupons/${coupon.id}/edit`}
+            href={`/gestion-bloom-secure/dashboard/coupons/${coupon.id}/edit`}
             title="Edit"
             className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 hover:bg-[#fdf2f4] hover:text-[#da2966] transition-all"
           >
@@ -341,7 +341,7 @@ export function CouponTable({
               
               <div className="flex gap-2">
                  <Link
-                    href={`/admin/dashboard/coupons/${coupon.id}/edit`}
+                    href={`/gestion-bloom-secure/dashboard/coupons/${coupon.id}/edit`}
                     title="Edit"
                     className="w-9 h-9 rounded-lg border border-gray-200 bg-white flex items-center justify-center text-gray-600 hover:bg-[#fdf2f4] hover:text-[#da2966] hover:border-[#fdf2f4] transition-all"
                     onClick={(e) => e.stopPropagation()}

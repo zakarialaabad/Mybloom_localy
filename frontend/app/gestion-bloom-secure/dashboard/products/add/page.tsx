@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -448,7 +448,7 @@ export default function AddProductPage() {
         return;
       }
       showToast('Product created successfully!');
-      setTimeout(() => router.push('/admin/dashboard/products'), 1200);
+      setTimeout(() => router.push('/gestion-bloom-secure/dashboard/products'), 1200);
     } catch (err) {
       console.error('Network Error:', err);
       showToast('A network error occurred. Please try again.');
@@ -484,7 +484,7 @@ export default function AddProductPage() {
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 pb-4">
         <div className="min-w-0">
-          <Link href="/admin/dashboard/products" className="inline-flex items-center gap-2 text-[#da2966] text-[14px] font-semibold hover:underline mb-3">
+          <Link href="/gestion-bloom-secure/dashboard/products" className="inline-flex items-center gap-2 text-[#da2966] text-[14px] font-semibold hover:underline mb-3">
             <ArrowLeft /> Back to Products
           </Link>
           <h1 className="text-[22px] sm:text-[28px] lg:text-[32px] font-bold text-[#333] leading-tight font-serif tracking-tight">Add New Product</h1>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -72,7 +72,7 @@ export default function CreateCouponPage() {
       await mutate(() => true, undefined, { revalidate: true });
 
       showToast('Coupon created successfully!');
-      setTimeout(() => router.push('/admin/dashboard/coupons'), 1200);
+      setTimeout(() => router.push('/gestion-bloom-secure/dashboard/coupons'), 1200);
     } catch (err: unknown) {
       const errorMsg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
       showToast(errorMsg || 'Failed to create coupon.');
@@ -104,7 +104,7 @@ export default function CreateCouponPage() {
         <div className="w-full px-4 sm:px-8 lg:px-12 xl:px-24 max-w-[1400px] mx-auto py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
           <div>
             <Link
-              href="/admin/dashboard/coupons"
+              href="/gestion-bloom-secure/dashboard/coupons"
               className="inline-flex items-center gap-2 text-[#da2966] font-medium text-[13px] hover:underline mb-4 transition-all"
             >
               <ArrowLeft size={16} strokeWidth={2.5} />
