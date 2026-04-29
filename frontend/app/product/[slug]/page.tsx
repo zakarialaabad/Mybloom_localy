@@ -712,10 +712,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                           ÉPUISÉ
                         </div>
                       )}
-                      <span className={`font-serif text-xl font-bold italic ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
+                      <span className={`font-serif text-base italic ${isSelected ? 'text-gray-600' : 'text-gray-400'}`}>
                         {variant.size}{variant.unit ?? 'ml'}
                       </span>
-                      <span className={`font-serif text-base italic ${isSelected ? 'text-gray-600' : 'text-gray-400'}`}>
+                      <span className={`font-serif text-xl font-bold italic ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
                         {variant.final_price} DH
                       </span>
                     </button>
@@ -758,10 +758,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                           ÉPUISÉ
                         </div>
                       )}
-                      <span className={`font-serif text-xl font-bold italic ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
+                      <span className={`font-serif text-base italic ${isSelected ? 'text-gray-600' : 'text-gray-400'}`}>
                         {size.volume_ml}{(size as any).unit ?? 'ml'}
                       </span>
-                      <span className={`font-serif text-base italic ${isSelected ? 'text-gray-600' : 'text-gray-400'}`}>
+                      <span className={`font-serif text-xl font-bold italic ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
                         {size.price} DH
                       </span>
                     </button>
