@@ -143,6 +143,7 @@ export default function EditProductPage() {
   const [reviews, setReviews] = useState<ReviewEntry[]>([]);
   const [deletedReviewIds, setDeletedReviewIds] = useState<number[]>([]);
   const [isReviewFormOpen, setIsReviewFormOpen] = useState(false);
+  const [editingReviewIdx, setEditingReviewIdx] = useState<number | null>(null);
 
   const [reviewPage, setReviewPage] = useState(0);
 
@@ -401,6 +402,31 @@ export default function EditProductPage() {
       photoFile: data.photoFile ?? undefined,
     }]);
     setReviewPage(Math.floor((reviews.length + 1) / 4));
+  };
+
+  const handleEditReview = (idx: number) => {
+    setEditingReviewIdx(idx);
+    setIsReviewFormOpen(true);
+  };
+
+  const handleSaveReview = (data: ReviewFormSaveData) => {
+    if (editingReviewIdx !== null) {
+      const existing = reviews[editingReviewIdx];
+      const photoUrl = data.photoFile ? URL.createObjectURL(data.photoFile) : existing.photoUrl;
+      const updated = [...reviews];
+      updated[editingReviewIdx] = {
+        ...existing,
+        reviewer_name: data.reviewer_name,
+        rating: data.rating,
+        date: data.date,
+        photoUrl,
+        photoFile: data.photoFile ?? existing.photoFile,
+      };
+      setReviews(updated);
+      setEditingReviewIdx(null);
+    } else {
+      handleAddReview(data);
+    }
   };
 
   const handleDeleteReview = (idx: number) => {
@@ -906,7 +932,7 @@ export default function EditProductPage() {
       <Card
         title="Curated Reviews"
         icon={<StarIcon />}
-        action={<button onClick={() => setIsReviewFormOpen(true)} className="text-[#da2966] text-[13px] font-bold hover:underline">+ Add Manual Review</button>}
+        action={<button onClick={() => { setEditingReviewIdx(null); setIsReviewFormOpen(true); }} className="text-[#da2966] text-[13px] font-bold hover:underline">+ Add Manual Review</button>}
       >
         <div>
           {/* Reviews row ´┐¢ up to 4 cards per page */}
@@ -925,6 +951,7 @@ export default function EditProductPage() {
                         </div>
                       )}
                       <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 z-10">
+                        <button onClick={() => handleEditReview(idx)} className="w-10 h-10 rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.1)] flex items-center justify-center text-gray-600 hover:text-[#da2966] transition-colors"><EditIcon /></button>
                         <button onClick={() => handleDeleteReview(idx)} className="w-10 h-10 rounded-full bg-white shadow-[0_4px_16px_rgba(0,0,0,0.1)] flex items-center justify-center text-gray-600 hover:text-red-500 transition-colors"><TrashIcon /></button>
                       </div>
                     </div>
@@ -933,8 +960,12 @@ export default function EditProductPage() {
                   </div>
                   <div className="mt-4 text-center px-2">
                     <p className="text-[13px] font-bold text-[#333]">{rev.reviewer_name}</p>
-                    <div className="text-[#facc15] text-[13px] space-x-[2px] mt-1 tracking-widest flex justify-center">
-                      {'?'.repeat(rev.rating)}{'?'.repeat(5 - rev.rating)}
+                    <div className="flex justify-center gap-0.5 mt-1">
+                      {[1,2,3,4,5].map((s) => (
+                        <svg key={s} className={`w-3 h-3 fill-current ${s <= rev.rating ? 'text-[#facc15]' : 'text-gray-200'}`} viewBox="0 0 20 20">
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
                     </div>
                     <p className="text-[10px] text-gray-400 mt-1 font-medium">{rev.date}</p>
                   </div>
@@ -944,7 +975,7 @@ export default function EditProductPage() {
 
             {showAddOnCurrentPage && (
               <div
-                onClick={() => setIsReviewFormOpen(true)}
+                onClick={() => { setEditingReviewIdx(null); setIsReviewFormOpen(true); }}
                 className="w-[180px] h-[180px] self-center rounded-full border-[2.5px] border-dashed border-[#da2966] bg-white flex flex-col items-center justify-center gap-2 hover:bg-[#fff0f3] transition-colors shrink-0 cursor-pointer"
               >
                 <span className="text-[#da2966] font-bold text-[28px] leading-none mb-1">+</span>
@@ -1064,11 +1095,17 @@ export default function EditProductPage() {
         onCreated={handleIngredientCreated}
       />
 
-      {/* 2. Add Review Modal */}
+      {/* 2. Add/Edit Review Modal */}
       <ReviewFormModal
         isOpen={isReviewFormOpen}
-        onClose={() => setIsReviewFormOpen(false)}
-        onSave={handleAddReview}
+        onClose={() => { setIsReviewFormOpen(false); setEditingReviewIdx(null); }}
+        onSave={handleSaveReview}
+        initialData={editingReviewIdx !== null ? {
+          reviewer_name: reviews[editingReviewIdx]?.reviewer_name,
+          rating: reviews[editingReviewIdx]?.rating,
+          date: reviews[editingReviewIdx]?.date,
+        } : null}
+        submitLabel={editingReviewIdx !== null ? 'Enregistrer les modifications' : undefined}
       />
 
     </div>
