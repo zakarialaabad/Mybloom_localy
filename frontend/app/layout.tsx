@@ -15,6 +15,9 @@ export const metadata: Metadata = {
     description: 'Découvrez les plus beaux parfums au Maroc. Fragrances originales pour femme et homme. Livraison gratuite à partir de 600 DH. 100% authentique.',
     locale: 'fr_MA',
   },
+  icons: {
+    icon: '/logo_tap.png',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
