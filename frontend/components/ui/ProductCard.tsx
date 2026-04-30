@@ -14,10 +14,11 @@ const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea4779426
  *  encoding from a raw src attribute. Encoding here causes double-encoding (%20 → %2520). */
 function sanitizeImageUrl(url: string | null | undefined): string {
   if (!url) return FALLBACK_IMG;
-  // Strip any embedded newline / carriage-return chars (seeder data issue)
   const cleaned = url.replace(/[\r\n\t]+/g, '').trim();
   if (!cleaned) return FALLBACK_IMG;
-  return cleaned;
+  if (cleaned.startsWith('http')) return cleaned;
+  const encoded = cleaned.split('/').map((seg) => encodeURIComponent(seg)).join('/');
+  return encoded;
 }
 
 export interface ProductCardProps {

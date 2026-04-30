@@ -362,7 +362,7 @@ class ProductJsonSeeder extends Seeder
             }
 
             // Resolve to filesystem path
-            $mainFilePath = base_path('../frontend/public') . str_replace('/', DIRECTORY_SEPARATOR, $imgMainUrl);
+            $mainFilePath = base_path('../frontend/Public') . str_replace('/', DIRECTORY_SEPARATOR, $imgMainUrl);
 
             // Process main image through ImageService
             $mainStoredPath = $imgMainUrl; // fallback to frontend path
@@ -387,7 +387,7 @@ class ProductJsonSeeder extends Seeder
             // Scan the product folder for additional images
             $folderUrl = dirname($imgMainUrl);
             $mainFile  = basename($imgMainUrl);
-            $folderFs  = base_path('../frontend/public') . str_replace('/', DIRECTORY_SEPARATOR, $folderUrl);
+            $folderFs  = base_path('../frontend/Public') . str_replace('/', DIRECTORY_SEPARATOR, $folderUrl);
 
             if (is_dir($folderFs)) {
                 $allowed = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
