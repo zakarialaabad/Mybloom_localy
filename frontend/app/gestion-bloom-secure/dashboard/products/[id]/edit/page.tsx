@@ -889,7 +889,7 @@ export default function EditProductPage() {
         <Card title="Status Settings" icon={<SettingsIcon />}>
           <div className="space-y-4">
             <ToggleRow label="Make as Best Seller" active={isBestSeller} onClick={() => setIsBestSeller(!isBestSeller)} />
-            <ToggleRow label="Make as Gift" active={isGift} border={true} onClick={() => setIsGift(!isGift)} />
+            <ToggleRow label="Make as Pack" active={isGift} border={true} onClick={() => setIsGift(!isGift)} />
             <ToggleRow label="Make as Recommendation" active={isRecommended} onClick={() => setIsRecommended(!isRecommended)} />
           </div>
         </Card>

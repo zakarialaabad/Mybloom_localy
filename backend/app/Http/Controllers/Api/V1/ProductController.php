@@ -93,7 +93,10 @@ class ProductController extends Controller
             \Log::info('ProductController::index - is_gift parameter NOT filled or not present');
         }
 
-        if ($productType = $request->query('product_type')) {
+        if ($productTypes = $request->query('product_types')) {
+            $slugs = explode(',', $productTypes);
+            $query->whereHas('productType', fn ($q) => $q->whereIn('slug', $slugs));
+        } elseif ($productType = $request->query('product_type')) {
             $query->whereHas('productType', fn ($q) => $q->where('slug', $productType));
         }
 

@@ -493,7 +493,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                     e.stopPropagation();
                     if (typeof window !== 'undefined' && product) {
                       const productUrl = `${window.location.origin}/product/${product.slug}`;
-                      const message = `${product.name}\n\n${product.description ||  product.subtitle || 'Premium fragrance'}\n\nPrice: ${product.min_price} DH\n\n${productUrl}`;
+                      const message = `${product.name}\n\n${product.description ||  product.subtitle || 'Premium fragrance'}\n\nPrix: ${product.min_price} DH\n\n${productUrl}`;
                       const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(message)}`;
                       window.open(whatsappUrl, '_blank');
                     }

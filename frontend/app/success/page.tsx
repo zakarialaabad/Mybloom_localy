@@ -14,7 +14,7 @@ export default function OrderSuccessPage() {
   const router = useRouter();
 
   const [orderData, setOrderData] = useState<{
-    order: string; total: string; name: string; phone: string; city: string;
+    order: string; total: string; name: string; phone: string; city: string; address?: string; quartier?: string;
   } | null>(null);
 
   // ── Bloque le scroll du body sur mobile ──
@@ -45,7 +45,9 @@ export default function OrderSuccessPage() {
   const total = orderData?.total ?? '';
   const name  = orderData?.name  ?? '';
   const phone = orderData?.phone ?? '';
-  const city  = orderData?.city  ?? 'MAROC';
+  const city     = orderData?.city     ?? 'MAROC';
+  const address  = orderData?.address  ?? '';
+  const quartier = orderData?.quartier ?? '';
 
   const [downloadError, setDownloadError] = useState<string | null>(null);
 
@@ -176,7 +178,7 @@ export default function OrderSuccessPage() {
                   <div className="text-right">
                     <div className="font-bold text-gray-900 text-[12px]">{name || 'Client Name'}</div>
                     <div className="text-gray-500 mt-1 text-[11px] leading-relaxed">
-                      {city ? `N° 10, Rue XYZ, Appt 3\n${city}, MAROC` : 'Casablanca, MAROC'}
+                      {[address, city].filter(Boolean).join(', ')}, MAROC
                     </div>
                   </div>
                 </div>
@@ -298,7 +300,7 @@ export default function OrderSuccessPage() {
                 <div className="text-right">
                   <div className="font-bold text-gray-900">{name || 'Client Name'}</div>
                   <div className="text-gray-500 mt-1 max-w-[180px] leading-relaxed text-[11px]">
-                    {city ? `N° 10, Rue XYZ, Appt 3\n${city}, MAROC` : 'Casablanca, MAROC'}
+                    {[address, city].filter(Boolean).join(', ')}, MAROC
                   </div>
                 </div>
               </div>

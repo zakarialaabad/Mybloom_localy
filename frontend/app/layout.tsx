@@ -4,6 +4,9 @@ import { Providers } from '@/app/Providers';
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
+  verification: {
+    google: 'dX_E6NeynjFmkG4cNcDhp_mhUls_SgXWtdSCYGDeHn8',
+  },
   title: {
     template: `%s | ${process.env.NEXT_PUBLIC_APP_NAME ?? 'MyBloom'}`,
     default: 'Parfum Maroc - Fragrances Luxe Pas Cher | MyBloom',
@@ -36,6 +39,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
 
+      {/* Google Analytics */}
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PZ2KE5VFJJ"></script>
+      <script dangerouslySetInnerHTML={{ __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PZ2KE5VFJJ');
+      `}} />
+      {/* Google Analytics */}
+      <script async src="https://www.googletagmanager.com/gtag/js?id=G-PZ2KE5VFJJ"></script>
+      <script dangerouslySetInnerHTML={{ __html: `
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-PZ2KE5VFJJ');
+      `}} />
       </head>
       <body className="pb-[64px] md:pb-0">
         <Providers>

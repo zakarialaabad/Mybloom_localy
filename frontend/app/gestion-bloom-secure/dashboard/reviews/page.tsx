@@ -460,7 +460,7 @@ export default function ReviewsPage() {
             </div>
           </div>
           <p className="text-[14px] text-gray-400 font-bold mb-2">Most Reviewed</p>
-          <h2 className="text-[16px] sm:text-[18px] sm:text-[20px] sm:text-[24px] font-serif font-bold text-[#111] tracking-tight truncate">
+          <h2 className="text-[38px] font-serif font-bold text-[#111] tracking-tighter truncate">
             {stats
               ? (stats.most_reviewed?.product_name ?? '—')
               : <span className="h-6 w-32 bg-gray-200 rounded animate-pulse inline-block" />}

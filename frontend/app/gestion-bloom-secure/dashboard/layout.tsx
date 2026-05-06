@@ -84,10 +84,10 @@ export default function AdminDashboardLayout({
     try {
       await adminAuthService.logout();
       // Hard redirect to ensure cookie is cleared before login page loads
-      window.location.href = '/admin/login';
+      window.location.href = '/';
     } catch (error) {
       console.error('Logout failed', error);
-      window.location.href = '/admin/login';
+      window.location.href = '/';
     }
   };
 

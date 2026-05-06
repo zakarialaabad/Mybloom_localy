@@ -171,6 +171,7 @@ export default function CollectionPage() {
     const ingredientIds = searchParams.getAll('ingredient');
     const featured      = searchParams.get('featured');
     const productType   = searchParams.get('product_type');
+    const productTypeSlugs = searchParams.getAll('product_type');
 
     // Reset sidebar filters when the navbar category (cat slug) changes
     const prevCat = prevCatRef.current;
@@ -234,7 +235,9 @@ export default function CollectionPage() {
     if (catSlug) params['category'] = catSlug;
 
     const productType = searchParams.get('product_type');
-    if (productType) params['product_type'] = productType;
+    const productTypeSlugs = searchParams.getAll('product_type');
+    if (productTypeSlugs.length > 1) params['product_types'] = productTypeSlugs.join(',');
+    else if (productType) params['product_type'] = productType;
 
     const isGift = searchParams.get('is_gift');
     if (isGift === 'true' || isGift === '1') {
@@ -492,8 +495,8 @@ export default function CollectionPage() {
                           <input type="text" placeholder="Rechercher une marque..." value={brandSearchTerm} onChange={(e) => setBrandSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none focus:border-gray-300" />
                         </div>
                         <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
-                          {brands.filter(b => b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (b.products_count ?? brandCounts[b.id] ?? 0) > 0).map(brand => (
-                            <label key={brand.id} className="flex items-center gap-3 cursor-pointer group">
+                          {brands.filter(b => b.name !== 'My Bloom' && b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (b.products_count ?? brandCounts[b.id] ?? 0) > 0).map(brand => (
+                            <label key={brand.id} className="flex items-center gap-3 cursor-pointer group" onClick={() => toggleBrand(brand.id)}>
                               <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleBrand(brand.id)}>
                                 {selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
                               </div>
@@ -517,7 +520,7 @@ export default function CollectionPage() {
                     {expandedSections.category && (
                       <div className="space-y-3">
                         {categories.map(cat => (
-                          <label key={cat.id} className="flex items-center gap-3 cursor-pointer group">
+                          <label key={cat.id} className="flex items-center gap-3 cursor-pointer group" onClick={() => toggleCategory(cat.id)}>
                             <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedCategories.includes(cat.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleCategory(cat.id)}>
                               {selectedCategories.includes(cat.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
                             </div>
@@ -540,7 +543,7 @@ export default function CollectionPage() {
                           const slugKey = pt.slug || slugify(pt.name || String(pt.id || ''));
                           const cnt = productTypeCounts[slugKey]?.count ?? 0;
                           return (
-                            <label key={slugKey} className="flex items-center gap-3 cursor-pointer group">
+                            <label key={slugKey} className="flex items-center gap-3 cursor-pointer group" onClick={() => handleToggleProductType(slugKey)}>
                               <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedProductType === slugKey ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => handleToggleProductType(slugKey)}>
                                 {selectedProductType === slugKey && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
                               </div>
@@ -569,7 +572,7 @@ export default function CollectionPage() {
                         </div>
                         <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
                           {ingredients.filter(i => i.name.toLowerCase().includes(ingredientSearchTerm.toLowerCase())).map(ingredient => (
-                            <label key={ingredient.id} className="flex items-center gap-3 cursor-pointer group">
+                            <label key={ingredient.id} className="flex items-center gap-3 cursor-pointer group" onClick={() => toggleIngredient(ingredient.id)}>
                               <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedIngredients.includes(ingredient.id) ? 'border-gray-800' : 'border-gray-300 group-hover:border-gray-400'}`} onClick={() => toggleIngredient(ingredient.id)}>
                                 {selectedIngredients.includes(ingredient.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}
                               </div>
@@ -761,8 +764,8 @@ export default function CollectionPage() {
                   <h3 className="font-serif text-gray-700 mb-4">Brand</h3>
                   <div className="relative mb-4"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" /><input type="text" placeholder="Search brand..." value={brandSearchTerm} onChange={(e) => setBrandSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none" /></div>
                     <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
-                    {brands.filter(b => b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (b.products_count ?? brandCounts[b.id] ?? 0) > 0).map(brand => (
-                      <label key={brand.id} className="flex items-center gap-3 cursor-pointer">
+                    {brands.filter(b => b.name !== 'My Bloom' && b.name.toLowerCase().includes(brandSearchTerm.toLowerCase()) && (b.products_count ?? brandCounts[b.id] ?? 0) > 0).map(brand => (
+                      <label key={brand.id} className="flex items-center gap-3 cursor-pointer" onClick={() => toggleBrand(brand.id)}>
                         <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedBrands.includes(brand.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleBrand(brand.id)}>{selectedBrands.includes(brand.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}</div>
                         <div className="flex items-baseline gap-2"><span className={`text-xs ${selectedBrands.includes(brand.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{brand.name}</span><span className="text-[11px] text-gray-400">({brandCounts[brand.id] ?? 0})</span></div>
                       </label>
@@ -774,7 +777,7 @@ export default function CollectionPage() {
                   <h3 className="font-serif text-gray-700 mb-4">Category</h3>
                   <div className="space-y-3">
                     {categories.map(cat => (
-                      <label key={cat.id} className="flex items-center gap-3 cursor-pointer">
+                      <label key={cat.id} className="flex items-center gap-3 cursor-pointer" onClick={() => toggleCategory(cat.id)}>
                         <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedCategories.includes(cat.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleCategory(cat.id)}>{selectedCategories.includes(cat.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}</div>
                         <span className={`text-xs ${selectedCategories.includes(cat.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{cat.name}</span>
                       </label>
@@ -789,7 +792,7 @@ export default function CollectionPage() {
                       const slugKey = pt.slug || slugify(pt.name || String(pt.id || ''));
                       const cnt = productTypeCounts[slugKey]?.count ?? 0;
                       return (
-                        <label key={slugKey} className="flex items-center gap-3 cursor-pointer">
+                        <label key={slugKey} className="flex items-center gap-3 cursor-pointer" onClick={() => handleToggleProductType(slugKey)}>
                           <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedProductType === slugKey ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => handleToggleProductType(slugKey)}>{selectedProductType === slugKey && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}</div>
                           <div className="flex items-baseline gap-2"><span className={`text-xs ${selectedProductType === slugKey ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{pt.name}</span><span className="text-[11px] text-gray-400">({cnt})</span></div>
                         </label>
@@ -803,7 +806,7 @@ export default function CollectionPage() {
                   <div className="relative mb-4"><Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3 w-3 text-gray-400" /><input type="text" placeholder="Search ingredient..." value={ingredientSearchTerm} onChange={(e) => setIngredientSearchTerm(e.target.value)} className="w-full bg-white border border-gray-200 rounded-sm py-1.5 pl-8 pr-3 text-xs focus:outline-none" /></div>
                   <div className="space-y-3 max-h-64 overflow-y-auto pr-2 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 hover:[&::-webkit-scrollbar-thumb]:bg-gray-400">
                     {ingredients.filter(i => i.name.toLowerCase().includes(ingredientSearchTerm.toLowerCase())).map(ingredient => (
-                      <label key={ingredient.id} className="flex items-center gap-3 cursor-pointer">
+                      <label key={ingredient.id} className="flex items-center gap-3 cursor-pointer" onClick={() => toggleIngredient(ingredient.id)}>
                         <div className={`w-3.5 h-3.5 rounded-full border flex items-center justify-center ${selectedIngredients.includes(ingredient.id) ? 'border-gray-800' : 'border-gray-300'}`} onClick={() => toggleIngredient(ingredient.id)}>{selectedIngredients.includes(ingredient.id) && <div className="w-1.5 h-1.5 bg-gray-800 rounded-full" />}</div>
                         <div className="flex items-baseline gap-2"><span className={`text-xs ${selectedIngredients.includes(ingredient.id) ? 'text-gray-900 font-medium' : 'text-gray-500'}`}>{ingredient.name}</span><span className="text-[11px] text-gray-400">({ingredientCounts[ingredient.id] ?? 0})</span></div>
                       </label>

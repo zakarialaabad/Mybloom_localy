@@ -148,9 +148,7 @@ export default function GeneralSettingsPage() {
       console.log('[saveProfile] Response received:', response);
       
       // Refetch profile to get the backend URL for the image
-      await fetchProfile();
       
-      // Clear the file state and removal flag — fetchProfile() has loaded the correct state
       setImageFile(null);
       setShouldDeleteImage(false);
       if (fileInputRef.current) {
@@ -163,7 +161,7 @@ export default function GeneralSettingsPage() {
       setMessage({ type: 'success', text: 'Profile updated successfully!' });
       
       // Auto-hide message after 3s
-      setTimeout(() => setMessage(null), 3000);
+      setTimeout(() => { setMessage(null); window.location.reload(); }, 1500);
     } catch (err: any) {
       console.error('[saveProfile] Error:', {
         message: err?.message,
@@ -198,7 +196,7 @@ export default function GeneralSettingsPage() {
       setPasswords({ current_password: '', new_password: '', new_password_confirmation: '' });
       setStrength({ length: false, upper: false, lower: false, number: false, special: false });
       
-      setTimeout(() => setMessage(null), 3000);
+      setTimeout(() => { setMessage(null); window.location.reload(); }, 1500);
     } catch (err: any) {
       setMessage({ type: 'error', text: err?.message || 'Failed to change password' });
     } finally {

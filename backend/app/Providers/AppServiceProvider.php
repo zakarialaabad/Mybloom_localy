@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
 
         // Order placement — relaxed in local dev, strict in production
         RateLimiter::for('place-order', function (Request $request) {
-            $limit = app()->environment('local') ? 60 : 10;
+            $limit = app()->environment('local') ? 60 : 30;
             return Limit::perMinute($limit)->by($request->ip());
         });
     }

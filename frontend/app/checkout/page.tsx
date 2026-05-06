@@ -277,6 +277,8 @@ export default function CheckoutPage() {
           name: `${firstName} ${lastName}`,
           phone: normalizedPhone,
           city,
+          address,
+          quartier,
         }));
       }
       router.push('/success');

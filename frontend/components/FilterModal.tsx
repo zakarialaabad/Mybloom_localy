@@ -34,6 +34,12 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
   const [isMounted, setIsMounted]     = useState(false);
   const [brandSearch, setBrandSearch] = useState('');
   const [ingredientSearch, setIngredientSearch] = useState('');
+  const [expandedSections, setExpandedSections] = useState({
+    brand: true, category: true, productTypes: true, ingredients: true, price: true, rating: true, promotions: true,
+  });
+  const toggleSection = (section: keyof typeof expandedSections) => {
+    setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }));
+  };
 
   // ── Shared filter state ────────────────────────────────────────────────
   const globalMin          = useFilterStore((s) => s.globalMin);
@@ -312,11 +318,12 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
 
           {/* Brand Section */}
           <div className="bg-white p-6 pt-5">
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex justify-between items-center mb-5 cursor-pointer" onClick={() => toggleSection('brand')}>
               <h3 className="font-serif text-[17px] text-gray-500">Brand</h3>
-              <ChevronUp className="w-4 h-4 text-gray-800" />
+              <ChevronUp className={`w-4 h-4 text-gray-800 transition-transform duration-300 ${expandedSections.brand ? 'rotate-0' : 'rotate-180'}`} />
             </div>
 
+            <div className={`${!expandedSections.brand ? "hidden" : ""}`}>
             <div className="bg-[#f8f8f8] p-3 flex items-center gap-3 mb-6">
               <Search className="w-[14px] h-[14px] text-gray-400 shrink-0" />
               <input
@@ -333,7 +340,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 <p className="text-[13px] text-gray-400 font-serif italic">No brands found.</p>
               )}
               {visibleBrands.map((brand) => (
-                <label key={brand.id} className="flex items-center gap-4 cursor-pointer group">
+                <label key={brand.id} className="flex items-center gap-4 cursor-pointer group" onClick={() => toggleBrand(brand.id)}>
                   <div
                     className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
                       selectedBrands.includes(brand.id)
@@ -361,18 +368,19 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 </label>
               ))}
             </div>
+            </div>
           </div>
 
           {/* Category Section */}
           <div className="bg-white p-6 pt-5">
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex justify-between items-center mb-5 cursor-pointer" onClick={() => toggleSection('category')}>
               <h3 className="font-serif text-[17px] text-gray-500">Category</h3>
-              <ChevronUp className="w-4 h-4 text-gray-800" />
+              <ChevronUp className={`w-4 h-4 text-gray-800 transition-transform duration-300 ${expandedSections.category ? 'rotate-0' : 'rotate-180'}`} />
             </div>
 
-            <div className="space-y-[18px] max-h-64 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
+            <div className={`space-y-[18px] max-h-64 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-500 ${!expandedSections.category ? "hidden" : ""}`}>
               {categories.map((cat, i) => (
-                <label key={cat.id} className="flex items-center gap-4 cursor-pointer group">
+                <label key={cat.id} className="flex items-center gap-4 cursor-pointer group" onClick={() => toggleCategory(cat.id)}>
                   <div
                     className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
                       selectedCategories.includes(cat.id)
@@ -404,12 +412,12 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
 
           {/* Product Types Section */}
           <div className="bg-white p-6 pt-5">
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex justify-between items-center mb-5 cursor-pointer" onClick={() => toggleSection('productTypes')}>
               <h3 className="font-serif text-[17px] text-gray-500">Type de produit</h3>
-              <ChevronUp className="w-4 h-4 text-gray-800" />
+              <ChevronUp className={`w-4 h-4 text-gray-800 transition-transform duration-300 ${expandedSections.productTypes ? 'rotate-0' : 'rotate-180'}`} />
             </div>
 
-            <div className="space-y-[18px] max-h-64 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-500">
+            <div className={`space-y-[18px] max-h-64 overflow-y-auto pr-3 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-400 hover:[&::-webkit-scrollbar-thumb]:bg-gray-500 ${!expandedSections.productTypes ? 'hidden' : ''}`}>
               {productTypes.length === 0 && Object.keys(productTypeCounts).length === 0 && (
                 <p className="text-[13px] text-gray-400 font-serif italic">No product types found.</p>
               )}
@@ -421,7 +429,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 const cnt = productTypeCounts[slugKey]?.count ?? 0;
                 
                 return (
-                  <label key={pt.id} className="flex items-center gap-4 cursor-pointer group">
+                  <label key={pt.id} className="flex items-center gap-4 cursor-pointer group" onClick={() => toggleProductType(slugKey)}>
                     <div
                       className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
                         selectedProductType === slugKey
@@ -454,7 +462,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               {productTypes.length === 0 && Object.entries(productTypeCounts)
                 .sort(([, a], [, b]) => a.name.localeCompare(b.name))
                 .map(([slug, v]) => (
-                  <label key={slug} className="flex items-center gap-4 cursor-pointer group">
+                  <label key={slug} className="flex items-center gap-4 cursor-pointer group" onClick={() => toggleProductType(slug)}>
                     <div
                       className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
                         selectedProductType === slug
@@ -486,11 +494,12 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
 
           {/* Ingredients Section */}
           <div className="bg-white p-6 pt-5">
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex justify-between items-center mb-5 cursor-pointer" onClick={() => toggleSection('ingredients')}>
               <h3 className="font-serif text-[17px] text-gray-500">Ingrédients</h3>
-              <ChevronUp className="w-4 h-4 text-gray-800" />
+              <ChevronUp className={`w-4 h-4 text-gray-800 transition-transform duration-300 ${expandedSections.ingredients ? 'rotate-0' : 'rotate-180'}`} />
             </div>
 
+            <div className={!expandedSections.ingredients ? 'hidden' : ''}>
             <div className="bg-[#f8f8f8] p-3 flex items-center gap-3 mb-6">
               <Search className="w-[14px] h-[14px] text-gray-400 shrink-0" />
               <input
@@ -507,7 +516,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 <p className="text-[13px] text-gray-400 font-serif italic">No ingredients found.</p>
               )}
               {visibleIngredients.map((ingredient) => (
-                <label key={ingredient.id} className="flex items-center gap-4 cursor-pointer group">
+                <label key={ingredient.id} className="flex items-center gap-4 cursor-pointer group" onClick={() => toggleIngredient(ingredient.id)}>
                   <div
                     className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
                       selectedIngredients.includes(ingredient.id)
@@ -535,32 +544,35 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
                 </label>
               ))}
             </div>
+            </div>
           </div>
 
           {/* Price Section */}
           <div className="bg-white p-6 pt-5">
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex justify-between items-center mb-6 cursor-pointer" onClick={() => toggleSection('price')}>
               <h3 className="font-serif text-[17px] text-gray-500">Price</h3>
-              <ChevronUp className="w-4 h-4 text-gray-800" />
+              <ChevronUp className={`w-4 h-4 text-gray-800 transition-transform duration-300 ${expandedSections.price ? 'rotate-0' : 'rotate-180'}`} />
             </div>
 
-            <PriceHistogram
-              globalMin={globalMin}
-              globalMax={globalMax}
-              selectedMin={selectedMin}
-              selectedMax={selectedMax}
-              onMinChange={setSelectedMin}
-              onMaxChange={setSelectedMax}
-            />
+            <div className={!expandedSections.price ? 'hidden' : ''}>
+              <PriceHistogram
+                globalMin={globalMin}
+                globalMax={globalMax}
+                selectedMin={selectedMin}
+                selectedMax={selectedMax}
+                onMinChange={setSelectedMin}
+                onMaxChange={setSelectedMax}
+              />
+            </div>
           </div>
 
           {/* Rating Section */}
           <div className="bg-white p-6 pt-5">
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex justify-between items-center mb-5 cursor-pointer" onClick={() => toggleSection('rating')}>
               <h3 className="font-serif text-[17px] text-gray-500">Rating</h3>
-              <ChevronUp className="w-4 h-4 text-gray-800" />
+              <ChevronUp className={`w-4 h-4 text-gray-800 transition-transform duration-300 ${expandedSections.rating ? 'rotate-0' : 'rotate-180'}`} />
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div className={`flex flex-wrap gap-2 ${!expandedSections.rating ? 'hidden' : ''}`}>
               {([null, 5, 4, 3] as Array<number | null>).map((r) => (
                 <button
                   key={r ?? 'all'}
@@ -579,10 +591,11 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
 
           {/* Promotions Section */}
           <div className="bg-white p-6 pt-5">
-            <div className="flex justify-between items-center mb-5">
+            <div className="flex justify-between items-center mb-5 cursor-pointer" onClick={() => toggleSection('promotions')}>
               <h3 className="font-serif text-[17px] text-gray-500">Promotions</h3>
-              <ChevronUp className="w-4 h-4 text-gray-800" />
+              <ChevronUp className={`w-4 h-4 text-gray-800 transition-transform duration-300 ${expandedSections.promotions ? 'rotate-0' : 'rotate-180'}`} />
             </div>
+            <div className={!expandedSections.promotions ? 'hidden' : ''}>
             <label className="flex items-center gap-4 cursor-pointer group mb-4">
               <div
                 className={`w-5 h-5 rounded-full border-[2px] flex items-center justify-center transition-colors shrink-0 ${
@@ -619,6 +632,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
               </div>
               <span className="text-[15px] text-[#444] font-serif">Best Sellers uniquement</span>
             </label>
+            </div>
           </div>
 
         </div>

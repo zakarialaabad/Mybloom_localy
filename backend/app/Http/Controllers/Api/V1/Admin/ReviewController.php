@@ -139,7 +139,7 @@ class ReviewController extends Controller
     {
         // Stats apply only to admin-curated reviews (order_number IS NULL)
         // Client-submitted feedback (with order_number) is tracked separately
-        $base = Review::whereNull('order_number');
+        $base = Review::query();
 
         $total   = (clone $base)->count();
         $pending = (clone $base)->where('is_approved', false)->count();
