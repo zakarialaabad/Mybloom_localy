@@ -136,32 +136,41 @@ export default function CheckoutPage() {
 
   // Format phone number with spaces as user types
   const formatPhoneDisplay = (value: string): string => {
-    // Remove all non-digits and special chars (keep only digits and +)
     const cleaned = value.replace(/[^\d+]/g, '');
-    
-    // If it starts with +212 or 0, format it nicely
     if (cleaned.startsWith('+212')) {
-      // +212 6 12 34 56 78
-      const parts = cleaned.slice(4); // Remove +212
-      return '+212 ' + parts.match(/.{1,2}/g)?.join(' ') || parts;
-    } else if (cleaned.startsWith('0')) {
-      // 06 12 34 56 78
-      return cleaned.match(/.{1,2}/g)?.join(' ') || cleaned;
+      const parts = cleaned.slice(4);
+      if (parts.length === 0) return '+212 ';
+      return '+212 ' + (parts.match(/.{1,2}/g)?.join(' ') ?? parts);
     } else if (cleaned.startsWith('212')) {
-      // Auto-convert 212 to +212
       const parts = cleaned.slice(3);
-      return '+212 ' + parts.match(/.{1,2}/g)?.join(' ') || parts;
+      if (parts.length === 0) return '+212 ';
+      return '+212 ' + (parts.match(/.{1,2}/g)?.join(' ') ?? parts);
+    } else if (cleaned.startsWith('0')) {
+      return cleaned.match(/.{1,2}/g)?.join(' ') ?? cleaned;
     } else {
-      // Treat as local number starting with 6, 5, or 7
-      return cleaned.match(/.{1,2}/g)?.join(' ') || cleaned;
+      return cleaned.match(/.{1,2}/g)?.join(' ') ?? cleaned;
     }
   };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const formatted = formatPhoneDisplay(e.target.value);
+    const newValue = e.target.value;
+    const raw = newValue.replace(/[^\d+]/g, '');
+    const digitsOnly = raw.replace(/[^\d]/g, '');
+    const maxDigits = raw.startsWith('+212') || raw.startsWith('212') ? 13 : 10;
+    if (digitsOnly.length > maxDigits) return;
+    // If user deleted back to just '+212' or '+212 ' or less, clear completely
+    if (raw === '+212' || raw === '+21' || raw === '+2' || raw === '+') {
+      setPhone('');
+      return;
+    }
+    if (newValue === '') {
+      setPhone('');
+      return;
+    }
+    const formatted = formatPhoneDisplay(newValue);
+
     setPhone(formatted);
   }
-
   // Normalize Moroccan phone numbers
   const normalizePhone = (value: string): string => {
     // Remove all spaces and hyphens
@@ -217,58 +226,6 @@ export default function CheckoutPage() {
       const result = await orderService.place(payload);
       clearCart();
       
-      // Télécharger automatiquement le PDF de la commande
-      try {
-        const pdfUrl = `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${result.order_number}/download?phone=${encodeURIComponent(normalizedPhone)}`;
-        try {
-          const response = await fetch(pdfUrl);
-          if (response.ok) {
-            const contentType = response.headers.get('Content-Type') || '';
-            if (contentType.includes('application/pdf')) {
-              const blob = await response.blob();
-              const url = window.URL.createObjectURL(blob);
-              const link = document.createElement('a');
-              link.href = url;
-              link.download = `invoice-${result.order_number}.pdf`;
-              document.body.appendChild(link);
-              link.click();
-              document.body.removeChild(link);
-              window.URL.revokeObjectURL(url);
-            } else {
-              const text = await response.text();
-              try { console.error('Invoice endpoint returned non-pdf content:', JSON.parse(text)); } catch { console.error('Invoice endpoint returned non-pdf content:', text); }
-              // Fallback to let browser handle it
-              const fallback = document.createElement('a');
-              fallback.href = pdfUrl;
-              fallback.target = '_blank';
-              fallback.rel = 'noopener noreferrer';
-              document.body.appendChild(fallback);
-              fallback.click();
-              document.body.removeChild(fallback);
-            }
-          } else {
-            try {
-              const err = await response.json();
-              console.error('Invoice download failed:', response.status, err);
-            } catch (e) {
-              console.error('Invoice download failed with status', response.status);
-            }
-            const fallback = document.createElement('a');
-            fallback.href = pdfUrl;
-            fallback.target = '_blank';
-            fallback.rel = 'noopener noreferrer';
-            document.body.appendChild(fallback);
-            fallback.click();
-            document.body.removeChild(fallback);
-          }
-        } catch (e) {
-          console.error('Erreur lors du téléchargement du PDF:', e);
-          try { window.open(pdfUrl, '_blank', 'noopener'); } catch {}
-        }
-      } catch (pdfError) {
-        console.error('Erreur inattendue lors du téléchargement du PDF:', pdfError);
-      }
-      
       // Store order details in sessionStorage to avoid PII in URL params
       if (typeof window !== 'undefined') {
         sessionStorage.setItem('order_success', JSON.stringify({
@@ -307,10 +264,10 @@ export default function CheckoutPage() {
           </div>
 
           <form onSubmit={handleSubmit}>
-            <div className="flex flex-col-reverse lg:flex-row gap-8 lg:gap-12">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
 
               {/* ── Left: Shipping Form ─────────────────────────────── */}
-              <div className="flex-1 lg:w-1/2">
+              <div className="flex-1 lg:w-1/2 order-3 lg:order-1">
                 <h1 className="text-2xl font-serif font-bold text-gray-800 mb-8">Adresse de livraison</h1>
 
                 <div className="space-y-6">
@@ -335,37 +292,24 @@ export default function CheckoutPage() {
                         : 'border-gray-200'
                     }`}>
                       <span className="bg-[#FAFAFA] border-r border-gray-200 px-4 py-3 font-serif text-gray-700 text-sm">MAR</span>
-                      <input required value={phone} onChange={handlePhoneChange} onBlur={() => setPhoneTouched(true)} type="tel" placeholder="06 12 34 56 78" className="flex-1 px-4 py-3 focus:outline-none font-serif text-gray-600 bg-[#FAFAFA]" />
+                      <input required value={phone} onChange={handlePhoneChange} onBlur={() => setPhoneTouched(true)} type="tel" placeholder="06 12 34 56 78" maxLength={17} className="flex-1 px-4 py-3 focus:outline-none font-serif text-gray-600 bg-[#FAFAFA]" />
                     </div>
                     {phoneTouched && phone && !isValidPhone(phone) && (
                       <p className="mt-1 text-xs text-red-600 font-serif">Numéro invalide. Entrez 06XXXXXXXX ou +212612345678</p>
                     )}
                   </div>
-
-                  {/* City / Quartier / Zip */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Ville *</label>
                       <input required value={city} onChange={(e) => setCity(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600 bg-[#FAFAFA]" />
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Quartier *</label>
-                      <input required value={quartier} onChange={(e) => setQuartier(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600 bg-[#FAFAFA]" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Code postal</label>
-                      <input value={zip} onChange={(e) => setZip(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600 bg-[#FAFAFA]" />
+                      <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Adresse *</label>
+                      <input required value={address} onChange={(e) => setAddress(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600 bg-[#FAFAFA]" />
                     </div>
                   </div>
-
-                  {/* Address */}
-                  <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-2 font-serif">Adresse *</label>
-                    <input required value={address} onChange={(e) => setAddress(e.target.value)} type="text" className="w-full border border-gray-200 rounded-sm px-4 py-3 focus:outline-none focus:border-[#b89b72] font-serif text-gray-600 bg-[#FAFAFA]" />
-                  </div>
-
-                  {/* Shipping Methods */}
-                  <div className="pt-6">
+                  {/* Shipping Methods - hidden on mobile (shown separately) */}
+                  <div className="pt-6 hidden lg:block">
                     <h2 className="text-xl font-serif font-bold text-gray-800 mb-6">Mode d&apos;expédition</h2>
                     {shippingMethods.length === 0 ? (
                       <p className="font-serif italic text-gray-400 text-sm">Chargement…</p>
@@ -433,8 +377,63 @@ export default function CheckoutPage() {
                 {submitError && <p className="mt-6 text-sm text-red-600 font-serif">{submitError}</p>}
               </div>
 
+              {/* ── Mobile Shipping Methods (order-2, hidden on desktop) ── */}
+              <div className="order-2 lg:hidden">
+                <div className="pt-2">
+                  <h2 className="text-xl font-serif font-bold text-gray-800 mb-6">Mode d&apos;expédition</h2>
+                  {shippingMethods.length === 0 ? (
+                    <p className="font-serif italic text-gray-400 text-sm">Chargement…</p>
+                  ) : (
+                    <>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {shippingMethods.map((method) => {
+                          const methodIsFree = method.free_over !== null && subtotal >= method.free_over;
+                          const displayPrice = methodIsFree ? 0 : method.price;
+                          const isActive     = selectedMethodId === method.id;
+                          const isDisabled   = isFreeShipping;
+                          return (
+                            <label
+                              key={method.id}
+                              className={`border rounded-sm p-4 transition-colors flex flex-col ${
+                                isDisabled
+                                  ? 'opacity-50 cursor-not-allowed bg-gray-50 border-gray-200'
+                                  : isActive
+                                    ? 'border-2 border-[#b89b72] bg-[#fdfbf9] cursor-pointer'
+                                    : 'border-gray-200 hover:border-[#b89b72] cursor-pointer'
+                              }`}
+                              onClick={(e) => {
+                                if (isDisabled) {
+                                  e.preventDefault();
+                                  setShippingAlert('🎉 Félicitations ! Votre commande bénéficie de la livraison gratuite car elle dépasse 600 DH.');
+                                }
+                              }}
+                            >
+                              <input type="radio" name="shipping-mobile" className="sr-only" checked={isActive} onChange={() => !isDisabled && setSelectedMethodId(method.id)} disabled={isDisabled} />
+                              <div className="flex justify-between items-start mb-1">
+                                <div className="flex items-center gap-2">
+                                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${isActive ? 'border-gray-800' : 'border-gray-400'}`}>
+                                    {isActive && <div className="w-2 h-2 rounded-full bg-gray-800" />}
+                                  </div>
+                                  <span className="font-serif font-bold text-gray-800 text-sm">{method.name}</span>
+                                </div>
+                                <span className="font-serif font-bold text-gray-900 text-sm">{displayPrice} Dh</span>
+                              </div>
+                              <span className="text-xs text-gray-500 font-serif ml-6">{method.description}</span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                      {isFreeShipping && (
+                        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-sm">
+                          <p className="text-sm font-serif text-green-800">✓ Vous bénéficiez de la livraison gratuite pour toute commande à partir de {FREE_SHIPPING_THRESHOLD} DH</p>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
               {/* ── Right: Order Summary ─────────────────────────────── */}
-              <div className="lg:w-1/2 bg-[#fcfcfc] p-4 md:p-8 border border-gray-100 rounded-sm h-fit">
+              <div className="lg:w-1/2 bg-[#fcfcfc] p-4 md:p-8 border border-gray-100 rounded-sm h-fit order-1 lg:order-2">
                 <h2 className="text-lg font-serif font-bold text-gray-800 mb-6 md:mb-8">Your Cart</h2>
 
                 {/* Items */}

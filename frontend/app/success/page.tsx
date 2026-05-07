@@ -6,7 +6,7 @@ import { Headphones, ArrowLeft, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
@@ -92,8 +92,11 @@ export default function OrderSuccessPage() {
     return false;
   };
 
+  const downloadedRef = useRef(false);
   useEffect(() => {
     if (!order || !phone) return;
+    if (downloadedRef.current) return;
+    downloadedRef.current = true;
     const timer = setTimeout(() => { void attemptDownload(); }, 1500);
     return () => clearTimeout(timer);
   }, [order, phone]);
