@@ -18,6 +18,7 @@ export default function CheckoutPage() {
   const items         = useCartStore((s) => s.items);
   const subtotal      = useCartStore((s) => s.subtotal());
   const clearCart     = useCartStore((s) => s.clearCart);
+  const updateQty     = useCartStore((s) => s.updateQty);
   const appliedCoupon = useCartStore((s) => s.appliedCoupon);
   const clearCoupon   = useCartStore((s) => s.clearCoupon);
 
@@ -441,21 +442,32 @@ export default function CheckoutPage() {
                   {items.length === 0 ? (
                     <p className="font-serif italic text-gray-400 text-sm text-center py-4">Your cart is empty.</p>
                   ) : items.map((item, idx) => (
-                    <div key={`${item.productId}-${item.sizeLabel}-${idx}`} className="flex gap-4 items-center">
+                    <div key={`${item.productId}-${item.sizeLabel}-${idx}`} className="flex gap-4">
                       <div className="relative w-20 h-20 bg-gray-100 rounded-sm shrink-0 border border-gray-200">
                         {item.imageUrl ? (
                           <Image src={item.imageUrl.startsWith('http') ? item.imageUrl : item.imageUrl.startsWith('/') ? item.imageUrl : '/' + item.imageUrl} alt={item.productName} fill className="object-cover mix-blend-multiply p-2" />
                         ) : (
                           <div className="w-full h-full bg-gray-100 rounded-sm" />
                         )}
-                        <span className="absolute -top-2 -right-2 w-5 h-5 bg-gray-600 text-white text-[10px] flex items-center justify-center rounded-full font-serif">{item.quantity}</span>
                       </div>
-                      <div className="flex-1">
-                        <h4 className="font-serif font-bold text-gray-900 text-sm">{item.productName}</h4>
-                        {item.sizeLabel && <p className="font-serif italic text-xs text-gray-400 mt-0.5">{item.sizeLabel}</p>}
-                        {item.productType && <p className="font-serif italic text-xs text-gray-400 mt-0.5">{item.productType}</p>}
+                      <div className="flex-1 flex flex-col justify-between">
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h4 className="font-serif font-bold text-gray-900 text-sm">{item.productName}</h4>
+                            {item.sizeLabel && <p className="font-serif italic text-xs text-gray-400 mt-0.5">Size {item.sizeLabel}</p>}
+                            {item.productType && <p className="font-serif italic text-xs text-gray-400 mt-0.5">{item.productType}</p>}
+                          </div>
+                          <div className="font-serif font-bold italic text-gray-900 text-base">{item.unitPrice * item.quantity} DH</div>
+                        </div>
+                        <div className="flex items-center gap-3 mt-3">
+                          <span className="text-[11px] text-gray-500 font-serif">Quantity</span>
+                          <div className="flex items-center border border-gray-200 rounded-full px-2 py-0.5 bg-white space-x-3">
+                            <button type="button" onClick={() => updateQty(item.productId, item.sizeLabel, item.quantity - 1)} className="w-4 h-4 flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors">-</button>
+                            <span className="text-xs font-serif min-w-[12px] text-center font-medium">{item.quantity}</span>
+                            <button type="button" onClick={() => updateQty(item.productId, item.sizeLabel, item.quantity + 1)} className="w-4 h-4 flex items-center justify-center text-gray-500 hover:text-gray-900 transition-colors">+</button>
+                          </div>
+                        </div>
                       </div>
-                      <div className="font-serif font-bold italic text-gray-900 text-base">{item.unitPrice * item.quantity} DH</div>
                     </div>
                   ))}
                 </div>

@@ -52,7 +52,7 @@ class OrderService
                 // Priority: Check variant stock first → fall back to product stock
                 $availableStock = $product->stock; // Default to product-level stock
                 $sizeLabel      = null;
-                $unitPrice      = (float) $product->price;
+                $unitPrice      = (float) ($product->sale_price ?? $product->price);
                 $variant        = null;
 
                 if ($sizeId > 0) {
@@ -72,7 +72,7 @@ class OrderService
                         if ($size && $size->product_id === $product->id) {
                             $availableStock = (int) ($size->stock ?? 0);  // ✅ FIX: stock (not stock_quantity)
                             $sizeLabel      = $size->label;  // ✅ FIX: label (not volume_ml)
-                            $unitPrice      = (float) ($product->price + ($size->price_modifier ?? 0));  // ✅ FIX: calculate from product price + modifier
+                            $unitPrice      = (float) (($product->sale_price ?? $product->price) + ($size->price_modifier ?? 0));  // ✅ FIX: calculate from product price + modifier
                         } else {
                             throw new \InvalidArgumentException("Size {$sizeId} not found for product {$product->id}.");
                         }

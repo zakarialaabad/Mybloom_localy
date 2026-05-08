@@ -23,9 +23,9 @@ class GmailService
     public function __construct()
     {
         $this->http          = new Client(['timeout' => 30]);
-        $this->clientId      = env('GOOGLE_CLIENT_ID', '');
-        $this->clientSecret  = env('GOOGLE_CLIENT_SECRET', '');
-        $this->refreshToken  = env('GOOGLE_REFRESH_TOKEN', '');
+        $this->clientId      = config('services.google.client_id', env('GOOGLE_CLIENT_ID', ''));
+        $this->clientSecret  = config('services.google.client_secret', env('GOOGLE_CLIENT_SECRET', ''));
+        $this->refreshToken  = config('services.google.refresh_token', env('GOOGLE_REFRESH_TOKEN', ''));
         $this->fromAddress   = env('MAIL_FROM_ADDRESS', 'zakarialaalbad200@gmail.com');
         $this->fromName      = env('MAIL_FROM_NAME', 'Parfum Store');
     }
