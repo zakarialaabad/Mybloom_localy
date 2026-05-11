@@ -64,7 +64,13 @@ export default function IngredientModal({ isOpen, onClose, onSaved, editing }: I
       onSaved();
       onClose();
     } catch (err: any) {
-      setError(err.response?.data?.message ?? err.message ?? 'Une erreur est survenue.');
+      const errors = err.response?.data?.errors;
+      if (errors) {
+        const first = Object.values(errors as Record<string, string[]>)[0]?.[0];
+        setError(first ?? 'Le formulaire contient des erreurs.');
+      } else {
+        setError(err.response?.data?.message ?? err.message ?? 'Une erreur est survenue.');
+      }
     } finally {
       setIsSaving(false);
     }
