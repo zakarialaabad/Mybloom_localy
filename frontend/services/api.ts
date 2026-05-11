@@ -649,7 +649,7 @@ export const adminBrandService = {
 
 export const adminIngredientService = {
   list: async (): Promise<AdminIngredient[]> => {
-    const { data } = await apiClient.get<{ data: AdminIngredient[] }>('/v1/admin/ingredients');
+    const { data } = await apiClient.get<{ data: AdminIngredient[] }>('/v1/ingredients');
     return data.data;
   },
   get: async (id: number): Promise<AdminIngredient> => {
