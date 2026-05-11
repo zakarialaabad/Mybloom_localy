@@ -241,15 +241,15 @@ export default function AdminDashboardLayout({
       {/* ─── Desktop Sidebar ────────────────────────────────────────────────────── */}
       <aside className="hidden lg:flex left-0 top-0 bottom-0 w-[280px] bg-white z-40 fixed flex-col border-r border-gray-100">
         {/* Logo Area */}
-        <div className="pt-10 pb-8 px-8 shrink-0">
-          <Image src="/logo.png" alt="MyBloom" width={130} height={38} className="object-contain h-[34px] w-auto" />
-          <p className="text-[13px] text-[#da2966] font-bold mt-2 tracking-wide">
+        <div className="pt-6 pb-4 px-6 shrink-0">
+          <Image src="/logo.png" alt="MyBloom" width={110} height={32} className="object-contain h-[28px] w-auto" />
+          <p className="text-[12px] text-[#da2966] font-bold mt-1.5 tracking-wide">
             Admin Panel
           </p>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-5">
+        <nav className="flex-1 overflow-y-auto px-4">
           <div className="space-y-[2px]">
             {navItems.map((item) => {
               const isActive =
@@ -260,14 +260,14 @@ export default function AdminDashboardLayout({
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-3 px-5 py-3 rounded-xl text-[15px] font-bold transition-all duration-200 ${
+                  className={`flex items-center gap-3 px-4 py-2 rounded-xl text-[14px] font-bold transition-all duration-200 ${
                     isActive
                       ? 'bg-[#fff0f3] text-[#da2966]'
                       : 'text-[#333] hover:bg-gray-50'
                   }`}
                 >
                   <item.icon
-                    size={20}
+                    size={18}
                     strokeWidth={2}
                     className={isActive ? 'text-[#da2966]' : 'text-[#555]'}
                   />
@@ -278,8 +278,8 @@ export default function AdminDashboardLayout({
           </div>
 
           {/* Catalogue Section */}
-          <div className="mt-8">
-            <p className="text-[11px] font-extrabold text-[#da2966] uppercase tracking-[0.15em] px-5 mb-3">
+          <div className="mt-5">
+            <p className="text-[11px] font-extrabold text-[#da2966] uppercase tracking-[0.15em] px-4 mb-2">
               Catalogue
             </p>
             <div className="space-y-[2px]">
@@ -289,11 +289,11 @@ export default function AdminDashboardLayout({
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center gap-3 px-5 py-3 rounded-xl text-[15px] font-bold transition-all duration-200 ${
+                    className={`flex items-center gap-3 px-4 py-2 rounded-xl text-[14px] font-bold transition-all duration-200 ${
                       isActive ? 'bg-[#fff0f3] text-[#da2966]' : 'text-[#333] hover:bg-gray-50'
                     }`}
                   >
-                    <item.icon size={20} strokeWidth={2} className={isActive ? 'text-[#da2966]' : 'text-[#555]'} />
+                    <item.icon size={18} strokeWidth={2} className={isActive ? 'text-[#da2966]' : 'text-[#555]'} />
                     {item.name}
                   </Link>
                 );
@@ -301,23 +301,23 @@ export default function AdminDashboardLayout({
             </div>
           </div>
 
-          <div className="mt-8">
-            <p className="text-[11px] font-extrabold text-[#da2966] uppercase tracking-[0.15em] px-5 mb-3">
+          <div className="mt-5">
+            <p className="text-[11px] font-extrabold text-[#da2966] uppercase tracking-[0.15em] px-4 mb-2">
               Settings
             </p>
             <div className="space-y-[2px]">
               <Link
                 href="/gestion-bloom-secure/dashboard/settings"
-                className="flex items-center gap-3 px-5 py-3 rounded-xl text-[15px] font-bold text-[#333] hover:bg-gray-50 transition-all"
+                className="flex items-center gap-3 px-4 py-2 rounded-xl text-[14px] font-bold text-[#333] hover:bg-gray-50 transition-all"
               >
-                <Settings size={20} strokeWidth={2} className="text-[#555]" />
+                <Settings size={18} strokeWidth={2} className="text-[#555]" />
                 General
               </Link>
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-5 py-3 rounded-xl text-[15px] font-bold text-[#333] hover:bg-gray-50 transition-all text-left"
+                className="w-full flex items-center gap-3 px-4 py-2 rounded-xl text-[14px] font-bold text-[#333] hover:bg-gray-50 transition-all text-left"
               >
-                <LogOut size={20} strokeWidth={2} className="text-[#555]" />
+                <LogOut size={18} strokeWidth={2} className="text-[#555]" />
                 Logout
               </button>
             </div>
@@ -325,24 +325,24 @@ export default function AdminDashboardLayout({
         </nav>
 
         {/* User Profile Desktop */}
-        <div className="shrink-0 px-6 py-6 border-t border-gray-100">
+        <div className="shrink-0 px-5 py-4 border-t border-gray-100">
           <div className="flex items-center gap-3">
             <div className="relative shrink-0">
-              <div className="w-11 h-11 rounded-full overflow-hidden bg-gradient-to-br from-[#fde2e7] to-[#ffd1dc] flex items-center justify-center border-2 border-white shadow">
+              <div className="w-9 h-9 rounded-full overflow-hidden bg-gradient-to-br from-[#fde2e7] to-[#ffd1dc] flex items-center justify-center border-2 border-white shadow">
                 {adminProfile?.profile_image ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={adminProfile.profile_image} alt="Admin" className="w-full h-full object-cover" />
                 ) : (
-                  <User size={20} className="text-[#da2966]" />
+                  <User size={16} className="text-[#da2966]" />
                 )}
               </div>
-              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
+              <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></div>
             </div>
             <div className="flex flex-col flex-1 min-w-0">
-              <span className="text-[14px] font-bold text-[#1a1a1a] leading-tight truncate">
+              <span className="text-[13px] font-bold text-[#1a1a1a] leading-tight truncate">
                 {adminProfile?.username ?? 'Admin'}
               </span>
-              <span className="text-[12px] text-gray-400 font-medium break-words leading-snug">
+              <span className="text-[11px] text-gray-400 font-medium break-words leading-snug">
                 {formatLastLogin(adminProfile?.last_login_at)}
               </span>
             </div>

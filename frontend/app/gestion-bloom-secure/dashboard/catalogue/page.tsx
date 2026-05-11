@@ -18,9 +18,9 @@ import {
 type TabKey = 'categories' | 'brands' | 'ingredients';
 
 const TABS: { key: TabKey; label: string; labelShort: string; Icon: LucideIcon; addLabel: string; emptyMsg: string }[] = [
-  { key: 'categories', label: 'Catégories',  labelShort: 'Catég.',   Icon: Tag,   addLabel: '+ Catégorie',  emptyMsg: 'Aucune catégorie trouvée' },
-  { key: 'brands',     label: 'Marques',      labelShort: 'Marques',  Icon: Award, addLabel: '+ Marque',     emptyMsg: 'Aucune marque trouvée' },
-  { key: 'ingredients',label: 'Ingrédients',  labelShort: 'Ingréd.',  Icon: Leaf,  addLabel: '+ Ingrédient', emptyMsg: 'Aucun ingrédient trouvé' },
+  { key: 'categories', label: 'Catégories',  labelShort: 'Catég.',   Icon: Tag,   addLabel: 'Catégorie',  emptyMsg: 'Aucune catégorie trouvée' },
+  { key: 'brands',     label: 'Marques',      labelShort: 'Marques',  Icon: Award, addLabel: 'Marque',     emptyMsg: 'Aucune marque trouvée' },
+  { key: 'ingredients',label: 'Ingrédients',  labelShort: 'Ingréd.',  Icon: Leaf,  addLabel: 'Ingrédient', emptyMsg: 'Aucun ingrédient trouvé' },
 ];
 
 function RowActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
@@ -223,7 +223,7 @@ export default function CataloguePage() {
       </div>
 
       {/* Modals */}
-      <CategoryModal isOpen={showModal && activeTab === 'categories'} onClose={closeModal} onSaved={() => { closeModal(); refetchCats(); }} editing={editingCategory} categories={categories} />
+      <CategoryModal isOpen={showModal && activeTab === 'categories'} onClose={closeModal} onSaved={() => { closeModal(); refetchCats(); }} editing={editingCategory} />
       <BrandModal isOpen={showModal && activeTab === 'brands'} onClose={closeModal} onSaved={() => { closeModal(); refetchBrands(); }} editing={editingBrand} />
       <IngredientModal isOpen={showModal && activeTab === 'ingredients'} onClose={closeModal} onSaved={() => { closeModal(); refetchIng(); }} editing={editingIngredient} />
 

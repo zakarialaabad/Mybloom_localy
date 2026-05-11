@@ -10,7 +10,6 @@ interface CategoryModalProps {
   onClose: () => void;
   onSaved: () => void;
   editing?: AdminCategory | null;
-  categories: AdminCategory[];
 }
 
 function toSlug(str: string): string {
@@ -23,15 +22,8 @@ function toSlug(str: string): string {
     .replace(/\s+/g, '-');
 }
 
-export default function CategoryModal({
-  isOpen,
-  onClose,
-  onSaved,
-  editing,
-  categories,
-}: CategoryModalProps) {
+export default function CategoryModal({ isOpen, onClose, onSaved, editing }: CategoryModalProps) {
   const [nameValue, setNameValue] = useState('');
-  const [parentId, setParentId] = useState<number | ''>('');
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,7 +32,6 @@ export default function CategoryModal({
   useEffect(() => {
     if (isOpen) {
       setNameValue(editing?.name ?? '');
-      setParentId(editing?.parent_id ?? '');
       setError(null);
     }
   }, [editing, isOpen]);
@@ -57,10 +48,7 @@ export default function CategoryModal({
     setIsSaving(true);
     setError(null);
     try {
-      const payload = {
-        name: nameValue.trim(),
-        parent_id: parentId !== '' ? Number(parentId) : null,
-      };
+      const payload = { name: nameValue.trim() };
       if (editing) {
         await adminCategoryService.update(editing.id, payload);
       } else {
@@ -76,10 +64,6 @@ export default function CategoryModal({
   };
 
   if (!isOpen) return null;
-
-  const rootCategories = categories.filter(
-    (c) => c.parent_id === null && c.id !== editing?.id
-  );
 
   return createPortal(
     <div
@@ -129,24 +113,6 @@ export default function CategoryModal({
               disabled
               className="w-full h-12 px-4 rounded-xl bg-[#f3f3f3] text-[13px] font-mono text-gray-400 cursor-not-allowed select-none"
             />
-          </div>
-
-          <div>
-            <label className="text-[13px] font-semibold text-[#333] block mb-1.5">
-              Catégorie parente
-            </label>
-            <select
-              value={parentId}
-              onChange={(e) =>
-                setParentId(e.target.value !== '' ? Number(e.target.value) : '')
-              }
-              className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] text-[14px] font-medium text-[#333] focus:outline-none focus:ring-1 focus:ring-[#da2966]/40 appearance-none cursor-pointer"
-            >
-              <option value="">— Aucune (catégorie racine) —</option>
-              {rootCategories.map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
-            </select>
           </div>
         </div>
 
