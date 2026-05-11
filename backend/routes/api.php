@@ -115,7 +115,7 @@ Route::prefix('api')->group(function () {
                 Route::delete('products/{product}/images/{id}', [AdminProductController::class, 'destroyImage']);
 
                 // Product Types
-                Route::get('product-types', [AdminProductTypeController::class, 'index']);
+                Route::apiResource('product-types', AdminProductTypeController::class)->except(['show']);
 
                 // Brands
                 Route::apiResource('brands',     AdminBrandController::class);

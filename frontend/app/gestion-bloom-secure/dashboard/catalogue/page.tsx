@@ -1,26 +1,29 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, Plus, Pencil, Trash2, Tag, Award, Leaf, type LucideIcon } from 'lucide-react';
+import { Search, Plus, Pencil, Trash2, Tag, Award, Leaf, Boxes, type LucideIcon } from 'lucide-react';
 import DataTable, { Column } from '@/components/DataTable';
 import DeleteConfirmModal from '@/components/admin/DeleteConfirmModal';
 import CategoryModal from '@/components/admin/catalogue/CategoryModal';
 import BrandModal from '@/components/admin/catalogue/BrandModal';
 import IngredientModal from '@/components/admin/catalogue/IngredientModal';
+import ProductTypeModal from '@/components/admin/catalogue/ProductTypeModal';
 import { useCategoryList } from '@/hooks/useCategoryList';
 import { useBrandList } from '@/hooks/useBrandList';
 import { useIngredientList } from '@/hooks/useIngredientList';
+import { useProductTypeList } from '@/hooks/useProductTypeList';
 import {
-  AdminCategory, AdminBrand, AdminIngredient,
-  adminCategoryService, adminBrandService, adminIngredientService,
+  AdminCategory, AdminBrand, AdminIngredient, AdminProductType,
+  adminCategoryService, adminBrandService, adminIngredientService, adminProductTypeService,
 } from '@/services/api';
 
-type TabKey = 'categories' | 'brands' | 'ingredients';
+type TabKey = 'categories' | 'brands' | 'ingredients' | 'product_types';
 
 const TABS: { key: TabKey; label: string; labelShort: string; Icon: LucideIcon; addLabel: string; emptyMsg: string }[] = [
-  { key: 'categories', label: 'Catégories',  labelShort: 'Catég.',   Icon: Tag,   addLabel: 'Catégorie',  emptyMsg: 'Aucune catégorie trouvée' },
-  { key: 'brands',     label: 'Marques',      labelShort: 'Marques',  Icon: Award, addLabel: 'Marque',     emptyMsg: 'Aucune marque trouvée' },
-  { key: 'ingredients',label: 'Ingrédients',  labelShort: 'Ingréd.',  Icon: Leaf,  addLabel: 'Ingrédient', emptyMsg: 'Aucun ingrédient trouvé' },
+  { key: 'categories',    label: 'Catégories',      labelShort: 'Catég.',   Icon: Tag,   addLabel: 'Catégorie',       emptyMsg: 'Aucune catégorie trouvée' },
+  { key: 'brands',        label: 'Marques',          labelShort: 'Marques',  Icon: Award, addLabel: 'Marque',          emptyMsg: 'Aucune marque trouvée' },
+  { key: 'ingredients',   label: 'Ingrédients',      labelShort: 'Ingréd.',  Icon: Leaf,  addLabel: 'Ingrédient',      emptyMsg: 'Aucun ingrédient trouvé' },
+  { key: 'product_types', label: 'Types de produit', labelShort: 'Types',    Icon: Boxes, addLabel: 'Type de produit', emptyMsg: 'Aucun type de produit trouvé' },
 ];
 
 function RowActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
@@ -45,37 +48,47 @@ export default function CataloguePage() {
   const [editingCategory, setEditingCategory] = useState<AdminCategory | null>(null);
   const [editingBrand, setEditingBrand] = useState<AdminBrand | null>(null);
   const [editingIngredient, setEditingIngredient] = useState<AdminIngredient | null>(null);
+  const [editingProductType, setEditingProductType] = useState<AdminProductType | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: number; name: string; type: TabKey } | null>(null);
   const [deleting, setDeleting] = useState(false);
 
   const { categories, isLoading: loadingCats, refetch: refetchCats } = useCategoryList();
   const { brands, isLoading: loadingBrands, refetch: refetchBrands } = useBrandList();
   const { ingredients, isLoading: loadingIng, refetch: refetchIng } = useIngredientList();
+  const { productTypes, isLoading: loadingTypes, refetch: refetchTypes } = useProductTypeList();
 
-  const filteredCategories = useMemo(() => categories.filter(c => c.name.toLowerCase().includes(search.toLowerCase())), [categories, search]);
-  const filteredBrands = useMemo(() => brands.filter(b => b.name.toLowerCase().includes(search.toLowerCase())), [brands, search]);
+  const filteredCategories  = useMemo(() => categories.filter(c => c.name.toLowerCase().includes(search.toLowerCase())), [categories, search]);
+  const filteredBrands      = useMemo(() => brands.filter(b => b.name.toLowerCase().includes(search.toLowerCase())), [brands, search]);
   const filteredIngredients = useMemo(() => ingredients.filter(i => i.name.toLowerCase().includes(search.toLowerCase())), [ingredients, search]);
+  const filteredTypes       = useMemo(() => productTypes.filter(t => t.name.toLowerCase().includes(search.toLowerCase())), [productTypes, search]);
 
   const handleTabChange = (tab: TabKey) => { setActiveTab(tab); setSearch(''); };
 
-  const openAdd = () => { setEditingCategory(null); setEditingBrand(null); setEditingIngredient(null); setShowModal(true); };
-  const closeModal = () => { setShowModal(false); setEditingCategory(null); setEditingBrand(null); setEditingIngredient(null); };
+  const openAdd = () => {
+    setEditingCategory(null); setEditingBrand(null);
+    setEditingIngredient(null); setEditingProductType(null);
+    setShowModal(true);
+  };
+  const closeModal = () => {
+    setShowModal(false);
+    setEditingCategory(null); setEditingBrand(null);
+    setEditingIngredient(null); setEditingProductType(null);
+  };
 
   const handleDeleteConfirm = async () => {
     if (!deleteTarget) return;
     setDeleting(true);
     try {
-      if (deleteTarget.type === 'categories') { await adminCategoryService.destroy(deleteTarget.id); refetchCats(); }
-      else if (deleteTarget.type === 'brands') { await adminBrandService.destroy(deleteTarget.id); refetchBrands(); }
-      else { await adminIngredientService.destroy(deleteTarget.id); refetchIng(); }
+      if (deleteTarget.type === 'categories')    { await adminCategoryService.destroy(deleteTarget.id); refetchCats(); }
+      else if (deleteTarget.type === 'brands')   { await adminBrandService.destroy(deleteTarget.id); refetchBrands(); }
+      else if (deleteTarget.type === 'ingredients') { await adminIngredientService.destroy(deleteTarget.id); refetchIng(); }
+      else                                       { await adminProductTypeService.destroy(deleteTarget.id); refetchTypes(); }
       setDeleteTarget(null);
     } catch { /* keep modal open */ } finally { setDeleting(false); }
   };
 
   const categoryColumns: Column<AdminCategory>[] = [
-    { key: 'name', label: 'Catégorie', render: (cat) => (
-      <span className="text-[14px] font-bold text-[#222]">{cat.name}</span>
-    )},
+    { key: 'name', label: 'Catégorie', render: (cat) => <span className="text-[14px] font-bold text-[#222]">{cat.name}</span> },
     { key: 'slug', label: 'Slug', responsive: 'hidden md:table-cell', render: (cat) => <span className="text-[13px] text-gray-400 font-mono">{cat.slug}</span> },
     { key: 'products_count', label: 'Produits', responsive: 'hidden lg:table-cell', render: (cat) => <span className="text-[13px] font-semibold text-gray-500">{cat.products_count ?? '—'}</span> },
     { key: 'actions', label: '', className: 'text-right w-[90px]', render: (cat) => (
@@ -84,9 +97,7 @@ export default function CataloguePage() {
   ];
 
   const brandColumns: Column<AdminBrand>[] = [
-    { key: 'name', label: 'Marque', render: (brand) => (
-      <span className="text-[14px] font-bold text-[#222]">{brand.name}</span>
-    )},
+    { key: 'name', label: 'Marque', render: (brand) => <span className="text-[14px] font-bold text-[#222]">{brand.name}</span> },
     { key: 'slug', label: 'Slug', responsive: 'hidden md:table-cell', render: (brand) => <span className="text-[13px] text-gray-400 font-mono">{brand.slug}</span> },
     { key: 'products_count', label: 'Produits', responsive: 'hidden lg:table-cell', render: (brand) => <span className="text-[13px] font-semibold text-gray-500">{brand.products_count ?? '—'}</span> },
     { key: 'actions', label: '', className: 'text-right w-[90px]', render: (brand) => (
@@ -95,9 +106,7 @@ export default function CataloguePage() {
   ];
 
   const ingredientColumns: Column<AdminIngredient>[] = [
-    { key: 'name', label: 'Ingrédient', render: (ing) => (
-      <span className="text-[14px] font-bold text-[#222]">{ing.name}</span>
-    )},
+    { key: 'name', label: 'Ingrédient', render: (ing) => <span className="text-[14px] font-bold text-[#222]">{ing.name}</span> },
     { key: 'slug', label: 'Slug', responsive: 'hidden md:table-cell', render: (ing) => <span className="text-[13px] text-gray-400 font-mono">{ing.slug ?? '—'}</span> },
     { key: 'products_count', label: 'Produits', responsive: 'hidden lg:table-cell', render: (ing) => <span className="text-[13px] font-semibold text-gray-500">{ing.products_count ?? '—'}</span> },
     { key: 'actions', label: '', className: 'text-right w-[90px]', render: (ing) => (
@@ -105,10 +114,19 @@ export default function CataloguePage() {
     )},
   ];
 
+  const productTypeColumns: Column<AdminProductType>[] = [
+    { key: 'name', label: 'Type', render: (t) => <span className="text-[14px] font-bold text-[#222]">{t.name}</span> },
+    { key: 'slug', label: 'Slug', responsive: 'hidden md:table-cell', render: (t) => <span className="text-[13px] text-gray-400 font-mono">{t.slug}</span> },
+    { key: 'products_count', label: 'Produits', responsive: 'hidden lg:table-cell', render: (t) => <span className="text-[13px] font-semibold text-gray-500">{t.products_count ?? '—'}</span> },
+    { key: 'actions', label: '', className: 'text-right w-[90px]', render: (t) => (
+      <RowActions onEdit={() => { setEditingProductType(t); setShowModal(true); }} onDelete={() => setDeleteTarget({ id: t.id, name: t.name, type: 'product_types' })} />
+    )},
+  ];
+
   const currentTab = TABS.find(t => t.key === activeTab)!;
-  const isLoading = activeTab === 'categories' ? loadingCats : activeTab === 'brands' ? loadingBrands : loadingIng;
-  const totalCount = activeTab === 'categories' ? categories.length : activeTab === 'brands' ? brands.length : ingredients.length;
-  const currentCount = activeTab === 'categories' ? filteredCategories.length : activeTab === 'brands' ? filteredBrands.length : filteredIngredients.length;
+  const isLoading  = activeTab === 'categories' ? loadingCats : activeTab === 'brands' ? loadingBrands : activeTab === 'ingredients' ? loadingIng : loadingTypes;
+  const totalCount = activeTab === 'categories' ? categories.length : activeTab === 'brands' ? brands.length : activeTab === 'ingredients' ? ingredients.length : productTypes.length;
+  const currentCount = activeTab === 'categories' ? filteredCategories.length : activeTab === 'brands' ? filteredBrands.length : activeTab === 'ingredients' ? filteredIngredients.length : filteredTypes.length;
 
   return (
     <div className="min-h-screen bg-[#fefbfb] pb-24 lg:pb-8">
@@ -118,7 +136,7 @@ export default function CataloguePage() {
         <div className="flex items-start justify-between gap-3">
           <div>
             <h1 className="text-[24px] md:text-[28px] font-bold text-[#1a1a1a] leading-tight">Gestion du Catalogue</h1>
-            <p className="text-[13px] text-gray-400 mt-0.5">Catégories · Marques · Ingrédients</p>
+            <p className="text-[13px] text-gray-400 mt-0.5">Catégories · Marques · Ingrédients · Types</p>
           </div>
           <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2b2b2b] text-white text-[13px] font-semibold hover:bg-[#1a1a1a] transition-colors shrink-0 shadow-sm">
             <Plus size={15} strokeWidth={2.5} />
@@ -170,7 +188,7 @@ export default function CataloguePage() {
               <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               <input
                 type="text" value={search} onChange={(e) => setSearch(e.target.value)}
-                placeholder={`Rechercher…`}
+                placeholder="Rechercher…"
                 className="w-full h-10 pl-8 pr-3 rounded-xl bg-[#f8f8f8] text-[13px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#da2966]/30"
               />
             </div>
@@ -219,13 +237,27 @@ export default function CataloguePage() {
                 </div>
               )} />
           )}
+
+          {activeTab === 'product_types' && (
+            <DataTable<AdminProductType> data={filteredTypes} columns={productTypeColumns} isLoading={loadingTypes} emptyMessage={currentTab.emptyMsg}
+              renderMobileCard={(t) => (
+                <div className="flex items-center gap-3 px-4 py-3.5">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-bold text-[#222] truncate">{t.name}</p>
+                    {t.products_count !== undefined && <p className="text-[11px] text-gray-400 font-medium mt-0.5">{t.products_count} produit{t.products_count !== 1 ? 's' : ''}</p>}
+                  </div>
+                  <RowActions onEdit={() => { setEditingProductType(t); setShowModal(true); }} onDelete={() => setDeleteTarget({ id: t.id, name: t.name, type: 'product_types' })} />
+                </div>
+              )} />
+          )}
         </div>
       </div>
 
       {/* Modals */}
-      <CategoryModal isOpen={showModal && activeTab === 'categories'} onClose={closeModal} onSaved={() => { closeModal(); refetchCats(); }} editing={editingCategory} />
-      <BrandModal isOpen={showModal && activeTab === 'brands'} onClose={closeModal} onSaved={() => { closeModal(); refetchBrands(); }} editing={editingBrand} />
-      <IngredientModal isOpen={showModal && activeTab === 'ingredients'} onClose={closeModal} onSaved={() => { closeModal(); refetchIng(); }} editing={editingIngredient} />
+      <CategoryModal    isOpen={showModal && activeTab === 'categories'}    onClose={closeModal} onSaved={() => { closeModal(); refetchCats(); }}   editing={editingCategory} />
+      <BrandModal       isOpen={showModal && activeTab === 'brands'}        onClose={closeModal} onSaved={() => { closeModal(); refetchBrands(); }} editing={editingBrand} />
+      <IngredientModal  isOpen={showModal && activeTab === 'ingredients'}   onClose={closeModal} onSaved={() => { closeModal(); refetchIng(); }}    editing={editingIngredient} />
+      <ProductTypeModal isOpen={showModal && activeTab === 'product_types'} onClose={closeModal} onSaved={() => { closeModal(); refetchTypes(); }}  editing={editingProductType} />
 
       {deleteTarget && (
         <DeleteConfirmModal

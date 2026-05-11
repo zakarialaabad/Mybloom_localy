@@ -676,10 +676,29 @@ export const adminIngredientService = {
   },
 };
 
+export interface AdminProductType {
+  id: number;
+  name: string;
+  slug: string;
+  sort_order: number;
+  products_count?: number;
+}
+
 export const adminProductTypeService = {
-  list: async (): Promise<{ id: number; name: string; slug: string }[]> => {
-    const { data } = await apiClient.get<{ data: { id: number; name: string; slug: string }[] }>('/v1/admin/product-types');
+  list: async (): Promise<AdminProductType[]> => {
+    const { data } = await apiClient.get<{ data: AdminProductType[] }>('/v1/admin/product-types');
     return data.data;
+  },
+  create: async (payload: { name: string }): Promise<AdminProductType> => {
+    const { data } = await apiClient.post<{ data: AdminProductType }>('/v1/admin/product-types', payload);
+    return data.data;
+  },
+  update: async (id: number, payload: { name: string }): Promise<AdminProductType> => {
+    const { data } = await apiClient.put<{ data: AdminProductType }>(`/v1/admin/product-types/${id}`, payload);
+    return data.data;
+  },
+  destroy: async (id: number): Promise<void> => {
+    await apiClient.delete(`/v1/admin/product-types/${id}`);
   },
 };
 
