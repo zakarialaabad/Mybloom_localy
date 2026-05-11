@@ -35,7 +35,7 @@ class IngredientController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'name'  => 'required|string|max:100|unique:ingredients,name',
+            'name'  => 'required|string|max:100',
             'image' => 'nullable|image|max:3072',
         ]);
 
