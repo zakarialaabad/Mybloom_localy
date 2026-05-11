@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { Search, Plus, Pencil, Trash2, Tag, Award, Leaf, ImageOff, type LucideIcon } from 'lucide-react';
+import { Search, Plus, Pencil, Trash2, Tag, Award, Leaf, type LucideIcon } from 'lucide-react';
 import DataTable, { Column } from '@/components/DataTable';
 import DeleteConfirmModal from '@/components/admin/DeleteConfirmModal';
 import CategoryModal from '@/components/admin/catalogue/CategoryModal';
@@ -22,16 +22,6 @@ const TABS: { key: TabKey; label: string; labelShort: string; Icon: LucideIcon; 
   { key: 'brands',     label: 'Marques',      labelShort: 'Marques',  Icon: Award, addLabel: '+ Marque',     emptyMsg: 'Aucune marque trouvée' },
   { key: 'ingredients',label: 'Ingrédients',  labelShort: 'Ingréd.',  Icon: Leaf,  addLabel: '+ Ingrédient', emptyMsg: 'Aucun ingrédient trouvé' },
 ];
-
-function ImageThumb({ src, alt }: { src: string | null; alt: string }) {
-  if (!src) return (
-    <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center shrink-0">
-      <ImageOff size={14} className="text-gray-300" />
-    </div>
-  );
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img src={src} alt={alt} className="w-10 h-10 rounded-xl object-cover shrink-0 border border-gray-100 bg-gray-50" />;
-}
 
 function RowActions({ onEdit, onDelete }: { onEdit: () => void; onDelete: () => void }) {
   return (
@@ -84,7 +74,7 @@ export default function CataloguePage() {
 
   const categoryColumns: Column<AdminCategory>[] = [
     { key: 'name', label: 'Catégorie', render: (cat) => (
-      <div className="flex items-center gap-3"><ImageThumb src={cat.image_url} alt={cat.name} /><span className="text-[14px] font-bold text-[#222]">{cat.name}</span></div>
+      <span className="text-[14px] font-bold text-[#222]">{cat.name}</span>
     )},
     { key: 'slug', label: 'Slug', responsive: 'hidden md:table-cell', render: (cat) => <span className="text-[13px] text-gray-400 font-mono">{cat.slug}</span> },
     { key: 'products_count', label: 'Produits', responsive: 'hidden lg:table-cell', render: (cat) => <span className="text-[13px] font-semibold text-gray-500">{cat.products_count ?? '—'}</span> },
@@ -95,7 +85,7 @@ export default function CataloguePage() {
 
   const brandColumns: Column<AdminBrand>[] = [
     { key: 'name', label: 'Marque', render: (brand) => (
-      <div className="flex items-center gap-3"><ImageThumb src={brand.logo_url} alt={brand.name} /><span className="text-[14px] font-bold text-[#222]">{brand.name}</span></div>
+      <span className="text-[14px] font-bold text-[#222]">{brand.name}</span>
     )},
     { key: 'slug', label: 'Slug', responsive: 'hidden md:table-cell', render: (brand) => <span className="text-[13px] text-gray-400 font-mono">{brand.slug}</span> },
     { key: 'products_count', label: 'Produits', responsive: 'hidden lg:table-cell', render: (brand) => <span className="text-[13px] font-semibold text-gray-500">{brand.products_count ?? '—'}</span> },
@@ -106,8 +96,10 @@ export default function CataloguePage() {
 
   const ingredientColumns: Column<AdminIngredient>[] = [
     { key: 'name', label: 'Ingrédient', render: (ing) => (
-      <div className="flex items-center gap-3"><ImageThumb src={ing.image_url} alt={ing.name} /><span className="text-[14px] font-bold text-[#222]">{ing.name}</span></div>
+      <span className="text-[14px] font-bold text-[#222]">{ing.name}</span>
     )},
+    { key: 'slug', label: 'Slug', responsive: 'hidden md:table-cell', render: (ing) => <span className="text-[13px] text-gray-400 font-mono">{ing.slug ?? '—'}</span> },
+    { key: 'products_count', label: 'Produits', responsive: 'hidden lg:table-cell', render: (ing) => <span className="text-[13px] font-semibold text-gray-500">{ing.products_count ?? '—'}</span> },
     { key: 'actions', label: '', className: 'text-right w-[90px]', render: (ing) => (
       <RowActions onEdit={() => { setEditingIngredient(ing); setShowModal(true); }} onDelete={() => setDeleteTarget({ id: ing.id, name: ing.name, type: 'ingredients' })} />
     )},
@@ -193,7 +185,6 @@ export default function CataloguePage() {
             <DataTable<AdminCategory> data={filteredCategories} columns={categoryColumns} isLoading={loadingCats} emptyMessage={currentTab.emptyMsg}
               renderMobileCard={(cat) => (
                 <div className="flex items-center gap-3 px-4 py-3.5">
-                  <ImageThumb src={cat.image_url} alt={cat.name} />
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-bold text-[#222] truncate">{cat.name}</p>
                     {cat.products_count !== undefined && <p className="text-[11px] text-gray-400 font-medium mt-0.5">{cat.products_count} produit{cat.products_count !== 1 ? 's' : ''}</p>}
@@ -207,7 +198,6 @@ export default function CataloguePage() {
             <DataTable<AdminBrand> data={filteredBrands} columns={brandColumns} isLoading={loadingBrands} emptyMessage={currentTab.emptyMsg}
               renderMobileCard={(brand) => (
                 <div className="flex items-center gap-3 px-4 py-3.5">
-                  <ImageThumb src={brand.logo_url} alt={brand.name} />
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-bold text-[#222] truncate">{brand.name}</p>
                     {brand.products_count !== undefined && <p className="text-[11px] text-gray-400 font-medium mt-0.5">{brand.products_count} produit{brand.products_count !== 1 ? 's' : ''}</p>}
@@ -221,8 +211,10 @@ export default function CataloguePage() {
             <DataTable<AdminIngredient> data={filteredIngredients} columns={ingredientColumns} isLoading={loadingIng} emptyMessage={currentTab.emptyMsg}
               renderMobileCard={(ing) => (
                 <div className="flex items-center gap-3 px-4 py-3.5">
-                  <ImageThumb src={ing.image_url} alt={ing.name} />
-                  <div className="flex-1 min-w-0"><p className="text-[14px] font-bold text-[#222] truncate">{ing.name}</p></div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[14px] font-bold text-[#222] truncate">{ing.name}</p>
+                    {ing.products_count !== undefined && <p className="text-[11px] text-gray-400 font-medium mt-0.5">{ing.products_count} produit{ing.products_count !== 1 ? 's' : ''}</p>}
+                  </div>
                   <RowActions onEdit={() => { setEditingIngredient(ing); setShowModal(true); }} onDelete={() => setDeleteTarget({ id: ing.id, name: ing.name, type: 'ingredients' })} />
                 </div>
               )} />

@@ -8,6 +8,7 @@ use App\Services\ImageService;
 use App\Utilities\ImageUrlResolver;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 class IngredientController extends Controller
 {
@@ -15,14 +16,16 @@ class IngredientController extends Controller
 
     public function index()
     {
-        $ingredients = Cache::remember('api.ingredients', 600, function () {
-            return Ingredient::orderBy('name')->get(['id', 'name', 'image_url']);
+        $ingredients = Cache::remember('api.ingredients.v2', 600, function () {
+            return Ingredient::withCount('products')->orderBy('name')->get();
         });
 
         $resolved = $ingredients->map(fn ($ing) => [
-            'id'        => $ing->id,
-            'name'      => $ing->name,
-            'image_url' => ImageUrlResolver::resolve($ing->image_url),
+            'id'             => $ing->id,
+            'name'           => $ing->name,
+            'slug'           => Str::slug($ing->name),
+            'image_url'      => ImageUrlResolver::resolve($ing->image_url),
+            'products_count' => $ing->products_count,
         ]);
 
         return response()->json(['data' => $resolved]);

@@ -594,7 +594,9 @@ export interface AdminBrand {
 export interface AdminIngredient {
   id: number;
   name: string;
+  slug?: string;
   image_url: string | null;
+  products_count?: number;
 }
 
 // ─── Admin category service ───────────────────────────────────────────────────

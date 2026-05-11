@@ -16,7 +16,7 @@ class CategoryController extends Controller
     public function index(): AnonymousResourceCollection
     {
         return CategoryResource::collection(
-            Category::with('children')->whereNull('parent_id')->orderBy('sort_order')->get()
+            Category::withCount('products')->with('children')->whereNull('parent_id')->orderBy('sort_order')->get()
         );
     }
 
