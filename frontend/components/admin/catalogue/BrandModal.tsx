@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Loader2, Award, Link as LinkIcon } from 'lucide-react';
+import { X, Loader2, Award } from 'lucide-react';
 import { AdminBrand, adminBrandService } from '@/services/api';
 
 interface BrandModalProps {
@@ -12,19 +12,27 @@ interface BrandModalProps {
   editing?: AdminBrand | null;
 }
 
+function toSlug(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+}
+
 export default function BrandModal({ isOpen, onClose, onSaved, editing }: BrandModalProps) {
   const [name, setName] = useState('');
-  const [logoUrl, setLogoUrl] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [previewError, setPreviewError] = useState(false);
+
+  const slug = useMemo(() => toSlug(name), [name]);
 
   useEffect(() => {
     if (isOpen) {
       setName(editing?.name ?? '');
-      setLogoUrl(editing?.logo_url ?? '');
       setError(null);
-      setPreviewError(false);
     }
   }, [editing, isOpen]);
 
@@ -40,7 +48,7 @@ export default function BrandModal({ isOpen, onClose, onSaved, editing }: BrandM
     setIsSaving(true);
     setError(null);
     try {
-      const payload = { name: name.trim(), logo_url: logoUrl.trim() || null };
+      const payload = { name: name.trim() };
       if (editing) {
         await adminBrandService.update(editing.id, payload);
       } else {
@@ -79,18 +87,6 @@ export default function BrandModal({ isOpen, onClose, onSaved, editing }: BrandM
         </h3>
 
         <div className="space-y-4">
-          {logoUrl.trim() && !previewError && (
-            <div className="flex justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={logoUrl}
-                alt="Logo preview"
-                onError={() => setPreviewError(true)}
-                className="h-16 max-w-[200px] object-contain rounded-xl border border-gray-100 p-2 bg-gray-50"
-              />
-            </div>
-          )}
-
           <div>
             <label className="text-[13px] font-semibold text-[#333] block mb-1.5">
               Nom de la marque <span className="text-[#da2966]">*</span>
@@ -107,17 +103,15 @@ export default function BrandModal({ isOpen, onClose, onSaved, editing }: BrandM
           </div>
 
           <div>
-            <label className="text-[13px] font-semibold text-[#333] block mb-1.5 flex items-center gap-1.5">
-              <LinkIcon size={13} className="text-gray-400" />
-              URL du logo
-              <span className="text-gray-400 font-normal">(optionnel)</span>
+            <label className="text-[13px] font-semibold text-[#333] block mb-1.5">
+              Slug <span className="text-gray-400 font-normal text-[12px]">(généré automatiquement)</span>
             </label>
             <input
-              type="url"
-              value={logoUrl}
-              onChange={(e) => { setLogoUrl(e.target.value); setPreviewError(false); }}
-              placeholder="https://example.com/logo.png"
-              className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] text-[13px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
+              type="text"
+              value={slug}
+              readOnly
+              disabled
+              className="w-full h-12 px-4 rounded-xl bg-[#f3f3f3] text-[13px] font-mono text-gray-400 cursor-not-allowed select-none"
             />
           </div>
         </div>

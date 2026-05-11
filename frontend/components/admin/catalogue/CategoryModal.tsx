@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Loader2, Tag } from 'lucide-react';
 import { AdminCategory, adminCategoryService } from '@/services/api';
@@ -13,6 +13,16 @@ interface CategoryModalProps {
   categories: AdminCategory[];
 }
 
+function toSlug(str: string): string {
+  return str
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, '')
+    .trim()
+    .replace(/\s+/g, '-');
+}
+
 export default function CategoryModal({
   isOpen,
   onClose,
@@ -22,15 +32,15 @@ export default function CategoryModal({
 }: CategoryModalProps) {
   const [nameValue, setNameValue] = useState('');
   const [parentId, setParentId] = useState<number | ''>('');
-  const [displayOrder, setDisplayOrder] = useState<number | ''>(0);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const slug = useMemo(() => toSlug(nameValue), [nameValue]);
 
   useEffect(() => {
     if (isOpen) {
       setNameValue(editing?.name ?? '');
       setParentId(editing?.parent_id ?? '');
-      setDisplayOrder(editing?.display_order ?? 0);
       setError(null);
     }
   }, [editing, isOpen]);
@@ -50,7 +60,6 @@ export default function CategoryModal({
       const payload = {
         name: nameValue.trim(),
         parent_id: parentId !== '' ? Number(parentId) : null,
-        sort_order: displayOrder !== '' ? Number(displayOrder) : 0,
       };
       if (editing) {
         await adminCategoryService.update(editing.id, payload);
@@ -111,6 +120,19 @@ export default function CategoryModal({
 
           <div>
             <label className="text-[13px] font-semibold text-[#333] block mb-1.5">
+              Slug <span className="text-gray-400 font-normal text-[12px]">(généré automatiquement)</span>
+            </label>
+            <input
+              type="text"
+              value={slug}
+              readOnly
+              disabled
+              className="w-full h-12 px-4 rounded-xl bg-[#f3f3f3] text-[13px] font-mono text-gray-400 cursor-not-allowed select-none"
+            />
+          </div>
+
+          <div>
+            <label className="text-[13px] font-semibold text-[#333] block mb-1.5">
               Catégorie parente
             </label>
             <select
@@ -125,22 +147,6 @@ export default function CategoryModal({
                 <option key={c.id} value={c.id}>{c.name}</option>
               ))}
             </select>
-          </div>
-
-          <div>
-            <label className="text-[13px] font-semibold text-[#333] block mb-1.5">
-              Ordre d&apos;affichage
-            </label>
-            <input
-              type="number"
-              value={displayOrder}
-              onChange={(e) =>
-                setDisplayOrder(e.target.value !== '' ? Number(e.target.value) : '')
-              }
-              placeholder="0"
-              min="0"
-              className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] text-[14px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
-            />
           </div>
         </div>
 
