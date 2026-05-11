@@ -36,7 +36,7 @@ class IngredientController extends Controller
     {
         $request->validate([
             'name'  => 'required|string|max:100',
-            'image' => 'nullable|image|max:3072',
+            'image' => 'nullable|mimes:jpg,jpeg,png,gif,bmp,webp|max:3072',
         ]);
 
         $imageUrl = null;
@@ -59,7 +59,7 @@ class IngredientController extends Controller
     {
         $request->validate([
             'name'  => "required|string|max:100|unique:ingredients,name,{$ingredient->id}",
-            'image' => 'nullable|image|max:3072',
+            'image' => 'nullable|mimes:jpg,jpeg,png,gif,bmp,webp|max:3072',
         ]);
 
         $data = ['name' => $request->name];
