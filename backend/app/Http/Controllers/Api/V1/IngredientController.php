@@ -35,8 +35,7 @@ class IngredientController extends Controller
     public function store(Request $request): JsonResponse
     {
         $request->validate([
-            'name'  => 'required|string|max:100',
-            'image' => 'nullable|file|max:3072',
+            'name' => 'required|string|max:100',
         ]);
 
         $imageUrl = null;
@@ -58,8 +57,7 @@ class IngredientController extends Controller
     public function update(Request $request, Ingredient $ingredient): JsonResponse
     {
         $request->validate([
-            'name'  => "required|string|max:100|unique:ingredients,name,{$ingredient->id}",
-            'image' => 'nullable|file|max:3072',
+            'name' => "required|string|max:100|unique:ingredients,name,{$ingredient->id}",
         ]);
 
         $data = ['name' => $request->name];
