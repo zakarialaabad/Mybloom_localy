@@ -659,16 +659,11 @@ export const adminIngredientService = {
     return data.data;
   },
   create: async (formData: FormData): Promise<AdminIngredient> => {
-    const { data } = await apiClient.post<{ data: AdminIngredient }>('/v1/admin/ingredients', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const { data } = await apiClient.post<{ data: AdminIngredient }>('/v1/admin/ingredients', formData);
     return data.data;
   },
   update: async (id: number, formData: FormData): Promise<AdminIngredient> => {
-    formData.set('_method', 'PUT');
-    const { data } = await apiClient.post<{ data: AdminIngredient }>(`/v1/admin/ingredients/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const { data } = await apiClient.post<{ data: AdminIngredient }>(`/v1/admin/ingredients/${id}`, formData);
     return data.data;
   },
   destroy: async (id: number): Promise<void> => {

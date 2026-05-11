@@ -27,12 +27,15 @@ export default function CategoryModal({ isOpen, onClose, onSaved, editing }: Cat
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [nameError, setNameError] = useState(false);
+
   const slug = useMemo(() => toSlug(nameValue), [nameValue]);
 
   useEffect(() => {
     if (isOpen) {
       setNameValue(editing?.name ?? '');
       setError(null);
+      setNameError(false);
     }
   }, [editing, isOpen]);
 
@@ -44,7 +47,7 @@ export default function CategoryModal({ isOpen, onClose, onSaved, editing }: Cat
   }, [isOpen, onClose]);
 
   const handleSave = async () => {
-    if (!nameValue.trim()) { setError('Veuillez saisir un nom.'); return; }
+    if (!nameValue.trim()) { setNameError(true); setError('Le nom est obligatoire.'); return; }
     setIsSaving(true);
     setError(null);
     try {
@@ -94,11 +97,13 @@ export default function CategoryModal({ isOpen, onClose, onSaved, editing }: Cat
             <input
               type="text"
               value={nameValue}
-              onChange={(e) => setNameValue(e.target.value)}
+              onChange={(e) => { setNameValue(e.target.value); if (nameError) setNameError(false); }}
               onKeyDown={(e) => e.key === 'Enter' && handleSave()}
               placeholder="ex: Soins du visage"
               autoFocus
-              className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] text-[14px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
+              className={`w-full h-12 px-4 rounded-xl text-[14px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 transition-colors ${
+                nameError ? 'bg-red-50 ring-1 ring-red-400' : 'bg-[#f8f8f8] focus:ring-[#da2966]/40'
+              }`}
             />
           </div>
 

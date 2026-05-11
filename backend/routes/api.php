@@ -107,7 +107,9 @@ Route::prefix('api')->group(function () {
                 Route::put('profile/password', [AdminProfileController::class, 'changePassword']);
 
                 // Ingredients
-                Route::post('ingredients', [IngredientController::class, 'store']);
+                Route::post('ingredients',                [IngredientController::class, 'store']);
+                Route::post('ingredients/{ingredient}',   [IngredientController::class, 'update']);
+                Route::delete('ingredients/{ingredient}', [IngredientController::class, 'destroy']);
 
                 // Products
                 Route::apiResource('products', AdminProductController::class);

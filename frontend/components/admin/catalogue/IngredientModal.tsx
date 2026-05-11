@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { X, Loader2, Leaf, Upload } from 'lucide-react';
-import axios from 'axios';
-import { AdminIngredient } from '@/services/api';
+import { adminIngredientService, AdminIngredient } from '@/services/api';
 
 interface IngredientModalProps {
   isOpen: boolean;
@@ -15,6 +14,7 @@ interface IngredientModalProps {
 
 export default function IngredientModal({ isOpen, onClose, onSaved, editing }: IngredientModalProps) {
   const [name, setName] = useState('');
+  const [nameError, setNameError] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -27,6 +27,7 @@ export default function IngredientModal({ isOpen, onClose, onSaved, editing }: I
       setFile(null);
       setFilePreview(null);
       setError(null);
+      setNameError(false);
     }
   }, [editing, isOpen]);
 
@@ -47,25 +48,18 @@ export default function IngredientModal({ isOpen, onClose, onSaved, editing }: I
   };
 
   const handleSave = async () => {
-    if (!name.trim()) { setError('Veuillez saisir un nom.'); return; }
+    if (!name.trim()) { setNameError(true); setError('Le nom est obligatoire.'); return; }
     setIsSaving(true);
     setError(null);
     try {
-      const baseURL = process.env.NEXT_PUBLIC_API_URL;
-      const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
-      const headers = {
-        Accept: 'application/json',
-        ...(token ? { Authorization: 'Bearer ' + token } : {}),
-      };
       const formData = new FormData();
       formData.append('name', name.trim());
       if (file) formData.append('image', file);
 
       if (editing) {
-        formData.append('_method', 'PUT');
-        await axios.post(`${baseURL}/v1/admin/ingredients/${editing.id}`, formData, { headers });
+        await adminIngredientService.update(editing.id, formData);
       } else {
-        await axios.post(`${baseURL}/v1/admin/ingredients`, formData, { headers });
+        await adminIngredientService.create(formData);
       }
       onSaved();
       onClose();
@@ -135,11 +129,13 @@ export default function IngredientModal({ isOpen, onClose, onSaved, editing }: I
             <input
               type="text"
               value={name}
-              onChange={(e) => setName(e.target.value)}
+              onChange={(e) => { setName(e.target.value); if (nameError) setNameError(false); }}
               onKeyDown={(e) => e.key === 'Enter' && handleSave()}
               placeholder="ex: Acide hyaluronique"
               autoFocus
-              className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] text-[14px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
+              className={`w-full h-12 px-4 rounded-xl text-[14px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 transition-colors ${
+                nameError ? 'bg-red-50 ring-1 ring-red-400' : 'bg-[#f8f8f8] focus:ring-[#da2966]/40'
+              }`}
             />
           </div>
         </div>
