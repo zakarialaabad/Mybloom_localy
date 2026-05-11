@@ -4,18 +4,19 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { 
-  LayoutDashboard, 
-  Package, 
-  ShoppingCart, 
-  Ticket, 
-  Image as ImageIcon, 
-  MessageSquare, 
-  Settings, 
+import {
+  LayoutDashboard,
+  Package,
+  ShoppingCart,
+  Ticket,
+  Image as ImageIcon,
+  MessageSquare,
+  Settings,
   LogOut,
   User,
   Menu,
-  X
+  X,
+  LayoutGrid,
 } from 'lucide-react';
 import { adminAuthService, adminProfileService } from '@/services/api';
 
@@ -100,6 +101,10 @@ export default function AdminDashboardLayout({
     { name: 'Avis', href: '/gestion-bloom-secure/dashboard/reviews', icon: MessageSquare },
   ];
 
+  const catalogueNavItems = [
+    { name: 'Catalogue', href: '/gestion-bloom-secure/dashboard/catalogue', icon: LayoutGrid },
+  ];
+
   const isFullScreenPage = pathname.endsWith('/create') || pathname.includes('/edit');
 
   if (isFullScreenPage) {
@@ -148,6 +153,28 @@ export default function AdminDashboardLayout({
                   item.href === '/gestion-bloom-secure/dashboard'
                     ? pathname === item.href
                     : pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    onClick={() => setSidebarOpen(false)}
+                    className={`block text-[17px] font-serif tracking-[0.03em] uppercase transition-colors ${
+                      isActive ? 'text-[#da2966]' : 'text-[#333]'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
+
+            <div className="w-full h-px bg-gray-100 my-10 max-w-[80%]"></div>
+
+            {/* Catalogue items in mobile menu */}
+            <div className="space-y-7">
+              <p className="text-[11px] font-extrabold text-[#da2966] uppercase tracking-[0.15em]">Catalogue</p>
+              {catalogueNavItems.map((item) => {
+                const isActive = pathname.startsWith(item.href);
                 return (
                   <Link
                     key={item.name}
@@ -248,6 +275,30 @@ export default function AdminDashboardLayout({
                 </Link>
               );
             })}
+          </div>
+
+          {/* Catalogue Section */}
+          <div className="mt-8">
+            <p className="text-[11px] font-extrabold text-[#da2966] uppercase tracking-[0.15em] px-5 mb-3">
+              Catalogue
+            </p>
+            <div className="space-y-[2px]">
+              {catalogueNavItems.map((item) => {
+                const isActive = pathname.startsWith(item.href);
+                return (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    className={`flex items-center gap-3 px-5 py-3 rounded-xl text-[15px] font-bold transition-all duration-200 ${
+                      isActive ? 'bg-[#fff0f3] text-[#da2966]' : 'text-[#333] hover:bg-gray-50'
+                    }`}
+                  >
+                    <item.icon size={20} strokeWidth={2} className={isActive ? 'text-[#da2966]' : 'text-[#555]'} />
+                    {item.name}
+                  </Link>
+                );
+              })}
+            </div>
           </div>
 
           <div className="mt-8">

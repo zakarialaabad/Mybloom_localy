@@ -570,12 +570,106 @@ export const adminProductService = {
   },
 };
 
-// â”€â”€â”€ Admin category service â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Admin catalogue types ────────────────────────────────────────────────────
+
+export interface AdminCategory {
+  id: number;
+  name: string;
+  slug: string;
+  image_url: string | null;
+  display_order: number;
+  parent_id: number | null;
+  children?: AdminCategory[];
+}
+
+export interface AdminBrand {
+  id: number;
+  name: string;
+  slug: string;
+  logo_url: string | null;
+  products_count?: number;
+}
+
+export interface AdminIngredient {
+  id: number;
+  name: string;
+  image_url: string | null;
+}
+
+// ─── Admin category service ───────────────────────────────────────────────────
 
 export const adminCategoryService = {
-  list: async (): Promise<{ id: number; name: string; slug: string }[]> => {
-    const { data } = await apiClient.get<{ data: { id: number; name: string; slug: string }[] }>('/v1/admin/categories');
+  list: async (): Promise<AdminCategory[]> => {
+    const { data } = await apiClient.get<{ data: AdminCategory[] }>('/v1/admin/categories');
     return data.data;
+  },
+  get: async (id: number): Promise<AdminCategory> => {
+    const { data } = await apiClient.get<{ data: AdminCategory }>(`/v1/admin/categories/${id}`);
+    return data.data;
+  },
+  create: async (payload: { name: string; parent_id?: number | null; sort_order?: number; image_url?: string | null }): Promise<AdminCategory> => {
+    const { data } = await apiClient.post<{ data: AdminCategory }>('/v1/admin/categories', payload);
+    return data.data;
+  },
+  update: async (id: number, payload: { name?: string; parent_id?: number | null; sort_order?: number; image_url?: string | null }): Promise<AdminCategory> => {
+    const { data } = await apiClient.put<{ data: AdminCategory }>(`/v1/admin/categories/${id}`, payload);
+    return data.data;
+  },
+  destroy: async (id: number): Promise<void> => {
+    await apiClient.delete(`/v1/admin/categories/${id}`);
+  },
+};
+
+// ─── Admin brand service ──────────────────────────────────────────────────────
+
+export const adminBrandService = {
+  list: async (): Promise<AdminBrand[]> => {
+    const { data } = await apiClient.get<{ data: AdminBrand[] }>('/v1/admin/brands');
+    return data.data;
+  },
+  get: async (id: number): Promise<AdminBrand> => {
+    const { data } = await apiClient.get<{ data: AdminBrand }>(`/v1/admin/brands/${id}`);
+    return data.data;
+  },
+  create: async (payload: { name: string; logo_url?: string | null }): Promise<AdminBrand> => {
+    const { data } = await apiClient.post<{ data: AdminBrand }>('/v1/admin/brands', payload);
+    return data.data;
+  },
+  update: async (id: number, payload: { name?: string; logo_url?: string | null }): Promise<AdminBrand> => {
+    const { data } = await apiClient.put<{ data: AdminBrand }>(`/v1/admin/brands/${id}`, payload);
+    return data.data;
+  },
+  destroy: async (id: number): Promise<void> => {
+    await apiClient.delete(`/v1/admin/brands/${id}`);
+  },
+};
+
+// ─── Admin ingredient service ─────────────────────────────────────────────────
+
+export const adminIngredientService = {
+  list: async (): Promise<AdminIngredient[]> => {
+    const { data } = await apiClient.get<{ data: AdminIngredient[] }>('/v1/admin/ingredients');
+    return data.data;
+  },
+  get: async (id: number): Promise<AdminIngredient> => {
+    const { data } = await apiClient.get<{ data: AdminIngredient }>(`/v1/admin/ingredients/${id}`);
+    return data.data;
+  },
+  create: async (formData: FormData): Promise<AdminIngredient> => {
+    const { data } = await apiClient.post<{ data: AdminIngredient }>('/v1/admin/ingredients', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data.data;
+  },
+  update: async (id: number, formData: FormData): Promise<AdminIngredient> => {
+    formData.set('_method', 'PUT');
+    const { data } = await apiClient.post<{ data: AdminIngredient }>(`/v1/admin/ingredients/${id}`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data.data;
+  },
+  destroy: async (id: number): Promise<void> => {
+    await apiClient.delete(`/v1/admin/ingredients/${id}`);
   },
 };
 

@@ -1,0 +1,151 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { X, Loader2, Award, Link as LinkIcon } from 'lucide-react';
+import { AdminBrand, adminBrandService } from '@/services/api';
+
+interface BrandModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSaved: () => void;
+  editing?: AdminBrand | null;
+}
+
+export default function BrandModal({ isOpen, onClose, onSaved, editing }: BrandModalProps) {
+  const [name, setName] = useState('');
+  const [logoUrl, setLogoUrl] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [previewError, setPreviewError] = useState(false);
+
+  useEffect(() => {
+    if (isOpen) {
+      setName(editing?.name ?? '');
+      setLogoUrl(editing?.logo_url ?? '');
+      setError(null);
+      setPreviewError(false);
+    }
+  }, [editing, isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    document.addEventListener('keydown', handler);
+    return () => document.removeEventListener('keydown', handler);
+  }, [isOpen, onClose]);
+
+  const handleSave = async () => {
+    if (!name.trim()) { setError('Veuillez saisir un nom.'); return; }
+    setIsSaving(true);
+    setError(null);
+    try {
+      const payload = { name: name.trim(), logo_url: logoUrl.trim() || null };
+      if (editing) {
+        await adminBrandService.update(editing.id, payload);
+      } else {
+        await adminBrandService.create(payload);
+      }
+      onSaved();
+      onClose();
+    } catch (err: any) {
+      setError(err.response?.data?.message ?? 'Une erreur est survenue.');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  if (!isOpen) return null;
+
+  return createPortal(
+    <div
+      className="fixed inset-0 bg-black/50 backdrop-blur-[2px] flex items-end sm:items-center justify-center sm:p-4 z-50"
+      onClick={onClose}
+    >
+      <div
+        className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-md p-6 sm:p-8 shadow-2xl relative"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+        >
+          <X size={16} className="text-gray-500" />
+        </button>
+
+        <h3 className="text-[18px] font-bold text-[#da2966] mb-6 flex items-center gap-2">
+          <Award size={20} strokeWidth={1.8} />
+          {editing ? 'Modifier la marque' : 'Ajouter une marque'}
+        </h3>
+
+        <div className="space-y-4">
+          {logoUrl.trim() && !previewError && (
+            <div className="flex justify-center">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={logoUrl}
+                alt="Logo preview"
+                onError={() => setPreviewError(true)}
+                className="h-16 max-w-[200px] object-contain rounded-xl border border-gray-100 p-2 bg-gray-50"
+              />
+            </div>
+          )}
+
+          <div>
+            <label className="text-[13px] font-semibold text-[#333] block mb-1.5">
+              Nom de la marque <span className="text-[#da2966]">*</span>
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+              placeholder="ex: L'Oréal Paris"
+              autoFocus
+              className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] text-[14px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
+            />
+          </div>
+
+          <div>
+            <label className="text-[13px] font-semibold text-[#333] block mb-1.5 flex items-center gap-1.5">
+              <LinkIcon size={13} className="text-gray-400" />
+              URL du logo
+              <span className="text-gray-400 font-normal">(optionnel)</span>
+            </label>
+            <input
+              type="url"
+              value={logoUrl}
+              onChange={(e) => { setLogoUrl(e.target.value); setPreviewError(false); }}
+              placeholder="https://example.com/logo.png"
+              className="w-full h-12 px-4 rounded-xl bg-[#f8f8f8] text-[13px] font-medium text-[#333] placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-[#da2966]/40"
+            />
+          </div>
+        </div>
+
+        {error && (
+          <p className="text-red-500 text-[13px] font-medium mt-4 text-center">{error}</p>
+        )}
+
+        <div className="flex gap-3 mt-6">
+          <button
+            onClick={onClose}
+            disabled={isSaving}
+            className="flex-1 h-12 rounded-xl border border-gray-200 text-gray-600 text-[14px] font-semibold hover:bg-gray-50 transition-colors disabled:opacity-50"
+          >
+            Annuler
+          </button>
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="flex-1 h-12 rounded-xl bg-[#da2966] text-white font-bold text-[14px] hover:bg-[#c22158] transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+          >
+            {isSaving ? (
+              <><Loader2 size={16} className="animate-spin" />Enregistrement…</>
+            ) : editing ? 'Modifier' : '+ Ajouter'}
+          </button>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+}
