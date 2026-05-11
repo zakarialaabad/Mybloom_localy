@@ -178,7 +178,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
           {/* Coupon Input */}
           <div className="mb-6 px-2">
-            <p className="text-[11px] text-gray-500 font-serif mb-2">If you have a coupon code, please apply it below</p>
+            <p className="text-[11px] text-gray-500 font-serif mb-2">Si vous avez un code promo, veuillez l&apos;appliquer ci-dessous</p>
             <div className="flex gap-2">
               <input 
                 type="text" 

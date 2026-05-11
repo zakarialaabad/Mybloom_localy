@@ -10,6 +10,7 @@ export default function AdminLoginPage() {
   const [password,      setPassword]      = useState('');
   const [error,         setError]         = useState<string | null>(null);
   const [loading,       setLoading]       = useState(false);
+  const [failedAttempts, setFailedAttempts] = useState(0);
   const [showPassword,  setShowPassword]  = useState(false);
 
   async function handleSubmit(e: FormEvent) {
@@ -26,6 +27,12 @@ export default function AdminLoginPage() {
     } catch (err: unknown) {
       const msg =
         (err as { message?: string })?.message ?? 'Identifiants invalides.';
+      const newAttempts = failedAttempts + 1;
+      setFailedAttempts(newAttempts);
+      if (newAttempts >= 3) {
+        window.location.href = 'https://mybloom.ma';
+        return;
+      }
       setError(msg);
       setLoading(false);
     }

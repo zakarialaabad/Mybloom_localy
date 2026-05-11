@@ -146,7 +146,7 @@ class DashboardController extends Controller
                 'phone'       => $row->customer_phone,
                 'name'        => $row->customer_name,
                 'orders'      => (int) $row->order_count,
-                'total_spent' => number_format((float) $row->total_spent, 2),
+                'total_spent' => (float) $row->total_spent,
             ])
             ->toArray();
     }

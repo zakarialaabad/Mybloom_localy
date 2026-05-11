@@ -87,7 +87,7 @@ Route::prefix('api')->group(function () {
         });
 
         // ── Admin — auth endpoint (no sanctum guard, only throttle) ─────────
-        Route::prefix('admin/auth')->name('admin.auth.')->middleware('throttle:10,1')->group(function () {
+        Route::prefix('admin/auth')->name('admin.auth.')->middleware('throttle:60,1')->group(function () {
             Route::post('/login',  [AdminAuthController::class, 'login'])->name('login');
             Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
             Route::get('/me',      [AdminAuthController::class, 'me'])->name('me');

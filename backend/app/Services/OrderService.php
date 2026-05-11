@@ -64,7 +64,12 @@ class OrderService
                         $availableStock = (int) ($variant->stock_quantity ?? 0);
                         $unit           = $variant->unit ?? 'ml';
                         $sizeLabel      = "{$variant->size}{$unit}";
-                        $unitPrice      = (float) $variant->price;  // ✅ FIX: price (not final_price)
+                        // Apply promotion_percent discount if set
+                        $basePrice = (float) $variant->price;
+                        $promoPercent = (float) ($variant->promotion_percent ?? 0);
+                        $unitPrice = $promoPercent > 0
+                            ? round($basePrice * (1 - $promoPercent / 100), 2)
+                            : $basePrice;
                     } else {
                         // Fall back to legacy ProductSize system
                         $size = ProductSize::find($sizeId);

@@ -507,7 +507,7 @@ export default function CheckoutPage() {
                     </div>
                   )}
                   
-                  <p className="text-sm text-gray-600 font-serif mb-3">If you have a coupon code, please apply it below</p>
+                  <p className="text-sm text-gray-600 font-serif mb-3">Si vous avez un code promo, veuillez l&apos;appliquer ci-dessous</p>
                   <div className="flex gap-2.5">
                     <input
                       type="text"
