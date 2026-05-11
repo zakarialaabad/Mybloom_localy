@@ -441,9 +441,7 @@ export const reviewService = {
     console.log('[reviewService.submit] POST /v1/reviews â€” product_id:', payload.product_id, 'rating:', payload.rating, 'images:', images.length);
 
     try {
-      const { data } = await apiClient.post<{ data: ReviewItem }>('/v1/reviews', form, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
+      const { data } = await apiClient.post<{ data: ReviewItem }>('/v1/reviews', form);
       console.log('[reviewService.submit] Success â€” response:', data);
       return data.data;
     } catch (err) {
@@ -754,16 +752,12 @@ export const adminBannerService = {
   },
 
   store: async (formData: FormData): Promise<Banner> => {
-    const { data } = await apiClient.post<{ data: Banner }>('/v1/admin/banners', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const { data } = await apiClient.post<{ data: Banner }>('/v1/admin/banners', formData);
     return data.data;
   },
 
   update: async (id: number, formData: FormData): Promise<Banner> => {
-    const { data } = await apiClient.put<{ data: Banner }>(`/v1/admin/banners/${id}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const { data } = await apiClient.put<{ data: Banner }>(`/v1/admin/banners/${id}`, formData);
     return data.data;
   },
 
@@ -781,9 +775,7 @@ export const adminVideoService = {
   },
 
   store: async (formData: FormData): Promise<HeroVideo> => {
-    const { data } = await apiClient.post<{ data: HeroVideo }>('/v1/admin/videos', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    const { data } = await apiClient.post<{ data: HeroVideo }>('/v1/admin/videos', formData);
     return data.data;
   },
 
@@ -1002,12 +994,7 @@ export const adminReviewService = {
     return data;
   },
   create: async (payload: FormData | { reviewer_name: string; rating: number; body?: string | null; product_id?: number | null; date?: string }): Promise<AdminReview> => {
-    const isFormData = payload instanceof FormData;
-    const { data } = await apiClient.post<{ data: AdminReview }>(
-      '/v1/admin/reviews',
-      payload,
-      isFormData ? { headers: { 'Content-Type': 'multipart/form-data' } } : undefined,
-    );
+    const { data } = await apiClient.post<{ data: AdminReview }>('/v1/admin/reviews', payload);
     return data.data;
   },
   update: async (id: number, payload: { reviewer_name?: string; rating?: number; body?: string | null; product_id?: number | null }): Promise<AdminReview> => {

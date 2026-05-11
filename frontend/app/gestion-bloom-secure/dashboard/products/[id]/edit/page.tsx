@@ -540,6 +540,12 @@ export default function EditProductPage() {
 
       const jsonData = await res.json();
       if (!res.ok) {
+        if (res.status === 401) {
+          localStorage.removeItem('admin_token');
+          document.cookie = 'admin_logged_in=; path=/; max-age=0; SameSite=Lax';
+          window.location.href = '/gestion-bloom-secure/authentification';
+          return;
+        }
         if (jsonData.errors) {
           const formattedErrors: Record<string, string> = {};
           Object.keys(jsonData.errors).forEach(key => {
