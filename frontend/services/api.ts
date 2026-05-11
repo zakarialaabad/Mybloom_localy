@@ -580,6 +580,7 @@ export interface AdminCategory {
   display_order: number;
   parent_id: number | null;
   children?: AdminCategory[];
+  products_count?: number;
 }
 
 export interface AdminBrand {

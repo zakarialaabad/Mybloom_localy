@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo } from 'react';
 import { Search, Plus, Pencil, Trash2, Tag, Award, Leaf, ImageOff, type LucideIcon } from 'lucide-react';
 import DataTable, { Column } from '@/components/DataTable';
 import DeleteConfirmModal from '@/components/admin/DeleteConfirmModal';
@@ -66,8 +66,6 @@ export default function CataloguePage() {
   const filteredBrands = useMemo(() => brands.filter(b => b.name.toLowerCase().includes(search.toLowerCase())), [brands, search]);
   const filteredIngredients = useMemo(() => ingredients.filter(i => i.name.toLowerCase().includes(search.toLowerCase())), [ingredients, search]);
 
-  const getCategoryName = useCallback((id: number | null) => id ? (categories.find(c => c.id === id)?.name ?? '—') : '—', [categories]);
-
   const handleTabChange = (tab: TabKey) => { setActiveTab(tab); setSearch(''); };
 
   const openAdd = () => { setEditingCategory(null); setEditingBrand(null); setEditingIngredient(null); setShowModal(true); };
@@ -89,11 +87,7 @@ export default function CataloguePage() {
       <div className="flex items-center gap-3"><ImageThumb src={cat.image_url} alt={cat.name} /><span className="text-[14px] font-bold text-[#222]">{cat.name}</span></div>
     )},
     { key: 'slug', label: 'Slug', responsive: 'hidden md:table-cell', render: (cat) => <span className="text-[13px] text-gray-400 font-mono">{cat.slug}</span> },
-    { key: 'parent_id', label: 'Parent', responsive: 'hidden lg:table-cell', render: (cat) => cat.parent_id
-      ? <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-semibold bg-[#fff0f3] text-[#da2966]">{getCategoryName(cat.parent_id)}</span>
-      : <span className="text-[13px] text-gray-300">—</span>
-    },
-    { key: 'display_order', label: 'Ordre', responsive: 'hidden lg:table-cell', render: (cat) => <span className="text-[13px] font-semibold text-gray-500">{cat.display_order}</span> },
+    { key: 'products_count', label: 'Produits', responsive: 'hidden lg:table-cell', render: (cat) => <span className="text-[13px] font-semibold text-gray-500">{cat.products_count ?? '—'}</span> },
     { key: 'actions', label: '', className: 'text-right w-[90px]', render: (cat) => (
       <RowActions onEdit={() => { setEditingCategory(cat); setShowModal(true); }} onDelete={() => setDeleteTarget({ id: cat.id, name: cat.name, type: 'categories' })} />
     )},
@@ -202,7 +196,7 @@ export default function CataloguePage() {
                   <ImageThumb src={cat.image_url} alt={cat.name} />
                   <div className="flex-1 min-w-0">
                     <p className="text-[14px] font-bold text-[#222] truncate">{cat.name}</p>
-                    <p className="text-[11px] mt-0.5 font-medium">{cat.parent_id ? <span className="text-[#da2966]">{getCategoryName(cat.parent_id)}</span> : <span className="text-gray-400">Catégorie racine</span>}</p>
+                    {cat.products_count !== undefined && <p className="text-[11px] text-gray-400 font-medium mt-0.5">{cat.products_count} produit{cat.products_count !== 1 ? 's' : ''}</p>}
                   </div>
                   <RowActions onEdit={() => { setEditingCategory(cat); setShowModal(true); }} onDelete={() => setDeleteTarget({ id: cat.id, name: cat.name, type: 'categories' })} />
                 </div>
