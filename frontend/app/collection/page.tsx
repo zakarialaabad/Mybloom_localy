@@ -185,7 +185,16 @@ export default function CollectionPage() {
       setSelectedProductType(null);
     }
 
-    const newCategories = categoryId ? [Number(categoryId)] : [];
+    // Resolve ?cat=slug to the matching category ID so the sidebar stays in sync.
+    // Falls back to ?category=id (direct sidebar URL param) or empty.
+    let newCategories: number[] = [];
+    if (catSlug && topLevelCategories.length > 0) {
+      const matched = topLevelCategories.find((c) => c.slug === catSlug);
+      if (matched) newCategories = [matched.id];
+    } else if (categoryId) {
+      newCategories = [Number(categoryId)];
+    }
+
     const newIngredients = ingredientIds.length > 0 ? ingredientIds.map((id) => Number(id)) : [];
     const newFeatured = featured === '1';
     const newProductType = productType || null;
@@ -204,7 +213,7 @@ export default function CollectionPage() {
     if (newProductType !== selectedProductType) {
       setSelectedProductType(newProductType);
     }
-  }, [searchParams]);
+  }, [searchParams, topLevelCategories]);
 
   useEffect(() => {
     setHeroImageError(false);
@@ -232,7 +241,8 @@ export default function CollectionPage() {
     if (searchTerm) params['search'] = searchTerm;
 
     // Category slug from navbar (e.g. ?cat=parfum)
-    // Resolve to IDs (parent + all children) so products in subcategories are included
+    // The URL sync effect already resolved catSlug → selectedCategories,
+    // so we just use selectedCategories here (resolving children for top-level cats).
     const catSlug = searchParams.get('cat');
     if (catSlug) {
       const matched = topLevelCategories.find((c) => c.slug === catSlug);
@@ -261,8 +271,7 @@ export default function CollectionPage() {
       params['is_featured'] = 1;
     } else {
       if (selectedBrands.length > 0) params['brand_ids[]'] = selectedBrands;
-      // Sidebar category selection — only send when no nav cat slug is active (nav slug already sets category_ids[])
-      if (!catSlug && selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
+      if (selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
       if (selectedIngredients.length > 0) params['ingredient_ids[]'] = selectedIngredients;
       // Only include price bounds when the user has actually moved the slider
       // away from the global min/max. This keeps the cache key STABLE across
