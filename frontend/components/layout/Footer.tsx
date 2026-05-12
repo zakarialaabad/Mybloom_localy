@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Instagram, Facebook } from 'lucide-react';
 import { storeService } from '@/services/api';
+import useReferenceStore from '@/store/reference';
 
 // TikTok SVG (not in lucide)
 function TikTokIcon({ className }: { className?: string }) {
@@ -37,10 +38,25 @@ export default function Footer() {
     email: 'Bloomparfums1@gmail.com',
     phone: '06 08 65 62 71',
   });
+  const topLevelCategories = useReferenceStore((s) => s.topLevelCategories);
+  const ensureCategories   = useReferenceStore((s) => s.ensureCategories);
 
   useEffect(() => {
+    ensureCategories();
     storeService.getContact().then(setContact).catch(() => {});
   }, []);
+
+  const nosCollections = [
+    topLevelCategories[5],
+    topLevelCategories[1],
+    topLevelCategories[3],
+  ].filter(Boolean);
+
+  const beauteEtSoins = [
+    topLevelCategories[0],
+    topLevelCategories[2],
+    topLevelCategories[4],
+  ].filter(Boolean);
 
   return (
     <footer className="bg-white border-t border-gray-100">
@@ -90,16 +106,13 @@ export default function Footer() {
               NOS COLLECTIONS
             </h4>
             <ul className="space-y-4">
-              {[
-                { label: 'Pack', href: '/collection?is_gift=true' },
-                { label: 'Parfum', href: '/collection?cat=parfum' },
-              ].map(({ label, href }) => (
-                <li key={label}>
+              {nosCollections.map((cat) => (
+                <li key={cat.id}>
                   <Link
-                    href={href}
+                    href={`/collection?cat=${cat.slug}`}
                     className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors"
                   >
-                    {label}
+                    {cat.name}
                   </Link>
                 </li>
               ))}
@@ -112,17 +125,13 @@ export default function Footer() {
               BEAUTÉ & SOINS
             </h4>
             <ul className="space-y-4">
-              {[
-                { label: 'Beurre corporel', href: '/collection?cat=beurre-corporel' },
-                { label: 'Gommage Corporel', href: '/collection?cat=gommage-corporel' },
-                { label: 'Hygiène corporelle', href: '/collection?cat=hygiene-corporelle' },
-              ].map(({ label, href }) => (
-                <li key={label}>
+              {beauteEtSoins.map((cat) => (
+                <li key={cat.id}>
                   <Link
-                    href={href}
+                    href={`/collection?cat=${cat.slug}`}
                     className="text-[13px] text-gray-500 hover:text-gray-900 transition-colors"
                   >
-                    {label}
+                    {cat.name}
                   </Link>
                 </li>
               ))}
