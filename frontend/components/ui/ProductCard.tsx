@@ -280,23 +280,23 @@ export default function ProductCard({
 
         {/* Info Section — Structured & Aligned Layout */}
         <div className="px-4 py-3 text-left flex flex-col gap-2" style={{ backgroundColor: '#FAFAFA' }}>
-          {/* HEADER BLOCK — Product Name & Brand */}
+          {/* HEADER BLOCK — Product Name, Brand, Type */}
           <div className="space-y-0.5 pb-2 border-b border-gray-200">
-            {/* Product Name — Single line, clean overflow */}
+            {/* Product Name */}
             <h3 className="font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-tight h-6 overflow-hidden">
               {name}
             </h3>
-            
-            {/* Product Type — 1 line, 16px height */}
-            <p className="text-xs text-gray-600 line-clamp-1 h-4 capitalize">
-              {productType || subtitle}
+
+            {/* Brand Name */}
+            <p className="text-xs text-gray-600 line-clamp-1 h-4 font-medium">
+              {subtitle}
+            </p>
+
+            {/* Product Type */}
+            <p className="text-xs text-gray-500 line-clamp-1 h-4 capitalize">
+              {productType}
             </p>
           </div>
-
-          {/* CATEGORY — Single line, 16px height */}
-          <p className="text-xs text-gray-500 line-clamp-1 h-4">
-            {category}
-          </p>
 
           {/* FOOTER BLOCK — Price & Rating */}
           <div className="space-y-0.5 pt-0.5">
