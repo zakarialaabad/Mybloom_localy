@@ -38,8 +38,6 @@ function SnapchatIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-const PACK_LINK = { label: 'PACK', href: '/collection?is_gift=true' };
-
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
 export default function Header() {
@@ -60,7 +58,6 @@ export default function Header() {
   const ensureCategories   = useReferenceStore((s) => s.ensureCategories);
 
   const navLinks = [
-    PACK_LINK,
     ...[...topLevelCategories]
       .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
       .map((cat) => ({ label: cat.name.toUpperCase(), href: `/collection?cat=${cat.slug}` })),
