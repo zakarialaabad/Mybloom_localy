@@ -294,7 +294,7 @@ export default function ProductCard({
           </div>
 
           {/* Product Type — below the divider line */}
-          <p className="text-xs text-gray-500 line-clamp-1 h-4 capitalize -mt-1">
+          <p className="text-xs text-gray-500 line-clamp-1 h-4 capitalize">
             {productType}
           </p>
 
