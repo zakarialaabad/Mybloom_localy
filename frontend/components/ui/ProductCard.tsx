@@ -281,7 +281,7 @@ export default function ProductCard({
         {/* Info Section — Structured & Aligned Layout */}
         <div className="px-4 py-3 text-left flex flex-col gap-2" style={{ backgroundColor: '#FAFAFA' }}>
           {/* HEADER BLOCK — Product Name, Brand, Type */}
-          <div className="pb-2 border-b border-gray-200">
+          <div className="space-y-0.5 pb-2 border-b border-gray-200">
             {/* Product Name */}
             <h3 className="font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-tight h-6 overflow-hidden">
               {name}
@@ -291,15 +291,12 @@ export default function ProductCard({
             <p className="text-xs text-gray-600 line-clamp-1 h-4 font-medium">
               {subtitle}
             </p>
-
-            {/* Divider between brand and product type */}
-            <hr className="border-t border-gray-200 my-1" />
-
-            {/* Product Type */}
-            <p className="text-xs text-gray-500 line-clamp-1 h-4 capitalize">
-              {productType}
-            </p>
           </div>
+
+          {/* Product Type — below the divider line */}
+          <p className="text-xs text-gray-500 line-clamp-1 h-4 capitalize -mt-1">
+            {productType}
+          </p>
 
           {/* FOOTER BLOCK — Price & Rating */}
           <div className="space-y-0.5 pt-0.5">
