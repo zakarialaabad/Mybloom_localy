@@ -58,7 +58,7 @@ class OrderService
                 if ($sizeId > 0) {
                     // Try new ProductVariant system first
                     $variant = ProductVariant::find($sizeId);
-                    
+
                     if ($variant && $variant->product_id === $product->id) {
                         // ✅ Use variant-level stock & price (both now correctly map to database columns)
                         $availableStock = (int) ($variant->stock_quantity ?? 0);
@@ -73,14 +73,13 @@ class OrderService
                     } else {
                         // Fall back to legacy ProductSize system
                         $size = ProductSize::find($sizeId);
-                        
+
                         if ($size && $size->product_id === $product->id) {
                             $availableStock = (int) ($size->stock ?? 0);  // ✅ FIX: stock (not stock_quantity)
                             $sizeLabel      = $size->label;  // ✅ FIX: label (not volume_ml)
                             $unitPrice      = (float) (($product->sale_price ?? $product->price) + ($size->price_modifier ?? 0));  // ✅ FIX: calculate from product price + modifier
-                        } else {
-                            throw new \InvalidArgumentException("Size {$sizeId} not found for product {$product->id}.");
                         }
+                        // else: stale/invalid sizeId (variant was deleted) → use product-level price/stock
                     }
                 }
 

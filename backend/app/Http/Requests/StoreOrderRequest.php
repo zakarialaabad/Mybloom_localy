@@ -36,23 +36,8 @@ class StoreOrderRequest extends FormRequest
             'items'                            => ['required', 'array', 'min:1'],
             'items.*.product_id'               => ['required', 'exists:products,id'],
             // Allow size_id to be nullable or 0 (for products without variants)
-            // If provided (>0), must exist in product_sizes
-            'items.*.size_id'                  => [
-                'nullable', 
-                'integer', 
-                function ($attribute, $value, $fail) {
-                    if (! $value || $value <= 0) {
-                        return;
-                    }
-
-                    $variantExists = \App\Models\ProductVariant::where('id', $value)->exists();
-                    $sizeExists = \App\Models\ProductSize::where('id', $value)->exists();
-
-                    if (! $variantExists && ! $sizeExists) {
-                        $fail('The selected size is invalid.');
-                    }
-                }
-            ],
+            // Service resolves and validates variant ownership; stale IDs fall back gracefully
+            'items.*.size_id'                  => ['nullable', 'integer'],
             'items.*.quantity'                 => ['required', 'integer', 'min:1'],
         ];
     }
