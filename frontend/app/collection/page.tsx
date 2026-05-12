@@ -61,14 +61,15 @@ function productToCard(p: Product) {
 }
 
 export default function CollectionPage() {
-  const brands           = useReferenceStore((s) => s.brands);
-  const categories       = useReferenceStore((s) => s.categories);
-  const ingredients      = useReferenceStore((s) => s.ingredients);
-  const productTypes     = useReferenceStore((s) => s.productTypes);
-  const ensureBrands     = useReferenceStore((s) => s.ensureBrands);
-  const ensureCategories = useReferenceStore((s) => s.ensureCategories);
-  const ensureIngredients = useReferenceStore((s) => s.ensureIngredients);
-  const ensureProductTypes = useReferenceStore((s) => s.ensureProductTypes);
+  const brands               = useReferenceStore((s) => s.brands);
+  const categories           = useReferenceStore((s) => s.categories);
+  const topLevelCategories   = useReferenceStore((s) => s.topLevelCategories);
+  const ingredients          = useReferenceStore((s) => s.ingredients);
+  const productTypes         = useReferenceStore((s) => s.productTypes);
+  const ensureBrands         = useReferenceStore((s) => s.ensureBrands);
+  const ensureCategories     = useReferenceStore((s) => s.ensureCategories);
+  const ensureIngredients    = useReferenceStore((s) => s.ensureIngredients);
+  const ensureProductTypes   = useReferenceStore((s) => s.ensureProductTypes);
 
   const [perPage, setPerPage] = useState(10);
   const [products, setProducts] = useState<Product[]>([]);
@@ -231,8 +232,17 @@ export default function CollectionPage() {
     if (searchTerm) params['search'] = searchTerm;
 
     // Category slug from navbar (e.g. ?cat=parfum)
+    // Resolve to IDs (parent + all children) so products in subcategories are included
     const catSlug = searchParams.get('cat');
-    if (catSlug) params['category'] = catSlug;
+    if (catSlug) {
+      const matched = topLevelCategories.find((c) => c.slug === catSlug);
+      if (matched) {
+        const ids = [matched.id, ...(matched.children?.map((c) => c.id) ?? [])];
+        params['category_ids[]'] = ids;
+      } else {
+        params['category'] = catSlug;
+      }
+    }
 
     const productType = searchParams.get('product_type');
     const productTypeSlugs = searchParams.getAll('product_type');
@@ -251,7 +261,7 @@ export default function CollectionPage() {
       params['is_featured'] = 1;
     } else {
       if (selectedBrands.length > 0) params['brand_ids[]'] = selectedBrands;
-      // Only send category_ids[] when there's no cat slug (avoid conflicting filters)
+      // Sidebar category selection — only send when no nav cat slug is active (nav slug already sets category_ids[])
       if (!catSlug && selectedCategories.length > 0) params['category_ids[]'] = selectedCategories;
       if (selectedIngredients.length > 0) params['ingredient_ids[]'] = selectedIngredients;
       // Only include price bounds when the user has actually moved the slider
@@ -316,6 +326,7 @@ export default function CollectionPage() {
     featuredOnly,
     aggregatesReady,
     sortBy,
+    topLevelCategories,
     ensureProductsCache
   ]);
 
@@ -426,10 +437,10 @@ export default function CollectionPage() {
                 const isGift     = searchParams.get('is_gift');
                 const search     = searchParams.get('search');
                 const featured   = searchParams.get('featured');
-                const catMap: Record<string, string> = { 'beurre-corporel': 'Beurre Corporel', parfum: 'Parfum', 'gommage-corporel': 'Gommage Corporel', maquillage: 'Maquillage', 'hygiene-corporelle': 'Hygiène Corporelle' };
 
                 if (catSlug) {
-                  const catLabel = catMap[catSlug] ?? catSlug.charAt(0).toUpperCase() + catSlug.slice(1);
+                  const matched = [...topLevelCategories, ...categories].find((c) => c.slug === catSlug);
+                  const catLabel = matched?.name ?? catSlug.charAt(0).toUpperCase() + catSlug.slice(1);
                   return (
                     <>
                       <Link href="/collection">Collection</Link>
