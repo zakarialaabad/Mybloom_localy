@@ -9,6 +9,7 @@ import FilterModal from '@/components/FilterModal';
 import useCartStore from '@/store/cart';
 import { getWishlist } from '@/lib/wishlist';
 import { productService, Product } from '@/services/api';
+import useReferenceStore from '@/store/reference';
 import { Instagram, Facebook } from 'lucide-react';
 
 // TikTok SVG (not in lucide)
@@ -37,15 +38,7 @@ function SnapchatIcon({ className }: { className?: string }) {
     </svg>
   );
 }
-const NAV_LINKS = [
-  { label: 'PACK',                href: '/collection?is_gift=true', highlight: true },
-  { label: 'BEURRE',              href: '/collection?cat=beurre-corporel' },
-  { label: 'PARFUM',              href: '/collection?cat=parfum' },
-  { label: 'GOMMAGE',             href: '/collection?cat=gommage-corporel' },
-  { label: "PARFUMS D'AMBIANCE",  href: "/collection?product_type=diffuseur&product_type=spray_dinterieur" },
-  { label: 'MAQUILLAGE',          href: '/collection?cat=maquillage' },
-  { label: 'HYGIÈNE CORPORELLE',  href: '/collection?cat=hygiene-corporelle' },
-];
+const PACK_LINK = { label: 'PACK', href: '/collection?is_gift=true' };
 
 const FALLBACK_IMG = 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&q=80&w=400';
 
@@ -61,6 +54,17 @@ export default function Header() {
   const [wishlistCount, setWishlistCount] = useState(0);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const mobileSearchInputRef = useRef<HTMLInputElement>(null);
+
+  const topLevelCategories = useReferenceStore((s) => s.topLevelCategories);
+  const categoriesReady    = useReferenceStore((s) => s.categoriesReady);
+  const ensureCategories   = useReferenceStore((s) => s.ensureCategories);
+
+  const navLinks = [
+    PACK_LINK,
+    ...[...topLevelCategories]
+      .sort((a, b) => (a.display_order ?? 0) - (b.display_order ?? 0))
+      .map((cat) => ({ label: cat.name.toUpperCase(), href: `/collection?cat=${cat.slug}` })),
+  ];
 
   const openMenu = () => {
     setIsMenuOpen(true);
@@ -100,10 +104,11 @@ export default function Header() {
   useEffect(() => {
     setIsMounted(true);
     setWishlistCount(getWishlist().length);
+    ensureCategories();
     const onWishlistChanged = () => setWishlistCount(getWishlist().length);
     window.addEventListener('wishlist-changed', onWishlistChanged);
     return () => window.removeEventListener('wishlist-changed', onWishlistChanged);
-  }, []);
+  }, [ensureCategories]);
 
   // Instant search effect
   useEffect(() => {
@@ -350,32 +355,35 @@ export default function Header() {
       {/* ── Main Navigation ─────────────────────────────────────────────── */}
       <nav className="hidden md:block container mx-auto px-4 pb-4">
         <ul className="flex justify-center space-x-10 text-[16px] tracking-widest text-gray-700" style={{ fontFamily: "'Sitka Banner', serif", fontWeight: 'bold' }}>
-          {NAV_LINKS.map(({ label, href }) => {
-            // Determine active state by comparing pathname and search params when present in href
-            const [basePath, qs] = href.split('?');
-            let isActive = false;
-            if (basePath === pathname) {
-              if (!qs) isActive = true;
-              else {
-                const params = new URLSearchParams(qs);
-                isActive = true;
-                for (const [k, v] of params.entries()) {
-                  if (!searchParams.getAll(k).includes(v)) { isActive = false; break; }
+          {!categoriesReady
+            ? Array.from({ length: 6 }).map((_, i) => (
+                <li key={i} className="h-4 w-20 bg-gray-100 rounded animate-pulse" />
+              ))
+            : navLinks.map(({ label, href }) => {
+                const [basePath, qs] = href.split('?');
+                let isActive = false;
+                if (basePath === pathname) {
+                  if (!qs) isActive = true;
+                  else {
+                    const params = new URLSearchParams(qs);
+                    isActive = true;
+                    for (const [k, v] of params.entries()) {
+                      if (!searchParams.getAll(k).includes(v)) { isActive = false; break; }
+                    }
+                  }
                 }
-              }
-            }
-
-            return (
-              <li key={label}>
-                <Link
-                  href={href}
-                  className={`transition-colors duration-200 ease-in-out ${isActive ? 'text-[#da2966]' : 'hover:text-[#da2966] text-gray-700'}`}
-                >
-                  {label}
-                </Link>
-              </li>
-            );
-          })}
+                return (
+                  <li key={label}>
+                    <Link
+                      href={href}
+                      className={`transition-colors duration-200 ease-in-out ${isActive ? 'text-[#da2966]' : 'hover:text-[#da2966] text-gray-700'}`}
+                    >
+                      {label}
+                    </Link>
+                  </li>
+                );
+              })
+          }
         </ul>
       </nav>
     </header>
@@ -514,7 +522,7 @@ export default function Header() {
 
           {/* Navigation Links */}
           <div className="flex flex-col px-6 mb-auto" style={{ gap: 16 }}>
-            {NAV_LINKS.map(({ label, href }) => {
+            {navLinks.map(({ label, href }) => {
               const [basePath, qs] = href.split('?');
               let isActive = false;
               if (basePath === pathname) {
