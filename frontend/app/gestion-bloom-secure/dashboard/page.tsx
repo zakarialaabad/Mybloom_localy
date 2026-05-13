@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
-import { Search } from 'lucide-react';
+import { Search, TrendingUp, TrendingDown } from 'lucide-react';
 import { useDashboardMetrics } from '@/hooks/useDashboardMetrics';
 import {
   DashboardSummary,
@@ -11,6 +11,7 @@ import {
   DashboardOrder,
 } from '@/services/api';
 import { getStatusBadge, getStatusDot } from '@/lib/config/statuses';
+import { formatTrend } from '@/lib/utils';
 
 /* ═══════════════════════════════════════════════════════════════════════════
  * INLINE SVG ICONS
@@ -369,8 +370,9 @@ export default function AdminDashboardPage() {
               <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                 <div className="flex items-start justify-between mb-5">
                   <RevenueIcon />
-                  <span className="flex items-center gap-1 text-[13px] font-bold text-green-500">
-                    <UpArrow /> {s!.revenue_trend}%
+                  <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-[12px] font-bold ${(s!.revenue_trend ?? 0) >= 0 ? 'bg-[#eefaf3] text-[#0f8e5c]' : 'bg-red-50 text-red-600'}`}>
+                    {(s!.revenue_trend ?? 0) >= 0 ? <TrendingUp size={14} strokeWidth={3} /> : <TrendingDown size={14} strokeWidth={3} />}
+                    {formatTrend(s!.revenue_trend ?? 0)}
                   </span>
                 </div>
                 <p className="text-[13px] font-medium text-gray-400 mb-1">Chiffre d'affaires total</p>
@@ -384,8 +386,9 @@ export default function AdminDashboardPage() {
               <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                 <div className="flex items-start justify-between mb-5">
                   <OrdersIcon />
-                  <span className="flex items-center gap-1 text-[13px] font-bold text-green-500">
-                    <UpArrow /> {s!.orders_trend}%
+                  <span className={`inline-flex items-center gap-1 px-2 py-1 rounded-md text-[12px] font-bold ${(s!.orders_trend ?? 0) >= 0 ? 'bg-[#eefaf3] text-[#0f8e5c]' : 'bg-red-50 text-red-600'}`}>
+                    {(s!.orders_trend ?? 0) >= 0 ? <TrendingUp size={14} strokeWidth={3} /> : <TrendingDown size={14} strokeWidth={3} />}
+                    {formatTrend(s!.orders_trend ?? 0)}
                   </span>
                 </div>
                 <p className="text-[13px] font-medium text-gray-400 mb-1">Commandes totales</p>
@@ -399,8 +402,8 @@ export default function AdminDashboardPage() {
               <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-100">
                 <div className="flex items-start justify-between mb-5">
                   <StarIcon />
-                  <span className="flex items-center gap-1 text-[13px] font-bold text-green-500">
-                    <UpArrow /> Top
+                  <span className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[12px] font-bold bg-[#eefaf3] text-[#0f8e5c]">
+                    <TrendingUp size={14} strokeWidth={3} /> Top
                   </span>
                 </div>
                 <p className="text-[13px] font-medium text-gray-400 mb-1">Produit le plus vendu</p>
