@@ -44,30 +44,29 @@ class DashboardController extends Controller
 
     private function summary(): array
     {
-        // ── Total revenue ────────────────────────────────────────────────────
-        $totalRevenue = Order::sum('total');
+        $now              = Carbon::now();
+        $startOfThisMonth = $now->copy()->startOfMonth();
+        $startOfLastMonth = $now->copy()->subMonth()->startOfMonth();
+        $endOfLastMonth   = $now->copy()->subMonth()->endOfMonth();
 
-        // ── Revenue last month (for trend %) ────────────────────────────────
-        $lastMonthRevenue = Order::whereBetween('created_at', [
-            Carbon::now()->subMonths(2)->startOfMonth(),
-            Carbon::now()->subMonth()->endOfMonth(),
-        ])->sum('total');
+        $trend = function (float|int $current, float|int $previous): float {
+            if ($previous == 0) return $current > 0 ? 100.0 : 0.0;
+            return round((($current - $previous) / $previous) * 100, 1);
+        };
 
-        $revenueTrend = $lastMonthRevenue > 0
-            ? round((($totalRevenue - $lastMonthRevenue) / $lastMonthRevenue) * 100, 1)
-            : 0;
+        // ── Revenue: current month vs last month ─────────────────────────────
+        $currentRevenue  = (float) Order::where('created_at', '>=', $startOfThisMonth)->sum('total');
+        $previousRevenue = (float) Order::whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->sum('total');
+        $revenueTrend    = $trend($currentRevenue, $previousRevenue);
 
-        // ── Total orders ─────────────────────────────────────────────────────
-        $totalOrders = Order::count();
+        // ── Orders: current month vs last month ──────────────────────────────
+        $currentOrders  = Order::where('created_at', '>=', $startOfThisMonth)->count();
+        $previousOrders = Order::whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count();
+        $ordersTrend    = $trend($currentOrders, $previousOrders);
 
-        $lastMonthOrders = Order::whereBetween('created_at', [
-            Carbon::now()->subMonths(2)->startOfMonth(),
-            Carbon::now()->subMonth()->endOfMonth(),
-        ])->count();
-
-        $ordersTrend = $lastMonthOrders > 0
-            ? round((($totalOrders - $lastMonthOrders) / $lastMonthOrders) * 100, 1)
-            : 0;
+        // ── Totals for display ───────────────────────────────────────────────
+        $totalRevenue = (float) Order::sum('total');
+        $totalOrders  = Order::count();
 
         // ── Top-selling product ───────────────────────────────────────────────
         $topProduct = OrderItem::select('product_id', DB::raw('SUM(quantity) as total_sold'))
