@@ -64,8 +64,6 @@ export default function OrdersPage() {
   // ── Filter / search state ───────────────────────────────────────────────────
   const [search, setSearch]             = useState('');
   const [statusFilter, setStatusFilter] = useState('');
-  const [dateFrom, setDateFrom]         = useState('');
-  const [dateTo, setDateTo]             = useState('');
   const [currentPage, setCurrentPage]   = useState(1);
 
   // ── Modal and stats state ───────────────────────────────────────────────────
@@ -81,6 +79,8 @@ export default function OrdersPage() {
 
   // ── Bulk delete by date range state ────────────────────────────────────────
   const [showBulkDeleteModal, setShowBulkDeleteModal] = useState(false);
+  const [modalDateFrom, setModalDateFrom]             = useState('');
+  const [modalDateTo, setModalDateTo]                 = useState('');
   const [isBulkDeleting, setIsBulkDeleting]           = useState(false);
 
   // ── Toast state ─────────────────────────────────────────────────────────────
@@ -99,8 +99,6 @@ export default function OrdersPage() {
     limit: 25,
     ...(search && { search }),
     ...(statusFilter && { status: statusFilter }),
-    ...(dateFrom && { date_from: dateFrom }),
-    ...(dateTo && { date_to: dateTo }),
   });
 
   const totalPages = meta?.last_page ?? 1;
@@ -123,7 +121,7 @@ export default function OrdersPage() {
   // ── Reset to page 1 on search/filter change ─────────────────────────────────
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, statusFilter, dateFrom, dateTo]);
+  }, [search, statusFilter]);
 
   // ── Pagination helpers ──────────────────────────────────────────────────────
   const handlePageChange = (page: number) => {
@@ -197,13 +195,13 @@ export default function OrdersPage() {
   };
 
   const handleBulkDeleteConfirm = async () => {
-    if (!dateFrom || !dateTo) return;
+    if (!modalDateFrom || !modalDateTo) return;
     setIsBulkDeleting(true);
     try {
-      const { deleted } = await adminOrderService.bulkDestroyByDateRange(dateFrom, dateTo);
+      const { deleted } = await adminOrderService.bulkDestroyByDateRange(modalDateFrom, modalDateTo);
       setShowBulkDeleteModal(false);
-      setDateFrom('');
-      setDateTo('');
+      setModalDateFrom('');
+      setModalDateTo('');
       refetch();
       const res = await adminOrderService.stats();
       setStats(res);
@@ -248,7 +246,7 @@ export default function OrdersPage() {
       {/* ── Bulk delete by date range modal ──────────────────────────────────── */}
       {showBulkDeleteModal && (
         <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/20 backdrop-blur-sm">
-          <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-5 sm:p-6 w-[440px] mx-4">
+          <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-5 sm:p-6 w-full max-w-[440px] mx-4">
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500">
@@ -256,44 +254,54 @@ export default function OrdersPage() {
                 </div>
                 <h3 className="text-[15px] font-bold text-[#111]">Supprimer par période</h3>
               </div>
-              <button onClick={() => setShowBulkDeleteModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+              <button
+                onClick={() => { setShowBulkDeleteModal(false); setModalDateFrom(''); setModalDateTo(''); }}
+                className="text-gray-400 hover:text-gray-600 transition-colors"
+              >
                 <X size={18} />
               </button>
             </div>
 
-            {/* Date range summary */}
-            <div className="flex items-center gap-3 bg-[#fdf2f4] border border-[#faeef1] rounded-[10px] px-4 py-3 mb-4">
-              <CalendarDays size={16} className="text-[#da2966] shrink-0" />
-              <div className="text-[13px] font-semibold text-[#da2966]">
-                {dateFrom} <span className="text-[#da2966]/50 font-normal">→</span> {dateTo}
+            {/* Date range inputs */}
+            <div className="grid grid-cols-2 gap-3 mb-5">
+              <div>
+                <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wide mb-1.5">De</label>
+                <input
+                  type="date"
+                  value={modalDateFrom}
+                  onChange={(e) => setModalDateFrom(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-[8px] text-[13px] focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all"
+                />
+              </div>
+              <div>
+                <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wide mb-1.5">À</label>
+                <input
+                  type="date"
+                  value={modalDateTo}
+                  min={modalDateFrom || undefined}
+                  onChange={(e) => setModalDateTo(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-[8px] text-[13px] focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all"
+                />
               </div>
             </div>
 
-            {/* Count badge */}
-            <div className="flex items-center gap-2 mb-4">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 text-red-600 text-[12px] font-bold border border-red-100">
-                <Trash2 size={12} strokeWidth={3} />
-                {totalCount} commande{totalCount !== 1 ? 's' : ''} seront supprimée{totalCount !== 1 ? 's' : ''}
-              </span>
-            </div>
-
             <p className="text-[13px] text-gray-600 bg-amber-50 border border-amber-100 rounded-[8px] px-4 py-3 mb-5">
-              ⚠️ Cette action est <strong>irréversible</strong>. Toutes les commandes dans cette période seront définitivement supprimées.
+              ⚠️ Cette action est <strong>irréversible</strong>. Toutes les commandes créées dans cette période seront définitivement supprimées.
             </p>
 
             <div className="flex gap-3">
               <button
-                onClick={() => setShowBulkDeleteModal(false)}
+                onClick={() => { setShowBulkDeleteModal(false); setModalDateFrom(''); setModalDateTo(''); }}
                 className="flex-1 px-4 py-2.5 border border-gray-200 rounded-[8px] text-[13px] font-bold text-gray-600 hover:bg-gray-50 transition-colors"
               >
                 Annuler
               </button>
               <button
                 onClick={handleBulkDeleteConfirm}
-                disabled={isBulkDeleting}
+                disabled={!modalDateFrom || !modalDateTo || isBulkDeleting}
                 className="flex-1 px-4 py-2.5 bg-red-500 rounded-[8px] text-[13px] font-bold text-white hover:bg-red-600 disabled:opacity-40 disabled:pointer-events-none transition-colors"
               >
-                {isBulkDeleting ? 'Suppression…' : `Supprimer ${totalCount} commande${totalCount !== 1 ? 's' : ''}`}
+                {isBulkDeleting ? 'Suppression…' : 'Supprimer les commandes'}
               </button>
             </div>
           </div>
@@ -509,64 +517,15 @@ export default function OrdersPage() {
                 )}
               </div>
 
-              {/* Date range card */}
-              <div className={`flex items-center gap-0 rounded-[8px] border transition-all overflow-hidden shrink-0 ${
-                dateFrom || dateTo
-                  ? 'border-[#da2966] shadow-[0_0_0_3px_rgba(218,41,102,0.08)]'
-                  : 'border-gray-200'
-              }`}>
-                {/* Left accent + icon */}
-                <div className={`flex items-center gap-2 px-3 py-2 border-r text-[12px] font-semibold whitespace-nowrap transition-colors ${
-                  dateFrom || dateTo
-                    ? 'border-[#da2966]/20 bg-[#fdf2f4] text-[#da2966]'
-                    : 'border-gray-100 bg-gray-50 text-gray-400'
-                }`}>
-                  <CalendarDays size={14} strokeWidth={2.5} />
-                  <span>Période</span>
-                </div>
-
-                {/* From date */}
-                <input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className="px-2.5 py-2 text-[12px] text-gray-600 border-none outline-none bg-white w-[130px]"
-                />
-
-                {/* Separator */}
-                <span className="text-gray-300 text-[13px] font-light select-none">—</span>
-
-                {/* To date */}
-                <input
-                  type="date"
-                  value={dateTo}
-                  min={dateFrom || undefined}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="px-2.5 py-2 text-[12px] text-gray-600 border-none outline-none bg-white w-[130px]"
-                />
-
-                {/* Clear — only when active */}
-                {(dateFrom || dateTo) && (
-                  <button
-                    onClick={() => { setDateFrom(''); setDateTo(''); }}
-                    className="flex items-center justify-center w-7 h-7 rounded-full bg-[#faeef1] text-[#da2966] hover:bg-[#da2966] hover:text-white transition-colors shrink-0"
-                    title="Effacer les dates"
-                  >
-                    <X size={11} strokeWidth={3} />
-                  </button>
-                )}
-
-                {/* Trash — only when full range is set */}
-                {dateFrom && dateTo && (
-                  <button
-                    onClick={() => setShowBulkDeleteModal(true)}
-                    className="flex items-center justify-center w-7 h-7 mr-1 rounded-full bg-red-50 text-red-400 hover:bg-red-500 hover:text-white transition-colors shrink-0"
-                    title="Supprimer toutes les commandes de cette période"
-                  >
-                    <Trash2 size={12} strokeWidth={2.5} />
-                  </button>
-                )}
-              </div>
+              {/* Delete by date range trigger */}
+              <button
+                onClick={() => { setModalDateFrom(''); setModalDateTo(''); setShowBulkDeleteModal(true); }}
+                className="flex items-center gap-2 px-3 py-2 rounded-[8px] border border-gray-200 text-[13px] font-medium text-gray-500 hover:border-red-300 hover:text-red-500 hover:bg-red-50 transition-all shrink-0"
+                title="Supprimer des commandes par période"
+              >
+                <CalendarDays size={15} strokeWidth={2} />
+                <Trash2 size={14} strokeWidth={2} />
+              </button>
             </div>
 
             {/* Result count */}

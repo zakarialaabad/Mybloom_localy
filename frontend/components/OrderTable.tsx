@@ -199,6 +199,17 @@ export function OrderTable({
                 <MoreVertical size={16} />
               </button>
             )}
+            {onDeleteOrder && (
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteOrder(order);
+                }}
+                className="w-8 h-8 rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-colors shrink-0"
+              >
+                <Trash2 size={15} strokeWidth={2.5} />
+              </button>
+            )}
           </div>
 
           <div className="flex items-center justify-between pt-3 border-t border-gray-50 mt-1">
