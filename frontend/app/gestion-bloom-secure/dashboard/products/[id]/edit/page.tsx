@@ -790,7 +790,8 @@ export default function EditProductPage() {
         action={<button onClick={handleAddVariantClick} className="text-[#da2966] text-[13px] font-bold hover:underline">+ Add Size Variant</button>}
       >
         <div className="w-full text-left">
-          <div className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 text-[13px] font-bold text-[#da2966] capitalize opacity-90 items-center border-b border-gray-50 mb-3">
+          {/* Desktop header — hidden on mobile */}
+          <div className="hidden sm:grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 text-[13px] font-bold text-[#da2966] capitalize opacity-90 items-center border-b border-gray-50 mb-3">
             <div>Size</div>
             <div>Unit</div>
             <div>Base Price (DH)</div>
@@ -802,43 +803,61 @@ export default function EditProductPage() {
 
           {/* Saved variants rows */}
           {variants.map((v, index) => (
-            <div key={index} className="grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-4 items-center rounded-[20px] bg-[#f8f8f8] mb-2">
-              <input type="text" value={v.size}
-                readOnly={editingVariantIndex !== index}
-                onChange={e => { const u = [...variants]; u[index] = { ...u[index], size: e.target.value }; setVariants(u); }}
-                className={`w-full h-12 text-center rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
-              <AdminSelect
-                variant="row"
-                value={v.unit}
-                disabled={editingVariantIndex !== index}
-                onChange={e => { const u = [...variants]; u[index] = { ...u[index], unit: e.target.value }; setVariants(u); }}
-                className={editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}
-              >
-                <option value="ml">ml</option>
-                <option value="g">g</option>
-              </AdminSelect>
-              <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
-                <input type="text" value={v.price}
+            <div key={index} className="grid grid-cols-2 sm:grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-3 sm:gap-4 px-4 sm:px-6 py-4 items-end sm:items-center rounded-[20px] bg-[#f8f8f8] mb-2">
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Size</span>
+                <input type="text" value={v.size}
                   readOnly={editingVariantIndex !== index}
-                  onChange={e => { const u = [...variants]; u[index] = { ...u[index], price: e.target.value }; setVariants(u); }}
-                  placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                <div className="h-6 w-px bg-gray-200" /><span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
+                  onChange={e => { const u = [...variants]; u[index] = { ...u[index], size: e.target.value }; setVariants(u); }}
+                  className={`w-full h-10 sm:h-12 text-center rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
               </div>
-              <div className={`flex rounded-xl h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
-                <input type="text" value={v.promotion}
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Unit</span>
+                <AdminSelect
+                  variant="row"
+                  value={v.unit}
+                  disabled={editingVariantIndex !== index}
+                  onChange={e => { const u = [...variants]; u[index] = { ...u[index], unit: e.target.value }; setVariants(u); }}
+                  className={editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}
+                >
+                  <option value="ml">ml</option>
+                  <option value="g">g</option>
+                </AdminSelect>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Prix de base</span>
+                <div className={`flex rounded-xl h-10 sm:h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
+                  <input type="text" value={v.price}
+                    readOnly={editingVariantIndex !== index}
+                    onChange={e => { const u = [...variants]; u[index] = { ...u[index], price: e.target.value }; setVariants(u); }}
+                    placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                  <div className="h-6 w-px bg-gray-200" /><span className="text-[13px] font-bold text-[#da2966] px-3 sm:px-4">DH</span>
+                </div>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Promotion</span>
+                <div className={`flex rounded-xl h-10 sm:h-12 items-center overflow-hidden ${editingVariantIndex === index ? 'bg-white shadow-sm border border-yellow-100/50' : 'bg-transparent'}`}>
+                  <input type="text" value={v.promotion}
+                    readOnly={editingVariantIndex !== index}
+                    onChange={e => { const u = [...variants]; u[index] = { ...u[index], promotion: e.target.value }; setVariants(u); }}
+                    placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                  <div className="h-6 w-px bg-gray-200" /><span className="text-[14px] font-bold text-[#da2966] px-3 sm:px-4">%</span>
+                </div>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Prix final</span>
+                <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-10 sm:h-12 rounded-xl text-[14px] font-extrabold">
+                  {(Number(v.price || 0) * (1 - Number(v.promotion || 0) / 100)).toFixed(2)} DH
+                </div>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Stock</span>
+                <input type="text" value={v.stock}
                   readOnly={editingVariantIndex !== index}
-                  onChange={e => { const u = [...variants]; u[index] = { ...u[index], promotion: e.target.value }; setVariants(u); }}
-                  placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                <div className="h-6 w-px bg-gray-200" /><span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
+                  onChange={e => { const u = [...variants]; u[index] = { ...u[index], stock: e.target.value }; setVariants(u); }}
+                  className={`w-full text-center h-10 sm:h-12 rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
               </div>
-              <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold">
-                {(Number(v.price || 0) * (1 - Number(v.promotion || 0) / 100)).toFixed(2)} DH
-              </div>
-              <input type="text" value={v.stock}
-                readOnly={editingVariantIndex !== index}
-                onChange={e => { const u = [...variants]; u[index] = { ...u[index], stock: e.target.value }; setVariants(u); }}
-                className={`w-full text-center h-12 rounded-xl text-[14px] font-bold text-[#333] focus:outline-none ${editingVariantIndex === index ? 'bg-white border border-yellow-100/50 shadow-sm' : 'bg-transparent border-none'}`} />
-              <div className="flex items-center gap-2">
+              <div className="col-span-2 sm:col-span-1 flex items-center gap-2 pt-2 sm:pt-0 border-t sm:border-0 border-gray-200/80 justify-end sm:justify-start">
                 {editingVariantIndex === index
                   ? <button onClick={() => handleSaveEditVariant(index)} className="h-10 px-3 bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[12px] font-bold rounded-xl flex items-center gap-1"><CheckIcon /> Save</button>
                   : <button onClick={() => handleEditVariant(index)} className="flex items-center justify-center text-gray-500 hover:text-[#da2966] w-9 h-9 rounded-full border border-gray-200 bg-white shadow-sm transition-colors"><EditIcon /></button>
@@ -851,34 +870,54 @@ export default function EditProductPage() {
           {/* Draft (new) row */}
           {draftVariant !== null && (
             <div
-              className={`grid grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-4 px-6 py-5 items-center rounded-[20px] transition-colors duration-300 ${entryRowHighlight ? 'bg-[#fff0f3]' : 'bg-[#ffffe9]'}`}
+              className={`grid grid-cols-2 sm:grid-cols-[1fr_1.2fr_1.5fr_1.5fr_1.5fr_1fr_1fr] gap-3 sm:gap-4 px-4 sm:px-6 py-4 sm:py-5 items-end sm:items-center rounded-[20px] transition-colors duration-300 ${entryRowHighlight ? 'bg-[#fff0f3]' : 'bg-[#ffffe9]'}`}
               style={entryRowHighlight ? { animation: 'rowPulse 2s ease-out forwards' } : {}}
             >
-              <input type="text" value={draftVariant.size} onChange={e => setDraftVariant({ ...draftVariant, size: e.target.value })} placeholder="20" className="w-full h-12 text-center rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm" />
-              <AdminSelect
-                variant="row"
-                value={draftVariant.unit}
-                onChange={e => setDraftVariant({ ...draftVariant, unit: e.target.value })}
-                className="bg-white border border-yellow-100/50 shadow-sm"
-              >
-                <option value="ml">ml</option>
-                <option value="g">g</option>
-              </AdminSelect>
-              <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
-                <input type="text" value={draftVariant.price} onChange={e => setDraftVariant({ ...draftVariant, price: e.target.value })} placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                <div className="h-6 w-px bg-gray-200" /><span className="text-[13px] font-bold text-[#da2966] px-4">DH</span>
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Size</span>
+                <input type="text" value={draftVariant.size} onChange={e => setDraftVariant({ ...draftVariant, size: e.target.value })} placeholder="20" className="w-full h-10 sm:h-12 text-center rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] focus:outline-none shadow-sm" />
               </div>
-              <div className="flex bg-white rounded-xl shadow-sm h-12 items-center overflow-hidden border border-yellow-100/50">
-                <input type="text" value={draftVariant.promotion} onChange={e => setDraftVariant({ ...draftVariant, promotion: e.target.value })} placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
-                <div className="h-6 w-px bg-gray-200" /><span className="text-[14px] font-bold text-[#da2966] px-4">%</span>
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Unit</span>
+                <AdminSelect
+                  variant="row"
+                  value={draftVariant.unit}
+                  onChange={e => setDraftVariant({ ...draftVariant, unit: e.target.value })}
+                  className="bg-white border border-yellow-100/50 shadow-sm"
+                >
+                  <option value="ml">ml</option>
+                  <option value="g">g</option>
+                </AdminSelect>
               </div>
-              <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-12 rounded-xl text-[14px] font-extrabold shadow-sm">
-                {(Number(draftVariant.price || 0) * (1 - Number(draftVariant.promotion || 0) / 100)).toFixed(2)} DH
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Prix de base</span>
+                <div className="flex bg-white rounded-xl shadow-sm h-10 sm:h-12 items-center overflow-hidden border border-yellow-100/50">
+                  <input type="text" value={draftVariant.price} onChange={e => setDraftVariant({ ...draftVariant, price: e.target.value })} placeholder="120" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                  <div className="h-6 w-px bg-gray-200" /><span className="text-[13px] font-bold text-[#da2966] px-3 sm:px-4">DH</span>
+                </div>
               </div>
-              <input type="text" value={draftVariant.stock} onChange={e => setDraftVariant({ ...draftVariant, stock: e.target.value })} placeholder="33" className="w-full text-center h-12 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] shadow-sm focus:outline-none" />
-              <button onClick={handleValidateDraft} className="h-12 w-full max-w-[100px] bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors">
-                <CheckIcon /> Validate
-              </button>
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Promotion</span>
+                <div className="flex bg-white rounded-xl shadow-sm h-10 sm:h-12 items-center overflow-hidden border border-yellow-100/50">
+                  <input type="text" value={draftVariant.promotion} onChange={e => setDraftVariant({ ...draftVariant, promotion: e.target.value })} placeholder="0" className="w-full text-center bg-transparent text-[14px] font-bold text-[#333] focus:outline-none" />
+                  <div className="h-6 w-px bg-gray-200" /><span className="text-[14px] font-bold text-[#da2966] px-3 sm:px-4">%</span>
+                </div>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Prix final</span>
+                <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-10 sm:h-12 rounded-xl text-[14px] font-extrabold shadow-sm">
+                  {(Number(draftVariant.price || 0) * (1 - Number(draftVariant.promotion || 0) / 100)).toFixed(2)} DH
+                </div>
+              </div>
+              <div>
+                <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Stock</span>
+                <input type="text" value={draftVariant.stock} onChange={e => setDraftVariant({ ...draftVariant, stock: e.target.value })} placeholder="33" className="w-full text-center h-10 sm:h-12 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] shadow-sm focus:outline-none" />
+              </div>
+              <div className="col-span-2 sm:col-span-1 pt-2 sm:pt-0 border-t sm:border-0 border-yellow-200/60">
+                <button onClick={handleValidateDraft} className="w-full sm:w-auto sm:max-w-[100px] h-11 sm:h-12 bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors px-4">
+                  <CheckIcon /> Validate
+                </button>
+              </div>
             </div>
           )}
 
