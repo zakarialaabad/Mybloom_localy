@@ -776,9 +776,9 @@ export default function EditProductPage() {
           />
           <div onClick={() => fileInputRef.current?.click()} className="w-full min-h-[120px] rounded-2xl border-2 border-dashed border-[#da2966] bg-[#fcfcfc] flex flex-col items-center justify-center py-4 px-4 hover:bg-[#fff0f3] transition-colors cursor-pointer overflow-hidden">
             <CloudUploadIcon />
-            <p className="text-[13px] sm:text-[14px] font-bold text-[#333] mt-2 mb-1 text-center leading-snug">Glissez-d´┐¢posez des photos ici</p>
-            <p className="text-[11px] font-medium text-gray-400 text-center">Maximum 4 photos autoris´┐¢es</p>
-            <p className="text-[10px] text-gray-400 mt-1 text-center">JPG ou PNG ┬À 10 Mo max</p>
+            <p className="text-[13px] sm:text-[14px] font-bold text-[#333] mt-2 mb-1 text-center leading-snug">Glissez-déposez des photos ici</p>
+            <p className="text-[11px] font-medium text-gray-400 text-center">Maximum 4 photos autorisées</p>
+            <p className="text-[10px] text-gray-400 mt-1 text-center">JPG ou PNG à 10 Mo max</p>
           </div>
         </Card>
       </div>

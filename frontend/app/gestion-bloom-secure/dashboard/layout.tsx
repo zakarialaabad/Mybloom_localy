@@ -93,10 +93,10 @@ export default function AdminDashboardLayout({
   };
 
   const navItems = [
-    { name: 'Tableau de bord', href: '/gestion-bloom-secure/dashboard', icon: LayoutDashboard },
+    { name: 'Tableau de bord', shortName: 'Accueil', href: '/gestion-bloom-secure/dashboard', icon: LayoutDashboard },
     { name: 'Produits', href: '/gestion-bloom-secure/dashboard/products', icon: Package },
     { name: 'Commandes', href: '/gestion-bloom-secure/dashboard/orders', icon: ShoppingCart },
-    { name: 'Codes promo', href: '/gestion-bloom-secure/dashboard/coupons', icon: Ticket },
+    { name: 'Codes promo', shortName: 'Promos', href: '/gestion-bloom-secure/dashboard/coupons', icon: Ticket },
     { name: 'Bannières', href: '/gestion-bloom-secure/dashboard/banners', icon: ImageIcon },
     { name: 'Avis', href: '/gestion-bloom-secure/dashboard/reviews', icon: MessageSquare },
   ];
@@ -378,10 +378,10 @@ export default function AdminDashboardLayout({
                   size={21}
                   strokeWidth={isActive ? 2.5 : 1.8}
                 />
-                <span className={`text-[9px] tracking-wide leading-none ${
+                <span className={`text-[9px] tracking-wide leading-none whitespace-nowrap ${
                   isActive ? 'font-bold text-[#da2966]' : 'font-medium'
                 }`}>
-                  {item.name}
+                  {('shortName' in item ? item.shortName : item.name) as string}
                 </span>
                 {isActive && (
                   <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-7 h-0.5 bg-[#da2966] rounded-full" />
