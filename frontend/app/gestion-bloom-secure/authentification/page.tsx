@@ -104,9 +104,9 @@ export default function AdminLoginPage() {
               <label className="block text-[12px] font-serif text-[#4a4a4a] mb-2 font-medium">
                 Mot de passe
               </label>
-              <div className="flex items-center gap-3 border border-[#faeef1] px-3 py-3 bg-white focus-within:border-[#da2966] focus-within:ring-1 focus-within:ring-[#da2966] transition-all">
+              <div className="relative flex items-center border border-[#faeef1] px-3 py-3 bg-white focus-within:border-[#da2966] focus-within:ring-1 focus-within:ring-[#da2966] transition-all">
                 <Lock className="w-4 h-4 text-[#da2966] shrink-0" strokeWidth={2.5} />
-                <div className="w-px h-[18px] bg-gray-200" />
+                <div className="w-px h-[18px] bg-gray-200 mx-3" />
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder=""
@@ -114,12 +114,12 @@ export default function AdminLoginPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
-                  className="flex-1 bg-transparent border-none focus:outline-none text-[14px] font-serif text-gray-800 placeholder:text-gray-400"
+                  className="flex-1 bg-transparent border-none focus:outline-none text-[14px] font-serif text-gray-800 placeholder:text-gray-400 pr-7 min-w-0"
                 />
-                <button 
-                  type="button" 
-                  onClick={() => setShowPassword(!showPassword)} 
-                  className="focus:outline-none shrink-0 cursor-pointer"
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 focus:outline-none cursor-pointer p-1"
                 >
                   {showPassword ? (
                     <EyeOff className="w-4 h-4 text-[#da2966] hover:text-[#b11b4e] transition-colors" strokeWidth={2.5} />
