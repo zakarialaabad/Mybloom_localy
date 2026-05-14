@@ -913,8 +913,14 @@ export default function EditProductPage() {
                 <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Stock</span>
                 <input type="text" value={draftVariant.stock} onChange={e => setDraftVariant({ ...draftVariant, stock: e.target.value })} placeholder="33" className="w-full text-center h-10 sm:h-12 rounded-xl bg-white border border-yellow-100/50 text-[14px] font-bold text-[#333] shadow-sm focus:outline-none" />
               </div>
-              <div className="col-span-2 sm:col-span-1 pt-2 sm:pt-0 border-t sm:border-0 border-yellow-200/60">
-                <button onClick={handleValidateDraft} className="w-full sm:w-auto sm:max-w-[100px] h-11 sm:h-12 bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors px-4">
+              <div className="col-span-2 sm:col-span-1 flex items-center gap-2 pt-2 sm:pt-0 border-t sm:border-0 border-yellow-200/60">
+                <button
+                  onClick={() => setDraftVariant(null)}
+                  className="flex-1 sm:flex-none h-11 sm:h-10 sm:px-3 border border-gray-200 bg-white text-gray-500 text-[12px] font-bold rounded-xl flex items-center justify-center shadow-sm hover:border-red-200 hover:text-red-400 transition-colors"
+                >
+                  Annuler
+                </button>
+                <button onClick={handleValidateDraft} className="flex-1 sm:flex-none sm:max-w-[90px] h-11 sm:h-12 bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors px-3">
                   <CheckIcon /> Validate
                 </button>
               </div>
