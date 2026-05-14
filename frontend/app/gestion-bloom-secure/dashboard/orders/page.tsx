@@ -549,24 +549,24 @@ export default function OrdersPage() {
                 {(dateFrom || dateTo) && (
                   <button
                     onClick={() => { setDateFrom(''); setDateTo(''); }}
-                    className="flex items-center justify-center w-7 h-7 mr-1 rounded-full bg-[#faeef1] text-[#da2966] hover:bg-[#da2966] hover:text-white transition-colors shrink-0"
+                    className="flex items-center justify-center w-7 h-7 rounded-full bg-[#faeef1] text-[#da2966] hover:bg-[#da2966] hover:text-white transition-colors shrink-0"
                     title="Effacer les dates"
                   >
                     <X size={11} strokeWidth={3} />
                   </button>
                 )}
-              </div>
 
-              {/* Bulk delete button — appears only when full range is set */}
-              {dateFrom && dateTo && (
-                <button
-                  onClick={() => setShowBulkDeleteModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-[8px] bg-red-500 hover:bg-red-600 text-white text-[12px] font-bold transition-colors shrink-0 shadow-sm"
-                >
-                  <Trash2 size={13} strokeWidth={2.5} />
-                  Supprimer la période
-                </button>
-              )}
+                {/* Trash — only when full range is set */}
+                {dateFrom && dateTo && (
+                  <button
+                    onClick={() => setShowBulkDeleteModal(true)}
+                    className="flex items-center justify-center w-7 h-7 mr-1 rounded-full bg-red-50 text-red-400 hover:bg-red-500 hover:text-white transition-colors shrink-0"
+                    title="Supprimer toutes les commandes de cette période"
+                  >
+                    <Trash2 size={12} strokeWidth={2.5} />
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Result count */}
