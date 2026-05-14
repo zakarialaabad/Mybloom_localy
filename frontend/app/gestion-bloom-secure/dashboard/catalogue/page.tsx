@@ -132,13 +132,16 @@ export default function CataloguePage() {
     <div className="min-h-screen bg-[#fefbfb] pb-24 lg:pb-8">
 
       {/* Header */}
-      <div className="px-4 pt-6 pb-5 md:px-6 lg:px-8">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <h1 className="text-[24px] md:text-[28px] font-bold text-[#1a1a1a] leading-tight">Gestion du Catalogue</h1>
-            <p className="text-[13px] text-gray-400 mt-0.5">Catégories · Marques · Ingrédients · Types</p>
+      <div className="px-4 pt-6 pb-4 md:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-[20px] md:text-[28px] font-bold text-[#1a1a1a] leading-tight">Gestion du Catalogue</h1>
+            <p className="text-[12px] text-gray-400 mt-0.5 truncate">
+              <span className="sm:hidden">Catég. · Marques · Ingréd. · Types</span>
+              <span className="hidden sm:inline">Catégories · Marques · Ingrédients · Types</span>
+            </p>
           </div>
-          <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#2b2b2b] text-white text-[13px] font-semibold hover:bg-[#1a1a1a] transition-colors shrink-0 shadow-sm">
+          <button onClick={openAdd} className="flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#2b2b2b] text-white text-[13px] font-semibold hover:bg-[#1a1a1a] transition-colors shrink-0 shadow-sm">
             <Plus size={15} strokeWidth={2.5} />
             <span className="hidden sm:inline">{currentTab.addLabel}</span>
             <span className="sm:hidden">Ajouter</span>
@@ -148,12 +151,12 @@ export default function CataloguePage() {
 
       {/* Tab Switcher */}
       <div className="px-4 md:px-6 lg:px-8 mb-5">
-        <div className="inline-flex bg-[#f3f3f3] rounded-[16px] p-1 gap-0.5">
+        <div className="flex sm:inline-flex bg-[#f3f3f3] rounded-[16px] p-1 gap-0.5">
           {TABS.map(tab => {
             const isActive = activeTab === tab.key;
             return (
               <button key={tab.key} onClick={() => handleTabChange(tab.key)}
-                className={`flex items-center gap-2 px-4 py-2.5 rounded-[12px] text-[13px] font-semibold transition-all duration-200 ${
+                className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 sm:gap-2 px-2 sm:px-4 py-2.5 rounded-[12px] text-[12px] sm:text-[13px] font-semibold transition-all duration-200 ${
                   isActive ? 'bg-white text-[#da2966] shadow-sm' : 'text-gray-500 hover:text-[#333]'
                 }`}>
                 <tab.Icon size={14} strokeWidth={isActive ? 2.5 : 2} className={isActive ? 'text-[#da2966]' : 'text-gray-400'} />
