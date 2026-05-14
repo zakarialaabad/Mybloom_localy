@@ -39,6 +39,14 @@ class OrderController extends Controller
             });
         }
 
+        if ($dateFrom = $request->query('date_from')) {
+            $query->whereDate('created_at', '>=', $dateFrom);
+        }
+
+        if ($dateTo = $request->query('date_to')) {
+            $query->whereDate('created_at', '<=', $dateTo);
+        }
+
         return OrderResource::collection($query->paginate(25));
     }
 
@@ -127,6 +135,18 @@ class OrderController extends Controller
         $history = $order->statusHistories()->create($data);
 
         return response()->json(['data' => $history], 201);
+    }
+
+    /**
+     * DELETE /api/v1/admin/orders/{order}
+     */
+    public function destroy(Order $order): JsonResponse
+    {
+        $order->items()->delete();
+        $order->statusHistories()->delete();
+        $order->delete();
+
+        return response()->json(['message' => 'Order deleted successfully.'], 200);
     }
 
     /**

@@ -952,7 +952,10 @@ export const adminOrderService = {
   },
   updateStatus: async (orderId: number, status: string): Promise<void> => {
     await apiClient.patch(`/v1/admin/orders/${orderId}/status`, { status });
-  }
+  },
+  destroy: async (orderId: number): Promise<void> => {
+    await apiClient.delete(`/v1/admin/orders/${orderId}`);
+  },
 };
 
 // ─── Admin Review types ───────────────────────────────────────────────────────

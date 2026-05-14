@@ -19,11 +19,44 @@ import {
   PackageCheck,
   X,
   ChevronDown,
+  CalendarDays,
+  Trash2,
+  CheckCircle2,
+  AlertCircle,
 } from 'lucide-react';
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const VALID_STATUSES = ['pending', 'confirmed', 'preparing', 'shipped', 'delivered', 'cancelled'];
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
+
+type Toast = { id: number; type: 'success' | 'error'; message: string };
+
+function ToastContainer({ toasts, onRemove }: { toasts: Toast[]; onRemove: (id: number) => void }) {
+  return (
+    <div className="fixed top-4 right-4 z-[9999] flex flex-col gap-2 pointer-events-none">
+      {toasts.map((t) => (
+        <div
+          key={t.id}
+          className={`flex items-center gap-3 px-4 py-3 rounded-[10px] shadow-lg text-[13px] font-semibold min-w-[280px] pointer-events-auto animate-in fade-in slide-in-from-top-3 ${
+            t.type === 'success'
+              ? 'bg-[#eefaf3] text-[#0f8e5c] border border-[#c3edd6]'
+              : 'bg-red-50 text-red-600 border border-red-200'
+          }`}
+        >
+          {t.type === 'success'
+            ? <CheckCircle2 size={16} strokeWidth={2.5} />
+            : <AlertCircle size={16} strokeWidth={2.5} />}
+          <span className="flex-1">{t.message}</span>
+          <button onClick={() => onRemove(t.id)} className="opacity-60 hover:opacity-100 transition-opacity">
+            <X size={14} />
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
@@ -31,14 +64,30 @@ export default function OrdersPage() {
   // ── Filter / search state ───────────────────────────────────────────────────
   const [search, setSearch]             = useState('');
   const [statusFilter, setStatusFilter] = useState('');
+  const [dateFrom, setDateFrom]         = useState('');
+  const [dateTo, setDateTo]             = useState('');
   const [currentPage, setCurrentPage]   = useState(1);
 
   // ── Modal and stats state ───────────────────────────────────────────────────
-  const [stats, setStats]         = useState<AdminOrderStats | null>(null);
+  const [stats, setStats]               = useState<AdminOrderStats | null>(null);
   const [editingOrder, setEditingOrder] = useState<AdminOrder | null>(null);
   const [viewingOrder, setViewingOrder] = useState<AdminOrder | null>(null);
   const [newStatus, setNewStatus]       = useState('');
   const [isUpdating, setIsUpdating]     = useState(false);
+
+  // ── Delete state ────────────────────────────────────────────────────────────
+  const [deletingOrder, setDeletingOrder] = useState<AdminOrder | null>(null);
+  const [isDeleting, setIsDeleting]       = useState(false);
+
+  // ── Toast state ─────────────────────────────────────────────────────────────
+  const [toasts, setToasts] = useState<Toast[]>([]);
+  let toastCounter = 0;
+  const showToast = (type: 'success' | 'error', message: string) => {
+    const id = Date.now() + (toastCounter++);
+    setToasts((prev) => [...prev, { id, type, message }]);
+    setTimeout(() => setToasts((prev) => prev.filter((t) => t.id !== id)), 4000);
+  };
+  const removeToast = (id: number) => setToasts((prev) => prev.filter((t) => t.id !== id));
 
   // ── Fetch orders with React Query ───────────────────────────────────────────
   const { orders, meta, isLoading, refetch } = useOrderList({
@@ -46,6 +95,8 @@ export default function OrdersPage() {
     limit: 25,
     ...(search && { search }),
     ...(statusFilter && { status: statusFilter }),
+    ...(dateFrom && { date_from: dateFrom }),
+    ...(dateTo && { date_to: dateTo }),
   });
 
   const totalPages = meta?.last_page ?? 1;
@@ -68,7 +119,7 @@ export default function OrdersPage() {
   // ── Reset to page 1 on search/filter change ─────────────────────────────────
   useEffect(() => {
     setCurrentPage(1);
-  }, [search, statusFilter]);
+  }, [search, statusFilter, dateFrom, dateTo]);
 
   // ── Pagination helpers ──────────────────────────────────────────────────────
   const handlePageChange = (page: number) => {
@@ -124,10 +175,30 @@ export default function OrdersPage() {
     }
   };
 
+  const handleDeleteConfirm = async () => {
+    if (!deletingOrder) return;
+    setIsDeleting(true);
+    try {
+      await adminOrderService.destroy(deletingOrder.id);
+      setDeletingOrder(null);
+      refetch();
+      const res = await adminOrderService.stats();
+      setStats(res);
+      showToast('success', `Commande ${deletingOrder.order_number} supprimée avec succès.`);
+    } catch {
+      showToast('error', 'Erreur lors de la suppression. Veuillez réessayer.');
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   // ─────────────────────────────────────────────────────────────────────────────
 
   return (
     <div className="p-5 sm:p-8 max-w-[1200px] mx-auto w-full">
+
+      {/* ── Toast notifications ──────────────────────────────────────────────── */}
+      <ToastContainer toasts={toasts} onRemove={removeToast} />
 
       {/* ── Loading overlay ──────────────────────────────────────────────────── */}
       {isLoading && (
@@ -149,6 +220,47 @@ export default function OrdersPage() {
             adminOrderService.stats().then(setStats).catch(console.error);
           }}
         />
+      )}
+
+      {/* ── Delete confirmation modal ─────────────────────────────────────────── */}
+      {deletingOrder && (
+        <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/20 backdrop-blur-sm">
+          <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-5 sm:p-6 w-[400px] mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-red-500">
+                  <Trash2 size={18} strokeWidth={2.5} />
+                </div>
+                <h3 className="text-[15px] font-bold text-[#111]">Supprimer la commande</h3>
+              </div>
+              <button onClick={() => setDeletingOrder(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <X size={18} />
+              </button>
+            </div>
+            <p className="text-[13px] text-gray-500 mb-1 ml-[52px]">
+              Commande <span className="font-bold text-[#da2966]">{deletingOrder.order_number}</span>
+            </p>
+            <p className="text-[13px] text-gray-400 mb-5 ml-[52px]">{deletingOrder.customer_name}</p>
+            <p className="text-[13px] text-gray-600 bg-red-50/60 border border-red-100 rounded-[8px] px-4 py-3 mb-5">
+              Cette action est <strong>irréversible</strong>. La commande et son historique seront définitivement supprimés.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setDeletingOrder(null)}
+                className="flex-1 px-4 py-2.5 border border-gray-200 rounded-[8px] text-[13px] font-bold text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                Annuler
+              </button>
+              <button
+                onClick={handleDeleteConfirm}
+                disabled={isDeleting}
+                className="flex-1 px-4 py-2.5 bg-red-500 rounded-[8px] text-[13px] font-bold text-white hover:bg-red-600 disabled:opacity-40 disabled:pointer-events-none transition-colors"
+              >
+                {isDeleting ? 'Suppression…' : 'Supprimer définitivement'}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* ── Status-update modal ──────────────────────────────────────────────── */}
@@ -282,52 +394,90 @@ export default function OrdersPage() {
       <div className="bg-white rounded-[16px] border border-[#f2e6ea] shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
 
         {/* Toolbar */}
-        <div className="p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-gray-100">
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+        <div className="p-4 sm:p-5 flex flex-col gap-3 border-b border-gray-100">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
 
-            {/* Status filter */}
-            <AdminSelect
-              variant="filter"
-              wrapperClassName="w-full sm:w-auto"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="">Tous les statuts</option>
-              {VALID_STATUSES.map((s) => (
-                <option key={s} value={s}>{capitalize(s)}</option>
-              ))}
-            </AdminSelect>
+              {/* Status filter */}
+              <AdminSelect
+                variant="filter"
+                wrapperClassName="w-full sm:w-auto"
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+              >
+                <option value="">Tous les statuts</option>
+                {VALID_STATUSES.map((s) => (
+                  <option key={s} value={s}>{capitalize(s)}</option>
+                ))}
+              </AdminSelect>
 
-            {/* Search */}
-            <div className="relative w-full sm:w-[280px]">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search size={16} className="text-gray-400" />
+              {/* Search */}
+              <div className="relative w-full sm:w-[280px]">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search size={16} className="text-gray-400" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Rechercher par nom, téléphone ou numéro…"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-9 pr-8 py-2 border border-gray-200 rounded-[8px] text-[13px] focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all"
+                />
+                {search && (
+                  <button
+                    onClick={() => setSearch('')}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    <X size={14} />
+                  </button>
+                )}
               </div>
-              <input
-                type="text"
-                placeholder="Rechercher par nom, téléphone ou numéro de commande…"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full pl-9 pr-8 py-2 border border-gray-200 rounded-[8px] text-[13px] focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all"
-              />
-              {search && (
-                <button
-                  onClick={() => setSearch('')}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
-                >
-                  <X size={14} />
-                </button>
-              )}
+            </div>
+
+            {/* Result count */}
+            <div className="text-[13px] text-gray-500 font-medium whitespace-nowrap self-end sm:self-auto">
+              {isLoading
+                ? <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+                : totalCount > 0
+                  ? `Affichage ${paginationFrom}–${paginationTo} sur ${totalCount.toLocaleString()}`
+                  : 'Aucun résultat'}
             </div>
           </div>
 
-          {/* Result count */}
-          <div className="text-[13px] text-gray-500 font-medium whitespace-nowrap self-end sm:self-auto">
-            {isLoading
-              ? <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
-              : totalCount > 0
-                ? `Affichage ${paginationFrom}–${paginationTo} sur ${totalCount.toLocaleString()}`
-                : 'Aucun résultat'}
+          {/* Date range filter row */}
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            <div className="flex items-center gap-2 text-[12px] text-gray-400 font-medium">
+              <CalendarDays size={15} className="text-[#da2966]" />
+              <span>Filtrer par date</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="pl-3 pr-3 py-2 border border-gray-200 rounded-[8px] text-[12px] text-gray-600 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all"
+                />
+              </div>
+              <span className="text-[12px] text-gray-400 font-medium">→</span>
+              <div className="relative">
+                <input
+                  type="date"
+                  value={dateTo}
+                  min={dateFrom || undefined}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="pl-3 pr-3 py-2 border border-gray-200 rounded-[8px] text-[12px] text-gray-600 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all"
+                />
+              </div>
+              {(dateFrom || dateTo) && (
+                <button
+                  onClick={() => { setDateFrom(''); setDateTo(''); }}
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-[8px] text-[12px] font-semibold text-gray-500 hover:text-red-500 hover:bg-red-50 border border-gray-200 transition-colors"
+                >
+                  <X size={12} /> Effacer
+                </button>
+              )}
+            </div>
           </div>
         </div>
 
@@ -337,6 +487,7 @@ export default function OrdersPage() {
           isLoading={isLoading}
           onViewOrder={(order) => setViewingOrder(order)}
           onEditStatus={(order) => openEditModal(order)}
+          onDeleteOrder={(order) => setDeletingOrder(order)}
         />
 
         {/* ── Pagination ─────────────────────────────────────────────────────── */}

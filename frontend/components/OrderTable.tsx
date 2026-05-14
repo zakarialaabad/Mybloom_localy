@@ -9,7 +9,7 @@ import { AdminOrder } from '@/services/api';
 import DataTable, { type Column } from '@/components/DataTable';
 import { getStatusBadge, getStatusDot, getStatusLabel } from '@/lib/config/statuses';
 import { formatDate, formatCurrency, getInitials, capitalize } from '@/lib/utils';
-import { Eye, MoreVertical } from 'lucide-react';
+import { Eye, MoreVertical, Trash2 } from 'lucide-react';
 
 interface OrderTableProps {
   /** Array of orders to display */
@@ -26,6 +26,8 @@ interface OrderTableProps {
   onViewOrder?: (order: AdminOrder) => void;
   /** Show/hide edit status button */
   onEditStatus?: (order: AdminOrder) => void;
+  /** Callback to trigger delete confirmation */
+  onDeleteOrder?: (order: AdminOrder) => void;
 }
 
 export function OrderTable({
@@ -36,6 +38,7 @@ export function OrderTable({
   isLoading = false,
   onViewOrder,
   onEditStatus,
+  onDeleteOrder,
 }: OrderTableProps) {
   // ─── Column Definitions ────────────────────────────────────────────────────
 
@@ -139,6 +142,15 @@ export function OrderTable({
               className="w-8 h-8 rounded-full text-gray-400 hover:bg-[#fdf2f4] hover:text-[#da2966] flex items-center justify-center transition-colors"
             >
               <MoreVertical size={16} strokeWidth={2.5} />
+            </button>
+          )}
+          {onDeleteOrder && (
+            <button
+              title="Supprimer la commande"
+              onClick={() => onDeleteOrder(order)}
+              className="w-8 h-8 rounded-full text-gray-400 hover:bg-red-50 hover:text-red-500 flex items-center justify-center transition-colors"
+            >
+              <Trash2 size={15} strokeWidth={2.5} />
             </button>
           )}
         </div>

@@ -135,6 +135,7 @@ Route::prefix('api')->group(function () {
                 Route::get('orders/{order}',               [AdminOrderController::class, 'show']);
                 Route::patch('orders/{order}/status',      [AdminOrderController::class, 'updateStatus']);
                 Route::post('orders/{order}/status-history', [AdminOrderController::class, 'addStatusHistory']);
+                Route::delete('orders/{order}',            [AdminOrderController::class, 'destroy']);
 
                 // Reviews
                 Route::get('reviews/stats',                [AdminReviewController::class, 'stats']);
