@@ -138,6 +138,35 @@ class OrderController extends Controller
     }
 
     /**
+     * DELETE /api/v1/admin/orders/bulk-delete
+     * Deletes all orders within a date range (inclusive).
+     */
+    public function bulkDestroyByDateRange(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'date_from' => ['required', 'date_format:Y-m-d'],
+            'date_to'   => ['required', 'date_format:Y-m-d', 'after_or_equal:date_from'],
+        ]);
+
+        $orders = Order::whereDate('created_at', '>=', $data['date_from'])
+                       ->whereDate('created_at', '<=', $data['date_to'])
+                       ->get();
+
+        $count = $orders->count();
+
+        foreach ($orders as $order) {
+            $order->items()->delete();
+            $order->statusHistories()->delete();
+            $order->delete();
+        }
+
+        return response()->json([
+            'message' => "{$count} order(s) deleted successfully.",
+            'deleted' => $count,
+        ]);
+    }
+
+    /**
      * DELETE /api/v1/admin/orders/{order}
      */
     public function destroy(Order $order): JsonResponse

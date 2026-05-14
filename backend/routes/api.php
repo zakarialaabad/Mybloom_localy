@@ -131,6 +131,7 @@ Route::prefix('api')->group(function () {
 
                 // Orders
                 Route::get('orders/stats',                 [AdminOrderController::class, 'stats']);
+                Route::delete('orders/bulk-delete',        [AdminOrderController::class, 'bulkDestroyByDateRange']);
                 Route::get('orders',                       [AdminOrderController::class, 'index']);
                 Route::get('orders/{order}',               [AdminOrderController::class, 'show']);
                 Route::patch('orders/{order}/status',      [AdminOrderController::class, 'updateStatus']);

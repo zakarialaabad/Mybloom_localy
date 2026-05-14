@@ -956,6 +956,12 @@ export const adminOrderService = {
   destroy: async (orderId: number): Promise<void> => {
     await apiClient.delete(`/v1/admin/orders/${orderId}`);
   },
+  bulkDestroyByDateRange: async (dateFrom: string, dateTo: string): Promise<{ deleted: number }> => {
+    const { data } = await apiClient.delete<{ deleted: number }>('/v1/admin/orders/bulk-delete', {
+      data: { date_from: dateFrom, date_to: dateTo },
+    });
+    return data;
+  },
 };
 
 // ─── Admin Review types ───────────────────────────────────────────────────────
