@@ -394,14 +394,15 @@ export default function OrdersPage() {
       <div className="bg-white rounded-[16px] border border-[#f2e6ea] shadow-[0_2px_15px_rgba(0,0,0,0.02)]">
 
         {/* Toolbar */}
-        <div className="p-4 sm:p-5 flex flex-col gap-3 border-b border-gray-100">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+        <div className="p-4 sm:p-5 border-b border-gray-100">
+          {/* Row 1 — filters + count */}
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 flex-1">
 
               {/* Status filter */}
               <AdminSelect
                 variant="filter"
-                wrapperClassName="w-full sm:w-auto"
+                wrapperClassName="w-full sm:w-auto shrink-0"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
               >
@@ -412,71 +413,80 @@ export default function OrdersPage() {
               </AdminSelect>
 
               {/* Search */}
-              <div className="relative w-full sm:w-[280px]">
+              <div className="relative w-full sm:w-[260px] shrink-0">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search size={16} className="text-gray-400" />
+                  <Search size={15} className="text-gray-400" />
                 </div>
                 <input
                   type="text"
-                  placeholder="Rechercher par nom, téléphone ou numéro…"
+                  placeholder="Nom, téléphone ou numéro…"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full pl-9 pr-8 py-2 border border-gray-200 rounded-[8px] text-[13px] focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all"
                 />
                 {search && (
+                  <button onClick={() => setSearch('')} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors">
+                    <X size={13} />
+                  </button>
+                )}
+              </div>
+
+              {/* Date range card */}
+              <div className={`flex items-center gap-0 rounded-[8px] border transition-all overflow-hidden shrink-0 ${
+                dateFrom || dateTo
+                  ? 'border-[#da2966] shadow-[0_0_0_3px_rgba(218,41,102,0.08)]'
+                  : 'border-gray-200'
+              }`}>
+                {/* Left accent + icon */}
+                <div className={`flex items-center gap-2 px-3 py-2 border-r text-[12px] font-semibold whitespace-nowrap transition-colors ${
+                  dateFrom || dateTo
+                    ? 'border-[#da2966]/20 bg-[#fdf2f4] text-[#da2966]'
+                    : 'border-gray-100 bg-gray-50 text-gray-400'
+                }`}>
+                  <CalendarDays size={14} strokeWidth={2.5} />
+                  <span>Période</span>
+                </div>
+
+                {/* From date */}
+                <input
+                  type="date"
+                  value={dateFrom}
+                  onChange={(e) => setDateFrom(e.target.value)}
+                  className="px-2.5 py-2 text-[12px] text-gray-600 border-none outline-none bg-white w-[130px]"
+                />
+
+                {/* Separator */}
+                <span className="text-gray-300 text-[13px] font-light select-none">—</span>
+
+                {/* To date */}
+                <input
+                  type="date"
+                  value={dateTo}
+                  min={dateFrom || undefined}
+                  onChange={(e) => setDateTo(e.target.value)}
+                  className="px-2.5 py-2 text-[12px] text-gray-600 border-none outline-none bg-white w-[130px]"
+                />
+
+                {/* Clear — only when active */}
+                {(dateFrom || dateTo) && (
                   <button
-                    onClick={() => setSearch('')}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                    onClick={() => { setDateFrom(''); setDateTo(''); }}
+                    className="flex items-center justify-center w-7 h-7 mr-1 rounded-full bg-[#faeef1] text-[#da2966] hover:bg-[#da2966] hover:text-white transition-colors shrink-0"
+                    title="Effacer les dates"
                   >
-                    <X size={14} />
+                    <X size={11} strokeWidth={3} />
                   </button>
                 )}
               </div>
             </div>
 
             {/* Result count */}
-            <div className="text-[13px] text-gray-500 font-medium whitespace-nowrap self-end sm:self-auto">
+            <div className="text-[13px] text-gray-500 font-medium whitespace-nowrap self-end lg:self-auto">
               {isLoading
                 ? <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
                 : totalCount > 0
                   ? `Affichage ${paginationFrom}–${paginationTo} sur ${totalCount.toLocaleString()}`
                   : 'Aucun résultat'}
-            </div>
-          </div>
-
-          {/* Date range filter row */}
-          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-            <div className="flex items-center gap-2 text-[12px] text-gray-400 font-medium">
-              <CalendarDays size={15} className="text-[#da2966]" />
-              <span>Filtrer par date</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="relative">
-                <input
-                  type="date"
-                  value={dateFrom}
-                  onChange={(e) => setDateFrom(e.target.value)}
-                  className="pl-3 pr-3 py-2 border border-gray-200 rounded-[8px] text-[12px] text-gray-600 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all"
-                />
-              </div>
-              <span className="text-[12px] text-gray-400 font-medium">→</span>
-              <div className="relative">
-                <input
-                  type="date"
-                  value={dateTo}
-                  min={dateFrom || undefined}
-                  onChange={(e) => setDateTo(e.target.value)}
-                  className="pl-3 pr-3 py-2 border border-gray-200 rounded-[8px] text-[12px] text-gray-600 focus:outline-none focus:border-[#da2966] focus:ring-1 focus:ring-[#da2966] transition-all"
-                />
-              </div>
-              {(dateFrom || dateTo) && (
-                <button
-                  onClick={() => { setDateFrom(''); setDateTo(''); }}
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-[8px] text-[12px] font-semibold text-gray-500 hover:text-red-500 hover:bg-red-50 border border-gray-200 transition-colors"
-                >
-                  <X size={12} /> Effacer
-                </button>
-              )}
             </div>
           </div>
         </div>
