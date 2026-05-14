@@ -223,7 +223,7 @@ export default function OrdersPage() {
 
       {/* ── Loading overlay ──────────────────────────────────────────────────── */}
       {isLoading && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-white/40 backdrop-blur-[2px] pointer-events-none">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/40 backdrop-blur-[2px] pointer-events-none">
           <div className="w-10 h-10 border-4 border-[#da2966] border-t-transparent rounded-full animate-spin" />
         </div>
       )}
@@ -245,7 +245,7 @@ export default function OrdersPage() {
 
       {/* ── Bulk delete by date range modal ──────────────────────────────────── */}
       {showBulkDeleteModal && (
-        <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/20 backdrop-blur-sm">
           <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-5 sm:p-6 w-full max-w-[440px] mx-4">
             <div className="flex items-center justify-between mb-5">
               <div className="flex items-center gap-3">
@@ -310,7 +310,7 @@ export default function OrdersPage() {
 
       {/* ── Delete confirmation modal ─────────────────────────────────────────── */}
       {deletingOrder && (
-        <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/20 backdrop-blur-sm">
           <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-5 sm:p-6 w-[400px] mx-4">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -351,7 +351,7 @@ export default function OrdersPage() {
 
       {/* ── Status-update modal ──────────────────────────────────────────────── */}
       {editingOrder && (
-        <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/20 backdrop-blur-sm">
           <div className="bg-white rounded-[16px] shadow-xl border border-gray-100 p-4 sm:p-6 w-[380px] mx-4">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-[16px] font-bold text-[#111]">Modifier le statut de la commande</h3>
