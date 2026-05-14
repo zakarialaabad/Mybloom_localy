@@ -796,11 +796,11 @@ export default function AddProductPage() {
               <div className="col-span-2 sm:col-span-1 flex items-center gap-2 pt-2 sm:pt-0 border-t sm:border-0 border-yellow-200/60">
                 <button
                   onClick={() => setDraftVariant(null)}
-                  className="flex-1 sm:flex-none h-11 sm:h-10 sm:px-3 border border-gray-200 bg-white text-gray-500 text-[12px] font-bold rounded-xl flex items-center justify-center shadow-sm hover:border-red-200 hover:text-red-400 transition-colors"
+                  className="flex-1 h-10 px-3 border border-gray-200 bg-white text-gray-500 text-[12px] font-bold rounded-xl flex items-center justify-center shadow-sm hover:border-red-200 hover:text-red-400 transition-colors"
                 >
                   Annuler
                 </button>
-                <button onClick={handleValidateDraft} className="flex-1 sm:flex-none sm:max-w-[90px] h-11 sm:h-12 bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[13px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors px-3">
+                <button onClick={handleValidateDraft} className="flex-1 h-10 bg-[#0f834d] hover:bg-[#0c6b3e] text-white text-[12px] font-extrabold rounded-xl flex items-center justify-center gap-1.5 shadow-[0_4px_12px_rgba(15,131,77,0.25)] transition-colors px-2">
                   <CheckIcon /> Validate
                 </button>
               </div>
