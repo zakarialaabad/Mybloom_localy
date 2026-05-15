@@ -422,12 +422,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
 
   const FAQ = (product.faqs && product.faqs.length > 0)
     ? product.faqs.map((f) => ({ q: f.question, a: f.answer }))
-    : [
-        { q: 'Ce produit convient-il à tous les types de peau ?',   a: 'Oui, convient à tous les types de peau y compris sensibles.' },
-        { q: 'Comment appliquer ce parfum ?',                  a: 'Appliquez sur les points de pulsation : poignets, cou et derrière les oreilles.' },
-        { q: 'Quelle est la durée de la senteur ?',                   a: 'Typiquement 6–12 heures selon le type de peau et les conditions.' },
-        { q: 'Laisse-t-il une sensation grasse ?',                 a: 'Non, notre formule s\u0027absorbe proprement sans résidu.' },
-      ];
+    : [];
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
@@ -1049,6 +1044,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             )}
 
             {/* Accordion: FAQ */}
+            {FAQ.length > 0 && (
             <div className="border-t border-gray-200 pt-6 mt-6">
               <button onClick={() => setIsFaqOpen(!isFaqOpen)} className="flex w-full items-center justify-between text-left group">
                 <span className="font-serif text-2xl italic text-gray-900 group-hover:text-[#4a403a] transition-colors">FAQ</span>
@@ -1070,6 +1066,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 </div>
               )}
             </div>
+            )}
             </div>{/* end accordion sections */}
           </div>{/* end details column */}
         </div>{/* end two-column flex row */}
