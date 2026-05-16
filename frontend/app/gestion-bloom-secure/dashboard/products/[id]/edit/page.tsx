@@ -847,7 +847,7 @@ export default function EditProductPage() {
               <div>
                 <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Prix final</span>
                 <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-10 sm:h-12 rounded-xl text-[14px] font-extrabold">
-                  {(Number(v.price || 0) * (1 - Number(v.promotion || 0) / 100)).toFixed(2)} DH
+                  {Math.round(Number(v.price || 0) * (1 - Number(v.promotion || 0) / 100))} DH
                 </div>
               </div>
               <div>
@@ -906,7 +906,7 @@ export default function EditProductPage() {
               <div>
                 <span className="block text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1.5 sm:hidden">Prix final</span>
                 <div className="flex items-center justify-center bg-[#fce8ef] text-[#da2966] h-10 sm:h-12 rounded-xl text-[14px] font-extrabold shadow-sm">
-                  {(Number(draftVariant.price || 0) * (1 - Number(draftVariant.promotion || 0) / 100)).toFixed(2)} DH
+                  {Math.round(Number(draftVariant.price || 0) * (1 - Number(draftVariant.promotion || 0) / 100))} DH
                 </div>
               </div>
               <div>
