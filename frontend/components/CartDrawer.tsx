@@ -111,9 +111,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         <p className="font-serif italic text-xs text-gray-500 mt-0.5">{item.productType ?? 'Product'}</p>
                       </div>
                       <div className="text-right flex flex-col items-end">
-                        <div className="font-serif font-bold italic text-base text-gray-900">{item.unitPrice * item.quantity} DH</div>
+                        <div className="font-serif font-bold italic text-base text-gray-900">{Math.round(item.unitPrice * item.quantity)} DH</div>
                         {item.originalPrice != null && item.originalPrice > item.unitPrice && (
-                          <div className="font-serif italic text-[10px] text-gray-400 line-through mt-0.5">{item.originalPrice * item.quantity} DH</div>
+                          <div className="font-serif italic text-[10px] text-gray-400 line-through mt-0.5">{Math.round(item.originalPrice * item.quantity)} DH</div>
                         )}
                       </div>
                     </div>
@@ -147,7 +147,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
           <div className="space-y-4 mb-6 px-2">
             <div className="flex justify-between items-center text-sm">
               <span className="font-serif font-bold text-gray-800">Your Price</span>
-              <span className="font-serif font-bold italic text-gray-900">{subtotal} DH</span>
+              <span className="font-serif font-bold italic text-gray-900">{Math.round(subtotal)} DH</span>
             </div>
             
             <div className="flex justify-between items-start text-sm">
@@ -164,7 +164,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <div className="font-serif italic text-[11px] text-gray-500 mt-0.5">Ajoutez un code promo et économisez sur votre commande.</div>
               </div>
               <span className={`font-serif font-bold italic ${couponDiscount > 0 ? 'text-[#2e7d32]' : 'text-gray-900'}`}>
-                {couponDiscount > 0 ? `- ${couponDiscount} DH` : '0 DH'}
+                {couponDiscount > 0 ? `- ${Math.round(couponDiscount)} DH` : '0 DH'}
               </span>
             </div>
 
@@ -172,7 +172,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
             <div className="flex justify-between items-center text-base mt-2">
               <span className="font-serif font-bold text-gray-800">Total</span>
-              <span className="font-serif font-bold italic text-gray-900">{totalWithCoupon} DH</span>
+              <span className="font-serif font-bold italic text-gray-900">{Math.round(totalWithCoupon)} DH</span>
             </div>
           </div>
 

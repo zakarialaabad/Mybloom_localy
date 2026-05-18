@@ -596,11 +596,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                   <div className="flex items-baseline gap-2 justify-end">
                     {selectedSize?.original_price && (
                       <span className="font-serif text-lg sm:text-xl text-gray-400 line-through italic whitespace-nowrap">
-                        {selectedSize.original_price} DH
+                        {Math.round(selectedSize.original_price)} DH
                       </span>
                     )}
                     <span className="font-serif text-2xl sm:text-3xl font-bold italic text-gray-900 whitespace-nowrap">
-                      {selectedSize?.final_price ?? product.min_price} DH
+                      {Math.round(selectedSize?.final_price ?? product.min_price)} DH
                     </span>
                   </div>
                   {product.review_count > 0 && (
@@ -711,7 +711,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                         {variant.size}{variant.unit ?? 'ml'}
                       </span>
                       <span className={`font-serif text-xl font-bold italic ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
-                        {variant.final_price} DH
+                        {Math.round(variant.final_price)} DH
                       </span>
                     </button>
                   );
@@ -757,7 +757,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                         {size.volume_ml}{(size as any).unit ?? 'ml'}
                       </span>
                       <span className={`font-serif text-xl font-bold italic ${isSelected ? 'text-gray-900' : 'text-gray-600'}`}>
-                        {size.price} DH
+                        {Math.round(size.price)} DH
                       </span>
                     </button>
                   );

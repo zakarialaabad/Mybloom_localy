@@ -302,10 +302,10 @@ export default function ProductCard({
           <div className="space-y-0.5 pt-0.5">
             {/* Price Row — Consistent height */}
             <div className="flex items-baseline space-x-2 h-6">
-              <span className="text-lg sm:text-xl font-bold text-gray-900 leading-none">{price} DH</span>
+              <span className="text-lg sm:text-xl font-bold text-gray-900 leading-none">{Math.round(price)} DH</span>
               {originalPrice > price && (
                 <>
-                  <span className="text-xs text-gray-400 line-through decoration-1">{originalPrice} DH</span>
+                  <span className="text-xs text-gray-400 line-through decoration-1">{Math.round(originalPrice)} DH</span>
                 </>
               )}
             </div>

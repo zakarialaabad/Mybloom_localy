@@ -125,9 +125,9 @@ export function formatCurrency(value: number | null | undefined, currency = 'MAD
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency,
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(value);
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(Math.round(value));
   } catch {
     return '—';
   }
