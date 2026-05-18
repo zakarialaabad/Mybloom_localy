@@ -20,6 +20,23 @@ class UpdateProductRequest extends FormRequest
                 $this->merge(['variants_array' => $decoded]);
             }
         }
+
+        // Round prices to integers before validation
+        if ($this->has('price')) {
+            $this->merge(['price' => (int) round((float) $this->get('price', 0))]);
+        }
+        if ($this->has('original_price')) {
+            $this->merge(['original_price' => (int) round((float) $this->get('original_price', 0))]);
+        }
+        if ($this->has('variants_array') && is_array($this->get('variants_array'))) {
+            $variants = $this->get('variants_array');
+            foreach ($variants as &$variant) {
+                if (isset($variant['price'])) {
+                    $variant['price'] = (int) round((float) $variant['price']);
+                }
+            }
+            $this->merge(['variants_array' => $variants]);
+        }
     }
 
     public function rules(): array

@@ -49,7 +49,7 @@ class VariantService
             $product->variants()->create([
                 'size'              => $variantData['size'],
                 'unit'              => $variantData['unit'] ?? 'ml',
-                'price'             => $variantData['price'],
+                'price'             => (int) round((float) $variantData['price']),
                 'promotion_percent' => $promoPercent,
                 'stock_quantity'    => (int) ($variantData['stock'] ?? $variantData['stock_quantity'] ?? 0),
                 'is_default'        => ($index === $defaultIndex),
@@ -63,12 +63,12 @@ class VariantService
             ?? $product->variants->first();
 
         if ($defaultVariant) {
-            $basePrice    = (float) $defaultVariant->price;
+            $basePrice    = (int) $defaultVariant->price;
             $promoPercent = (float) $defaultVariant->promotion_percent;
             $stock        = (int) $defaultVariant->stock_quantity;
 
             if ($promoPercent > 0) {
-                $finalPrice = round($basePrice * (1 - $promoPercent / 100), 2);
+                $finalPrice = (int) round($basePrice * (1 - $promoPercent / 100));
                 $product->update([
                     'price'          => $finalPrice,
                     'original_price' => $basePrice,
