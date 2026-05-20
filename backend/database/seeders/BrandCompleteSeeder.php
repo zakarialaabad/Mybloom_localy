@@ -5,49 +5,82 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Str;
 
 class BrandCompleteSeeder extends Seeder
 {
     /**
-     * Seed all brands (extracted from former product_types list + existing).
+     * Seed all brands from the current database state.
      * Uses upsert so it is safe to run multiple times.
      */
     public function run(): void
     {
         $brands = [
-            // My Bloom (in-house brand)
-            ['name' => 'My Bloom',                  'slug' => 'my-bloom'],
-
-            // 26 brands recovered from the wrongly-seeded product_types
-            ['name' => 'Carolina Herrera',           'slug' => 'carolina-herrera'],
-            ['name' => 'Diesel',                     'slug' => 'diesel'],
-            ['name' => 'Burberry',                   'slug' => 'burberry'],
-            ['name' => 'Yves Saint Laurent',         'slug' => 'yves-saint-laurent'],
-            ['name' => 'Dior',                       'slug' => 'dior'],
-            ['name' => 'Lancôme',                    'slug' => 'lancome'],
-            ['name' => 'Dolce & Gabbana',            'slug' => 'dolce-gabbana'],
-            ['name' => 'Givenchy',                   'slug' => 'givenchy'],
-            ['name' => 'Nina Ricci',                 'slug' => 'nina-ricci'],
-            ['name' => 'Paco Rabanne',               'slug' => 'paco-rabanne'],
-            ['name' => 'Van Cleef & Arpels',         'slug' => 'van-cleef-arpels'],
-            ['name' => 'Giorgio Armani',             'slug' => 'giorgio-armani'],
-            ['name' => 'Arabian Oud',                'slug' => 'arabian-oud'],
-            ['name' => 'Azzaro',                     'slug' => 'azzaro'],
-            ['name' => 'Chanel',                     'slug' => 'chanel'],
-            ['name' => 'Yves Rocher',                'slug' => 'yves-rocher'],
-            ['name' => 'Prada',                      'slug' => 'prada'],
-            ['name' => 'Jean Paul Gaultier',         'slug' => 'jean-paul-gaultier'],
-            ['name' => "Victoria's Secret",          'slug' => 'victorias-secret'],
-            ['name' => 'Zara',                       'slug' => 'zara'],
-            ['name' => 'Lattafa',                    'slug' => 'lattafa'],
-            ['name' => 'Maison Francis Kurkdjian',   'slug' => 'maison-francis-kurkdjian'],
-            ['name' => 'Tom Ford',                   'slug' => 'tom-ford'],
-            ['name' => 'Versace',                    'slug' => 'versace'],
-            ['name' => 'Gucci',                      'slug' => 'gucci'],
-            ['name' => 'Guerlain',                   'slug' => 'guerlain'],
-            ['name' => 'Gissah',                     'slug' => 'gissah'],
-
+            // id=1
+            ['name' => 'My Bloom',              'slug' => 'my-bloom'],
+            // id=2
+            ['name' => 'Caroline Herrera',      'slug' => 'caroline-herrera'],
+            // id=3
+            ['name' => 'Diesel',                'slug' => 'diesel'],
+            // id=4
+            ['name' => 'Burberry',              'slug' => 'burberry'],
+            // id=5
+            ['name' => 'Yves Saint Laurent',    'slug' => 'yves-saint-laurent'],
+            // id=6
+            ['name' => 'Dior',                  'slug' => 'dior'],
+            // id=7
+            ['name' => 'Lancôme',               'slug' => 'lancome'],
+            // id=8
+            ['name' => 'Dolce & Gabbana',       'slug' => 'dolce-gabbana'],
+            // id=9
+            ['name' => 'Givenchy',              'slug' => 'givenchy'],
+            // id=10
+            ['name' => 'Nina',                  'slug' => 'nina'],
+            // id=11
+            ['name' => 'Paco Rabanne',          'slug' => 'paco-rabanne'],
+            // id=13
+            ['name' => 'Armani',                'slug' => 'armani'],
+            // id=14
+            ['name' => 'Arabian Oud',           'slug' => 'arabian-oud'],
+            // id=15
+            ['name' => 'Azzaro',                'slug' => 'azzaro'],
+            // id=16
+            ['name' => 'Chanel',                'slug' => 'chanel'],
+            // id=17
+            ['name' => 'Yves Rocher',           'slug' => 'yves-rocher'],
+            // id=18
+            ['name' => 'Prada',                 'slug' => 'prada'],
+            // id=19
+            ['name' => 'Jean Paul Gaultier',    'slug' => 'jean-paul-gaultier'],
+            // id=20
+            ['name' => "Victoria's Secret",     'slug' => 'victorias-secret'],
+            // id=21
+            ['name' => 'Zara',                  'slug' => 'zara'],
+            // id=22
+            ['name' => 'Lattafa',               'slug' => 'lattafa'],
+            // id=23
+            ['name' => 'Francis Kurkdjian',     'slug' => 'francis-kurkdjian'],
+            // id=24
+            ['name' => 'Tom Ford',              'slug' => 'tom-ford'],
+            // id=25
+            ['name' => 'Versace',               'slug' => 'versace'],
+            // id=26
+            ['name' => 'Gucci',                 'slug' => 'gucci'],
+            // id=27
+            ['name' => 'Guerlain',              'slug' => 'guerlain'],
+            // id=28
+            ['name' => 'قصة',                  'slug' => 'gissah'],
+            // id=30
+            ['name' => 'Lacoste',               'slug' => 'lacoste'],
+            // id=31
+            ['name' => 'Hugo Boss',             'slug' => 'hugo-boss'],
+            // id=32
+            ['name' => 'Elie saab',             'slug' => 'elie-saab'],
+            // id=33
+            ['name' => 'Escada',                'slug' => 'escada'],
+            // id=34
+            ['name' => 'Mugler',                'slug' => 'mugler'],
+            // id=35
+            ['name' => 'Laverne',               'slug' => 'laverne'],
         ];
 
         $inserted = 0;

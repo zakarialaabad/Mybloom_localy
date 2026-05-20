@@ -1,33 +1,32 @@
 {
     "catalog": {
         "brand": "My Bloom",
-        "total_products": 82,
+        "total_products": 95,
         "categories": [
-            "Beurre corporel",
-            "Gommage Corporel",
-            "maquillage",
-            "parfum",
-            "hygiène corporelle"
+            "Corps",
+            "visage",
+            "Cheveux",
+            "Maison",
+            "Pack",
+            "Parfum"
         ],
         "products": [
             {
                 "id": 1,
                 "name": "Summer in Bali",
                 "type_produit": "Body Butter",
-                "img_main": "/images/Summer in Bali Body Butter/summer-in-bali-body-butter-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_7knznn7knznn7knz.jpg",
                 "subtitle": "Plongez dans la chaleur d'une sérénité tropicale",
                 "description": "Découvrez notre beurre corporel Summer in Bali, formule 100% naturelle enrichie en huile de sésame et pépins de raisin. Unifie le teint, atténue les taches pigmentaires avec hydratation profonde. Livraison rapide au Maroc, produit 100% original. Parfait usage quotidien.",
                 "price": 80,
                 "original_price": null,
-                "stock": 100,
+                "stock": 98,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "Beurre corporel",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -36,20 +35,20 @@
                         "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100,
+                        "stock_quantity": 98,
                         "unit": "g"
                     }
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
-                        "name": "Sésame",
-                        "image_url": null
+                        "id": 5,
+                        "name": "Pépins de raisin",
+                        "image_url": "ingredients/LNafSC5QGUTjZvWbLHKAfFGIcb4cfM4v.webp"
                     },
                     {
-                        "id": 2,
-                        "name": "Pépins de raisin",
-                        "image_url": null
+                        "id": 6,
+                        "name": "Sésame",
+                        "image_url": "ingredients/AjkMcDbNjoUpV8afNVPMeDnWBwiYKen6.webp"
                     }
                 ],
                 "faqs": [
@@ -77,20 +76,18 @@
                 "id": 2,
                 "name": "Summer in Bali",
                 "type_produit": "Body Scrub",
-                "img_main": "/images/Summer in Bali Body Scrub/summer-in-bali-body-scrub-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_bvx3d3bvx3d3bvx3.jpg",
                 "subtitle": "Une exfoliation luxueuse inspirée de Bali pour révéler une peau douce, éclatante et parfaitement unifiée",
                 "description": "Gommage corporel Summer in Bali 100% naturel enrichi en huile pépins raisin et sésame. Élimine cellules mortes, unifie teint naturellement. Peau douce, lisse, lumineuse en une application. Livraison Maroc, authentique. Idéal exfoliation luxueuse quotidienne.",
                 "price": 80,
                 "original_price": null,
-                "stock": 10,
-                "is_best_seller": false,
+                "stock": 9,
+                "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "Gommage Corporel",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -99,20 +96,20 @@
                         "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 10,
+                        "stock_quantity": 9,
                         "unit": "g"
                     }
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 5,
                         "name": "Pépins de raisin",
-                        "image_url": null
+                        "image_url": "ingredients/LNafSC5QGUTjZvWbLHKAfFGIcb4cfM4v.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 6,
                         "name": "Sésame",
-                        "image_url": null
+                        "image_url": "ingredients/AjkMcDbNjoUpV8afNVPMeDnWBwiYKen6.webp"
                     }
                 ],
                 "faqs": [
@@ -144,20 +141,18 @@
                 "id": 3,
                 "name": "A Lot of Love",
                 "type_produit": "Body Scrub",
-                "img_main": "/images/A lot of love Body Scrub/a-lot-of-love-body-scrub-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_3fw11x3fw11x3fw1.jpg",
                 "subtitle": "L'élixir gommant qui révèle la douceur naturelle de votre peau",
                 "description": "Gommage A Lot of Love 100% naturel allie huile théier et jojoba puissante. Exfolie douceur, traite peau poule efficacement. Peau soyeuse lumineuse garantie. Livraison gratuite Maroc, produit authentique. Usage 2-3 fois semaine pour résultats optimaux.",
                 "price": 80,
                 "original_price": null,
-                "stock": 0,
+                "stock": 20,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "Gommage Corporel",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -166,20 +161,20 @@
                         "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 0,
+                        "stock_quantity": 20,
                         "unit": "g"
                     }
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 8,
                         "name": "Jojoba",
-                        "image_url": null
+                        "image_url": "ingredients/PCnrh1VRkefnfDCDM4VQ88BKek0YJYhJ.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 9,
                         "name": "Arbre à thé",
-                        "image_url": null
+                        "image_url": "ingredients/VSPWthTdq3HKQXlwOJwdr6aU4oofqICN.webp"
                     }
                 ],
                 "faqs": [
@@ -207,7 +202,7 @@
                 "id": 4,
                 "name": "A Lot of Love",
                 "type_produit": "Body Butter",
-                "img_main": "/images/A lot of Love -- Body Butter/a-lot-of-love-body-butter-img_main.jpg",
+                "img_main": "products/Gu0P3C5qMxxyaU1ulRkFbh2DqzRTcKsa.webp",
                 "subtitle": "Enveloppez votre peau d'un charme fruité irrésistible",
                 "description": "Beurre corporel A Lot of Love formule exclusive 100% naturelle traite efficacement peau poule. Enrichi théier et jojoba. Lisse progressivement, restaure texture soyeuse. Résultats visibles 2-3 semaines. Produit original, livraison rapide Maroc.",
                 "price": 80,
@@ -216,11 +211,9 @@
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "Beurre corporel",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -235,19 +228,19 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
-                        "name": "Arbre à thé",
-                        "image_url": null
-                    },
-                    {
-                        "id": 2,
+                        "id": 8,
                         "name": "Jojoba",
-                        "image_url": null
+                        "image_url": "ingredients/PCnrh1VRkefnfDCDM4VQ88BKek0YJYhJ.webp"
                     },
                     {
-                        "id": 3,
+                        "id": 9,
+                        "name": "Arbre à thé",
+                        "image_url": "ingredients/VSPWthTdq3HKQXlwOJwdr6aU4oofqICN.webp"
+                    },
+                    {
+                        "id": 14,
                         "name": "Cacao",
-                        "image_url": null
+                        "image_url": "ingredients/yszw7lIc2Wr8ztNG7Eudb8Y01aKV1y4M.webp"
                     }
                 ],
                 "faqs": [
@@ -275,20 +268,18 @@
                 "id": 5,
                 "name": "Sugar Pop",
                 "type_produit": "Body Scrub",
-                "img_main": "/images/Sugar Pop Body Scrub/sugar-pop-body-scrub-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_faj8oefaj8oefaj8.jpg",
                 "subtitle": "La douceur sucrée qui transforme votre peau dès la première utilisation",
                 "description": "Sugar Pop gommage 100% naturel fusion huile amande douce coco. Exfolie délicatement, traite boutons corps. Usage polyvalent comme gel douche. Peau douce garantie. Livraison express Maroc, authentique. Idéal tous types peau.",
                 "price": 80,
                 "original_price": null,
-                "stock": 0,
+                "stock": 20,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "Gommage Corporel",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -297,20 +288,20 @@
                         "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 0,
+                        "stock_quantity": 20,
                         "unit": "g"
                     }
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
-                        "name": "Amande",
-                        "image_url": null
+                        "id": 3,
+                        "name": "Noix de coco",
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     },
                     {
-                        "id": 2,
-                        "name": "Noix de coco",
-                        "image_url": null
+                        "id": 7,
+                        "name": "Amande",
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
                     }
                 ],
                 "faqs": [
@@ -338,20 +329,18 @@
                 "id": 6,
                 "name": "Sugar Pop",
                 "type_produit": "Body Butter",
-                "img_main": "/images/Sugar Pop -- Body Butter/sugar-pop-body-butter-img_main.jpg",
+                "img_main": "products/WSUqCK1cIwBUZiQsP17hYATWfTclCY8h.webp",
                 "subtitle": "Douceur sucrée et peau de soie dès la première application",
                 "description": "Beurre Sugar Pop riche formule 100% naturelle. Amande douce, coco, karité, cacao, vitamine E. Élimine imperfections, hydrate profondément. Texture riche non-grasse. Produit original livraison rapide Maroc. Soin complet quotidien.",
                 "price": 80,
                 "original_price": null,
-                "stock": 100,
+                "stock": 99,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "Beurre corporel",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -360,30 +349,30 @@
                         "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100,
+                        "stock_quantity": 99,
                         "unit": "g"
                     }
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
-                        "name": "Amande",
-                        "image_url": null
-                    },
-                    {
-                        "id": 2,
-                        "name": "Noix de coco",
-                        "image_url": null
-                    },
-                    {
                         "id": 3,
-                        "name": "Karité",
-                        "image_url": null
+                        "name": "Noix de coco",
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     },
                     {
-                        "id": 4,
+                        "id": 7,
+                        "name": "Amande",
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
+                    },
+                    {
+                        "id": 13,
+                        "name": "Karité",
+                        "image_url": "ingredients/U601YhnA68QPWTYIAtopKVyKqwLroCNK.webp"
+                    },
+                    {
+                        "id": 14,
                         "name": "Cacao",
-                        "image_url": null
+                        "image_url": "ingredients/yszw7lIc2Wr8ztNG7Eudb8Y01aKV1y4M.webp"
                     }
                 ],
                 "faqs": [
@@ -411,7 +400,7 @@
                 "id": 7,
                 "name": "Cherry Tint",
                 "type_produit": "Tint Visage",
-                "img_main": "/images/Cherry Tint/cherry-tint-img_main.jpg",
+                "img_main": "products/cherry-tint-img_main.jpg",
                 "subtitle": "L'éclat naturel à portée de main",
                 "description": "Tint Cherry Tint teinte cerise naturelle eau rose aloe. Sublime joues lèvres fraîcheur naturelle. Hydratation délicate persistante toute journée. Formule sûre peau. Livraison Maroc. Maquillage naturel quotidien.",
                 "price": 50,
@@ -420,11 +409,9 @@
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "maquillage",
+                "gender": "women",
+                "badges": [],
+                "category": "visage",
                 "type": "visage",
                 "variants": [
                     {
@@ -439,14 +426,14 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 4,
                         "name": "Aloe vera",
-                        "image_url": null
+                        "image_url": "ingredients/L3AvZlTgrW0sPEwg9ua1Ftmbe6luTE3i.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 11,
                         "name": "Eau de rose distillée",
-                        "image_url": null
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
                     }
                 ],
                 "faqs": [
@@ -472,22 +459,20 @@
             },
             {
                 "id": 8,
-                "name": "Sexy Bloom Hair Mist",
+                "name": "Sexy Bloom",
                 "type_produit": "Hair Mist",
-                "img_main": "/images/Sexy Bloom Hair Mist/sexy-bloom-hair-mist-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_kr2bxykr2bxykr2b.jpg",
                 "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
                 "description": "Brume capillaire Sexy Bloom eau rose vitamine E. Parfum féminin captivant cheveux. Persistance toute journée sans alourdir. Usage cheveux corps. Produit original Maroc. Fragrance sensuelle quotidienne.",
                 "price": 50,
                 "original_price": null,
                 "stock": 100,
-                "is_best_seller": false,
+                "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Cheveux",
                 "type": "cheveux",
                 "variants": [
                     {
@@ -502,9 +487,9 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 11,
                         "name": "Eau de rose distillée",
-                        "image_url": null
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
                     }
                 ],
                 "faqs": [
@@ -530,22 +515,20 @@
             },
             {
                 "id": 9,
-                "name": "The Secret Hair Mist",
+                "name": "The Secret",
                 "type_produit": "Hair Mist",
-                "img_main": "/images/Thes sucret Hair Mist/the-secret-hair-mist-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_kq9jnqkq9jnqkq9j.jpg",
                 "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
                 "description": "Brume Secret eau rose vitamine E. Cheveux fragrance captivante toute journée sans alourdir. Polyvalente cheveux corps. Produit original livraison Maroc. Parfum féminin discret quotidien.",
                 "price": 50,
                 "original_price": null,
                 "stock": 100,
-                "is_best_seller": false,
+                "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Cheveux",
                 "type": "cheveux",
                 "variants": [
                     {
@@ -560,9 +543,9 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 11,
                         "name": "Eau de rose distillée",
-                        "image_url": null
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
                     }
                 ],
                 "faqs": [
@@ -588,9 +571,9 @@
             },
             {
                 "id": 10,
-                "name": "Paradis Adress Hair Mist",
+                "name": "Paradis Adress",
                 "type_produit": "Hair Mist",
-                "img_main": "/images/Paradis Adresse Hair Mist/paradis-adress-hair-mist-img_main.jpg",
+                "img_main": "products/VmebEAb3VEBUXCNX4vpArnrj6XDg5JGu.webp",
                 "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
                 "description": "Brume Paradis Adress eau rose vitamine E. Cheveux fragrance féminine captivante toute journée. Sans alourdir. Polyvalente cheveux corps. Produit original Maroc. Choix femmes marocaines.",
                 "price": 50,
@@ -599,11 +582,9 @@
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Cheveux",
                 "type": "cheveux",
                 "variants": [
                     {
@@ -618,9 +599,9 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 11,
                         "name": "Eau de rose distillée",
-                        "image_url": null
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
                     }
                 ],
                 "faqs": [
@@ -646,9 +627,9 @@
             },
             {
                 "id": 11,
-                "name": "Heartbeat Body Mist",
+                "name": "Heartbeat",
                 "type_produit": "Body Mist",
-                "img_main": "/images/Heartbeat Body Mist/heart-rate-body-mist-img_main.jpg",
+                "img_main": "products/GgEh9yN2sgxpPm0xybPlyvgHGqG6ieWa.webp",
                 "subtitle": "Chaque battement raconte une histoire d'amour",
                 "description": "Brume Heartbeat eau rose. Parfum frais captivant voile reflets scintillants. Persistance longue durée. Produit authentique livraison Maroc. Occasions spéciales, usage quotidien.",
                 "price": 75,
@@ -658,10 +639,8 @@
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -676,9 +655,9 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 11,
                         "name": "Eau de rose distillée",
-                        "image_url": null
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
                     }
                 ],
                 "faqs": [
@@ -704,9 +683,9 @@
             },
             {
                 "id": 12,
-                "name": "Over Dose Body Mist",
+                "name": "Over Dose",
                 "type_produit": "Body Mist",
-                "img_main": "/images/Over Dose Body Mist/over-dose-body-mist-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_a2lm2ta2lm2ta2lm.jpg",
                 "subtitle": "Chaque battement raconte une histoire d'amour",
                 "description": "Over Dose brume corporelle eau rose. Voile reflets scintillants subtil. Parfum frais longue persistance. Présence naturelle. Produit original Maroc. Tous moments journée.",
                 "price": 75,
@@ -716,10 +695,8 @@
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -734,9 +711,9 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 11,
                         "name": "Eau de rose distillée",
-                        "image_url": null
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
                     }
                 ],
                 "faqs": [
@@ -762,22 +739,20 @@
             },
             {
                 "id": 13,
-                "name": "Remember Body Mist",
+                "name": "Remember me",
                 "type_produit": "Body Mist",
-                "img_main": "/images/Remember Body Mist/remember-body-mist-img_main.jpg",
+                "img_main": "products/liO4MoKvjha1VZtEc5twALbkxgyaa94H.webp",
                 "subtitle": "Chaque battement raconte une histoire d'amour",
                 "description": "Remember brume corporelle eau rose. Parfum frais captivant voile scintillant subtil prestige. Toute journée. Produit original authentique Maroc. Moments précieux inoubliables.",
                 "price": 75,
                 "original_price": null,
                 "stock": 100,
-                "is_best_seller": false,
+                "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -792,9 +767,9 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 11,
                         "name": "Eau de rose distillée",
-                        "image_url": null
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
                     }
                 ],
                 "faqs": [
@@ -822,7 +797,7 @@
                 "id": 14,
                 "name": "Deo Roll-On Femme",
                 "type_produit": "Déodorant",
-                "img_main": "/images/Deo Roll Femme/deo-roll-on-femme-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_414m28414m28414m.jpg",
                 "subtitle": "Fraîcheur naturelle et douceur au quotidien",
                 "description": "Déodorant Deo femme protection 48h naturelle. Aloe vera oliban. Sans aluminium sulfates alcool. Unifie progressivement teint aisselles. Femme marocaine. Livraison rapide. Testé dermatologiquement.",
                 "price": 50,
@@ -831,11 +806,9 @@
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "female",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "hygiène corporelle",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -850,19 +823,19 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 4,
                         "name": "Aloe vera",
-                        "image_url": null
+                        "image_url": "ingredients/L3AvZlTgrW0sPEwg9ua1Ftmbe6luTE3i.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 10,
                         "name": "Oliban",
-                        "image_url": null
+                        "image_url": "ingredients/hXa7jCR6ikM12C8IUwfU1YgpIkPxHyVd.webp"
                     },
                     {
-                        "id": 3,
+                        "id": 11,
                         "name": "Eau de rose distillée",
-                        "image_url": null
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
                     }
                 ],
                 "faqs": [
@@ -890,20 +863,18 @@
                 "id": 15,
                 "name": "Deo Roll-On Homme",
                 "type_produit": "Déodorant",
-                "img_main": "/images/Deo Roll Homme/deo-roll-on-homme-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_9ercbx9ercbx9erc.jpg",
                 "subtitle": "Protection efficace et fraîcheur masculine toute la journée",
                 "description": "Déodorant Deo homme protection 48h naturelle aloe oliban. Innovation fraîcheur masculine longue durée. Homme actif Maroc. Produit original livraison rapide. Protection quotidienne garantie.",
                 "price": 50,
                 "original_price": null,
-                "stock": 100,
-                "is_best_seller": false,
+                "stock": 98,
+                "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "male",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "hygiène corporelle",
+                "gender": "men",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -912,25 +883,25 @@
                         "final_price": 50,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100,
+                        "stock_quantity": 98,
                         "unit": "ml"
                     }
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 4,
                         "name": "Aloe vera",
-                        "image_url": null
+                        "image_url": "ingredients/L3AvZlTgrW0sPEwg9ua1Ftmbe6luTE3i.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 10,
                         "name": "Oliban",
-                        "image_url": null
+                        "image_url": "ingredients/hXa7jCR6ikM12C8IUwfU1YgpIkPxHyVd.webp"
                     },
                     {
-                        "id": 3,
+                        "id": 11,
                         "name": "Eau de rose distillée",
-                        "image_url": null
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
                     }
                 ],
                 "faqs": [
@@ -956,9 +927,9 @@
             },
             {
                 "id": 16,
-                "name": "La Luna Crème Parfumée",
-                "type_produit": "Makhmaria",
-                "img_main": "/images/La Luna Crème Parfumée/la-luna-creme-parfumee-img_main.jpg",
+                "name": "La Luna",
+                "type_produit": "مخمرية",
+                "img_main": "products/Gemini_Generated_Image_lvf4molvf4molvf4.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Luna luxueuse coco amande. Corps cheveux parfum féminin captivant. Texture onctueuse sans gras. Persistance toute journée. Produit original Maroc. Soin fragrance parfait.",
                 "price": 60,
@@ -967,11 +938,9 @@
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -986,14 +955,14 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 7,
                         "name": "Amande",
-                        "image_url": null
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
                     }
                 ],
                 "faqs": [
@@ -1019,22 +988,20 @@
             },
             {
                 "id": 17,
-                "name": "Imperial Valley Crème Parfumée",
-                "type_produit": "Makhmaria",
-                "img_main": "/images/Imperial Valley Crème Parfumée/imperial-valley-creme-parfumee-img_main.jpg",
+                "name": "Imperial",
+                "type_produit": "مخمرية",
+                "img_main": "products/Gemini_Generated_Image_6os2sv6os2sv6os2.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Imperial prestige coco amande. Corps cheveux fragrance féminine prestige. Texture riche douce sans résidu. Parfum longue durée. Authentique Maroc. Cadeau luxe femme.",
                 "price": 60,
                 "original_price": null,
-                "stock": 100,
-                "is_best_seller": false,
+                "stock": 96,
+                "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -1043,20 +1010,20 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100,
+                        "stock_quantity": 96,
                         "unit": "ml"
                     }
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 7,
                         "name": "Amande",
-                        "image_url": null
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
                     }
                 ],
                 "faqs": [
@@ -1082,9 +1049,9 @@
             },
             {
                 "id": 18,
-                "name": "Bombshel Passion Crème Parfumée",
-                "type_produit": "Makhmaria",
-                "img_main": "/images/Bombshel Passion Crème Parfumée/bombshel-passion-creme-parfumee-img_main.jpg",
+                "name": "Bombshell Passion",
+                "type_produit": "مخمرية",
+                "img_main": "products/Gemini_Generated_Image_c2bwvoc2bwvoc2bw.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Bombshel luxueuse coco amande. Corps cheveux fragrance passion. Texture onctueuse sans gras. Persistance longue. Produit original Maroc. Femme confiante élégante.",
                 "price": 60,
@@ -1093,11 +1060,9 @@
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -1112,14 +1077,14 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 7,
                         "name": "Amande",
-                        "image_url": null
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
                     }
                 ],
                 "faqs": [
@@ -1145,9 +1110,9 @@
             },
             {
                 "id": 19,
-                "name": "Eros Crème Parfumée",
-                "type_produit": "Makhmaria",
-                "img_main": "/images/Eros Crème Parfumée/eros-creme-parfumee-img_main.jpg",
+                "name": "Eros",
+                "type_produit": "مخمرية",
+                "img_main": "products/Gemini_Generated_Image_i0h0xmi0h0xmi0h0.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Eros luxueuse coco amande. Corps cheveux parfum captivant sensuel. Texture riche onctueuse sans gras. Persistance excellente. Authentique Maroc. Cadeau prestige.",
                 "price": 60,
@@ -1157,10 +1122,8 @@
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -1175,14 +1138,14 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 7,
                         "name": "Amande",
-                        "image_url": null
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
                     }
                 ],
                 "faqs": [
@@ -1208,9 +1171,9 @@
             },
             {
                 "id": 20,
-                "name": "One And Only Crème Parfumée",
-                "type_produit": "Makhmaria",
-                "img_main": "/images/One And Only Crème Parfumée/one-and-only-creme-parfumee-img_main.jpg",
+                "name": "One And Only",
+                "type_produit": "مخمرية",
+                "img_main": "products/Gemini_Generated_Image_a7py5va7py5va7py.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème One coco amande. Corps cheveux parfum unique captivant. Texture luxueuse sans film. Persistance longue. Produit original Maroc. Femme unique spéciale.",
                 "price": 60,
@@ -1220,10 +1183,8 @@
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -1238,14 +1199,14 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 7,
                         "name": "Amande",
-                        "image_url": null
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
                     }
                 ],
                 "faqs": [
@@ -1271,37 +1232,26 @@
             },
             {
                 "id": 21,
-                "name": "Nina Ricci Crème Parfumée",
-                "type_produit": "Makhmaria",
-                "img_main": "/images/Nina Ricci Crème Parfumée/nina-ricci-creme-parfumee-img_main.jpg",
+                "name": "Nina Ricci",
+                "type_produit": "مخمرية",
+                "img_main": "products/Gemini_Generated_Image_2us3u32us3u32us3.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Nina Ricci luxueuse coco amande. Corps cheveux fragrance féminine. Texture onctueuse subtile sans gras. Persistance excellent. Maroc authentique. Prestige garanti.",
                 "price": 60,
                 "original_price": null,
-                "stock": 100,
+                "stock": 50,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
-                    {
                         "size": 50,
-                        "price": 70,
-                        "final_price": 70,
+                        "price": 60,
+                        "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
                         "stock_quantity": 50,
@@ -1310,14 +1260,14 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 7,
                         "name": "Amande",
-                        "image_url": null
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
                     }
                 ],
                 "faqs": [
@@ -1338,27 +1288,25 @@
                         "answer": "Non, en utilisant une petite quantité, elle apporte parfum et brillance subtile sans alourdir la chevelure."
                     }
                 ],
-                "brand": "Nina Ricci",
+                "brand": "Nina",
                 "unit": "ml"
             },
             {
                 "id": 22,
-                "name": "Hudson Valley Crème Parfumée",
-                "type_produit": "Makhmaria",
-                "img_main": "/images/Hudson Valley Crème Parfumée/hudson-valley-creme-parfumee-img_main.jpg",
+                "name": "Hudson",
+                "type_produit": "مخمرية",
+                "img_main": "products/Gemini_Generated_Image_j2w6hrj2w6hrj2w6.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Hudson luxueuse coco amande. Corps cheveux parfum captivant douce. Texture riche onctueuse. Persistance journée. Produit original Maroc. Usage quotidien.",
                 "price": 60,
                 "original_price": null,
-                "stock": 100,
-                "is_best_seller": false,
+                "stock": 92,
+                "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -1367,20 +1315,20 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100,
+                        "stock_quantity": 92,
                         "unit": "ml"
                     }
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 7,
                         "name": "Amande",
-                        "image_url": null
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
                     }
                 ],
                 "faqs": [
@@ -1406,22 +1354,20 @@
             },
             {
                 "id": 23,
-                "name": "Idol Crème Parfumée",
-                "type_produit": "Makhmaria",
-                "img_main": "/images/Idol Crème Parfumée/idol-creme-parfumee-img_main.jpg",
+                "name": "Idol",
+                "type_produit": "مخمرية",
+                "img_main": "products/Gemini_Generated_Image_fooc6hfooc6hfooc.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Idol luxueuse coco amande. Corps cheveux parfum captivant lumineux. Texture onctueuse persistante. Produit authentique Maroc. Idole beauté personnelle.",
                 "price": 60,
                 "original_price": null,
-                "stock": 100,
+                "stock": 99,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -1430,20 +1376,20 @@
                         "final_price": 60,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 100,
+                        "stock_quantity": 99,
                         "unit": "ml"
                     }
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 7,
                         "name": "Amande",
-                        "image_url": null
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
                     }
                 ],
                 "faqs": [
@@ -1469,9 +1415,9 @@
             },
             {
                 "id": 24,
-                "name": "Fruité des Bois Diffuseur",
+                "name": "Fruité des Bois",
                 "type_produit": "Diffuseur",
-                "img_main": "/images/Fruité des Bois Diffuseur/fruite-des-bois-diffuseur-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_klm6vpklm6vpklm6.jpg",
                 "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
                 "description": "Diffuseur ambiance fruité délicate. Notes fraîches élégantes. Persiste progressivement heures. Intérieur havre bien-être olfactif. Maison maroc. Atmosphère agréable garantie.",
                 "price": 70,
@@ -1481,10 +1427,8 @@
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Maison",
                 "type": "maison",
                 "variants": [
                     {
@@ -1499,9 +1443,9 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 2,
                         "name": "Vanille",
-                        "image_url": null
+                        "image_url": "ingredients/mqobr3J3UcRHUdq0jlpOH0BOBLYCEdBS.webp"
                     }
                 ],
                 "faqs": [
@@ -1523,9 +1467,9 @@
             },
             {
                 "id": 25,
-                "name": "Mange Péche Diffuseur",
+                "name": "Mange Péche",
                 "type_produit": "Diffuseur",
-                "img_main": "/images/Mange Péche Diffuseur/mange-peche-diffuseur-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_1gckz91gckz91gck.jpg",
                 "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
                 "description": "Diffuseur pêche ambiance fruité notes fraîches. Persiste heures progressif. Maison havre bien-être. Maroc authentique. Parfum ambiance garantie.",
                 "price": 70,
@@ -1535,10 +1479,8 @@
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Maison",
                 "type": "maison",
                 "variants": [
                     {
@@ -1553,9 +1495,9 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 2,
                         "name": "Vanille",
-                        "image_url": null
+                        "image_url": "ingredients/mqobr3J3UcRHUdq0jlpOH0BOBLYCEdBS.webp"
                     }
                 ],
                 "faqs": [
@@ -1577,9 +1519,9 @@
             },
             {
                 "id": 26,
-                "name": "Coco Diffuseur",
+                "name": "Coco",
                 "type_produit": "Diffuseur",
-                "img_main": "/images/Coco Diffuseur/coco-diffuseur-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_6ca0wp6ca0wp6ca0.jpg",
                 "subtitle": "L'essence des fruits sauvages pour une maison parfumée",
                 "description": "Diffuseur coco ambiance fruité tropical. Notes fraîches persistantes. Progressif heures. Maison agréable. Maroc. Parfum garantie.",
                 "price": 70,
@@ -1589,10 +1531,8 @@
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Maison",
                 "type": "maison",
                 "variants": [
                     {
@@ -1607,9 +1547,9 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 2,
                         "name": "Vanille",
-                        "image_url": null
+                        "image_url": "ingredients/mqobr3J3UcRHUdq0jlpOH0BOBLYCEdBS.webp"
                     }
                 ],
                 "faqs": [
@@ -1631,9 +1571,9 @@
             },
             {
                 "id": 27,
-                "name": "My Bloom Spray d'Intérieur Tropical",
+                "name": "Spray Tropical",
                 "type_produit": "Spray d'Intérieur",
-                "img_main": "/images/My Bloom Spray d'Intérieur Tropical/my-bloom-spray-d-intérieur-tropical-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_54wto954wto954wt.jpg",
                 "subtitle": "L'évasion tropicale en un simple geste",
                 "description": "Spray ambiance tropical polyvalent rafraîchissant persistant. Intérieurs textiles vêtements bureau voiture maroc. Fragrance fraîche agréable. Produit original.",
                 "price": 60,
@@ -1643,10 +1583,8 @@
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Maison",
                 "type": "maison",
                 "variants": [
                     {
@@ -1661,14 +1599,14 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 2,
                         "name": "Vanille",
-                        "image_url": null
+                        "image_url": "ingredients/mqobr3J3UcRHUdq0jlpOH0BOBLYCEdBS.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     }
                 ],
                 "faqs": [
@@ -1694,9 +1632,9 @@
             },
             {
                 "id": 28,
-                "name": "My Bloom Spray d'Intérieur Caramel",
+                "name": "Spray Caramel",
                 "type_produit": "Spray d'Intérieur",
-                "img_main": "/images/My Bloom Spray d'Intérieur Caramel/my-bloom-spray-d-intérieur-caramel-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_577jdn577jdn577j.jpg",
                 "subtitle": "L'évasion tropicale en un simple geste",
                 "description": "Spray caramel ambiance polyvalent doux persistant. Intérieurs textiles vêtements bureau voiture. Maroc authentique. Fragrance gourmande agréable.",
                 "price": 60,
@@ -1706,10 +1644,8 @@
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Maison",
                 "type": "maison",
                 "variants": [
                     {
@@ -1724,14 +1660,14 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 2,
                         "name": "Vanille",
-                        "image_url": null
+                        "image_url": "ingredients/mqobr3J3UcRHUdq0jlpOH0BOBLYCEdBS.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     }
                 ],
                 "faqs": [
@@ -1757,9 +1693,9 @@
             },
             {
                 "id": 29,
-                "name": "My Bloom Spray d'Intérieur Oud",
+                "name": "Spray oud",
                 "type_produit": "Spray d'Intérieur",
-                "img_main": "/images/My Bloom Spray d'Intérieur Oud/my-bloom-spray-d-intérieur-oud-img_main.jpg",
+                "img_main": "products/Gemini_Generated_Image_aw7umoaw7umoaw7u.jpg",
                 "subtitle": "L'évasion tropicale en un simple geste",
                 "description": "Spray oud ambiance polyvalent rafraîchissant persistant. Intérieurs textiles vêtements bureau voiture maroc. Fragrance prestigieuse agréable.",
                 "price": 60,
@@ -1769,10 +1705,8 @@
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Maison",
                 "type": "maison",
                 "variants": [
                     {
@@ -1787,14 +1721,14 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 2,
                         "name": "Vanille",
-                        "image_url": null
+                        "image_url": "ingredients/mqobr3J3UcRHUdq0jlpOH0BOBLYCEdBS.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     }
                 ],
                 "faqs": [
@@ -1821,8 +1755,8 @@
             {
                 "id": 30,
                 "name": "Histoire d'amour",
-                "type_produit": "Coffret Cadeau",
-                "img_main": "/images/Coffret Cadeau Bloom d'Amour/coffret-cadeau-bloom-d-amour-img_main.jpg",
+                "type_produit": "Coffrets",
+                "img_main": "products/i6oNaZVk1Sltx5soly42d2G6bcapnlXg.webp",
                 "subtitle": "L'expérience sensorielle complète pour rayonner de féminité",
                 "description": "Coffret exception réunit soins corporels harmonisés fragrance féminine envoûtante. Pochette cadeau élégante. Maroc livraison. Cadeau prestige femme.",
                 "price": 250,
@@ -1831,12 +1765,10 @@
                 "is_best_seller": false,
                 "is_gift": true,
                 "is_recommended": true,
-                "gender": "female",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
-                "type": "corps",
+                "gender": "women",
+                "badges": [],
+                "category": "Pack",
+                "type": "pack",
                 "variants": [
                     {
                         "size": 300,
@@ -1850,19 +1782,19 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
-                        "name": "Amande",
-                        "image_url": null
-                    },
-                    {
-                        "id": 2,
-                        "name": "Noix de coco",
-                        "image_url": null
-                    },
-                    {
                         "id": 3,
+                        "name": "Noix de coco",
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
+                    },
+                    {
+                        "id": 7,
+                        "name": "Amande",
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
+                    },
+                    {
+                        "id": 11,
                         "name": "Eau de rose distillée",
-                        "image_url": null
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
                     }
                 ],
                 "faqs": [
@@ -1890,20 +1822,18 @@
                 "id": 31,
                 "name": "قطرة دلع",
                 "type_produit": "Huile Parfumée",
-                "img_main": "/images/قطرة-دلع/قطرة دلعimg_main.jpg",
-                "subtitle": "L'élixir parfumé qui enveloppe votre peau d'une douceur irrésistible",
-                "description": "Huile Qatrat 100% naturelle coco amande. Hydratation intense sillage envoûtant toute journée. Maroc livraison rapide. Produit original authentique.",
+                "img_main": "products/8GZLaxubvxBgG542hCpsrHEByNCGM7t7.webp",
+                "subtitle": "Huile parfumée douce et féminine, idéale pour hydrater la peau et laisser un sillage délicat et raffiné.",
+                "description": "Cette huile parfumée nourrit la peau grâce à l’huile d’amande douce et l’huile de coco. Elle s’applique aussi bien sur les points de pulsation que sur tout le corps pour hydrater, adoucir et aider à lisser l’apparence des petites lignes. Son parfum fruité et floral aux touches gourmandes laisse une sensation fraîche, féminine et irrésistible tout au long de la journée",
                 "price": 50,
                 "original_price": null,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "unisex",
-                "badges": [
-                    "100% Naturel"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
                 "type": "corps",
                 "variants": [
                     {
@@ -1918,14 +1848,14 @@
                 ],
                 "ingredients": [
                     {
-                        "id": 1,
+                        "id": 3,
                         "name": "Noix de coco",
-                        "image_url": null
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
                     },
                     {
-                        "id": 2,
+                        "id": 7,
                         "name": "Amande",
-                        "image_url": null
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
                     }
                 ],
                 "faqs": [
@@ -1950,33 +1880,23 @@
                 "unit": "ml"
             },
             {
-                "id": 35,
-                "name": "212",
+                "id": 32,
+                "name": "212 vip",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/212 femme/212-femme-img_main.jpg",
+                "img_main": "products/212-femme-img_main.jpg",
                 "subtitle": "L'énergie urbaine de New York",
                 "description": "212 Carolina Herrera parfum floral musqué urbain moderne. Femme dynamique sophistiquée. Fleur oranger gardénia musc blanc. Frais pétillant. Maroc authentique. Best seller marque.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
                 "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -1985,8 +1905,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2001,35 +1931,27 @@
                         "answer": "Oui, c'est un parfum polyvalent parfait pour le quotidien et les occasions spéciales."
                     }
                 ],
-                "brand": "Carolina Herrera",
+                "brand": "Caroline Herrera",
                 "unit": "ml"
             },
             {
-                "id": 36,
-                "name": "Bad Boy",
+                "id": 33,
+                "name": "Bad diesel",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Bad diesel/Bad diesel.jpg",
+                "img_main": "products/Bad diesel.jpg",
                 "subtitle": "Osez être différent",
                 "description": "Bad Boy Diesel parfum oriental boisé audacieux. Homme modern confiant dualité. Poivre bergamote cèdre cacao. Maroc produit original. Best authentique Diesel.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 40,
+                "stock": 50,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "homme",
+                "gender": "men",
                 "badges": [],
-                "category": "parfum",
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -2038,8 +1960,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2058,10 +1990,10 @@
                 "unit": "ml"
             },
             {
-                "id": 37,
+                "id": 34,
                 "name": "Burberry Goddess",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Burberry goddess/burberry-goddess-img_main.jpg",
+                "img_main": "products/Burberry-goddess-img_main.jpg",
                 "subtitle": "La force féminine réinventée",
                 "description": "Goddess Burberry parfum gourmand floral moderne. Force féminité confiance. Vanille lavande cacao. Maroc produit original. Femme prestige incontournable.",
                 "price": 50,
@@ -2070,12 +2002,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Nouveau"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -2096,6 +2026,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2114,10 +2045,10 @@
                 "unit": "ml"
             },
             {
-                "id": 38,
+                "id": 35,
                 "name": "Cinema",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Cinema/cinema-img_main.jpg",
+                "img_main": "products/Cinema-img_main.jpg",
                 "subtitle": "L'élégance hollywoodienne",
                 "description": "Cinema YSL parfum oriental floral glamour hollywoodien. Élégance charme féminité. Mandarine jasmin ambre vanille. Maroc. Prestige soirée.",
                 "price": 50,
@@ -2126,11 +2057,10 @@
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": false,
-                "gender": "femme",
-                "badges": [
-                    "Élégant"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -2151,6 +2081,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2169,10 +2100,10 @@
                 "unit": "ml"
             },
             {
-                "id": 39,
+                "id": 36,
                 "name": "Dior Addict",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Dior addict/dior-addict-img_main.jpg",
+                "img_main": "products/Dior-addict-img_main.jpg",
                 "subtitle": "La séduction absolue",
                 "description": "Addict Dior parfum oriental floral sensuel addictif. Fleur oranger Tunisie jasmin vanille bourbon. Féminité moderne audacieuse irrésistible. Maroc iconique.",
                 "price": 50,
@@ -2181,12 +2112,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -2207,6 +2136,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2225,10 +2155,10 @@
                 "unit": "ml"
             },
             {
-                "id": 40,
+                "id": 37,
                 "name": "Good Girl",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Good girl/good-girl-img_main.jpg",
+                "img_main": "products/Good-girl-img_main.jpg",
                 "subtitle": "Osez votre dualité",
                 "description": "Good Girl Carolina Herrera parfum oriental floral. Dualité féminine audacieuse. Jasmin tonka cacao. Flacon escarpin iconique. Maroc prestige femme moderne.",
                 "price": 50,
@@ -2237,12 +2167,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -2263,6 +2191,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2277,14 +2206,14 @@
                         "answer": "Parfait pour les soirées et occasions spéciales, assez polyvalent pour le quotidien."
                     }
                 ],
-                "brand": "Carolina Herrera",
+                "brand": "Caroline Herrera",
                 "unit": "ml"
             },
             {
-                "id": 41,
+                "id": 38,
                 "name": "Idôle",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Idole/idole-img_main.jpg",
+                "img_main": "products/Idole-img_main.jpg",
                 "subtitle": "Soyez votre propre idole",
                 "description": "Idôle Lancôme parfum floral chypré moderne. Femme accomplie nouvelle génération. Poire rose jasmin praline vanille. Rechargeable écologique. Maroc féminité forte.",
                 "price": 50,
@@ -2293,12 +2222,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Éco-responsable"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -2319,6 +2246,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2337,10 +2265,10 @@
                 "unit": "ml"
             },
             {
-                "id": 42,
+                "id": 39,
                 "name": "La Nuit Trésor",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/La nuit tresor/la-nuit-tresor-img_main.jpg",
+                "img_main": "products/La-nuit-tresor-img_main.jpg",
                 "subtitle": "L'amour à son apogée",
                 "description": "Nuit Trésor Lancôme parfum oriental gourmand sensuel. Amour passion séduction. Framboise rose vanille praline. Maroc soirée romantique.",
                 "price": 50,
@@ -2349,11 +2277,10 @@
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Romantique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -2374,6 +2301,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2392,34 +2320,23 @@
                 "unit": "ml"
             },
             {
-                "id": 43,
-                "name": "Light Blue Femme",
+                "id": 40,
+                "name": "Light Blue",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/light bleu femme/light-bleu-femme-img_main.jpg",
+                "img_main": "products/light-bleu-femme-img_main.jpg",
                 "subtitle": "L'esprit méditerranéen",
                 "description": "Light Blue DG parfum fruité floral frais lumineux. Été méditerranéen esprit. Citron sicile pomme jasmin. Maroc iconique summer.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 80,
+                "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -2428,8 +2345,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2448,10 +2375,10 @@
                 "unit": "ml"
             },
             {
-                "id": 44,
+                "id": 41,
                 "name": "L'Interdit Rouge",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/l'interdit rouge/l'interdit-rouge-img_main.jpg",
+                "img_main": "products/l'interdit-rouge-img_main.jpg",
                 "subtitle": "Osez l'interdit ultime",
                 "description": "Interdit Rouge Givenchy parfum floral épicé audacieux. Féminité ardente passionné. Gingembre fleur oranger tubéreuse santal. Maroc intense.",
                 "price": 50,
@@ -2460,12 +2387,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Intense"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -2486,6 +2411,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2504,35 +2430,23 @@
                 "unit": "ml"
             },
             {
-                "id": 45,
-                "name": "Miss Dior",
+                "id": 42,
+                "name": "Miss Dior cherie",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Miss laverne/Miss-laverne-img_main.jpg",
+                "img_main": "products/Miss-laverne-img_main.jpg",
                 "subtitle": "L'amour toujours",
                 "description": "Miss Dior parfum floral chypré frais romantique. Élégance parisienne intemporelle. Mandarine rose patchouli. Maroc iconique classique.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 90,
+                "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique",
-                    "Classique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -2541,8 +2455,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2561,34 +2485,23 @@
                 "unit": "ml"
             },
             {
-                "id": 46,
-                "name": "Nina",
+                "id": 43,
+                "name": "Nina ricci",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Nina Ricci/nina-ricci-img_main.jpg",
+                "img_main": "products/Nina-ricci-img_main.jpg",
                 "subtitle": "Croquez la vie à pleines dents",
                 "description": "Nina Nina Ricci parfum fruité gourmand pétillant joyeux. Jeunesse fraîcheur gourmandise. Citron pomme caramel vanille. Marque flacon pomme. Maroc.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
                 "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": false,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Gourmand"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -2597,8 +2510,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2613,14 +2536,14 @@
                         "answer": "Parfait pour les jeunes femmes et toutes celles qui aiment les parfums gourmands et pétillants."
                     }
                 ],
-                "brand": "Nina Ricci",
+                "brand": "Nina",
                 "unit": "ml"
             },
             {
-                "id": 47,
+                "id": 44,
                 "name": "Olympéa",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Olympeca/Olympeca-img_main.jpg",
+                "img_main": "products/Olympeca-img_main.jpg",
                 "subtitle": "La déesse moderne",
                 "description": "Olympéa Paco Rabanne parfum oriental floral aquatique puissant. Déesse triomphante divine. Mandarine jasmin sel marin ambre vanille. Maroc prestige.",
                 "price": 50,
@@ -2629,12 +2552,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Puissant"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -2655,6 +2576,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2673,31 +2595,23 @@
                 "unit": "ml"
             },
             {
-                "id": 48,
-                "name": "Panda",
+                "id": 45,
+                "name": "Prada",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Panda/panda-img_main.jpg",
+                "img_main": "products/Panda-img_main.jpg",
                 "subtitle": "L'élégance contemporaine",
                 "description": "Panda Paco Rabanne parfum floral boisé moderne sophistiqué. Femme urbaine contemporaine. Fraîcheur sensualité équilibrée. Maroc.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 35,
+                "stock": 50,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": false,
-                "gender": "femme",
+                "gender": "unisex",
                 "badges": [],
-                "category": "parfum",
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -2706,8 +2620,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2718,38 +2642,27 @@
                         "answer": "Parfait pour le quotidien et les occasions professionnelles."
                     }
                 ],
-                "brand": "Paco Rabanne",
+                "brand": "Prada",
                 "unit": "ml"
             },
             {
-                "id": 49,
+                "id": 46,
                 "name": "Quelques Notes d'Amour",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Quelque notees damour/Quelque-notees-damour-img_main.jpg",
+                "img_main": "products/Quelque-notees-damour-img_main.jpg",
                 "subtitle": "Une déclaration olfactive",
-                "description": "Amour Van Cleef parfum floral fruité élégant romantique. Amour poésie. Jasmin rose pêche ambre. Flacon trèfle signature. Maroc prestige.",
-                "price": 50,
+                "description": "Une fragrance romantique et délicate aux notes florales et fruitées, qui apporte une touche douce, féminine et pleine d’élégance",
+                "price": 70,
                 "original_price": null,
-                "stock": 30,
+                "stock": 50,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Romantique",
-                    "Élégant"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -2758,8 +2671,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2774,14 +2697,14 @@
                         "answer": "Oui, le flacon est orné d'un trèfle à quatre feuilles, signature de la maison."
                     }
                 ],
-                "brand": "Van Cleef & Arpels",
+                "brand": "Yves Rocher",
                 "unit": "ml"
             },
             {
-                "id": 50,
+                "id": 47,
                 "name": "Sì",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Si/si-img_main.jpg",
+                "img_main": "products/si-img_main.jpg",
                 "subtitle": "Dites oui à la vie",
                 "description": "Sì Giorgio Armani parfum chypré fruité élégant moderne. Féminité affirmée indépendance. Cassis rose musc patchouli. Maroc femme moderne.",
                 "price": 50,
@@ -2790,12 +2713,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Élégant"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -2816,6 +2737,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2830,37 +2752,27 @@
                         "answer": "Oui, la ligne comprend Sì Passione, Sì Intense, et Sì Fiori."
                     }
                 ],
-                "brand": "Giorgio Armani",
+                "brand": "Armani",
                 "unit": "ml"
             },
             {
-                "id": 51,
-                "name": "Y pour Homme",
+                "id": 48,
+                "name": "Ysl l’homme",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/YSI homme/ysl-homme-img_main.jpg",
+                "img_main": "products/YSl-homme-img_main.jpg",
                 "subtitle": "Osez poser la question",
                 "description": "Y YSL parfum aromatique fougère moderne audacieux. Homme accomplissement rêves réussite. Bergamote sauge géranium cèdre. Maroc prestige homme.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 60,
+                "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "homme",
-                "badges": [
-                    "Best Seller"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -2869,8 +2781,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2889,34 +2811,23 @@
                 "unit": "ml"
             },
             {
-                "id": 52,
-                "name": "Amira Al Arab",
+                "id": 49,
+                "name": "Amirat Al Arab",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/أميرة العرب/أميرة العرب-img_main.jpg",
+                "img_main": "products/أميرة العرب-img_main.jpg",
                 "subtitle": "La princesse des parfums arabes",
                 "description": "Amira Arab parfum oriental luxueux raffiné arab. Princesse richesse tradition. Rose oud safran ambre. Marque arabe. Maroc prestige royal.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 40,
+                "stock": 50,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Oriental",
-                    "Luxe"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -2925,8 +2836,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -2945,10 +2866,10 @@
                 "unit": "ml"
             },
             {
-                "id": 53,
+                "id": 50,
                 "name": "Azzaro Wanted Girl",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Azzaro wanted girl/azzaro-wanted-girl-img_main.jpg",
+                "img_main": "products/Azzaro-wanted-girl-img_main.jpg",
                 "subtitle": "Affichez vos désirs",
                 "description": "Wanted Girl Azzaro parfum oriental gourmand audacieux. Femme désirs audacieuse. Fleur oranger dulce leche tonka. Maroc prestige femme.",
                 "price": 50,
@@ -2957,12 +2878,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Gourmand"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -2983,6 +2902,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3001,10 +2921,10 @@
                 "unit": "ml"
             },
             {
-                "id": 54,
+                "id": 51,
                 "name": "Black Opium",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Black Opium/black-opium-img_main.jpg",
+                "img_main": "products/Black-opium-img_main.jpg",
                 "subtitle": "L'addiction assumée",
                 "description": "Black Opium YSL parfum oriental gourmand addictif moderne. Féminité rock sensuelle. Café noir vanille fleur. Maroc iconique intense.",
                 "price": 50,
@@ -3013,13 +2933,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique",
-                    "Intense"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3040,6 +2957,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3058,10 +2976,10 @@
                 "unit": "ml"
             },
             {
-                "id": 55,
+                "id": 52,
                 "name": "Burberry Her",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Burberry her/burberry-her-img_main.jpg",
+                "img_main": "products/Burberry-her-img_main.jpg",
                 "subtitle": "L'esprit de Londres",
                 "description": "Her Burberry parfum gourmand fruité pétillant joyeux. Londre énergie vibrante. Fruits rouges jasmin musc. Maroc prestige moderne.",
                 "price": 50,
@@ -3070,11 +2988,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3095,6 +3012,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3113,10 +3031,10 @@
                 "unit": "ml"
             },
             {
-                "id": 56,
+                "id": 53,
                 "name": "Coco Mademoiselle",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Coco Mademosseille/Coco Mademosseille-img_main.jpg",
+                "img_main": "products/Coco Mademosseille-img_main.jpg",
                 "subtitle": "L'esprit d'indépendance",
                 "description": "Coco Mademoiselle Chanel parfum oriental frais intemporel. Liberté audace élégance Coco. Orange rose jasmin patchouli. Maroc iconique classique.",
                 "price": 50,
@@ -3125,13 +3043,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique",
-                    "Classique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3152,6 +3067,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3170,10 +3086,10 @@
                 "unit": "ml"
             },
             {
-                "id": 57,
+                "id": 54,
                 "name": "D&G L'Impératrice",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/D and G l'imperatrice/D-and-G-l'imperatrice-img_main.jpg",
+                "img_main": "products/D-and-G-l'imperatrice-img_main.jpg",
                 "subtitle": "La fraîcheur impériale",
                 "description": "Impératrice DG parfum fruité aquatique pétillant méditerranéen. Exotisme joie vivre. Kiwi pastèque musc rose. Maroc fraîcheur prestige.",
                 "price": 50,
@@ -3182,12 +3098,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Frais"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3208,6 +3122,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3226,10 +3141,10 @@
                 "unit": "ml"
             },
             {
-                "id": 58,
+                "id": 55,
                 "name": "Evidence",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Evidence/evidence-img_main.jpg",
+                "img_main": "products/Evidence-img_main.jpg",
                 "subtitle": "L'évidence de la féminité",
                 "description": "Evidence Yves Rocher parfum oriental boisé sensuel. Féminité naturelle magnétique. Bois jasmin musc. Maroc accessible prestige.",
                 "price": 50,
@@ -3238,11 +3153,10 @@
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": false,
-                "gender": "femme",
-                "badges": [
-                    "Accessible"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3263,6 +3177,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3281,10 +3196,10 @@
                 "unit": "ml"
             },
             {
-                "id": 59,
+                "id": 56,
                 "name": "Hypnotic Poison",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Hypnotic poison/hypnotic-poison-img_main.jpg",
+                "img_main": "products/Hypnotic-poison-img_main.jpg",
                 "subtitle": "Le philtre envoûtant",
                 "description": "Poison Dior parfum oriental ambré mystérieux captivant. Envoûtement fascination sensualité. Vanille amande jasmin santal. Maroc iconic sensuel.",
                 "price": 50,
@@ -3293,13 +3208,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique",
-                    "Sensuel"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3320,6 +3232,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3338,44 +3251,34 @@
                 "unit": "ml"
             },
             {
-                "id": 60,
-                "name": "La Lune",
+                "id": 57,
+                "name": "La Luna",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/La luna/la-luna-img_main.jpg",
+                "img_main": "products/La-luna-img_main.jpg",
                 "subtitle": "La lumière nocturne",
                 "description": "Lune Prada parfum floral aldéhydé élégant raffiné. Lune mystique. Citron mimosa ambre gris. Maroc prestige lumière.",
-                "price": 50,
+                "price": 80,
                 "original_price": null,
-                "stock": 35,
-                "is_best_seller": false,
+                "stock": 48,
+                "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": false,
-                "gender": "femme",
-                "badges": [
-                    "Élégant",
-                    "Raffiné"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
-                    {
                         "size": 50,
-                        "price": 70,
-                        "final_price": 70,
+                        "price": 80,
+                        "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
-                        "stock_quantity": 50,
+                        "stock_quantity": 48,
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3386,14 +3289,14 @@
                         "answer": "Idéal pour les occasions élégantes et raffinées, jour ou soirée."
                     }
                 ],
-                "brand": "Prada",
+                "brand": "قصة",
                 "unit": "ml"
             },
             {
-                "id": 61,
+                "id": 58,
                 "name": "La Vie Est Belle",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/La vie est belle/la-vie-est-belle-img_main.jpg",
+                "img_main": "products/La-vie-est-belle-img_main.jpg",
                 "subtitle": "Choisissez le bonheur",
                 "description": "Vie Lancôme parfum gourmand floral iris luxueux. Vie bonheur élégance. Cassis poire iris praline vanille. Maroc iconic gourmand.",
                 "price": 50,
@@ -3402,13 +3305,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique",
-                    "Gourmand"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3429,6 +3329,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3447,10 +3348,10 @@
                 "unit": "ml"
             },
             {
-                "id": 62,
+                "id": 59,
                 "name": "L'Interdit",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/l'interdit/l'interdit-img_main.jpg",
+                "img_main": "products/l'interdit-img_main.jpg",
                 "subtitle": "Osez l'inattendu",
                 "description": "Interdit Givenchy parfum floral blanc audacieux lumineux. Féminité conventions libre. Oranger jasmin tubéreuse sésame. Maroc prestige.",
                 "price": 50,
@@ -3459,12 +3360,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Élégant"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3485,6 +3384,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3503,10 +3403,10 @@
                 "unit": "ml"
             },
             {
-                "id": 63,
+                "id": 60,
                 "name": "Miss Dior Chérie",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Miss dior cherie/miss-dior-cherie-img_main.jpg",
+                "img_main": "products/Miss-dior-cherie-img_main.jpg",
                 "subtitle": "La douceur pétillante",
                 "description": "Chérie Dior parfum fruité chypré pétillant romantique. Jeunesse parisienne carefree. Fraise framboise cerise jasmin patchouli. Maroc iconic.",
                 "price": 50,
@@ -3515,12 +3415,10 @@
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Fruité",
-                    "Romantique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3541,6 +3439,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3559,10 +3458,10 @@
                 "unit": "ml"
             },
             {
-                "id": 64,
+                "id": 61,
                 "name": "Mon Paris",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/mon paris/mon-paris-img_main.jpg",
+                "img_main": "products/mon-paris-img_main.jpg",
                 "subtitle": "L'amour à Paris",
                 "description": "Paris YSL parfum chypré fruité passionné. Amour Paris. Fraise framboise poire patchouli musc. Maroc romantique prestige.",
                 "price": 50,
@@ -3571,12 +3470,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Romantique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3597,6 +3494,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3615,44 +3513,34 @@
                 "unit": "ml"
             },
             {
-                "id": 65,
-                "name": "The One",
+                "id": 62,
+                "name": "One and only",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/One and only/one-and-only-img_main.jpg",
+                "img_main": "products/One-and-only-img_main.jpg",
                 "subtitle": "L'unique",
-                "description": "One DG parfum oriental floral luxueux enveloppant. Féminité sophistiquée sensuelle. Litchi pêche jasmin musc ambre. Maroc prestige unique.",
-                "price": 50,
+                "description": "One & Only de Qissa dévoile une fragrance féminine et élégante, mêlant douceur, charme et sensualité dans un sillage raffiné",
+                "price": 80,
                 "original_price": null,
-                "stock": 55,
+                "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Élégant"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
-                    {
                         "size": 50,
-                        "price": 70,
-                        "final_price": 70,
+                        "price": 80,
+                        "final_price": 80,
                         "original_price": null,
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3667,14 +3555,14 @@
                         "answer": "Oui, The One pour Homme est la version masculine avec des notes plus boisées épicées."
                     }
                 ],
-                "brand": "Dolce & Gabbana",
+                "brand": "قصة",
                 "unit": "ml"
             },
             {
-                "id": 66,
+                "id": 63,
                 "name": "Pure XS",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Pur xs/pur-xs-img_main.jpg",
+                "img_main": "products/Pur-xs-img_main.jpg",
                 "subtitle": "L'excès assumé",
                 "description": "XS Paco Rabanne parfum oriental vanillé audacieux addictif. Masculinité excessive sensuelle. Gingembre cannelle vanille myrrhe. Maroc intense prestige.",
                 "price": 50,
@@ -3683,12 +3571,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "homme",
-                "badges": [
-                    "Best Seller",
-                    "Intense"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3709,6 +3595,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3727,10 +3614,10 @@
                 "unit": "ml"
             },
             {
-                "id": 67,
+                "id": 64,
                 "name": "Scandal",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Scandal/scandal-img_main.jpg",
+                "img_main": "products/Scandal-img_main.jpg",
                 "subtitle": "Osez le scandale",
                 "description": "Scandal JPG parfum floral gourmand audacieux addictif. Féminité provocante irrésistible. Miel patchouli gardénia caramel. Flacon jambe. Maroc iconic.",
                 "price": 50,
@@ -3739,12 +3626,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3765,6 +3650,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3783,34 +3669,23 @@
                 "unit": "ml"
             },
             {
-                "id": 68,
+                "id": 65,
                 "name": "Bombshell Passion",
-                "type_produit": "Eau de Parfum",
-                "img_main": "/images/Victoria sucret bombshell passion/Victoria-sucret-bombshell-passion-img_main.jpg",
+                "type_produit": "مخمرية",
+                "img_main": "products/Victoria-sucret-bombshell-passion-img_main.jpg",
                 "subtitle": "La passion incarnée",
                 "description": "Passion Victoria parfum fruité floral passionné séduisant. Féminité audacieuse. Pivoine vanille cerise. Maroc prestige casual.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 55,
+                "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Fruité"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -3819,8 +3694,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3839,10 +3724,10 @@
                 "unit": "ml"
             },
             {
-                "id": 69,
+                "id": 66,
                 "name": "Zara Woman",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Zara/zara-img_main.jpg",
+                "img_main": "products/Zara-img_main.jpg",
                 "subtitle": "L'élégance accessible",
                 "description": "Woman Zara parfum floral frais moderne polyvalent. Femme urbaine contemporaine. Signature olfactive élégante abordable. Maroc accessible.",
                 "price": 50,
@@ -3851,11 +3736,10 @@
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": false,
-                "gender": "femme",
-                "badges": [
-                    "Accessible"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3876,6 +3760,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3894,10 +3779,10 @@
                 "unit": "ml"
             },
             {
-                "id": 70,
+                "id": 67,
                 "name": "Yara",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/يارا/يارا-img_main.jpg",
+                "img_main": "products/يارا-img_main.jpg",
                 "subtitle": "L'élégance orientale",
                 "description": "Yara Lattafa parfum oriental gourmand riche envoûtant. Grande fragrance luxe. Vanille orchidée sucré. Maroc prestige abordable.",
                 "price": 50,
@@ -3906,12 +3791,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Oriental"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3932,6 +3815,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -3950,10 +3834,10 @@
                 "unit": "ml"
             },
             {
-                "id": 71,
+                "id": 68,
                 "name": "Baccarat Rouge 540",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Baccarat rouge/baccarat-rouge-img_main.jpg",
+                "img_main": "products/Baccarat-rouge-img_main.jpg",
                 "subtitle": "L'excellence olfactive",
                 "description": "Rouge FKM parfum ambré floral lumineux sophistiqué. Excellence olfactive créativité. Jasmin safran cèdre ambre gris. Maroc luxe absolu.",
                 "price": 50,
@@ -3963,12 +3847,9 @@
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "Best Seller",
-                    "Luxe",
-                    "Iconique"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -3989,6 +3870,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4003,39 +3885,27 @@
                         "answer": "Oui, sa composition équilibrée convient parfaitement aux hommes et aux femmes."
                     }
                 ],
-                "brand": "Maison Francis Kurkdjian",
+                "brand": "Francis Kurkdjian",
                 "unit": "ml"
             },
             {
-                "id": 72,
+                "id": 69,
                 "name": "Black Orchid",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Black orchid/black-orchid-img_main.jpg",
+                "img_main": "products/Black-orchid-img_main.jpg",
                 "subtitle": "Le luxe sombre",
                 "description": "Orchid Tom Ford parfum oriental chypré luxueux mystérieux. Sensualité opulente sophistiquée. Orchidée truffe ylang ambre. Maroc prestige sombre.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 30,
+                "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "Best Seller",
-                    "Luxe",
-                    "Iconique"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -4044,8 +3914,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4064,34 +3944,23 @@
                 "unit": "ml"
             },
             {
-                "id": 73,
-                "name": "Chance",
+                "id": 70,
+                "name": "Chanel chance",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Chanel chance/chanel-chance-img_main.jpg",
+                "img_main": "products/Chanel-chance-img_main.jpg",
                 "subtitle": "Saisissez votre chance",
                 "description": "Chance Chanel parfum floral pétillant joyeux imprévisible. Chance opportunités. Pamplemousse rose jasmin iris musc. Maroc classique.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 60,
+                "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Classique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -4100,8 +3969,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4120,33 +3999,23 @@
                 "unit": "ml"
             },
             {
-                "id": 74,
-                "name": "Eros Femme",
+                "id": 71,
+                "name": "Eros",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Eros femme/eros-femme-img_main.jpg",
+                "img_main": "products/Eros-femme-img_main.jpg",
                 "subtitle": "La déesse de l'amour",
                 "description": "Eros Versace parfum floral boisé sensuel lumineux. Déesse amour passion. Citron jasmin pivoine musc. Maroc prestige élégant.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
                 "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -4155,8 +4024,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4175,34 +4054,23 @@
                 "unit": "ml"
             },
             {
-                "id": 75,
-                "name": "Flora",
+                "id": 72,
+                "name": "Gucci flora",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Gucci Hora/Gucci-hora-img_main.jpg",
+                "img_main": "products/Gucci-hora-img_main.jpg",
                 "subtitle": "Le jardin de Gucci",
                 "description": "Flora Gucci parfum floral moderne lumineux joyeux. Féminité radieuse beauté. Pivoine osmanthus rose santal. Maroc prestige jardin.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 45,
+                "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Floral"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -4211,8 +4079,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4231,10 +4109,10 @@
                 "unit": "ml"
             },
             {
-                "id": 76,
+                "id": 73,
                 "name": "La Belle",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/la belle/la-belle-img_main.jpg",
+                "img_main": "products/la-belle-img_main.jpg",
                 "subtitle": "La beauté réinventée",
                 "description": "Belle JPG parfum oriental gourmand sensuel audacieux. Beauté rebelle affirmée. Poire vanille vétiver santal. Flacon buste. Maroc prestige.",
                 "price": 50,
@@ -4243,12 +4121,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Gourmand"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -4269,6 +4145,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4287,10 +4164,10 @@
                 "unit": "ml"
             },
             {
-                "id": 77,
+                "id": 74,
                 "name": "La Petite Robe Noire",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/La petite robe noire/la-petite-robe-noire-img_main.jpg",
+                "img_main": "products/La-petite-robe-noire-img_main.jpg",
                 "subtitle": "L'audace en flacon",
                 "description": "Robe Guerlain parfum fruité gourmand pétillant moderne. Féminité parisienne audacieuse rock. Cerise amande rose thé réglisse. Maroc iconic.",
                 "price": 50,
@@ -4299,12 +4176,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -4325,6 +4200,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4343,33 +4219,23 @@
                 "unit": "ml"
             },
             {
-                "id": 78,
-                "name": "Light Blue Homme",
+                "id": 75,
+                "name": "Light Blue",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Light blue Homme/light-blue-homme-img_main.jpg",
+                "img_main": "products/Light-blue-Homme-img_main.jpg",
                 "subtitle": "L'été méditerranéen masculin",
                 "description": "Light Blue DG parfum aromatique fruité frais vibrante. Été méditerranéen virilité. Pamplemousse genévrier romarin rose. Maroc prestige.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 65,
+                "stock": 50,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "homme",
-                "badges": [
-                    "Best Seller"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -4378,8 +4244,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 50,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4398,10 +4274,10 @@
                 "unit": "ml"
             },
             {
-                "id": 79,
+                "id": 76,
                 "name": "My Way",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/May way/may-way-img_main.jpg",
+                "img_main": "products/May-way-img_main.jpg",
                 "subtitle": "Tracez votre propre chemin",
                 "description": "Way Armani parfum floral blanc lumineux durable. Chemin découverte élégance. Bergamote oranger tubéreuse jasmin vanille. Maroc moderne prestige.",
                 "price": 50,
@@ -4410,12 +4286,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Éco-responsable"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -4436,6 +4310,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4450,14 +4325,14 @@
                         "answer": "Polyvalent, agréable toute l'année, particulièrement au printemps et été."
                     }
                 ],
-                "brand": "Giorgio Armani",
+                "brand": "Armani",
                 "unit": "ml"
             },
             {
-                "id": 80,
+                "id": 77,
                 "name": "Mon Guerlain",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Mon gurlain/Mon-gurlain-img_main.jpg",
+                "img_main": "products/Mon-gurlain-img_main.jpg",
                 "subtitle": "Ma femme, mon Guerlain",
                 "description": "Guerlain parfum oriental raffiné envoûtant femme. Liberté passionnée. Lavande vanille tahitienne jasmin santal. Maroc prestige intemporel.",
                 "price": 50,
@@ -4466,12 +4341,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Élégant"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -4492,6 +4365,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4510,10 +4384,10 @@
                 "unit": "ml"
             },
             {
-                "id": 81,
+                "id": 78,
                 "name": "Poison Girl",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Poisson girl/poisson-girl-img_main.jpg",
+                "img_main": "products/Poisson-girl-img_main.jpg",
                 "subtitle": "L'arme de séduction",
                 "description": "Girl Dior parfum oriental gourmand audacieux addictif. Jeune femme séductrice spontanée. Oranger amère rose vanille tonka. Maroc prestige.",
                 "price": 50,
@@ -4522,12 +4396,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Gourmand"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -4548,6 +4420,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4566,10 +4439,10 @@
                 "unit": "ml"
             },
             {
-                "id": 82,
+                "id": 79,
                 "name": "Sauvage",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Sauvage/sauvage-img_main.jpg",
+                "img_main": "products/Sauvage-img_main.jpg",
                 "subtitle": "L'instinct sauvage",
                 "description": "Sauvage Dior parfum aromatique fougère frais puissant. Masculinité naturelle libre noble. Bergamote poivre Sichuab lavande ambroxan. Maroc prestige n°1.",
                 "price": 50,
@@ -4578,13 +4451,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "homme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique",
-                    "N°1"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -4605,6 +4475,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4623,33 +4494,23 @@
                 "unit": "ml"
             },
             {
-                "id": 83,
+                "id": 80,
                 "name": "Sì Rouge",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/Si rouge/si-rouge-img_main.jpg",
+                "img_main": "products/Si-rouge-img_main.jpg",
                 "subtitle": "La passion affirmée",
                 "description": "Rouge Armani parfum chypré fruité intense passionné. Féminité passion audace. Cassis rose davana patchouli. Maroc intense prestige.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 45,
+                "stock": 50,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Intense"
-                ],
-                "category": "parfum",
+                "gender": "women",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -4658,8 +4519,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 49,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4674,14 +4545,14 @@
                         "answer": "Idéal pour l'automne et l'hiver grâce à son intensité."
                     }
                 ],
-                "brand": "Giorgio Armani",
+                "brand": "Armani",
                 "unit": "ml"
             },
             {
-                "id": 84,
+                "id": 81,
                 "name": "Libre",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/ysl libre/ysl-libre-img_main.jpg",
+                "img_main": "products/ysl-libre-img_main.jpg",
                 "subtitle": "La liberté affichée",
                 "description": "Libre YSL parfum floral fougère audacieux moderne. Femme libre forte. Mandarine lavande oranger jasmin musc. Maroc iconic prestige.",
                 "price": 50,
@@ -4690,12 +4561,10 @@
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
-                "gender": "femme",
-                "badges": [
-                    "Best Seller",
-                    "Iconique"
-                ],
-                "category": "parfum",
+                "gender": "unisex",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
                     {
                         "size": 20,
@@ -4716,6 +4585,7 @@
                         "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4734,181 +4604,173 @@
                 "unit": "ml"
             },
             {
-    "id": 86,
-    "name": "Musc blanc",
-    "type_produit": "Musc",
-    "img_main": "/images/musc blanc/musc-blanc-img_main.jpg",
-    "subtitle": "Pureté et douceur dans une fragrance intemporelle",
-    "description": "Le Musc Blanc offre une fragrance douce, propre et apaisante. Idéal pour un usage quotidien, il enveloppe la peau d’un parfum subtil et élégant qui dure toute la journée. Un indispensable pour celles qui recherchent simplicité et raffinement.",
-    "price": 30,
-    "original_price": null,
-    "stock": 40,
-    "is_best_seller": true,
-    "is_gift": false,
-    "is_recommended": true,
-    "gender": "female",
-    "badges": ["100% Naturel"],
-    "category": "parfum",
-    "type": "corps",
-    "variants": [
-      {
-        "size": 10,
-        "price": 30,
-        "final_price": 30,
-        "original_price": null,
-        "promotion_percent": 0,
-        "stock_quantity": 40,
-        "unit": "ml"
-      }
-    ],
-    "faqs": [
-      {
-        "question": "Ce musc convient-il à une utilisation quotidienne ?",
-        "answer": "Oui, sa fragrance douce et légère est parfaite pour une utilisation quotidienne."
-      },
-      {
-        "question": "Combien de temps dure le parfum sur la peau ?",
-        "answer": "Le parfum peut durer plusieurs heures selon le type de peau et les conditions."
-      },
-      {
-        "question": "Peut-on appliquer ce musc sur les vêtements ?",
-        "answer": "Il est recommandé de l’appliquer directement sur la peau pour un meilleur rendu."
-      },
-      {
-        "question": "Ce produit est-il naturel ?",
-        "answer": "Oui, il est formulé avec des ingrédients sélectionnés pour une expérience naturelle."
-      }
-    ],
-    "brand": "My Bloom",
-    "unit": "ml"
-  },
-  {
-    "id": 87,
-    "name": "Musc à la grenade",
-    "type_produit": "Musc",
-    "img_main": "/images/musc grenade/musc-a-la-grenade-img_main.jpg",
-    "subtitle": "Une touche fruitée et sensuelle qui éveille les sens",
-    "description": "Le Musc à la Grenade séduit par ses notes fruitées et légèrement acidulées. Il apporte fraîcheur et féminité, tout en laissant un sillage délicat et captivant. Parfait pour celles qui aiment les parfums dynamiques et modernes.",
-    "price": 30,
-    "original_price": null,
-    "stock": 40,
-    "is_best_seller": true,
-    "is_gift": false,
-    "is_recommended": true,
-    "gender": "female",
-    "badges": ["100% Naturel"],
-    "category": "parfum",
-    "type": "corps",
-    "variants": [
-      {
-        "size": 10,
-        "price": 30,
-        "final_price": 30,
-        "original_price": null,
-        "promotion_percent": 0,
-        "stock_quantity": 40,
-        "unit": "ml"
-      }
-    ],
-    "faqs": [
-      {
-        "question": "Ce musc a-t-il une odeur sucrée ?",
-        "answer": "Oui, il possède une note fruitée légèrement sucrée grâce à la grenade."
-      },
-      {
-        "question": "Est-il adapté pour toutes les saisons ?",
-        "answer": "Oui, sa fraîcheur le rend agréable toute l’année."
-      },
-      {
-        "question": "Combien de temps tient-il sur la peau ?",
-        "answer": "Il offre une bonne tenue de plusieurs heures selon votre peau."
-      },
-      {
-        "question": "Peut-on l’offrir comme cadeau ?",
-        "answer": "Oui, c’est un excellent choix pour un petit cadeau parfumé."
-      }
-    ],
-    "brand": "My Bloom",
-    "unit": "ml"
-  },
-  {
-    "id": 88,
-    "name": "Musc de féminité",
-    "type_produit": "Musc",
-    "img_main": "/images/musc de féminité/musc-de-feminite-img_main.jpg",
-    "subtitle": "Une signature olfactive élégante et irrésistiblement féminine",
-    "description": "Le Musc de Féminité incarne élégance et sensualité. Sa fragrance envoûtante sublime votre présence avec une touche raffinée et chaleureuse. Idéal pour les occasions spéciales ou pour affirmer votre charme au quotidien.",
-    "price": 30,
-    "original_price": null,
-    "stock": 40,
-    "is_best_seller": true,
-    "is_gift": false,
-    "is_recommended": true,
-    "gender": "female",
-    "badges": ["100% Naturel"],
-    "category": "parfum",
-    "type": "corps",
-    "variants": [
-      {
-        "size": 10,
-        "price": 30,
-        "final_price": 30,
-        "original_price": null,
-        "promotion_percent": 0,
-        "stock_quantity": 40,
-        "unit": "ml"
-      }
-    ],
-    "faqs": [
-      {
-        "question": "Ce musc est-il adapté pour les soirées ?",
-        "answer": "Oui, sa fragrance élégante est parfaite pour les occasions spéciales."
-      },
-      {
-        "question": "Le parfum est-il intense ?",
-        "answer": "Il est modérément intense avec une touche sophistiquée."
-      },
-      {
-        "question": "Peut-on l’utiliser tous les jours ?",
-        "answer": "Oui, il convient aussi bien pour un usage quotidien que pour des événements."
-      },
-      {
-        "question": "Convient-il à tous les âges ?",
-        "answer": "Oui, il s’adapte à toutes les femmes recherchant une fragrance élégante."
-      }
-    ],
-    "brand": "My Bloom",
-    "unit": "ml"
-  },
+                "id": 82,
+                "name": "Musc blanc",
+                "type_produit": "Musc",
+                "img_main": "products/eM7nhezaXyiTGXxBiRsj7IUSo9wVRMiq.webp",
+                "subtitle": "Pureté et douceur dans une fragrance intemporelle",
+                "description": "Le Musc Blanc offre une fragrance douce, propre et apaisante. Idéal pour un usage quotidien, il enveloppe la peau d’un parfum subtil et élégant qui dure toute la journée. Un indispensable pour celles qui recherchent simplicité et raffinement.",
+                "price": 30,
+                "original_price": null,
+                "stock": 40,
+                "is_best_seller": true,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 10,
+                        "price": 30,
+                        "final_price": 30,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 40,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [],
+                "faqs": [
+                    {
+                        "question": "Ce musc convient-il à une utilisation quotidienne ?",
+                        "answer": "Oui, sa fragrance douce et légère est parfaite pour une utilisation quotidienne."
+                    },
+                    {
+                        "question": "Combien de temps dure le parfum sur la peau ?",
+                        "answer": "Le parfum peut durer plusieurs heures selon le type de peau et les conditions."
+                    },
+                    {
+                        "question": "Peut-on appliquer ce musc sur les vêtements ?",
+                        "answer": "Il est recommandé de l’appliquer directement sur la peau pour un meilleur rendu."
+                    },
+                    {
+                        "question": "Ce produit est-il naturel ?",
+                        "answer": "Oui, il est formulé avec des ingrédients sélectionnés pour une expérience naturelle."
+                    }
+                ],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
+            {
+                "id": 83,
+                "name": "Musc à la grenade",
+                "type_produit": "Musc",
+                "img_main": "products/Gemini_Generated_Image_102k5o102k5o102k.jpg",
+                "subtitle": "Une touche fruitée et sensuelle qui éveille les sens",
+                "description": "Le Musc à la Grenade séduit par ses notes fruitées et légèrement acidulées. Il apporte fraîcheur et féminité, tout en laissant un sillage délicat et captivant. Parfait pour celles qui aiment les parfums dynamiques et modernes.",
+                "price": 30,
+                "original_price": null,
+                "stock": 38,
+                "is_best_seller": true,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 10,
+                        "price": 30,
+                        "final_price": 30,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 38,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [],
+                "faqs": [
+                    {
+                        "question": "Ce musc a-t-il une odeur sucrée ?",
+                        "answer": "Oui, il possède une note fruitée légèrement sucrée grâce à la grenade."
+                    },
+                    {
+                        "question": "Est-il adapté pour toutes les saisons ?",
+                        "answer": "Oui, sa fraîcheur le rend agréable toute l’année."
+                    },
+                    {
+                        "question": "Combien de temps tient-il sur la peau ?",
+                        "answer": "Il offre une bonne tenue de plusieurs heures selon votre peau."
+                    },
+                    {
+                        "question": "Peut-on l’offrir comme cadeau ?",
+                        "answer": "Oui, c’est un excellent choix pour un petit cadeau parfumé."
+                    }
+                ],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
+            {
+                "id": 84,
+                "name": "Musc de féminité",
+                "type_produit": "Musc",
+                "img_main": "products/Gemini_Generated_Image_1i0t021i0t021i0t.jpg",
+                "subtitle": "Une signature olfactive élégante et irrésistiblement féminine",
+                "description": "Le Musc de Féminité incarne élégance et sensualité. Sa fragrance envoûtante sublime votre présence avec une touche raffinée et chaleureuse. Idéal pour les occasions spéciales ou pour affirmer votre charme au quotidien.",
+                "price": 30,
+                "original_price": null,
+                "stock": 33,
+                "is_best_seller": true,
+                "is_gift": false,
+                "is_recommended": true,
+                "gender": "women",
+                "badges": [],
+                "category": "Corps",
+                "type": "corps",
+                "variants": [
+                    {
+                        "size": 10,
+                        "price": 30,
+                        "final_price": 30,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 33,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [],
+                "faqs": [
+                    {
+                        "question": "Ce musc est-il adapté pour les soirées ?",
+                        "answer": "Oui, sa fragrance élégante est parfaite pour les occasions spéciales."
+                    },
+                    {
+                        "question": "Le parfum est-il intense ?",
+                        "answer": "Il est modérément intense avec une touche sophistiquée."
+                    },
+                    {
+                        "question": "Peut-on l’utiliser tous les jours ?",
+                        "answer": "Oui, il convient aussi bien pour un usage quotidien que pour des événements."
+                    },
+                    {
+                        "question": "Convient-il à tous les âges ?",
+                        "answer": "Oui, il s’adapte à toutes les femmes recherchant une fragrance élégante."
+                    }
+                ],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
             {
                 "id": 85,
                 "name": "Kalimat",
                 "type_produit": "Eau de Parfum",
-                "img_main": "/images/كلمات/كلمات.jpg",
+                "img_main": "products/كلمات.jpg",
                 "subtitle": "Les mots précieux",
                 "description": "Kalimat Arabian parfum oriental luxueux riche captivant arabe. Tradition splendeur. Oud rose safran ambre musc. Maroc prestige arabe.",
-                "price": 50,
+                "price": 70,
                 "original_price": null,
-                "stock": 45,
+                "stock": 50,
                 "is_best_seller": false,
                 "is_gift": false,
                 "is_recommended": true,
                 "gender": "unisex",
-                "badges": [
-                    "Oriental",
-                    "Luxe"
-                ],
-                "category": "parfum",
+                "badges": [],
+                "category": "Parfum",
+                "type": "parfum",
                 "variants": [
-                    {
-                        "size": 20,
-                        "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 50,
-                        "unit": "ml"
-                    },
                     {
                         "size": 50,
                         "price": 70,
@@ -4917,8 +4779,18 @@
                         "promotion_percent": 0,
                         "stock_quantity": 50,
                         "unit": "ml"
+                    },
+                    {
+                        "size": 20,
+                        "price": 50,
+                        "final_price": 50,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 46,
+                        "unit": "ml"
                     }
                 ],
+                "ingredients": [],
                 "faqs": [
                     {
                         "question": "Quelle est la tenue du parfum ?",
@@ -4935,8 +4807,566 @@
                 ],
                 "brand": "Arabian Oud",
                 "unit": "ml"
+            },
+            {
+                "id": 89,
+                "name": "Spray musk",
+                "type_produit": "Spray d'Intérieur",
+                "img_main": "products/oQXO2P3FxErHLMCMugSAR7nLf1UXbFqt.webp",
+                "subtitle": "Parfum d’ambiance au musc, doux et propre.",
+                "description": "Un parfum d’ambiance au musc, aux notes douces et élégantes. Il parfume votre intérieur et laisse une sensation de propreté et de confort.",
+                "price": 60,
+                "original_price": null,
+                "stock": 13,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": false,
+                "gender": "women",
+                "badges": [],
+                "category": "Maison",
+                "type": "maison",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 60,
+                        "final_price": 60,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 13,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 2,
+                        "name": "Vanille",
+                        "image_url": "ingredients/mqobr3J3UcRHUdq0jlpOH0BOBLYCEdBS.webp"
+                    },
+                    {
+                        "id": 11,
+                        "name": "Eau de rose distillée",
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Où peut-on l'utiliser ?",
+                        "answer": "Il peut être utilisé à la maison, sur les vêtements, les tissus d'ameublement, au bureau ou dans la voiture."
+                    },
+                    {
+                        "question": "Peut-on le vaporiser directement sur les textiles ?",
+                        "answer": "Oui, vous pouvez le vaporiser sur les textiles pour leur donner un parfum frais et agréable."
+                    }
+                ],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
+            {
+                "id": 90,
+                "name": "Diffuseur vanille",
+                "type_produit": "Diffuseur",
+                "img_main": "products/1l1V9o7rqGoe4WRz5ExEn6enQqi4G7qr.webp",
+                "subtitle": "Diffuseur à la vanille, doux et chaleureux.",
+                "description": "Diffuseur à la vanille, à la fragrance douce et gourmande. Il parfume votre intérieur et crée une ambiance chaleureuse et apaisante.",
+                "price": 70,
+                "original_price": null,
+                "stock": 6,
+                "is_best_seller": false,
+                "is_gift": false,
+                "is_recommended": false,
+                "gender": "women",
+                "badges": [],
+                "category": "Maison",
+                "type": "maison",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 70,
+                        "final_price": 70,
+                        "original_price": null,
+                        "promotion_percent": 0,
+                        "stock_quantity": 6,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 2,
+                        "name": "Vanille",
+                        "image_url": "ingredients/mqobr3J3UcRHUdq0jlpOH0BOBLYCEdBS.webp"
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Où peut-on l'utiliser ?",
+                        "answer": "Il peut être utilisé dans les chambres, le salon, le bureau ou n'importe quelle pièce de la maison"
+                    },
+                    {
+                        "question": "Combien de temps dure le parfum ?",
+                        "answer": "Le parfum perdure pendant plusieurs heures et se diffuse progressivement dans l'espace."
+                    },
+                    {
+                        "question": "Comment l'utiliser ?",
+                        "answer": "Placez-le simplement à l'endroit souhaité et laissez le parfum se diffuser naturellement dans l'atmosphère"
+                    }
+                ],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
+            {
+                "id": 91,
+                "name": "Coffret Aura",
+                "type_produit": "Coffrets",
+                "img_main": "products/f2fI5FjJkLRvWhSfkn7ZoF51xJsljnXb.webp",
+                "subtitle": "Un coffret qui laisse une empreinte douce et inoubliable.",
+                "description": "Un mélange harmonieux de produits parfumés soigneusement sélectionnés pour créer une aura élégante et subtile. Parfait pour celles qui aiment sentir bon tout au long de la journée avec une touche raffinée.",
+                "price": 200,
+                "original_price": 250,
+                "stock": 28,
+                "is_best_seller": false,
+                "is_gift": true,
+                "is_recommended": true,
+                "gender": "women",
+                "badges": [],
+                "category": "Pack",
+                "type": "pack",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 250,
+                        "final_price": 200,
+                        "original_price": 250,
+                        "promotion_percent": 20,
+                        "stock_quantity": 28,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 1,
+                        "name": "Mangue",
+                        "image_url": "ingredients/rIqSKBaoNV9jYtRxciPvAmARJzVZKcVw.webp"
+                    },
+                    {
+                        "id": 7,
+                        "name": "Amande",
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
+                    },
+                    {
+                        "id": 14,
+                        "name": "Cacao",
+                        "image_url": "ingredients/yszw7lIc2Wr8ztNG7Eudb8Y01aKV1y4M.webp"
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Les produits dans le coffret ont-ils la même senteur ?",
+                        "answer": "Non, chaque coffret contient une sélection de produits aux senteurs variées, pour vous offrir une expérience parfumée riche et différente à chaque utilisation."
+                    },
+                    {
+                        "question": "Est-ce que les coffrets sont adaptés comme cadeau ?",
+                        "answer": "Oui, nos coffrets sont parfaits pour offrir. Leur présentation élégante et leur variété de produits en font un choix idéal pour faire plaisir à coup sûr."
+                    },
+                    {
+                        "question": "Peut-on utiliser les produits ensemble ?",
+                        "answer": "Bien sûr, les produits peuvent être utilisés ensemble ou séparément selon vos envies, pour créer votre propre combinaison de senteurs unique."
+                    }
+                ],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
+            {
+                "id": 92,
+                "name": "Coffret Éclat",
+                "type_produit": "Coffrets",
+                "img_main": "products/njfYtZJUeFdU1Uney66UCxAdyFoQFW9M.webp",
+                "subtitle": "Pour rayonner avec fraîcheur et féminité.",
+                "description": "Ce coffret réunit des produits aux senteurs variées pour apporter fraîcheur et éclat à votre quotidien. Une expérience parfumée qui sublime votre présence avec légèreté et douceur.",
+                "price": 200,
+                "original_price": 250,
+                "stock": 22,
+                "is_best_seller": false,
+                "is_gift": true,
+                "is_recommended": true,
+                "gender": "women",
+                "badges": [],
+                "category": "Pack",
+                "type": "pack",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 250,
+                        "final_price": 200,
+                        "original_price": 250,
+                        "promotion_percent": 20,
+                        "stock_quantity": 22,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 3,
+                        "name": "Noix de coco",
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
+                    },
+                    {
+                        "id": 7,
+                        "name": "Amande",
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
+                    },
+                    {
+                        "id": 12,
+                        "name": "Avocat",
+                        "image_url": "ingredients/IvJUNMJlXswiv0JD82gzhd9dMWzMzCiZ.webp"
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Les produits dans le coffret ont-ils la même senteur ?",
+                        "answer": "Non, chaque coffret contient une sélection de produits aux senteurs variées, pour vous offrir une expérience parfumée riche et différente à chaque utilisation."
+                    },
+                    {
+                        "question": "Est-ce que les coffrets sont adaptés comme cadeau ?",
+                        "answer": "Oui, nos coffrets sont parfaits pour offrir. Leur présentation élégante et leur variété de produits en font un choix idéal pour faire plaisir à coup sûr."
+                    },
+                    {
+                        "question": "Peut-on utiliser les produits ensemble ?",
+                        "answer": "ien sûr, les produits peuvent être utilisés ensemble ou séparément selon vos envies, pour créer votre propre combinaison de senteurs unique."
+                    }
+                ],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
+            {
+                "id": 93,
+                "name": "Coffret Harmonie",
+                "type_produit": "Coffrets",
+                "img_main": "products/Vv03Lu3Bv9NNbKnSHMnPBSFqzMYvz5I8.webp",
+                "subtitle": "L’équilibre parfait entre douceur et parfum.",
+                "description": "Une sélection équilibrée de produits aux notes complémentaires, pensée pour offrir un moment de bien-être et de sérénité. Idéal pour transformer chaque instant en une pause parfumée apaisante.",
+                "price": 200,
+                "original_price": 250,
+                "stock": 7,
+                "is_best_seller": false,
+                "is_gift": true,
+                "is_recommended": true,
+                "gender": "women",
+                "badges": [],
+                "category": "Pack",
+                "type": "pack",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 250,
+                        "final_price": 200,
+                        "original_price": 250,
+                        "promotion_percent": 20,
+                        "stock_quantity": 6,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 7,
+                        "name": "Amande",
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
+                    },
+                    {
+                        "id": 12,
+                        "name": "Avocat",
+                        "image_url": "ingredients/IvJUNMJlXswiv0JD82gzhd9dMWzMzCiZ.webp"
+                    },
+                    {
+                        "id": 13,
+                        "name": "Karité",
+                        "image_url": "ingredients/U601YhnA68QPWTYIAtopKVyKqwLroCNK.webp"
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Les produits dans le coffret ont-ils la même senteur ?",
+                        "answer": "Non, chaque coffret contient une sélection de produits aux senteurs variées, pour vous offrir une expérience parfumée riche et différente à chaque utilisation."
+                    },
+                    {
+                        "question": "Est-ce que les coffrets sont adaptés comme cadeau ?",
+                        "answer": "Oui, nos coffrets sont parfaits pour offrir. Leur présentation élégante et leur variété de produits en font un choix idéal pour faire plaisir à coup sûr."
+                    },
+                    {
+                        "question": "Peut-on utiliser les produits ensemble ?",
+                        "answer": "Bien sûr, les produits peuvent être utilisés ensemble ou séparément selon vos envies, pour créer votre propre combinaison de senteurs unique."
+                    }
+                ],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
+            {
+                "id": 94,
+                "name": "Coffret Velvet",
+                "type_produit": "Coffrets",
+                "img_main": "products/t9k4Rj60qoAaHoM20PC9rWigvoFWiFeF.webp",
+                "subtitle": "Douceur, élégance et confort en un seul coffret.",
+                "description": "nspiré par la douceur du velours, ce coffret propose une expérience sensorielle riche et enveloppante. Chaque produit apporte une touche de confort et de sophistication à votre routine",
+                "price": 200,
+                "original_price": 250,
+                "stock": 12,
+                "is_best_seller": false,
+                "is_gift": true,
+                "is_recommended": true,
+                "gender": "women",
+                "badges": [],
+                "category": "Pack",
+                "type": "pack",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 250,
+                        "final_price": 200,
+                        "original_price": 250,
+                        "promotion_percent": 20,
+                        "stock_quantity": 11,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 4,
+                        "name": "Aloe vera",
+                        "image_url": "ingredients/L3AvZlTgrW0sPEwg9ua1Ftmbe6luTE3i.webp"
+                    },
+                    {
+                        "id": 9,
+                        "name": "Arbre à thé",
+                        "image_url": "ingredients/VSPWthTdq3HKQXlwOJwdr6aU4oofqICN.webp"
+                    },
+                    {
+                        "id": 14,
+                        "name": "Cacao",
+                        "image_url": "ingredients/yszw7lIc2Wr8ztNG7Eudb8Y01aKV1y4M.webp"
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Les produits dans le coffret ont-ils la même senteur ?",
+                        "answer": "Non, chaque coffret contient une sélection de produits aux senteurs variées, pour vous offrir une expérience parfumée riche et différente à chaque utilisation."
+                    },
+                    {
+                        "question": "Est-ce que les coffrets sont adaptés comme cadeau ?",
+                        "answer": "Oui, nos coffrets sont parfaits pour offrir. Leur présentation élégante et leur variété de produits en font un choix idéal pour faire plaisir à coup sûr."
+                    },
+                    {
+                        "question": "Peut-on utiliser les produits ensemble ?",
+                        "answer": "Bien sûr, les produits peuvent être utilisés ensemble ou séparément selon vos envies, pour créer votre propre combinaison de senteurs unique"
+                    }
+                ],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
+            {
+                "id": 95,
+                "name": "Coffret Lumière",
+                "type_produit": "Coffrets",
+                "img_main": "products/wGaHJydyhsYNqBDSnCklMXaJX5XLeaxj.webp",
+                "subtitle": "Une touche lumineuse dans votre routine parfumée.",
+                "description": "Ce coffret illumine votre quotidien grâce à une sélection de produits aux senteurs délicates et modernes. Une invitation à se sentir fraîche, confiante et pleine d’énergie.",
+                "price": 200,
+                "original_price": 250,
+                "stock": 19,
+                "is_best_seller": false,
+                "is_gift": true,
+                "is_recommended": true,
+                "gender": "women",
+                "badges": [],
+                "category": "Pack",
+                "type": "pack",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 250,
+                        "final_price": 200,
+                        "original_price": 250,
+                        "promotion_percent": 20,
+                        "stock_quantity": 19,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 3,
+                        "name": "Noix de coco",
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
+                    },
+                    {
+                        "id": 11,
+                        "name": "Eau de rose distillée",
+                        "image_url": "ingredients/t9aWVT5251d58oh1ffi4VoYFVGFs7hAn.webp"
+                    },
+                    {
+                        "id": 13,
+                        "name": "Karité",
+                        "image_url": "ingredients/U601YhnA68QPWTYIAtopKVyKqwLroCNK.webp"
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Les produits dans le coffret ont-ils la même senteur ?",
+                        "answer": "Non, chaque coffret contient une sélection de produits aux senteurs variées, pour vous offrir une expérience parfumée riche et différente à chaque utilisation."
+                    },
+                    {
+                        "question": "Est-ce que les coffrets sont adaptés comme cadeau ?",
+                        "answer": "Oui, nos coffrets sont parfaits pour offrir. Leur présentation élégante et leur variété de produits en font un choix idéal pour faire plaisir à coup sûr."
+                    },
+                    {
+                        "question": "Peut-on utiliser les produits ensemble ?",
+                        "answer": "Bien sûr, les produits peuvent être utilisés ensemble ou séparément selon vos envies, pour créer votre propre combinaison de senteurs unique."
+                    }
+                ],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
+            {
+                "id": 96,
+                "name": "Coffret Signature",
+                "type_produit": "Coffrets",
+                "img_main": "products/xuGzOxsXO4yUuW8MjyVDZ69z8TQZlHGa.webp",
+                "subtitle": "L’essence unique de votre style.",
+                "description": "Un coffret pensé pour révéler votre personnalité à travers un mélange de senteurs variées. Chaque produit contribue à créer une signature parfumée unique et mémorable",
+                "price": 200,
+                "original_price": 250,
+                "stock": 13,
+                "is_best_seller": false,
+                "is_gift": true,
+                "is_recommended": true,
+                "gender": "women",
+                "badges": [],
+                "category": "Pack",
+                "type": "pack",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 250,
+                        "final_price": 200,
+                        "original_price": 250,
+                        "promotion_percent": 20,
+                        "stock_quantity": 13,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 9,
+                        "name": "Arbre à thé",
+                        "image_url": "ingredients/VSPWthTdq3HKQXlwOJwdr6aU4oofqICN.webp"
+                    },
+                    {
+                        "id": 12,
+                        "name": "Avocat",
+                        "image_url": "ingredients/IvJUNMJlXswiv0JD82gzhd9dMWzMzCiZ.webp"
+                    },
+                    {
+                        "id": 14,
+                        "name": "Cacao",
+                        "image_url": "ingredients/yszw7lIc2Wr8ztNG7Eudb8Y01aKV1y4M.webp"
+                    }
+                ],
+                "faqs": [
+                    {
+                        "question": "Les produits dans le coffret ont-ils la même senteur ?",
+                        "answer": "Non, chaque coffret contient une sélection de produits aux senteurs variées, pour vous offrir une expérience parfumée riche et différente à chaque utilisation"
+                    },
+                    {
+                        "question": "Est-ce que les coffrets sont adaptés comme cadeau ?",
+                        "answer": "Oui, nos coffrets sont parfaits pour offrir. Leur présentation élégante et leur variété de produits en font un choix idéal pour faire plaisir à coup sûr"
+                    },
+                    {
+                        "question": "Peut-on utiliser les produits ensemble ?",
+                        "answer": "Bien sûr, les produits peuvent être utilisés ensemble ou séparément selon vos envies, pour créer votre propre combinaison de senteurs unique."
+                    }
+                ],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
+            {
+                "id": 98,
+                "name": "Pack d’ambiance",
+                "type_produit": "Coffrets",
+                "img_main": "products/k32ELyuXBgBqeFdOG6Tdw8xkJQ88idje.webp",
+                "subtitle": "Un coffret élégant composé de 4 parfums d’intérieur et de 3 diffuseurs au choix pour une ambiance raffinée et chaleureuse.",
+                "description": "Découvrez une expérience parfumée unique avec un coffret réunissant la douceur du Musk, la fraîcheur Tropical, la touche gourmande du Caramel et l’élégance du Oud.\r\nAccompagné de 3 diffuseurs au choix, il parfume délicatement votre intérieur tout en apportant une touche chic et cocooning à chaque espace.",
+                "price": 446,
+                "original_price": 480,
+                "stock": 18,
+                "is_best_seller": false,
+                "is_gift": true,
+                "is_recommended": false,
+                "gender": "women",
+                "badges": [],
+                "category": "Pack",
+                "type": "pack",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 480,
+                        "final_price": 446,
+                        "original_price": 480,
+                        "promotion_percent": 7,
+                        "stock_quantity": 18,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [],
+                "faqs": [],
+                "brand": "My Bloom",
+                "unit": "ml"
+            },
+            {
+                "id": 99,
+                "name": "Coffret Qissa",
+                "type_produit": "Coffrets",
+                "img_main": "products/eEfmJvMFVhvWAjFYFSxRrXNfV7OVJNiw.webp",
+                "subtitle": "Une collection raffinée où chaque parfum rencontre sa brume parfumée assortie, pour une senteur élégante qui dure toute la journée.",
+                "description": "Découvrez un coffret féminin et harmonieux composé de 4 parfums génériques accompagnés de leurs mikhmria assorties aux mêmes senteurs. Chaque duo a été pensé pour sublimer votre routine parfumée avec des fragrances élégantes, douces et envoûtantes. Une expérience sensorielle complète qui laisse une touche raffinée sur la peau, les cheveux et les vêtements.",
+                "price": 481,
+                "original_price": 580,
+                "stock": 20,
+                "is_best_seller": false,
+                "is_gift": true,
+                "is_recommended": false,
+                "gender": "women",
+                "badges": [],
+                "category": "Pack",
+                "type": "pack",
+                "variants": [
+                    {
+                        "size": 100,
+                        "price": 580,
+                        "final_price": 481,
+                        "original_price": 580,
+                        "promotion_percent": 17,
+                        "stock_quantity": 20,
+                        "unit": "ml"
+                    }
+                ],
+                "ingredients": [
+                    {
+                        "id": 3,
+                        "name": "Noix de coco",
+                        "image_url": "ingredients/vFGFAF9Q9TiWfJmGLUbmGc1WZF7POICX.webp"
+                    },
+                    {
+                        "id": 7,
+                        "name": "Amande",
+                        "image_url": "ingredients/vDtBNXDwcWfWLwiQE3ehpqOuwRyGqODv.webp"
+                    },
+                    {
+                        "id": 13,
+                        "name": "Karité",
+                        "image_url": "ingredients/U601YhnA68QPWTYIAtopKVyKqwLroCNK.webp"
+                    }
+                ],
+                "faqs": [],
+                "brand": "My Bloom",
+                "unit": "ml"
             }
         ]
     }
-    
 }
