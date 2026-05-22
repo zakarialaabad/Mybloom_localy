@@ -302,9 +302,11 @@ class ProductJsonSeeder extends Seeder
                 $updateData['product_type_id'] = $productTypeId;
             }
             // IMPORTANT: Always update these fields from JSON to ensure data integrity
-            $updateData['is_gift'] = $jsonProduct['is_gift'] ?? false;
-            $updateData['is_best_seller'] = $jsonProduct['is_best_seller'] ?? false;
-            $updateData['is_recommended'] = $jsonProduct['is_recommended'] ?? false;
+            $updateData['is_gift']         = $jsonProduct['is_gift']         ?? false;
+            $updateData['is_best_seller']  = $jsonProduct['is_best_seller']  ?? false;
+            $updateData['is_recommended']  = $jsonProduct['is_recommended']  ?? false;
+            $updateData['price']           = $jsonProduct['price']           ?? 0;
+            $updateData['original_price']  = $jsonProduct['original_price']  ?? null;
             
             DB::table('products')->where('id', $existing->id)->update($updateData);
             // Continue to process images for existing products (don't return early)
@@ -439,14 +441,15 @@ class ProductJsonSeeder extends Seeder
             $sortOrder = 0;
             foreach ($jsonProduct['variants'] as $variant) {
                 DB::table('product_variants')->insert([
-                    'product_id' => $productId,
-                    'size' => $variant['size'] ?? 0,
-                    'unit' => $variant['unit'] ?? 'ml',
-                    'price' => $variant['price'] ?? $jsonProduct['price'] ?? 0,
-                    'stock_quantity' => $variant['stock_quantity'] ?? $variant['stock'] ?? $jsonProduct['stock'] ?? 0,
-                    'is_default' => $sortOrder === 0, // First variant is default
-                    'created_at' => now(),
-                    'updated_at' => now(),
+                    'product_id'        => $productId,
+                    'size'              => $variant['size']         ?? 0,
+                    'unit'              => $variant['unit']         ?? 'ml',
+                    'price'             => $variant['price']        ?? $jsonProduct['price'] ?? 0,
+                    'promotion_percent' => $variant['promotion_percent'] ?? 0,
+                    'stock_quantity'    => $variant['stock_quantity'] ?? $variant['stock'] ?? $jsonProduct['stock'] ?? 0,
+                    'is_default'        => $sortOrder === 0,
+                    'created_at'        => now(),
+                    'updated_at'        => now(),
                 ]);
                 $sortOrder++;
             }

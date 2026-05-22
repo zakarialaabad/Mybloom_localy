@@ -18,8 +18,8 @@
                 "img_main": "products/Gemini_Generated_Image_7knznn7knznn7knz.jpg",
                 "subtitle": "Plongez dans la chaleur d'une sérénité tropicale",
                 "description": "Découvrez notre beurre corporel Summer in Bali, formule 100% naturelle enrichie en huile de sésame et pépins de raisin. Unifie le teint, atténue les taches pigmentaires avec hydratation profonde. Livraison rapide au Maroc, produit 100% original. Parfait usage quotidien.",
-                "price": 80,
-                "original_price": null,
+                "price": 60,
+                "original_price": 80,
                 "stock": 98,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -32,9 +32,9 @@
                     {
                         "size": 200,
                         "price": 80,
-                        "final_price": 80,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 60,
+                        "original_price": 80,
+                        "promotion_percent": 25,
                         "stock_quantity": 98,
                         "unit": "g"
                     }
@@ -79,8 +79,8 @@
                 "img_main": "products/Gemini_Generated_Image_bvx3d3bvx3d3bvx3.jpg",
                 "subtitle": "Une exfoliation luxueuse inspirée de Bali pour révéler une peau douce, éclatante et parfaitement unifiée",
                 "description": "Gommage corporel Summer in Bali 100% naturel enrichi en huile pépins raisin et sésame. Élimine cellules mortes, unifie teint naturellement. Peau douce, lisse, lumineuse en une application. Livraison Maroc, authentique. Idéal exfoliation luxueuse quotidienne.",
-                "price": 80,
-                "original_price": null,
+                "price": 60,
+                "original_price": 80,
                 "stock": 9,
                 "is_best_seller": true,
                 "is_gift": false,
@@ -93,9 +93,9 @@
                     {
                         "size": 200,
                         "price": 80,
-                        "final_price": 80,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 60,
+                        "original_price": 80,
+                        "promotion_percent": 25,
                         "stock_quantity": 9,
                         "unit": "g"
                     }
@@ -144,8 +144,8 @@
                 "img_main": "products/Gemini_Generated_Image_3fw11x3fw11x3fw1.jpg",
                 "subtitle": "L'élixir gommant qui révèle la douceur naturelle de votre peau",
                 "description": "Gommage A Lot of Love 100% naturel allie huile théier et jojoba puissante. Exfolie douceur, traite peau poule efficacement. Peau soyeuse lumineuse garantie. Livraison gratuite Maroc, produit authentique. Usage 2-3 fois semaine pour résultats optimaux.",
-                "price": 80,
-                "original_price": null,
+                "price": 60,
+                "original_price": 80,
                 "stock": 20,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -158,9 +158,9 @@
                     {
                         "size": 200,
                         "price": 80,
-                        "final_price": 80,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 60,
+                        "original_price": 80,
+                        "promotion_percent": 25,
                         "stock_quantity": 20,
                         "unit": "g"
                     }
@@ -205,8 +205,8 @@
                 "img_main": "products/Gu0P3C5qMxxyaU1ulRkFbh2DqzRTcKsa.webp",
                 "subtitle": "Enveloppez votre peau d'un charme fruité irrésistible",
                 "description": "Beurre corporel A Lot of Love formule exclusive 100% naturelle traite efficacement peau poule. Enrichi théier et jojoba. Lisse progressivement, restaure texture soyeuse. Résultats visibles 2-3 semaines. Produit original, livraison rapide Maroc.",
-                "price": 80,
-                "original_price": null,
+                "price": 60,
+                "original_price": 80,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -219,9 +219,9 @@
                     {
                         "size": 200,
                         "price": 80,
-                        "final_price": 80,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 60,
+                        "original_price": 80,
+                        "promotion_percent": 25,
                         "stock_quantity": 100,
                         "unit": "g"
                     }
@@ -271,8 +271,8 @@
                 "img_main": "products/Gemini_Generated_Image_faj8oefaj8oefaj8.jpg",
                 "subtitle": "La douceur sucrée qui transforme votre peau dès la première utilisation",
                 "description": "Sugar Pop gommage 100% naturel fusion huile amande douce coco. Exfolie délicatement, traite boutons corps. Usage polyvalent comme gel douche. Peau douce garantie. Livraison express Maroc, authentique. Idéal tous types peau.",
-                "price": 80,
-                "original_price": null,
+                "price": 60,
+                "original_price": 80,
                 "stock": 20,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -285,9 +285,9 @@
                     {
                         "size": 200,
                         "price": 80,
-                        "final_price": 80,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 60,
+                        "original_price": 80,
+                        "promotion_percent": 25,
                         "stock_quantity": 20,
                         "unit": "g"
                     }
@@ -332,8 +332,8 @@
                 "img_main": "products/WSUqCK1cIwBUZiQsP17hYATWfTclCY8h.webp",
                 "subtitle": "Douceur sucrée et peau de soie dès la première application",
                 "description": "Beurre Sugar Pop riche formule 100% naturelle. Amande douce, coco, karité, cacao, vitamine E. Élimine imperfections, hydrate profondément. Texture riche non-grasse. Produit original livraison rapide Maroc. Soin complet quotidien.",
-                "price": 80,
-                "original_price": null,
+                "price": 60,
+                "original_price": 80,
                 "stock": 99,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -346,9 +346,9 @@
                     {
                         "size": 200,
                         "price": 80,
-                        "final_price": 80,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 60,
+                        "original_price": 80,
+                        "promotion_percent": 25,
                         "stock_quantity": 99,
                         "unit": "g"
                     }
@@ -403,8 +403,8 @@
                 "img_main": "products/cherry-tint-img_main.jpg",
                 "subtitle": "L'éclat naturel à portée de main",
                 "description": "Tint Cherry Tint teinte cerise naturelle eau rose aloe. Sublime joues lèvres fraîcheur naturelle. Hydratation délicate persistante toute journée. Formule sûre peau. Livraison Maroc. Maquillage naturel quotidien.",
-                "price": 50,
-                "original_price": null,
+                "price": 35,
+                "original_price": 50,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -417,9 +417,9 @@
                     {
                         "size": 15,
                         "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 35,
+                        "original_price": 50,
+                        "promotion_percent": 30,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -464,8 +464,8 @@
                 "img_main": "products/Gemini_Generated_Image_kr2bxykr2bxykr2b.jpg",
                 "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
                 "description": "Brume capillaire Sexy Bloom eau rose vitamine E. Parfum féminin captivant cheveux. Persistance toute journée sans alourdir. Usage cheveux corps. Produit original Maroc. Fragrance sensuelle quotidienne.",
-                "price": 50,
-                "original_price": null,
+                "price": 35,
+                "original_price": 50,
                 "stock": 100,
                 "is_best_seller": true,
                 "is_gift": false,
@@ -478,9 +478,9 @@
                     {
                         "size": 30,
                         "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 35,
+                        "original_price": 50,
+                        "promotion_percent": 30,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -520,8 +520,8 @@
                 "img_main": "products/Gemini_Generated_Image_kq9jnqkq9jnqkq9j.jpg",
                 "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
                 "description": "Brume Secret eau rose vitamine E. Cheveux fragrance captivante toute journée sans alourdir. Polyvalente cheveux corps. Produit original livraison Maroc. Parfum féminin discret quotidien.",
-                "price": 50,
-                "original_price": null,
+                "price": 35,
+                "original_price": 50,
                 "stock": 100,
                 "is_best_seller": true,
                 "is_gift": false,
@@ -534,9 +534,9 @@
                     {
                         "size": 30,
                         "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 35,
+                        "original_price": 50,
+                        "promotion_percent": 30,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -576,8 +576,8 @@
                 "img_main": "products/VmebEAb3VEBUXCNX4vpArnrj6XDg5JGu.webp",
                 "subtitle": "La fragrance sensuelle qui sublime votre chevelure",
                 "description": "Brume Paradis Adress eau rose vitamine E. Cheveux fragrance féminine captivante toute journée. Sans alourdir. Polyvalente cheveux corps. Produit original Maroc. Choix femmes marocaines.",
-                "price": 50,
-                "original_price": null,
+                "price": 35,
+                "original_price": 50,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -590,9 +590,9 @@
                     {
                         "size": 30,
                         "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 35,
+                        "original_price": 50,
+                        "promotion_percent": 30,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -632,8 +632,8 @@
                 "img_main": "products/GgEh9yN2sgxpPm0xybPlyvgHGqG6ieWa.webp",
                 "subtitle": "Chaque battement raconte une histoire d'amour",
                 "description": "Brume Heartbeat eau rose. Parfum frais captivant voile reflets scintillants. Persistance longue durée. Produit authentique livraison Maroc. Occasions spéciales, usage quotidien.",
-                "price": 75,
-                "original_price": null,
+                "price": 55,
+                "original_price": 75,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -646,9 +646,9 @@
                     {
                         "size": 100,
                         "price": 75,
-                        "final_price": 75,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 55,
+                        "original_price": 75,
+                        "promotion_percent": 27,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -688,8 +688,8 @@
                 "img_main": "products/Gemini_Generated_Image_a2lm2ta2lm2ta2lm.jpg",
                 "subtitle": "Chaque battement raconte une histoire d'amour",
                 "description": "Over Dose brume corporelle eau rose. Voile reflets scintillants subtil. Parfum frais longue persistance. Présence naturelle. Produit original Maroc. Tous moments journée.",
-                "price": 75,
-                "original_price": null,
+                "price": 55,
+                "original_price": 75,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -702,9 +702,9 @@
                     {
                         "size": 100,
                         "price": 75,
-                        "final_price": 75,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 55,
+                        "original_price": 75,
+                        "promotion_percent": 27,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -744,8 +744,8 @@
                 "img_main": "products/liO4MoKvjha1VZtEc5twALbkxgyaa94H.webp",
                 "subtitle": "Chaque battement raconte une histoire d'amour",
                 "description": "Remember brume corporelle eau rose. Parfum frais captivant voile scintillant subtil prestige. Toute journée. Produit original authentique Maroc. Moments précieux inoubliables.",
-                "price": 75,
-                "original_price": null,
+                "price": 55,
+                "original_price": 75,
                 "stock": 100,
                 "is_best_seller": true,
                 "is_gift": false,
@@ -758,9 +758,9 @@
                     {
                         "size": 100,
                         "price": 75,
-                        "final_price": 75,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 55,
+                        "original_price": 75,
+                        "promotion_percent": 27,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -932,8 +932,8 @@
                 "img_main": "products/Gemini_Generated_Image_lvf4molvf4molvf4.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Luna luxueuse coco amande. Corps cheveux parfum féminin captivant. Texture onctueuse sans gras. Persistance toute journée. Produit original Maroc. Soin fragrance parfait.",
-                "price": 60,
-                "original_price": null,
+                "price": 45,
+                "original_price": 60,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -946,9 +946,9 @@
                     {
                         "size": 50,
                         "price": 60,
-                        "final_price": 60,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 45,
+                        "original_price": 60,
+                        "promotion_percent": 25,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -993,9 +993,9 @@
                 "img_main": "products/Gemini_Generated_Image_6os2sv6os2sv6os2.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Imperial prestige coco amande. Corps cheveux fragrance féminine prestige. Texture riche douce sans résidu. Parfum longue durée. Authentique Maroc. Cadeau luxe femme.",
-                "price": 60,
-                "original_price": null,
-                "stock": 96,
+                "price": 45,
+                "original_price": 60,
+                "stock": 0,
                 "is_best_seller": true,
                 "is_gift": false,
                 "is_recommended": true,
@@ -1007,10 +1007,10 @@
                     {
                         "size": 50,
                         "price": 60,
-                        "final_price": 60,
-                        "original_price": null,
-                        "promotion_percent": 0,
-                        "stock_quantity": 96,
+                        "final_price": 45,
+                        "original_price": 60,
+                        "promotion_percent": 25,
+                        "stock_quantity": 0,
                         "unit": "ml"
                     }
                 ],
@@ -1054,8 +1054,8 @@
                 "img_main": "products/Gemini_Generated_Image_c2bwvoc2bwvoc2bw.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Bombshel luxueuse coco amande. Corps cheveux fragrance passion. Texture onctueuse sans gras. Persistance longue. Produit original Maroc. Femme confiante élégante.",
-                "price": 60,
-                "original_price": null,
+                "price": 45,
+                "original_price": 60,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -1068,9 +1068,9 @@
                     {
                         "size": 50,
                         "price": 60,
-                        "final_price": 60,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 45,
+                        "original_price": 60,
+                        "promotion_percent": 25,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -1115,8 +1115,8 @@
                 "img_main": "products/Gemini_Generated_Image_i0h0xmi0h0xmi0h0.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Eros luxueuse coco amande. Corps cheveux parfum captivant sensuel. Texture riche onctueuse sans gras. Persistance excellente. Authentique Maroc. Cadeau prestige.",
-                "price": 60,
-                "original_price": null,
+                "price": 45,
+                "original_price": 60,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -1129,9 +1129,9 @@
                     {
                         "size": 50,
                         "price": 60,
-                        "final_price": 60,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 45,
+                        "original_price": 60,
+                        "promotion_percent": 25,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -1176,8 +1176,8 @@
                 "img_main": "products/Gemini_Generated_Image_a7py5va7py5va7py.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème One coco amande. Corps cheveux parfum unique captivant. Texture luxueuse sans film. Persistance longue. Produit original Maroc. Femme unique spéciale.",
-                "price": 60,
-                "original_price": null,
+                "price": 45,
+                "original_price": 60,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -1190,9 +1190,9 @@
                     {
                         "size": 50,
                         "price": 60,
-                        "final_price": 60,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 45,
+                        "original_price": 60,
+                        "promotion_percent": 25,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -1237,8 +1237,8 @@
                 "img_main": "products/Gemini_Generated_Image_2us3u32us3u32us3.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Nina Ricci luxueuse coco amande. Corps cheveux fragrance féminine. Texture onctueuse subtile sans gras. Persistance excellent. Maroc authentique. Prestige garanti.",
-                "price": 60,
-                "original_price": null,
+                "price": 45,
+                "original_price": 60,
                 "stock": 50,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -1251,9 +1251,9 @@
                     {
                         "size": 50,
                         "price": 60,
-                        "final_price": 60,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 45,
+                        "original_price": 60,
+                        "promotion_percent": 25,
                         "stock_quantity": 50,
                         "unit": "ml"
                     }
@@ -1298,8 +1298,8 @@
                 "img_main": "products/Gemini_Generated_Image_j2w6hrj2w6hrj2w6.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Hudson luxueuse coco amande. Corps cheveux parfum captivant douce. Texture riche onctueuse. Persistance journée. Produit original Maroc. Usage quotidien.",
-                "price": 60,
-                "original_price": null,
+                "price": 45,
+                "original_price": 60,
                 "stock": 92,
                 "is_best_seller": true,
                 "is_gift": false,
@@ -1312,9 +1312,9 @@
                     {
                         "size": 50,
                         "price": 60,
-                        "final_price": 60,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 45,
+                        "original_price": 60,
+                        "promotion_percent": 25,
                         "stock_quantity": 92,
                         "unit": "ml"
                     }
@@ -1359,8 +1359,8 @@
                 "img_main": "products/Gemini_Generated_Image_fooc6hfooc6hfooc.jpg",
                 "subtitle": "L'élégance olfactive qui sublime corps et cheveux",
                 "description": "Crème Idol luxueuse coco amande. Corps cheveux parfum captivant lumineux. Texture onctueuse persistante. Produit authentique Maroc. Idole beauté personnelle.",
-                "price": 60,
-                "original_price": null,
+                "price": 45,
+                "original_price": 60,
                 "stock": 99,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -1373,9 +1373,9 @@
                     {
                         "size": 50,
                         "price": 60,
-                        "final_price": 60,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 45,
+                        "original_price": 60,
+                        "promotion_percent": 25,
                         "stock_quantity": 99,
                         "unit": "ml"
                     }
@@ -1759,8 +1759,8 @@
                 "img_main": "products/i6oNaZVk1Sltx5soly42d2G6bcapnlXg.webp",
                 "subtitle": "L'expérience sensorielle complète pour rayonner de féminité",
                 "description": "Coffret exception réunit soins corporels harmonisés fragrance féminine envoûtante. Pochette cadeau élégante. Maroc livraison. Cadeau prestige femme.",
-                "price": 250,
-                "original_price": null,
+                "price": 200,
+                "original_price": 250,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": true,
@@ -1773,9 +1773,9 @@
                     {
                         "size": 300,
                         "price": 250,
-                        "final_price": 250,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 200,
+                        "original_price": 250,
+                        "promotion_percent": 20,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
@@ -1825,8 +1825,8 @@
                 "img_main": "products/8GZLaxubvxBgG542hCpsrHEByNCGM7t7.webp",
                 "subtitle": "Huile parfumée douce et féminine, idéale pour hydrater la peau et laisser un sillage délicat et raffiné.",
                 "description": "Cette huile parfumée nourrit la peau grâce à l’huile d’amande douce et l’huile de coco. Elle s’applique aussi bien sur les points de pulsation que sur tout le corps pour hydrater, adoucir et aider à lisser l’apparence des petites lignes. Son parfum fruité et floral aux touches gourmandes laisse une sensation fraîche, féminine et irrésistible tout au long de la journée",
-                "price": 50,
-                "original_price": null,
+                "price": 35,
+                "original_price": 50,
                 "stock": 100,
                 "is_best_seller": false,
                 "is_gift": false,
@@ -1839,9 +1839,9 @@
                     {
                         "size": 30,
                         "price": 50,
-                        "final_price": 50,
-                        "original_price": null,
-                        "promotion_percent": 0,
+                        "final_price": 35,
+                        "original_price": 50,
+                        "promotion_percent": 30,
                         "stock_quantity": 100,
                         "unit": "ml"
                     }
