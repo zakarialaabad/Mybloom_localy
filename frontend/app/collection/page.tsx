@@ -420,19 +420,19 @@ export default function CollectionPage() {
       <Header />
       <div ref={scrollContainerRef} className="flex-1 overflow-y-auto [&::-webkit-scrollbar]:hidden">
 
-        {heroBanner === null ? (
-          <div className="w-full h-[200px] md:h-[300px] bg-gray-100 animate-pulse" />
-        ) : (
-          <div className="w-full relative h-[200px] md:h-[300px] bg-[#5a1818]">
-            {heroBanner.link ? (
+        <div className="w-full relative h-[200px] md:h-[300px]">
+          {/* Skeleton shown while API loads or image is loading */}
+          <div className="absolute inset-0 bg-gray-100 animate-pulse" />
+          {heroBanner && (
+            heroBanner.link ? (
               <a href={heroBanner.link} className="absolute inset-0">
-                <Image src={heroImageError ? FALLBACK_IMG : sanitizeImageUrl(heroBanner.image_path)} alt={heroBanner.title ?? 'Collection banner'} fill className="object-cover" priority onError={() => setHeroImageError(true)} />
+                <Image src={heroImageError ? FALLBACK_IMG : sanitizeImageUrl(heroBanner.image_path)} alt={heroBanner.title ?? 'Collection banner'} fill unoptimized className="object-cover" priority onError={() => setHeroImageError(true)} />
               </a>
             ) : (
-              <Image src={heroImageError ? FALLBACK_IMG : sanitizeImageUrl(heroBanner.image_path)} alt={heroBanner.title ?? 'Collection banner'} fill className="object-cover" priority onError={() => setHeroImageError(true)} />
-            )}
-          </div>
-        )}
+              <Image src={heroImageError ? FALLBACK_IMG : sanitizeImageUrl(heroBanner.image_path)} alt={heroBanner.title ?? 'Collection banner'} fill unoptimized className="object-cover" priority onError={() => setHeroImageError(true)} />
+            )
+          )}
+        </div>
 
         <main className="container mx-auto px-4 pt-8 max-w-7xl">
           {/* Breadcrumbs */}
