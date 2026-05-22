@@ -294,8 +294,13 @@ class ReviewController extends Controller
             'rating'        => 'required|integer|min:1|max:5',
             'body'          => 'nullable|string|max:5000',
             'product_id'    => 'nullable|integer|exists:products,id',
+            'date'          => 'nullable|date_format:Y-m-d',
             'images.*'      => 'nullable|file|image|max:5120',
         ]);
+
+        $createdAt = !empty($validated['date'])
+            ? \Carbon\Carbon::parse($validated['date'])->startOfDay()
+            : now();
 
         $review = Review::create([
             'reviewer_name' => $validated['reviewer_name'],
@@ -303,8 +308,11 @@ class ReviewController extends Controller
             'body'          => $validated['body'] ?? null,
             'product_id'    => $validated['product_id'] ?? null,
             'is_approved'   => true,
-            'approved_at'   => now(),
+            'approved_at'   => $createdAt,
+            'status'        => 'approved',
         ]);
+
+        $review->forceFill(['created_at' => $createdAt])->save();
 
         foreach ($request->file('images', []) as $file) {
             try {

@@ -42,7 +42,7 @@ class SendContactFormEmail implements ShouldQueue
             return;
         }
 
-        $adminEmail = env('MAIL_ADMIN_EMAIL');
+        $adminEmail = config('mail.admin_email', 'Bloomparfums1@gmail.com');
 
         if (! $adminEmail) {
             Log::error('SendContactFormEmail: MAIL_ADMIN_EMAIL not configured in .env');

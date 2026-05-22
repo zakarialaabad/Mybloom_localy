@@ -8,6 +8,7 @@
     "_comment_dev_network": "dev:network = loads .env.network (192.168.1.41 instead of localhost) and binds Next.js to 0.0.0.0 so phones/tablets on the same Wi-Fi can visit http://192.168.1.41:3000",
     "dev:network": "dotenv -e .env.network -- next dev -H 0.0.0.0 -p 3000",
     "build": "next build",
+    "deploy": "next build && cp -r .next/static .next/standalone/.next/static && cp -r public .next/standalone/public",
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write ."

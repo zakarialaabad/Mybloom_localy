@@ -9,6 +9,7 @@ class AppSeeder extends Seeder
     public function run(): void
     {
         $this->call([
+            BannerSeeder::class,
             CategorySeederFrench::class,
             ProductTypeSeederFrench::class,
             IngredientSeederFrench::class,

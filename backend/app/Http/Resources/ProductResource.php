@@ -62,8 +62,18 @@ class ProductResource extends JsonResource
             'review_count'   => (int) $reviewCount,
             'stock'          => $this->stock,
             'is_active'      => $this->is_active,
-            'is_featured'    => $this->is_featured,
-            'badges'         => $this->is_featured ? ['Bestseller'] : [],
+            'is_featured'    => (bool) $this->is_featured,
+            'is_best_seller' => (bool) $this->is_best_seller,
+            'is_recommended' => (bool) $this->is_recommended,
+            'is_gift'        => (bool) $this->is_gift,
+            'badges'         => array_values(array_filter([
+                $this->is_best_seller ? 'Bestseller'   : null,
+                $this->is_recommended ? 'Recommandé'   : null,
+                $this->is_gift        ? 'Coffret'      : null,
+                ($this->original_price && $this->original_price > $this->price)
+                    ? '-' . round(($this->original_price - $this->price) / $this->original_price * 100) . '%'
+                    : null,
+            ])),
             'brand'          => $this->whenLoaded('brand', fn () => [
                 'id'   => $this->brand?->id,
                 'name' => $this->brand?->name,

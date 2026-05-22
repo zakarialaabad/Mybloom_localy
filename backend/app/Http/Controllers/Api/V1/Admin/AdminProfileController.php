@@ -43,9 +43,8 @@ class AdminProfileController extends Controller
             ]
         ]);
 
-        // Cache for 5 minutes on client side to prevent redundant requests
         return $response
-            ->header('Cache-Control', 'private, max-age=300')
+            ->header('Cache-Control', 'no-cache, private')
             ->header('ETag', '"admin-profile-' . $admin->id . '-' . $admin->updated_at->timestamp . '"');
     }
 

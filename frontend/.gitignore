@@ -10,7 +10,7 @@
 # next.js
 /.next/
 /out/
-/public
+# /public tracked in git — product images are committed
 # production
 /build
 

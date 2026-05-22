@@ -145,12 +145,15 @@ export default function GeneralSettingsPage() {
       });
 
       const response = await adminProfileService.updateProfile(formData);
-      console.log('[saveProfile] Response received:', response);
-      
-      // Refetch profile to get the backend URL for the image
-      
+
       setImageFile(null);
       setShouldDeleteImage(false);
+      // Update preview immediately from backend response
+      if (response?.data?.profile_image) {
+        setImagePreview(response.data.profile_image);
+      } else if (shouldDeleteImage) {
+        setImagePreview(null);
+      }
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }

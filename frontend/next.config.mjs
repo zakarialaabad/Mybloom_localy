@@ -34,11 +34,11 @@ const nextConfig = {
               
               return [
                 "default-src 'self'",
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google-analytics.com",
                 "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-                `img-src 'self' data: blob: ${apiSrc} https://lh3.googleusercontent.com https://images.unsplash.com`,
+                `img-src 'self' data: blob: ${apiSrc} https://lh3.googleusercontent.com https://images.unsplash.com https://www.google-analytics.com`,
                 "font-src 'self' https://fonts.gstatic.com",
-                `connect-src 'self' ${apiSrc}`,
+                `connect-src 'self' ${apiSrc} https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com`,
                 `media-src 'self' ${apiSrc}`,
                 "frame-ancestors 'none'",
               ].join('; ');

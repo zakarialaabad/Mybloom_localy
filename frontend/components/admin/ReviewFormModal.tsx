@@ -171,11 +171,17 @@ export default function ReviewFormModal({
       });
       onClose();
     } catch (e: unknown) {
-      const msg =
-        (e as { response?: { data?: { message?: string } } })?.response?.data
-          ?.message ??
-        (e instanceof Error ? e.message : 'An error occurred. Please try again.');
-      setError(msg);
+      const axiosErr = e as { response?: { data?: { message?: string; errors?: Record<string, string[]> } } };
+      const fieldErrors = axiosErr?.response?.data?.errors;
+      if (fieldErrors && Object.keys(fieldErrors).length > 0) {
+        const lines = Object.values(fieldErrors).flat();
+        setError(lines.join(' · '));
+      } else {
+        setError(
+          axiosErr?.response?.data?.message ??
+          (e instanceof Error ? e.message : 'An error occurred. Please try again.')
+        );
+      }
     } finally {
       setIsSaving(false);
     }

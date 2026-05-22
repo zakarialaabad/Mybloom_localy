@@ -1003,6 +1003,19 @@ export const adminReviewService = {
     return data;
   },
   create: async (payload: FormData | { reviewer_name: string; rating: number; body?: string | null; product_id?: number | null; date?: string }): Promise<AdminReview> => {
+    if (payload instanceof FormData) {
+      // Use raw axios to prevent apiClient's default Content-Type: application/json
+      // from overriding the multipart/form-data boundary needed for file uploads.
+      const baseURL = process.env.NEXT_PUBLIC_API_URL;
+      const token = typeof window !== 'undefined' ? localStorage.getItem('admin_token') : null;
+      const { data } = await axios.post<{ data: AdminReview }>(`${baseURL}/v1/admin/reviews`, payload, {
+        headers: {
+          Accept: 'application/json',
+          ...(token ? { Authorization: 'Bearer ' + token } : {}),
+        },
+      });
+      return data.data;
+    }
     const { data } = await apiClient.post<{ data: AdminReview }>('/v1/admin/reviews', payload);
     return data.data;
   },
