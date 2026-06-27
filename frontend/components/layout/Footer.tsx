@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { Instagram, Facebook } from 'lucide-react';
 import { storeService } from '@/services/api';
 import useReferenceStore from '@/store/reference';
+import SectionContainer from '@/components/SectionContainer';
 
 // TikTok SVG (not in lucide)
 function TikTokIcon({ className }: { className?: string }) {
@@ -61,7 +62,7 @@ export default function Footer() {
   return (
     <footer className="bg-white border-t border-gray-100">
       {/* Main content */}
-      <div className="container mx-auto px-4 md:px-[69px] pt-16 pb-10">
+      <SectionContainer className="pt-16 pb-10">
         <div className="flex flex-col md:flex-row justify-between items-center md:items-start text-center md:text-left gap-10 md:gap-4 lg:gap-8">
 
           {/* Col 1 — Logo + tagline + social */}
@@ -174,11 +175,11 @@ export default function Footer() {
             </ul>
           </div>
         </div>
-      </div>
+      </SectionContainer>
 
       {/* Bottom bar */}
       <div className="border-t border-gray-100">
-        <div className="container mx-auto px-4 py-5 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
+        <SectionContainer className="py-5 flex flex-col-reverse sm:flex-row items-center justify-between gap-3">
           <p className="text-[12px] text-gray-400 text-center">
             © 2026 MyBloom — Site conçu et développé par{' '}
             <a
@@ -199,9 +200,8 @@ export default function Footer() {
               Conditions générales
             </Link>
           </div>
-        </div>
+        </SectionContainer>
       </div>
     </footer>
   );
 }
-

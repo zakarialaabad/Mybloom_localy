@@ -21,6 +21,17 @@ function sanitizeImageUrl(url: string | null | undefined): string {
   return encoded;
 }
 
+function normalizeCardText(value: string | null | undefined): string {
+  if (!value) return '';
+
+  return value
+    .normalize('NFKC')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .replace(/[\u2018\u2019\u02BC]/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 export interface ProductCardProps {
   id: number;
   slug: string;
@@ -75,6 +86,9 @@ export default function ProductCard({
   const safeImageUrl = primaryError ? FALLBACK_IMG : sanitizeImageUrl(imageUrl);
   const safeSecondaryUrl = secondaryImageUrl && !secondaryError ? sanitizeImageUrl(secondaryImageUrl) : undefined;
   const hasSecondary = !!safeSecondaryUrl;
+  const displayName = normalizeCardText(name);
+  const displaySubtitle = normalizeCardText(subtitle);
+  const displayProductType = normalizeCardText(productType);
 
   const stars = [1, 2, 3, 4, 5];
   const categoryDisplay = category || productType || description;
@@ -135,7 +149,7 @@ export default function ProductCard({
     const cartOriginalPrice = defaultVariantOriginalPrice ?? (originalPrice > price ? originalPrice : undefined);
     addItem({
       productId:     id,
-      productName:   name,
+      productName:   displayName,
       slug,
       productType,
       sizeId:        defaultSizeId ?? 0,
@@ -195,9 +209,9 @@ export default function ProductCard({
           {/* Product image — crossfade between primary and secondary */}
           <div className="relative h-full w-full">
             {/* Primary image — fades out on hover when secondary exists */}
-            <Image
+              <Image
               src={safeImageUrl}
-              alt={name}
+              alt={displayName}
               fill
               unoptimized
               sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -211,7 +225,7 @@ export default function ProductCard({
             {hasSecondary && safeSecondaryUrl && (
               <Image
                 src={safeSecondaryUrl}
-                alt={`${name} hover`}
+                alt={`${displayName} hover`}
                 fill
                 unoptimized
                 sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 20vw"
@@ -279,39 +293,41 @@ export default function ProductCard({
         </div>
 
         {/* Info Section — Structured & Aligned Layout */}
-        <div className="px-4 py-3 text-left flex flex-col gap-2" style={{ backgroundColor: '#FAFAFA' }}>
+        <div className="px-4 py-3 text-left flex flex-col gap-2 min-w-0" style={{ backgroundColor: '#FAFAFA' }}>
           {/* HEADER BLOCK — Product Name, Brand, Type */}
           <div className="space-y-0.5 pb-2 border-b border-gray-200">
             {/* Product Name */}
-            <h3 className="font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-tight h-6 overflow-hidden">
-              {name}
+            <h3 className="min-w-0 break-words font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-[1.15] line-clamp-2 min-h-[2.3rem] sm:min-h-[2.6rem]">
+              {displayName}
             </h3>
 
             {/* Brand Name */}
-            <p className="text-xs text-gray-600 line-clamp-1 h-4 font-medium">
-              {subtitle}
+            <p className="min-h-[1rem] text-xs font-medium text-gray-600 line-clamp-1">
+              {displaySubtitle}
             </p>
           </div>
 
           {/* Product Type — below the divider line */}
-          <p className="text-xs text-gray-500 line-clamp-1 h-4 capitalize">
-            {productType}
+          <p className="min-h-[1rem] text-xs text-gray-500 line-clamp-1 capitalize">
+            {displayProductType}
           </p>
 
           {/* FOOTER BLOCK — Price & Rating */}
           <div className="space-y-0.5 pt-0.5">
-            {/* Price Row — Consistent height */}
-            <div className="flex items-baseline space-x-2 h-6">
-              <span className="text-lg sm:text-xl font-bold text-gray-900 leading-none">{Math.round(price)} DH</span>
+            {/* Price Row — fixed alignment so long titles or promos can't break the card layout */}
+            <div className="flex min-h-[1.75rem] items-end justify-between gap-2">
+              <span className="shrink-0 whitespace-nowrap text-lg sm:text-xl font-bold text-gray-900 leading-none">
+                {Math.round(price)} DH
+              </span>
               {originalPrice > price && (
-                <>
-                  <span className="text-xs text-gray-400 line-through decoration-1">{Math.round(originalPrice)} DH</span>
-                </>
+                <span className="shrink-0 whitespace-nowrap text-[11px] sm:text-xs text-right text-gray-400 line-through decoration-1 leading-none">
+                  {Math.round(originalPrice)} DH
+                </span>
               )}
             </div>
 
             {/* Rating Row — Consistent height */}
-            <div className="flex items-center space-x-1 h-5">
+            <div className="flex min-h-[1.25rem] items-center space-x-1">
               <div className="flex gap-0.5">
                 {stars.map((s) => (
                   <StarIcon key={s} filled={s <= Math.round(rating)} />

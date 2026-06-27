@@ -135,6 +135,20 @@
     100% { transform: translateX(calc(-25%)); } /* Translate by exactly 1 entire set of products since we duplicated 4 times, 25% represents the initial list size. */
   }
 
+  @keyframes brandMarquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-1 * var(--brand-marquee-distance, 0px)));
+    }
+  }
+
+  .brand-marquee-track {
+    animation: brandMarquee var(--brand-marquee-duration, 40s) linear infinite;
+    will-change: transform;
+  }
+
   @keyframes scrollAnnounce {
     0% { transform: translateX(0); }
     100% { transform: translateX(calc(-25%)); } /* Seamless infinite scroll with 4 duplicates */
@@ -216,6 +230,10 @@
 
   @media (prefers-reduced-motion: reduce) {
     .scrolling-text {
+      animation: none !important;
+    }
+
+    .brand-marquee-track {
       animation: none !important;
     }
   }

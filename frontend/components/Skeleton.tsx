@@ -16,7 +16,7 @@ export function Skeleton({ className = '' }: { className?: string }) {
  */
 export function LoadingSpinner() {
   return (
-    <div className="fixed inset-0 z-[200] flex items-end sm:items-center justify-center bg-white/40 backdrop-blur-[2px]">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-white/40 backdrop-blur-[2px]">
       <div className="w-10 h-10 border-4 border-[#da2966] border-t-transparent rounded-full animate-spin" />
     </div>
   );

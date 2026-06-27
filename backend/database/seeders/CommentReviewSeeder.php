@@ -14,7 +14,7 @@ class CommentReviewSeeder extends Seeder
 {
 	public function run(): void
 	{
-		$commentsDir = base_path('../frontend/Public/comments');
+		$commentsDir = $this->resolveCommentsDirectory();
 
 		if (! File::isDirectory($commentsDir)) {
 			return;
@@ -63,5 +63,21 @@ class CommentReviewSeeder extends Seeder
 				'url'       => $storedPath,
 			]);
 		}
+	}
+
+	private function resolveCommentsDirectory(): string
+	{
+		$candidates = [
+			base_path('../frontend/public/comments'),
+			base_path('../frontend/Public/comments'),
+		];
+
+		foreach ($candidates as $candidate) {
+			if (File::isDirectory($candidate)) {
+				return $candidate;
+			}
+		}
+
+		return $candidates[0];
 	}
 }

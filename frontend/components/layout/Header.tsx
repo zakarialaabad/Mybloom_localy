@@ -11,6 +11,7 @@ import { getWishlist } from '@/lib/wishlist';
 import { productService, Product } from '@/services/api';
 import useReferenceStore from '@/store/reference';
 import { Instagram, Facebook } from 'lucide-react';
+import SectionContainer from '@/components/SectionContainer';
 
 // TikTok SVG (not in lucide)
 function TikTokIcon({ className }: { className?: string }) {
@@ -173,7 +174,7 @@ export default function Header() {
       </div>
 
       {/* ── Logo · Search · Actions ─────────────────────────────────────── */}
-      <div className="container mx-auto flex items-center justify-between px-4 md:px-[69px] py-4 md:py-5">
+      <SectionContainer className="flex items-center justify-between py-4 md:py-5">
         {/* Mobile Hamburger (hidden on pb-desktop) */}
         <div className="flex w-1/4 md:hidden">
           <button aria-label="Menu" className="text-gray-900" onClick={openMenu}>
@@ -347,10 +348,10 @@ export default function Header() {
             )}
           </button>
         </div>
-      </div>
+      </SectionContainer>
 
       {/* ── Main Navigation ─────────────────────────────────────────────── */}
-      <nav className="hidden md:block container mx-auto px-4 pb-4">
+      <SectionContainer className="hidden md:block pb-4">
         <ul className="flex justify-center space-x-10 text-[16px] tracking-widest text-gray-700" style={{ fontFamily: "'Sitka Banner', serif", fontWeight: 'bold' }}>
           {!categoriesReady
             ? Array.from({ length: 6 }).map((_, i) => (
@@ -382,7 +383,7 @@ export default function Header() {
               })
           }
         </ul>
-      </nav>
+      </SectionContainer>
     </header>
 
     <CartDrawer 
