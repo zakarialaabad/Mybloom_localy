@@ -413,6 +413,37 @@ export default function CollectionPage() {
     return pages;
   }
 
+  const hasActiveFilters =
+    selectedBrands.length > 0 ||
+    selectedCategories.length > 0 ||
+    selectedIngredients.length > 0 ||
+    selectedRating !== null ||
+    selectedProductType !== null ||
+    promotionOnly ||
+    featuredOnly ||
+    selectedMin > globalMin ||
+    selectedMax < globalMax ||
+    searchParams.get('search') !== null ||
+    searchParams.get('cat') !== null ||
+    searchParams.get('is_gift') !== null;
+
+  const resetCollectionFilters = () => {
+    setSelectedBrands([]);
+    setSelectedCategories([]);
+    setSelectedIngredients([]);
+    setSelectedRating(null);
+    setSelectedProductType(null);
+    setPromotionOnly(false);
+    setFeaturedOnly(false);
+    setSelectedMin(globalMin);
+    setSelectedMax(globalMax);
+    setBrandSearchTerm('');
+    setIngredientSearchTerm('');
+    setSortBy('newest');
+    setCurrentPage(1);
+    router.push('/collection');
+  };
+
   return (
     <div className="h-screen overflow-hidden flex flex-col bg-white">
       {/* Loading Overlay — always renders behind spinner, same pattern as admin dashboard */}
@@ -704,9 +735,42 @@ export default function CollectionPage() {
                 )
               ) : (
                 <>
-                  {viewMode === 'grid' ? (
-                    <div className="product-grid grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-x-3 lg:gap-y-6 justify-items-stretch">
-                      {paginatedProducts.map(p => (
+                  {products.length === 0 ? (
+                    <div className="rounded-[24px] border border-[#eadfd6] bg-[linear-gradient(180deg,#fffdfb_0%,#fcf6f1_100%)] px-6 py-12 text-center shadow-[0_10px_30px_rgba(74,64,58,0.06)] sm:px-10">
+                      <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-[#f8ece5] text-[#4a403a]">
+                        <svg className="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                          <path d="M12 21c4.418 0 8-3.806 8-8.5S16.418 4 12 4 4 7.806 4 12.5 7.582 21 12 21Z" />
+                          <path d="M9 10.5c.6-1.6 2.033-2.5 4.3-2.7" />
+                          <path d="M9.5 14.5c1 .8 2.233 1.2 3.7 1.2 2.267 0 3.8-.9 4.6-2.7" />
+                          <path d="M10 3c.2 1.5-.233 2.833-1.3 4" />
+                        </svg>
+                      </div>
+                      <h2 className="font-serif text-2xl font-bold tracking-tight text-[#4a403a] sm:text-3xl">
+                        Aucun produit ne correspond a cette recherche
+                      </h2>
+                      <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[#7a6d65] sm:text-base">
+                        Essayez d&apos;ajuster vos filtres, votre recherche ou votre selection de categorie pour retrouver une collection adaptee.
+                      </p>
+                      <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                        {hasActiveFilters && (
+                          <button
+                            onClick={resetCollectionFilters}
+                            className="inline-flex min-w-[190px] items-center justify-center rounded-full bg-[#4a403a] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#3a322d]"
+                          >
+                            Reinitialiser les filtres
+                          </button>
+                        )}
+                        <Link
+                          href="/"
+                          className="inline-flex min-w-[190px] items-center justify-center rounded-full border border-[#d9cbc1] bg-white px-6 py-3 text-sm font-medium text-[#4a403a] transition-colors hover:bg-[#fdf3f7] hover:text-[#da2966]"
+                        >
+                          Retour a l&apos;accueil
+                        </Link>
+                      </div>
+                    </div>
+                  ) : viewMode === 'grid' ? (
+                    <div className="product-grid grid auto-rows-fr items-stretch gap-3 [grid-template-columns:repeat(2,minmax(0,1fr))] lg:gap-x-3 lg:gap-y-6 lg:[grid-template-columns:repeat(4,minmax(0,1fr))]">
+                      {paginatedProducts.map((p) => (
                         <div key={p.id} className="min-w-0 w-full">
                           <ProductCard {...productToCard(p)} />
                         </div>
