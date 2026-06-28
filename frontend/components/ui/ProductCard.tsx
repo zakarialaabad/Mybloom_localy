@@ -361,12 +361,12 @@ export default function ProductCard({
           {/* FOOTER BLOCK — Price & Rating */}
           <div className="space-y-0.5 pt-0.5">
             {/* Price Row — fixed alignment so long titles or promos can't break the card layout */}
-            <div className="flex min-h-[1.75rem] items-end justify-between gap-2">
+            <div className="flex min-h-[1.75rem] flex-nowrap items-end gap-1.5 sm:gap-2">
               <span className="shrink-0 whitespace-nowrap text-lg sm:text-xl font-bold text-gray-900 leading-none">
                 {Math.round(price)} DH
               </span>
               {originalPrice > price && (
-                <span className="shrink-0 whitespace-nowrap text-[11px] sm:text-xs text-right text-gray-400 line-through decoration-1 leading-none">
+                <span className="shrink-0 whitespace-nowrap text-xs sm:text-[13px] text-gray-400 line-through decoration-1 leading-none">
                   {Math.round(originalPrice)} DH
                 </span>
               )}
