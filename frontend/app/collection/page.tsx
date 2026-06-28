@@ -81,14 +81,9 @@ export default function CollectionPage() {
   const [sortBy, setSortBy] = useState('newest');
   const [showSortMenu, setShowSortMenu] = useState(false);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
-  const [isSticky, setIsSticky] = useState(false);
-  const [headerHeight, setHeaderHeight] = useState(72);
-  const filterBarRef = useRef<HTMLDivElement>(null);
-  const observerRef = useRef<HTMLDivElement>(null);
   const [brandSearchTerm, setBrandSearchTerm] = useState('');
   const [ingredientSearchTerm, setIngredientSearchTerm] = useState('');
   const sortRef = useRef<HTMLDivElement>(null);
-  const productScrollRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -391,18 +386,6 @@ export default function CollectionPage() {
   const totalPages        = Math.ceil(products.length / perPage);
   const paginatedProducts = products.slice((currentPage - 1) * perPage, currentPage * perPage);
 
-  useEffect(() => {
-    const el = observerRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(([entry]) => {
-      const header = document.querySelector('header');
-      if (header) setHeaderHeight(header.getBoundingClientRect().height);
-      setIsSticky(!entry.isIntersecting);
-    }, { threshold: [1], rootMargin: `-${headerHeight}px 0px 0px 0px` });
-    observer.observe(el);
-    return () => observer.unobserve(el);
-  }, [headerHeight]);
-
   function buildPages(current: number, total: number): (number | '…')[] {
     if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
     const pages: (number | '…')[] = [1];
@@ -501,14 +484,9 @@ export default function CollectionPage() {
             </span>
           </div>
 
-          <div ref={observerRef} className="h-0 w-0 absolute" style={{ top: '160px' }} />
-
           {/* Mobile Toolbar */}
-          {isSticky && <div className="md:hidden h-[57px] mb-5" />}
           <div
-            ref={filterBarRef}
-            className={`md:hidden z-30 bg-white -mx-4 mb-5 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 border-b border-gray-100 px-4 py-3 transition-shadow ${isSticky ? 'fixed left-0 right-0 shadow-md' : 'relative'}`}
-            style={isSticky ? { top: `${headerHeight}px`, margin: 0 } : {}}
+            className="sticky top-0 z-20 -mx-4 mb-5 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 border-b border-gray-100 bg-white/95 px-4 py-3 shadow-sm backdrop-blur-sm md:hidden"
           >
             <button onClick={() => setMobileFilterOpen(true)} className="flex items-center gap-1.5 px-4 py-1.5 border border-gray-300 rounded-full text-xs text-gray-600 shrink-0 transition-colors active:bg-gray-50">
               <SlidersHorizontal className="w-3.5 h-3.5" /> Filtres
@@ -525,7 +503,7 @@ export default function CollectionPage() {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-8 items-start">
+          <div className="flex w-full flex-col items-stretch gap-8 md:flex-row md:items-start">
 
             {/* ── Sidebar ──────────────────────────────────────────────────── */}
             <aside className="hidden md:block w-64 shrink-0 self-start sticky top-0">
@@ -689,7 +667,7 @@ export default function CollectionPage() {
             </aside>
 
             {/* Main Content */}
-            <div className="flex-1 min-w-0">
+            <div className="w-full min-w-0 flex-1">
               {/* Top Bar */}
               <div className="hidden md:flex justify-between items-center sticky top-0 z-20 bg-white py-3 mb-3 border-b border-gray-100">
                 <div className="text-xs text-gray-400 font-serif italic">
@@ -769,9 +747,9 @@ export default function CollectionPage() {
                       </div>
                     </div>
                   ) : viewMode === 'grid' ? (
-                    <div className="product-grid grid auto-rows-fr items-stretch gap-3 [grid-template-columns:repeat(2,minmax(0,1fr))] lg:gap-x-3 lg:gap-y-6 lg:[grid-template-columns:repeat(4,minmax(0,1fr))]">
+                    <div className="product-grid grid w-full grid-cols-2 auto-rows-fr items-stretch content-start gap-3 lg:grid-cols-4 lg:gap-x-3 lg:gap-y-6">
                       {paginatedProducts.map((p) => (
-                        <div key={p.id} className="min-w-0 w-full">
+                        <div key={p.id} className="w-full min-w-0 max-w-none">
                           <ProductCard {...productToCard(p)} />
                         </div>
                       ))}
@@ -849,15 +827,15 @@ export default function CollectionPage() {
 
         {/* ── Mobile Filter Drawer ─────────────────────────────────────────── */}
         {mobileFilterOpen && (
-          <div className="fixed inset-0 z-[60] md:hidden">
+          <div className="fixed inset-0 z-[130] md:hidden">
             <div className="absolute inset-0 bg-black/40" onClick={() => setMobileFilterOpen(false)} />
-            <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-2xl max-h-[88vh] flex flex-col">
+            <div className="absolute bottom-0 left-0 right-0 flex max-h-[88vh] flex-col rounded-t-2xl bg-white shadow-[0_-12px_36px_rgba(0,0,0,0.12)]">
               <div className="flex justify-center pt-3 pb-1 shrink-0"><div className="w-10 h-1 bg-gray-200 rounded-full" /></div>
               <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 shrink-0">
                 <span className="text-[16px] font-serif font-bold text-gray-900">Filtres</span>
                 <button onClick={() => setMobileFilterOpen(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"><X className="w-4 h-4 text-gray-500" /></button>
               </div>
-              <div className="overflow-y-auto flex-1 px-5 py-5">
+              <div className="flex-1 overflow-y-auto px-5 py-5 pb-6">
                 {/* Brand */}
                 <div className="mb-6">
                   <h3 className="font-serif text-gray-700 mb-4">Brand</h3>
@@ -936,7 +914,7 @@ export default function CollectionPage() {
                   </div>
                 </div>
               </div>
-              <div className="shrink-0 px-5 py-4 border-t border-gray-100">
+              <div className="sticky bottom-0 shrink-0 border-t border-gray-100 bg-white/95 px-5 pb-[calc(env(safe-area-inset-bottom,0px)+14px)] pt-4 backdrop-blur-sm">
                 <button onClick={() => setMobileFilterOpen(false)} className="w-full py-3 bg-[#4a403a] text-white text-sm font-serif rounded-sm hover:bg-[#3a3028] transition-colors">
                   {loadingProducts ? 'Chargement…' : `Voir ${products.length} produit${products.length !== 1 ? 's' : ''}`}
                 </button>

@@ -241,7 +241,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
 
       {/* Drawer */}
       <div
-        className={`fixed inset-y-0 right-0 z-[101] w-full max-w-[400px] bg-[#f8f8f8] transform transition-transform duration-300 ease-in-out flex flex-col ${
+        className={`fixed inset-y-0 right-0 z-[130] w-full max-w-[400px] bg-[#f8f8f8] transform transition-transform duration-300 ease-in-out flex flex-col ${
           isOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -638,7 +638,7 @@ export default function FilterModal({ isOpen, onClose }: FilterModalProps) {
         </div>
 
         {/* ── Footer / CTA ─────────────────────────────────────────────────── */}
-        <div className="shrink-0 p-4 bg-white border-t border-gray-100 flex gap-3 shadow-[0_-4px_6px_-1px_rgb(0,0,0,0.05)] md:shadow-none z-10 pb-safe">
+        <div className="sticky bottom-0 z-10 flex gap-3 border-t border-gray-100 bg-white/95 p-4 pb-[calc(env(safe-area-inset-bottom,0px)+14px)] shadow-[0_-6px_18px_rgba(0,0,0,0.08)] backdrop-blur-sm md:shadow-none">
           <Link
             href={buildCollectionUrl()}
             onClick={onClose}
