@@ -4,6 +4,7 @@ import SectionContainer from '@/components/SectionContainer';
 import ImageGalleryModal from '@/components/ui/ImageGalleryModal';
 import { ReviewItem, RatingSummary } from '@/services/api';
 import useReferenceStore from '@/store/reference';
+import useMouseDragScroll from '@/hooks/useMouseDragScroll';
 
 function StarRating({ rating }: { rating: number }) {
   return (
@@ -32,6 +33,7 @@ export default function CustomerReviewsSection() {
 
   // Fetch once per session — idempotent
   useEffect(() => { ensureReviews(); }, [ensureReviews]);
+  useMouseDragScroll(trackRef);
 
   const openGallery = (clickedImageUrl: string) => {
     const allImages = reviews.flatMap(r => r.images.map(img => img.image_url));
@@ -157,7 +159,7 @@ export default function CustomerReviewsSection() {
             <div
               ref={trackRef}
               onScroll={updateArrows}
-              className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden h-full items-stretch pb-4"
+              className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden h-full items-stretch pb-4 touch-pan-x cursor-grab select-none"
             >
               {reviews.map((review) => (
                 <div key={review.id} className="flex-none w-[calc(100%-16px)] sm:w-[calc(50%-12px)] lg:w-[calc(50%-12px)] snap-start bg-white rounded-[16px] border-[0.5px] border-black/10 shadow-[0_2px_12px_rgba(0,0,0,0.08)] overflow-hidden flex flex-col p-4 text-left">

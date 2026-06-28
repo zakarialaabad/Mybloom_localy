@@ -166,11 +166,11 @@ export default function ProductCard({
     <>
     <Link
       href={`/product/${slug}`}
-      className="product-card group relative block"
+      className="product-card group relative block w-full min-w-0"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >
-      <article className="cursor-pointer bg-white border border-t-0 border-gray-200">
+      <article className="h-full cursor-pointer bg-white border border-t-0 border-gray-200">
         {/* Image container */}
         <div className="relative mb-0 aspect-[4/5] overflow-visible bg-[#f8f5f1]">
 

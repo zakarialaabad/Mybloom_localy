@@ -79,10 +79,10 @@ export default function TrackOrderPage() {
       <div className="md:hidden shrink-0" style={{ height: HEADER_H }} />
 
       <main
-        className="flex items-center justify-center px-[32.3px] md:px-0 md:flex-1"
+        className="flex items-center justify-center px-[32.3px] py-8 pb-[calc(64px+env(safe-area-inset-bottom,0px)+24px)] md:px-0 md:py-0 md:pb-0 md:flex-1"
         style={{
           backgroundColor: 'rgba(252, 138, 138, 0.08)',
-          height: `calc(100dvh - ${HEADER_H}px - ${BOTTOM_NAV_H}px)`,
+          minHeight: `calc(100dvh - ${HEADER_H}px - ${BOTTOM_NAV_H}px)`,
         }}
       >
         <div className="w-full bg-white rounded-xl shadow-md md:bg-transparent md:rounded-none md:shadow-none md:max-w-none md:flex md:flex-col lg:flex-row gap-0 overflow-hidden lg:min-h-screen">

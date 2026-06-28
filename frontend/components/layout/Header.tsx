@@ -98,6 +98,7 @@ export default function Header() {
   const [isSearching, setIsSearching] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const mobileSearchRef = useRef<HTMLDivElement>(null);
+  const mobileSearchFocusRequested = searchParams.get('focusSearch') === '1';
 
   useEffect(() => {
     setIsMounted(true);
@@ -107,6 +108,31 @@ export default function Header() {
     window.addEventListener('wishlist-changed', onWishlistChanged);
     return () => window.removeEventListener('wishlist-changed', onWishlistChanged);
   }, [ensureCategories]);
+
+  useEffect(() => {
+    if (!mobileSearchFocusRequested || typeof window === 'undefined' || window.innerWidth >= 768) {
+      return;
+    }
+
+    openMenu();
+
+    const focusTimer = window.setTimeout(() => {
+      mobileSearchInputRef.current?.focus();
+    }, 300);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('focusSearch');
+    const nextQuery = params.toString();
+    const nextUrl = nextQuery ? `${pathname}?${nextQuery}` : pathname;
+    const replaceTimer = window.setTimeout(() => {
+      router.replace(nextUrl);
+    }, 0);
+
+    return () => {
+      window.clearTimeout(focusTimer);
+      window.clearTimeout(replaceTimer);
+    };
+  }, [mobileSearchFocusRequested, pathname, router, searchParams]);
 
   // Instant search effect
   useEffect(() => {

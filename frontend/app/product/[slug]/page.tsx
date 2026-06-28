@@ -19,6 +19,7 @@ import useCatalogStore from '@/store/catalog';
 import { isInWishlist, toggleWishlist } from '@/lib/wishlist';
 import { sanitizeImageUrl } from '@/lib/utils';
 import { testRecommendationCount } from '@/lib/testRecommendationCount';
+import useMouseDragScroll from '@/hooks/useMouseDragScroll';
 
 // ─── Status labels for order status histories ─────────────────────────────────
 const STATUS_STEPS = ['pending', 'confirmed', 'dispatched', 'shipped', 'delivered'];
@@ -93,6 +94,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'success' | 'error' | 'favorite' }>({ show: false, message: '', type: 'success' });
   const carouselRef = useRef<HTMLDivElement>(null);
   const reviewsCarouselRef = useRef<HTMLDivElement>(null);
+  useMouseDragScroll(reviewsCarouselRef);
 
   const addItem = useCartStore((s) => s.addItem);
   
@@ -571,10 +573,10 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           <div className="w-full md:w-1/2 flex flex-col md:sticky md:top-20 md:h-[calc(100vh-5rem)] md:overflow-y-auto md:overflow-x-hidden scrollbar-hide">
             {/* Header */}
             <div className="mb-6">
-              <div className="flex items-start justify-between">
-                <div>
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <h1 className="text-3xl sm:text-4xl font-serif font-bold uppercase tracking-wider text-gray-900 leading-tight">
+                    <h1 className="break-words text-3xl font-serif font-bold uppercase leading-tight tracking-wider text-gray-900 sm:text-4xl">
                       {product.name}
                     </h1>
                     {product.badges?.includes('Best Seller') && (
@@ -587,13 +589,13 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                     <p className="font-serif italic text-gray-600 text-xl">{product.brand.name}</p>
                   )}
                   {product.subtitle && (
-                    <p className="text-xs text-gray-400 mt-1 uppercase tracking-wider">
+                    <p className="mt-1 max-w-full break-words text-xs uppercase tracking-wider text-gray-400 leading-relaxed">
                       {product.subtitle}
                     </p>
                   )}
                 </div>
-                <div className="text-right">
-                  <div className="flex items-baseline gap-2 justify-end">
+                <div className="shrink-0 text-left sm:text-right">
+                  <div className="flex items-baseline gap-2 justify-start sm:justify-end">
                     {selectedSize?.original_price && (
                       <span className="font-serif text-lg sm:text-xl text-gray-400 line-through italic whitespace-nowrap">
                         {Math.round(selectedSize.original_price)} DH
@@ -604,7 +606,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                     </span>
                   </div>
                   {product.review_count > 0 && (
-                    <div className="mt-2 flex items-center justify-end gap-1">
+                    <div className="mt-2 flex items-center justify-start gap-1 sm:justify-end">
                       <div className="flex text-[#d4af37]">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <svg key={star} className={`h-3 w-3 fill-current ${star <= Math.round(product.avg_rating) ? 'text-[#d4af37]' : 'text-gray-200'}`} viewBox="0 0 20 20">
@@ -952,7 +954,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                           const el = reviewsCarouselRef.current;
                           if (!el) return;
                         }}
-                        className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden items-stretch pb-4"
+                        className="flex gap-6 overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden items-stretch pb-4 touch-pan-x cursor-grab select-none"
                       >
                         {product.reviews!.map((review) => {
                           const initials = review.reviewer_name

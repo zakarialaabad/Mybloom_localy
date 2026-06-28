@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import useCartStore from '@/store/cart';
 
 export default function MobileActionBar() {
   const pathname = usePathname();
+  const router = useRouter();
   const [hidden, setHidden] = useState(false);
   const cartItemCount = useCartStore((s) => s.itemCount());
   const [isMounted, setIsMounted] = useState(false);
@@ -62,7 +63,7 @@ export default function MobileActionBar() {
         )}
 
         <button 
-          onClick={() => window.dispatchEvent(new CustomEvent('trigger-mobile-search'))}
+          onClick={() => router.push('/collection?focusSearch=1')}
           className="relative flex flex-col items-center justify-center gap-1 text-gray-400 flex-1 h-full"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

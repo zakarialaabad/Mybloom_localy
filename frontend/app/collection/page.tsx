@@ -434,10 +434,10 @@ export default function CollectionPage() {
           )}
         </div>
 
-        <main className="container mx-auto px-4 pt-8 max-w-7xl">
+        <main className="mx-auto w-full max-w-[1440px] px-4 pt-8 md:px-[69px]">
           {/* Breadcrumbs */}
-          <div className="text-sm text-gray-400 mb-8 font-serif italic flex items-center justify-between">
-            <div>
+          <div className="mb-8 flex items-center justify-between gap-4 text-sm text-gray-400 font-serif italic">
+            <div className="min-w-0 flex-1 truncate">
               <Link href="/">Accueil</Link>
               {' / '}
               {(() => {
@@ -465,7 +465,7 @@ export default function CollectionPage() {
                 return <span className="text-gray-900">Collection</span>;
               })()}
             </div>
-            <span className="md:hidden text-[14px] leading-tight text-gray-700 font-medium whitespace-nowrap not-italic">
+            <span className="shrink-0 whitespace-nowrap text-[14px] leading-tight text-gray-700 font-medium not-italic md:hidden">
               {loadingProducts ? '…' : `${products.length} Produit${products.length !== 1 ? 's' : ''}`}
             </span>
           </div>
@@ -476,14 +476,14 @@ export default function CollectionPage() {
           {isSticky && <div className="md:hidden h-[57px] mb-5" />}
           <div
             ref={filterBarRef}
-            className={`md:hidden z-30 bg-white -mx-4 px-4 py-3 mb-5 border-b border-gray-100 flex items-center justify-between gap-2 transition-shadow ${isSticky ? 'fixed left-0 right-0 shadow-md' : 'relative'}`}
+            className={`md:hidden z-30 bg-white -mx-4 mb-5 grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-2 border-b border-gray-100 px-4 py-3 transition-shadow ${isSticky ? 'fixed left-0 right-0 shadow-md' : 'relative'}`}
             style={isSticky ? { top: `${headerHeight}px`, margin: 0 } : {}}
           >
             <button onClick={() => setMobileFilterOpen(true)} className="flex items-center gap-1.5 px-4 py-1.5 border border-gray-300 rounded-full text-xs text-gray-600 shrink-0 transition-colors active:bg-gray-50">
               <SlidersHorizontal className="w-3.5 h-3.5" /> Filtres
             </button>
-            <div className="relative shrink-0">
-              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="appearance-none text-xs border border-gray-300 rounded-full pl-3 pr-6 py-1.5 text-gray-600 bg-white cursor-pointer focus:outline-none">
+            <div className="relative min-w-0">
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="w-full min-w-0 appearance-none rounded-full border border-gray-300 bg-white py-1.5 pl-3 pr-6 text-xs text-gray-600 cursor-pointer focus:outline-none">
                 {SORT_OPTIONS.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
               </select>
               <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
@@ -705,18 +705,23 @@ export default function CollectionPage() {
               ) : (
                 <>
                   {viewMode === 'grid' ? (
-                    <div className="product-grid grid grid-cols-2 lg:grid-cols-4 gap-x-3 gap-y-6 justify-items-stretch">
-                      {paginatedProducts.map(p => <ProductCard key={p.id} {...productToCard(p)} />)}
+                    <div className="product-grid grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-x-3 lg:gap-y-6 justify-items-stretch">
+                      {paginatedProducts.map(p => (
+                        <div key={p.id} className="min-w-0 w-full">
+                          <ProductCard {...productToCard(p)} />
+                        </div>
+                      ))}
                     </div>
                   ) : (
                     <div className="flex flex-col gap-3">
                       {paginatedProducts.map(p => (
-                        <Link key={p.id} href={`/product/${p.slug}`} className="group flex items-center gap-5 bg-[#fcfcfc] hover:bg-[#fdf0f4] border border-gray-100 hover:border-[#da2966]/30 rounded-sm p-4 transition-all duration-200">
-                          <div className="relative w-28 h-28 shrink-0 rounded-sm overflow-hidden bg-white border border-gray-100">
+                        <Link key={p.id} href={`/product/${p.slug}`} className="group rounded-sm border border-gray-100 bg-[#fcfcfc] p-3 transition-all duration-200 hover:border-[#da2966]/30 hover:bg-[#fdf0f4] sm:flex sm:items-center sm:gap-5 sm:p-4">
+                          <div className="flex items-start gap-3 sm:flex-1 sm:gap-5">
+                          <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-sm border border-gray-100 bg-white sm:h-28 sm:w-28">
                             <Image src={p.primary_image ?? FALLBACK_IMG} alt={p.name} fill unoptimized className="object-contain p-3 mix-blend-multiply transition-transform duration-300 group-hover:scale-105" />
                           </div>
-                          <div className="flex-1 min-w-0 pr-4">
-                            <h3 className="font-serif text-lg font-bold text-gray-900 tracking-wide truncate group-hover:text-[#da2966] transition-colors">{p.name}</h3>
+                          <div className="min-w-0 flex-1">
+                            <h3 className="line-clamp-2 break-words font-serif text-lg font-bold tracking-wide text-gray-900 transition-colors group-hover:text-[#da2966]">{p.name}</h3>
                             <p className="text-xs text-gray-600 pb-2">{p.brand?.name}</p>
                             <div className="border-t border-gray-100/80 w-full mb-2"></div>
                             <p className="text-[11px] text-gray-500 pt-1 line-clamp-2 leading-relaxed">{p.subtitle}</p>
@@ -731,7 +736,17 @@ export default function CollectionPage() {
                               <span className="text-[10px] text-gray-500 font-medium"><span className="text-gray-900 font-semibold pr-1">{(p.avg_rating ?? 0).toFixed(1)}</span>({p.review_count ?? 0})</span>
                             </div>
                           </div>
-                          <div className="shrink-0 text-right space-y-1.5 flex flex-col justify-between items-end h-full">
+                          </div>
+                          <div className="mt-3 flex items-end justify-between gap-3 sm:hidden">
+                            <div className="min-w-0 text-[10px] text-gray-400 font-serif italic">{p.category?.name}</div>
+                            <div className="flex min-w-0 flex-wrap items-baseline justify-end gap-x-2 gap-y-1 text-right">
+                              <span className="whitespace-nowrap text-xl font-bold font-serif italic text-gray-900">{p.min_price ?? 0} DH</span>
+                              {(p.original_price != null) && p.original_price > (p.min_price ?? 0) && (
+                                <span className="whitespace-nowrap text-[13px] text-gray-400 line-through decoration-1">{p.original_price} DH</span>
+                              )}
+                            </div>
+                          </div>
+                          <div className="hidden h-full shrink-0 flex-col items-end justify-between space-y-1.5 text-right sm:flex">
                             {p.is_featured && <span className="rounded border border-aura-gold bg-white px-2 py-1 text-[9px] font-semibold text-aura-gold tracking-wider uppercase mb-1">Best Seller</span>}
                             <div className="flex flex-col items-end gap-1 mt-auto">
                               <div className="flex items-center space-x-2">
