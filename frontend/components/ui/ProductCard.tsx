@@ -32,6 +32,11 @@ function normalizeCardText(value: string | null | undefined): string {
     .trim();
 }
 
+function getFirstWord(value: string): string {
+  const [firstWord = ''] = value.split(' ');
+  return firstWord;
+}
+
 export interface ProductCardProps {
   id: number;
   slug: string;
@@ -76,17 +81,21 @@ export default function ProductCard({
 }: ProductCardProps) {
   const [wished, setWished] = useState(() => isInWishlist(id));
   const [isHovered, setIsHovered] = useState(false);
+  const [useFirstWordTitle, setUseFirstWordTitle] = useState(false);
   const [toast, setToast] = useState<{ show: boolean; message: string; type: 'cart' | 'favorite' }>({ show: false, message: '', type: 'cart' });
   const [primaryError, setPrimaryError] = useState(false);
   const [secondaryError, setSecondaryError] = useState(false);
   const addItem = useCartStore((s) => s.addItem);
   const prefetchProductDetail = useCatalogStore((s) => s.prefetchProductDetail);
   const prefetchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const titleRef = useRef<HTMLHeadingElement | null>(null);
+  const titleMeasureRef = useRef<HTMLSpanElement | null>(null);
 
   const safeImageUrl = primaryError ? FALLBACK_IMG : sanitizeImageUrl(imageUrl);
   const safeSecondaryUrl = secondaryImageUrl && !secondaryError ? sanitizeImageUrl(secondaryImageUrl) : undefined;
   const hasSecondary = !!safeSecondaryUrl;
   const displayName = normalizeCardText(name);
+  const displayNameFirstWord = getFirstWord(displayName);
   const displaySubtitle = normalizeCardText(subtitle);
   const displayProductType = normalizeCardText(productType);
 
@@ -99,6 +108,32 @@ export default function ProductCard({
       return () => clearTimeout(timer);
     }
   }, [toast.show]);
+
+  useEffect(() => {
+    const measureTitle = () => {
+      const titleEl = titleRef.current;
+      const measureEl = titleMeasureRef.current;
+      if (!titleEl || !measureEl) return;
+      setUseFirstWordTitle(measureEl.scrollWidth > titleEl.clientWidth);
+    };
+
+    const frame = requestAnimationFrame(measureTitle);
+    const resizeObserver = typeof ResizeObserver !== 'undefined'
+      ? new ResizeObserver(() => measureTitle())
+      : null;
+
+    if (titleRef.current && resizeObserver) {
+      resizeObserver.observe(titleRef.current);
+    }
+
+    window.addEventListener('resize', measureTitle);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      resizeObserver?.disconnect();
+      window.removeEventListener('resize', measureTitle);
+    };
+  }, [displayName]);
 
   // Cleanup prefetch timeout on unmount
   useEffect(() => {
@@ -293,18 +328,29 @@ export default function ProductCard({
         </div>
 
         {/* Info Section — Structured & Aligned Layout */}
-        <div className="px-4 py-3 text-left flex flex-col gap-2 min-w-0" style={{ backgroundColor: '#FAFAFA' }}>
+        <div className="px-4 py-3 text-left flex flex-col gap-3 min-w-0" style={{ backgroundColor: '#FAFAFA' }}>
           {/* HEADER BLOCK — Product Name, Brand, Type */}
-          <div className="space-y-0.5 pb-2 border-b border-gray-200">
+          <div className="border-b border-gray-200">
             {/* Product Name */}
-            <h3 className="min-w-0 break-words font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-[1.15] line-clamp-2 min-h-[2.3rem] sm:min-h-[2.6rem]">
-              {displayName}
+            <h3 ref={titleRef} className="min-w-0 overflow-hidden whitespace-nowrap font-serif text-base sm:text-lg font-bold text-gray-900 tracking-wide leading-[1.15] text-clip">
+              {useFirstWordTitle ? displayNameFirstWord : displayName}
             </h3>
+            <span
+              ref={titleMeasureRef}
+              aria-hidden="true"
+              className="pointer-events-none absolute -left-[9999px] -top-[9999px] whitespace-nowrap font-serif text-base sm:text-lg font-bold tracking-wide"
+            >
+              {displayName}
+            </span>
+
+            <div aria-hidden="true" className="h-3" />
 
             {/* Brand Name */}
             <p className="min-h-[1rem] text-xs font-medium text-gray-600 line-clamp-1">
               {displaySubtitle}
             </p>
+
+            <div aria-hidden="true" className="h-3" />
           </div>
 
           {/* Product Type — below the divider line */}
