@@ -157,6 +157,7 @@ Route::prefix('api')->group(function () {
                 // Hero videos
                 Route::get('videos',                       [AdminVideoController::class, 'index']);
                 Route::post('videos',                      [AdminVideoController::class, 'store']);
+                Route::patch('videos/reorder',             [AdminVideoController::class, 'reorder']);
                 Route::patch('videos/{video}',             [AdminVideoController::class, 'update']);
                 Route::delete('videos/{video}',            [AdminVideoController::class, 'destroy']);
             });

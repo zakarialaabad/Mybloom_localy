@@ -14,6 +14,19 @@ type HeroVideos = {
   mobile: VideoEntry[];
 };
 
+type HeroVideosResponse = HeroVideos | { data?: HeroVideos };
+
+function normalizeHeroVideos(payload: HeroVideosResponse): HeroVideos {
+  if ('data' in payload && payload.data) {
+    return payload.data;
+  }
+
+  return {
+    desktop: 'desktop' in payload ? payload.desktop : [],
+    mobile: 'mobile' in payload ? payload.mobile : [],
+  };
+}
+
 function VideoPlayer({
   videos,
   className,
@@ -149,20 +162,20 @@ export default function HeroSection() {
 
     // Step 1: Fetch only the first video immediately so the hero renders fast
     // and the rest of the page (BestSellers, Categories, Reviews) is not blocked.
-    fetch('/api/v1/videos/hero?first=1')
+    fetch('/api/v1/videos/hero?first=1', { cache: 'no-store' })
       .then((res) => res.json())
-      .then((data: HeroVideos) => {
-        if (!cancelled) setVideos(data.data || data);
+      .then((data: HeroVideosResponse) => {
+        if (!cancelled) setVideos(normalizeHeroVideos(data));
       })
       .catch(() => {});
 
     // Step 2: After page content is visible, fetch all remaining videos in the background.
     const timer = setTimeout(() => {
       if (cancelled) return;
-      fetch('/api/v1/videos/hero')
+      fetch('/api/v1/videos/hero', { cache: 'no-store' })
         .then((res) => res.json())
-        .then((data: HeroVideos) => {
-          if (!cancelled) setVideos(data.data || data);
+        .then((data: HeroVideosResponse) => {
+          if (!cancelled) setVideos(normalizeHeroVideos(data));
         })
         .catch(() => {});
     }, 3000);
@@ -187,7 +200,7 @@ export default function HeroSection() {
       {/* Content */}
       <div className="relative z-30 w-full flex h-full flex-col justify-center px-4 md:px-[69px] text-white text-center md:text-left md:items-start items-center">
         <h2 className="mb-4 md:mb-6 font-serif text-5xl md:text-7xl uppercase tracking-wider">
-          L'ART DE SENTIR BON
+          L&apos;ART DE SENTIR BON
         </h2>
         <p className="mb-8 md:mb-10 max-w-xl text-sm md:text-xl font-light px-4 md:px-0">
           Parfums, gommages et soins corps soigneusement sélectionnés pour sublimer votre quotidien

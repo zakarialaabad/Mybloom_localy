@@ -11,12 +11,15 @@ import {
   Ticket,
   Image as ImageIcon,
   MessageSquare,
+  Clapperboard,
   Settings,
   LogOut,
   User,
   Menu,
   X,
   LayoutGrid,
+  ChevronsLeft,
+  ChevronsRight,
 } from 'lucide-react';
 import { adminAuthService, adminProfileService } from '@/services/api';
 
@@ -27,6 +30,8 @@ export default function AdminDashboardLayout({
 }) {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [desktopSidebarCollapsed, setDesktopSidebarCollapsed] = useState(false);
+  const [collapseIconOffset, setCollapseIconOffset] = useState({ x: 0, y: 0 });
   const [adminProfile, setAdminProfile] = useState<{
     username: string;
     email: string;
@@ -99,11 +104,19 @@ export default function AdminDashboardLayout({
     { name: 'Codes promo', shortName: 'Promos', href: '/gestion-bloom-secure/dashboard/coupons', icon: Ticket },
     { name: 'Bannières', href: '/gestion-bloom-secure/dashboard/banners', icon: ImageIcon },
     { name: 'Avis', href: '/gestion-bloom-secure/dashboard/reviews', icon: MessageSquare },
+    { name: 'Hero Videos', shortName: 'Vidéos', href: '/gestion-bloom-secure/dashboard/videos', icon: Clapperboard },
   ];
 
   const catalogueNavItems = [
     { name: 'Catalogue', href: '/gestion-bloom-secure/dashboard/catalogue', icon: LayoutGrid },
   ];
+
+  const handleCollapseControlMove = (event: React.MouseEvent<HTMLButtonElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 4;
+    const y = ((event.clientY - rect.top) / rect.height - 0.5) * 3;
+    setCollapseIconOffset({ x, y });
+  };
 
   const isFullScreenPage = pathname.endsWith('/create') || pathname.includes('/edit');
 
@@ -239,17 +252,91 @@ export default function AdminDashboardLayout({
       )}
 
       {/* ─── Desktop Sidebar ────────────────────────────────────────────────────── */}
-      <aside className="hidden lg:flex left-0 top-0 bottom-0 w-[280px] bg-white z-40 fixed flex-col border-r border-gray-100">
+      <aside
+        className={`hidden lg:flex left-0 top-0 bottom-0 bg-white z-40 fixed flex-col border-r border-gray-100 transition-[width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          desktopSidebarCollapsed ? 'w-[72px]' : 'w-[280px]'
+        }`}
+      >
         {/* Logo Area */}
-        <div className="pt-6 pb-4 px-6 shrink-0">
-          <Image src="/logo.png" alt="MyBloom" width={110} height={32} className="object-contain h-[28px] w-auto" />
-          <p className="text-[12px] text-[#da2966] font-bold mt-1.5 tracking-wide">
-            Admin Panel
-          </p>
+        <div
+          className={`pt-6 pb-4 shrink-0 transition-[padding] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            desktopSidebarCollapsed ? 'px-4' : 'px-6'
+          }`}
+        >
+          <div className={`flex items-start ${desktopSidebarCollapsed ? 'justify-center' : 'justify-between gap-3'}`}>
+            <div
+              className={`min-w-0 transition-all duration-300 ${
+                desktopSidebarCollapsed ? 'w-10 opacity-100' : 'w-[150px] opacity-100'
+              }`}
+            >
+              {desktopSidebarCollapsed ? (
+                <button
+                  type="button"
+                  onClick={() => setDesktopSidebarCollapsed(false)}
+                  onMouseMove={handleCollapseControlMove}
+                  onMouseLeave={() => setCollapseIconOffset({ x: 0, y: 0 })}
+                  className="group relative w-10 h-10 rounded-xl border border-[#f4d7df] bg-[#fff7f9] text-[#da2966] flex items-center justify-center shadow-sm transition-colors hover:bg-[#fff0f3] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#da2966]/30"
+                  aria-label="Open sidebar"
+                  aria-expanded={!desktopSidebarCollapsed}
+                >
+                  <span className="absolute inset-0 flex items-center justify-center p-1.5 transition-opacity duration-200 group-hover:opacity-0 group-focus-visible:opacity-0">
+                    <Image
+                      src="/public_Image/logo_tap_transparent.png"
+                      alt="MyBloom"
+                      width={28}
+                      height={28}
+                      className="h-7 w-7 rounded-lg object-cover"
+                    />
+                  </span>
+                  <ChevronsRight
+                    size={18}
+                    strokeWidth={2.3}
+                    className="opacity-0 transition-[opacity,transform] duration-200 group-hover:opacity-100 group-focus-visible:opacity-100"
+                    style={{ transform: `translate(${collapseIconOffset.x}px, ${collapseIconOffset.y}px)` }}
+                  />
+                  <span className="pointer-events-none absolute left-full top-1/2 ml-3 -translate-y-1/2 rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-all duration-150 group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-visible:translate-x-0.5 group-focus-visible:opacity-100 whitespace-nowrap">
+                    Open sidebar
+                  </span>
+                </button>
+              ) : (
+                <>
+                  <Image src="/logo.png" alt="MyBloom" width={110} height={32} className="object-contain h-[28px] w-auto" />
+                  <p className="text-[12px] text-[#da2966] font-bold mt-1.5 tracking-wide">
+                    Admin Panel
+                  </p>
+                </>
+              )}
+            </div>
+            {!desktopSidebarCollapsed && (
+              <button
+                type="button"
+                onClick={() => setDesktopSidebarCollapsed(true)}
+                onMouseMove={handleCollapseControlMove}
+                onMouseLeave={() => setCollapseIconOffset({ x: 0, y: 0 })}
+                className="group relative w-9 h-9 rounded-xl border border-gray-100 bg-white text-[#555] flex items-center justify-center shadow-sm transition-colors hover:bg-gray-50 hover:text-[#da2966] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#da2966]/30"
+                aria-label="Close sidebar"
+                aria-expanded={!desktopSidebarCollapsed}
+              >
+                <ChevronsLeft
+                  size={18}
+                  strokeWidth={2.3}
+                  className="transition-transform duration-200"
+                  style={{ transform: `translate(${collapseIconOffset.x}px, ${collapseIconOffset.y}px)` }}
+                />
+                <span className="pointer-events-none absolute right-0 top-full mt-2 rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-all duration-150 group-hover:translate-y-0.5 group-hover:opacity-100 group-focus-visible:translate-y-0.5 group-focus-visible:opacity-100 whitespace-nowrap">
+                  Close sidebar
+                </span>
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto px-4">
+        <nav
+          className={`flex-1 px-4 transition-[padding] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            desktopSidebarCollapsed ? 'overflow-visible' : 'overflow-y-auto overflow-x-hidden'
+          }`}
+        >
           <div className="space-y-[2px]">
             {navItems.map((item) => {
               const isActive =
@@ -260,18 +347,28 @@ export default function AdminDashboardLayout({
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`flex items-center gap-3 px-4 py-2 rounded-xl text-[14px] font-bold transition-all duration-200 ${
+                  aria-label={desktopSidebarCollapsed ? item.name : undefined}
+                  className={`group relative flex items-center rounded-xl text-[14px] font-bold transition-all duration-200 ${
                     isActive
                       ? 'bg-[#fff0f3] text-[#da2966]'
                       : 'text-[#333] hover:bg-gray-50'
-                  }`}
+                  } ${
+                    desktopSidebarCollapsed
+                      ? 'h-10 w-10 justify-center px-0 py-0'
+                      : 'gap-3 px-4 py-2'
+                  } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#da2966]/25`}
                 >
                   <item.icon
                     size={18}
                     strokeWidth={2}
-                    className={isActive ? 'text-[#da2966]' : 'text-[#555]'}
+                    className={`shrink-0 ${isActive ? 'text-[#da2966]' : 'text-[#555]'}`}
                   />
-                  {item.name}
+                  {!desktopSidebarCollapsed && <span>{item.name}</span>}
+                  {desktopSidebarCollapsed && (
+                    <span className="pointer-events-none absolute left-full top-1/2 ml-3 -translate-y-1/2 rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-all duration-150 group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-visible:translate-x-0.5 group-focus-visible:opacity-100 whitespace-nowrap z-50">
+                      {item.name}
+                    </span>
+                  )}
                 </Link>
               );
             })}
@@ -279,9 +376,11 @@ export default function AdminDashboardLayout({
 
           {/* Catalogue Section */}
           <div className="mt-5">
-            <p className="text-[11px] font-extrabold text-[#da2966] uppercase tracking-[0.15em] px-4 mb-2">
-              Catalogue
-            </p>
+            {!desktopSidebarCollapsed && (
+              <p className="text-[11px] font-extrabold text-[#da2966] uppercase tracking-[0.15em] px-4 mb-2">
+                Catalogue
+              </p>
+            )}
             <div className="space-y-[2px]">
               {catalogueNavItems.map((item) => {
                 const isActive = pathname.startsWith(item.href);
@@ -289,12 +388,22 @@ export default function AdminDashboardLayout({
                   <Link
                     key={item.name}
                     href={item.href}
-                    className={`flex items-center gap-3 px-4 py-2 rounded-xl text-[14px] font-bold transition-all duration-200 ${
+                    aria-label={desktopSidebarCollapsed ? item.name : undefined}
+                    className={`group relative flex items-center rounded-xl text-[14px] font-bold transition-all duration-200 ${
                       isActive ? 'bg-[#fff0f3] text-[#da2966]' : 'text-[#333] hover:bg-gray-50'
-                    }`}
+                    } ${
+                      desktopSidebarCollapsed
+                        ? 'h-10 w-10 justify-center px-0 py-0'
+                        : 'gap-3 px-4 py-2'
+                    } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#da2966]/25`}
                   >
-                    <item.icon size={18} strokeWidth={2} className={isActive ? 'text-[#da2966]' : 'text-[#555]'} />
-                    {item.name}
+                    <item.icon size={18} strokeWidth={2} className={`shrink-0 ${isActive ? 'text-[#da2966]' : 'text-[#555]'}`} />
+                    {!desktopSidebarCollapsed && <span>{item.name}</span>}
+                    {desktopSidebarCollapsed && (
+                      <span className="pointer-events-none absolute left-full top-1/2 ml-3 -translate-y-1/2 rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-all duration-150 group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-visible:translate-x-0.5 group-focus-visible:opacity-100 whitespace-nowrap z-50">
+                        {item.name}
+                      </span>
+                    )}
                   </Link>
                 );
               })}
@@ -302,31 +411,67 @@ export default function AdminDashboardLayout({
           </div>
 
           <div className="mt-5">
-            <p className="text-[11px] font-extrabold text-[#da2966] uppercase tracking-[0.15em] px-4 mb-2">
-              Settings
-            </p>
+            {!desktopSidebarCollapsed && (
+              <p className="text-[11px] font-extrabold text-[#da2966] uppercase tracking-[0.15em] px-4 mb-2">
+                Settings
+              </p>
+            )}
             <div className="space-y-[2px]">
               <Link
                 href="/gestion-bloom-secure/dashboard/settings"
-                className="flex items-center gap-3 px-4 py-2 rounded-xl text-[14px] font-bold text-[#333] hover:bg-gray-50 transition-all"
+                aria-label={desktopSidebarCollapsed ? 'Admin Profile' : undefined}
+                className={`group relative flex items-center rounded-xl text-[14px] font-bold transition-all duration-200 ${
+                  pathname.startsWith('/gestion-bloom-secure/dashboard/settings')
+                    ? 'bg-[#fff0f3] text-[#da2966]'
+                    : 'text-[#333] hover:bg-gray-50'
+                } ${
+                  desktopSidebarCollapsed
+                    ? 'h-10 w-10 justify-center px-0 py-0'
+                    : 'gap-3 px-4 py-2'
+                } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#da2966]/25`}
               >
-                <Settings size={18} strokeWidth={2} className="text-[#555]" />
-                General
+                <Settings
+                  size={18}
+                  strokeWidth={2}
+                  className={`shrink-0 ${
+                    pathname.startsWith('/gestion-bloom-secure/dashboard/settings') ? 'text-[#da2966]' : 'text-[#555]'
+                  }`}
+                />
+                {!desktopSidebarCollapsed && <span>General</span>}
+                {desktopSidebarCollapsed && (
+                  <span className="pointer-events-none absolute left-full top-1/2 ml-3 -translate-y-1/2 rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-all duration-150 group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-visible:translate-x-0.5 group-focus-visible:opacity-100 whitespace-nowrap z-50">
+                    Admin Profile
+                  </span>
+                )}
               </Link>
               <button
                 onClick={handleLogout}
-                className="w-full flex items-center gap-3 px-4 py-2 rounded-xl text-[14px] font-bold text-[#333] hover:bg-gray-50 transition-all text-left"
+                className={`group relative flex items-center rounded-xl text-[14px] font-bold text-[#333] hover:bg-gray-50 transition-all duration-200 text-left ${
+                  desktopSidebarCollapsed
+                    ? 'h-10 w-10 justify-center px-0 py-0'
+                    : 'w-full gap-3 px-4 py-2'
+                } focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#da2966]/25`}
+                aria-label={desktopSidebarCollapsed ? 'Logout' : undefined}
               >
-                <LogOut size={18} strokeWidth={2} className="text-[#555]" />
-                Logout
+                <LogOut size={18} strokeWidth={2} className="text-[#555] shrink-0" />
+                {!desktopSidebarCollapsed && <span>Logout</span>}
+                {desktopSidebarCollapsed && (
+                  <span className="pointer-events-none absolute left-full top-1/2 ml-3 -translate-y-1/2 rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-all duration-150 group-hover:translate-x-0.5 group-hover:opacity-100 group-focus-visible:translate-x-0.5 group-focus-visible:opacity-100 whitespace-nowrap z-50">
+                    Logout
+                  </span>
+                )}
               </button>
             </div>
           </div>
         </nav>
 
         {/* User Profile Desktop */}
-        <div className="shrink-0 px-5 py-4 border-t border-gray-100">
-          <div className="flex items-center gap-3">
+        <div
+          className={`shrink-0 border-t border-gray-100 transition-[padding] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+            desktopSidebarCollapsed ? 'px-4 py-4' : 'px-5 py-4'
+          }`}
+        >
+          <div className={`group relative flex items-center ${desktopSidebarCollapsed ? 'justify-center' : 'gap-3'}`}>
             <div className="relative shrink-0">
               <div className="w-9 h-9 rounded-full overflow-hidden bg-gradient-to-br from-[#fde2e7] to-[#ffd1dc] flex items-center justify-center border-2 border-white shadow">
                 {adminProfile?.profile_image ? (
@@ -338,20 +483,31 @@ export default function AdminDashboardLayout({
               </div>
               <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-400 border-2 border-white rounded-full"></div>
             </div>
-            <div className="flex flex-col flex-1 min-w-0">
-              <span className="text-[13px] font-bold text-[#1a1a1a] leading-tight truncate">
+            {!desktopSidebarCollapsed && (
+              <div className="flex flex-col flex-1 min-w-0">
+                <span className="text-[13px] font-bold text-[#1a1a1a] leading-tight truncate">
+                  {adminProfile?.username ?? 'Admin'}
+                </span>
+                <span className="text-[11px] text-gray-400 font-medium break-words leading-snug">
+                  {formatLastLogin(adminProfile?.last_login_at)}
+                </span>
+              </div>
+            )}
+            {desktopSidebarCollapsed && (
+              <span className="pointer-events-none absolute left-full top-1/2 ml-3 -translate-y-1/2 rounded-md bg-gray-900 px-3 py-1.5 text-xs font-medium text-white opacity-0 shadow-lg transition-all duration-150 group-hover:translate-x-0.5 group-hover:opacity-100 whitespace-nowrap z-50">
                 {adminProfile?.username ?? 'Admin'}
               </span>
-              <span className="text-[11px] text-gray-400 font-medium break-words leading-snug">
-                {formatLastLogin(adminProfile?.last_login_at)}
-              </span>
-            </div>
+            )}
           </div>
         </div>
       </aside>
 
       {/* ─── Main Content ───────────────────────────────────────────────────────── */}
-      <div className="w-full lg:flex-1 lg:ml-[280px] min-h-[calc(100vh-64px)] lg:min-h-screen bg-[#fefbfb] pt-[64px] pb-[64px] lg:pt-0 lg:pb-0">
+      <div
+        className={`w-full lg:flex-1 min-h-[calc(100vh-64px)] lg:min-h-screen bg-[#fefbfb] pt-[64px] pb-[64px] lg:pt-0 lg:pb-0 transition-[margin-left] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+          desktopSidebarCollapsed ? 'lg:ml-[72px]' : 'lg:ml-[280px]'
+        }`}
+      >
         {children}
       </div>
 

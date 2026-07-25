@@ -6,6 +6,7 @@ use App\Jobs\CompressVideoJob;
 use App\Models\HeroVideo;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -79,7 +80,7 @@ class VideoService
      *
      * @throws \InvalidArgumentException on invalid type or size
      */
-    public function upload(UploadedFile $file, string $type, int $order = 1): HeroVideo
+    public function upload(UploadedFile $file, string $type, ?int $order = null): HeroVideo
     {
         $mime = $file->getMimeType();
         if (! in_array($mime, self::ALLOWED_MIMES, true)) {
@@ -98,15 +99,19 @@ class VideoService
         $filename = 'hero_' . $type . '_' . Str::random(12) . '.' . $ext;
         $path     = $file->storeAs('videos', $filename, 'public');
 
-        $video = HeroVideo::create([
-            'path'          => $path,
-            'type'          => $type,
-            'display_order' => $order,
-            'is_active'     => true,
-            'is_legacy'     => false,
-        ]);
+        $video = DB::transaction(function () use ($path, $type, $order) {
+            $targetOrder = $order ?? ((int) HeroVideo::where('type', $type)->max('display_order') + 1);
 
-        $this->bustCache();
+            $video = HeroVideo::create([
+                'path'          => $path,
+                'type'          => $type,
+                'display_order' => 255,
+                'is_active'     => true,
+                'is_legacy'     => false,
+            ]);
+
+            return $this->moveToOrder($video, $type, $targetOrder);
+        });
 
         // Dispatch FFmpeg compression in the background.
         // With QUEUE_CONNECTION=sync this runs immediately before returning.
@@ -114,7 +119,9 @@ class VideoService
         // keeping upload response times fast.
         CompressVideoJob::dispatch($video);
 
-        return $video;
+        $this->bustCache();
+
+        return $video->refresh();
     }
 
     /**
@@ -122,15 +129,75 @@ class VideoService
      */
     public function update(HeroVideo $video, array $data): HeroVideo
     {
-        $video->update(array_filter([
-            'display_order' => $data['display_order'] ?? null,
-            'is_active'     => $data['is_active'] ?? null,
-            'type'          => $data['type'] ?? null,
-        ], fn ($v) => $v !== null));
+        $originalType = $video->type;
+
+        $updated = DB::transaction(function () use ($video, $data, $originalType) {
+            if (array_key_exists('is_active', $data)) {
+                $video->is_active = (bool) $data['is_active'];
+            }
+
+            $targetType = $data['type'] ?? $video->type;
+            $targetOrder = array_key_exists('display_order', $data)
+                ? (int) $data['display_order']
+                : null;
+
+            if ($targetType !== $video->type || $targetOrder !== null) {
+                $video = $this->moveToOrder($video, $targetType, $targetOrder);
+
+                if ($originalType !== $targetType) {
+                    $this->normalizeOrders($originalType);
+                }
+            } else {
+                $video->save();
+                $this->normalizeOrders($video->type);
+            }
+
+            return $video->refresh();
+        });
 
         $this->bustCache();
 
-        return $video->refresh();
+        return $updated;
+    }
+
+    /**
+     * Reorder every video for one device type using the supplied ordered IDs.
+     *
+     * @param int[] $orderedIds
+     */
+    public function reorder(string $type, array $orderedIds): \Illuminate\Database\Eloquent\Collection
+    {
+        $videos = DB::transaction(function () use ($type, $orderedIds) {
+            $videos = HeroVideo::where('type', $type)
+                ->orderBy('display_order')
+                ->orderBy('id')
+                ->get()
+                ->keyBy('id');
+
+            $uniqueIds = collect($orderedIds)
+                ->map(fn ($id) => (int) $id)
+                ->unique()
+                ->values();
+
+            if ($uniqueIds->count() !== $videos->count() || $uniqueIds->diff($videos->keys())->isNotEmpty()) {
+                throw new \InvalidArgumentException('La liste de réorganisation ne correspond pas aux vidéos de cet appareil.');
+            }
+
+            foreach ($uniqueIds as $index => $id) {
+                $videos[$id]->update(['display_order' => $index + 1]);
+            }
+
+            $this->normalizeOrders($type);
+
+            return HeroVideo::where('type', $type)
+                ->orderBy('display_order')
+                ->orderBy('id')
+                ->get();
+        });
+
+        $this->bustCache();
+
+        return $videos;
     }
 
     /**
@@ -138,6 +205,8 @@ class VideoService
      */
     public function destroy(HeroVideo $video): void
     {
+        $type = $video->type;
+
         if (! $video->is_legacy) {
             // Delete original, compressed version, and thumbnail if they exist.
             foreach ([$video->path, $video->compressed_path, $video->thumbnail_path] as $rel) {
@@ -147,9 +216,61 @@ class VideoService
             }
         }
 
-        $video->delete();
+        DB::transaction(function () use ($video, $type) {
+            $video->delete();
+            $this->normalizeOrders($type);
+        });
 
         $this->bustCache();
+    }
+
+    /**
+     * Keep display_order sequential and gap-free for one device type.
+     */
+    public function normalizeOrders(string $type): void
+    {
+        HeroVideo::where('type', $type)
+            ->orderBy('display_order')
+            ->orderBy('id')
+            ->get()
+            ->values()
+            ->each(function (HeroVideo $video, int $index) {
+                $nextOrder = $index + 1;
+                if ($video->display_order !== $nextOrder) {
+                    $video->update(['display_order' => $nextOrder]);
+                }
+            });
+    }
+
+    private function moveToOrder(HeroVideo $video, string $type, ?int $targetOrder): HeroVideo
+    {
+        $siblings = HeroVideo::where('type', $type)
+            ->where('id', '!=', $video->id)
+            ->orderBy('display_order')
+            ->orderBy('id')
+            ->get()
+            ->values();
+
+        $targetOrder = max(1, min($targetOrder ?? ($siblings->count() + 1), $siblings->count() + 1));
+
+        $video->type = $type;
+        $video->display_order = $targetOrder;
+        $video->save();
+
+        $ordered = $siblings->all();
+        array_splice($ordered, $targetOrder - 1, 0, [$video->refresh()]);
+
+        foreach ($ordered as $index => $orderedVideo) {
+            $nextOrder = $index + 1;
+            if ($orderedVideo->display_order !== $nextOrder || $orderedVideo->type !== $type) {
+                $orderedVideo->update([
+                    'type'          => $type,
+                    'display_order' => $nextOrder,
+                ]);
+            }
+        }
+
+        return $video->refresh();
     }
 
     // ── FFmpeg compression ─────────────────────────────────────────────────────

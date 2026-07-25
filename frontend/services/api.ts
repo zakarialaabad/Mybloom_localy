@@ -1,4 +1,4 @@
-﻿import axios, { AxiosError, AxiosResponse } from 'axios';
+﻿import axios, { AxiosError, AxiosProgressEvent, AxiosResponse } from 'axios';
 
 // â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 
@@ -713,12 +713,15 @@ export interface Banner {
 export interface HeroVideo {
   id: number;
   url: string;
+  stream_url?: string;
+  thumbnail_url?: string | null;
   path: string;
   type: 'desktop' | 'mobile';
   display_order: number;
   is_active: boolean;
   is_legacy: boolean;
   created_at: string | null;
+  updated_at?: string | null;
 }
 
 // â”€â”€â”€ Banner service (public) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
@@ -769,13 +772,22 @@ export const adminBannerService = {
 // ─── Admin video service ──────────────────────────────────────────────────────
 
 export const adminVideoService = {
-  list: async (): Promise<HeroVideo[]> => {
-    const { data } = await apiClient.get<{ data: HeroVideo[] }>('/v1/admin/videos');
+  list: async (type?: 'desktop' | 'mobile'): Promise<HeroVideo[]> => {
+    const { data } = await apiClient.get<{ data: HeroVideo[] }>('/v1/admin/videos', {
+      params: type ? { type } : undefined,
+    });
     return data.data;
   },
 
-  store: async (formData: FormData): Promise<HeroVideo> => {
-    const { data } = await apiClient.post<{ data: HeroVideo }>('/v1/admin/videos', formData);
+  store: async (
+    formData: FormData,
+    onUploadProgress?: (progressEvent: AxiosProgressEvent) => void,
+  ): Promise<HeroVideo> => {
+    const { data } = await apiClient.post<{ data: HeroVideo }>('/v1/admin/videos', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress,
+      timeout: 240_000,
+    });
     return data.data;
   },
 
@@ -789,6 +801,14 @@ export const adminVideoService = {
 
   destroy: async (id: number): Promise<void> => {
     await apiClient.delete(`/v1/admin/videos/${id}`);
+  },
+
+  reorder: async (type: 'desktop' | 'mobile', orderedIds: number[]): Promise<HeroVideo[]> => {
+    const { data } = await apiClient.patch<{ data: HeroVideo[] }>('/v1/admin/videos/reorder', {
+      type,
+      ordered_ids: orderedIds,
+    });
+    return data.data;
   },
 };
 
@@ -1036,5 +1056,4 @@ export const adminReviewService = {
     await apiClient.delete(`/v1/admin/reviews/${id}`);
   },
 };
-
 
