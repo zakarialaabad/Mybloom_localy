@@ -4,6 +4,32 @@ const nextConfig = {
   // Output mode for production deployment
   output: 'standalone',
 
+  // Local development only: let frontend code that calls /api/v1/*
+  // reach the Laravel/XAMPP backend even though Next runs on port 3000.
+  async rewrites() {
+    if (process.env.NODE_ENV === 'production') {
+      return [];
+    }
+
+    let backendOrigin = 'http://localhost:8000';
+    try {
+      backendOrigin = new URL(process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000/api').origin;
+    } catch {
+      // Keep the safe localhost default above.
+    }
+
+    return [
+      {
+        source: '/api/v1/:path*',
+        destination: `${backendOrigin}/api/v1/:path*`,
+      },
+      {
+        source: '/api/health',
+        destination: `${backendOrigin}/api/health`,
+      },
+    ];
+  },
+
   // Ignore TypeScript and ESLint errors during build (for faster CI/CD)
   typescript: {
     ignoreBuildErrors: true,

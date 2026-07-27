@@ -83,13 +83,13 @@ export default function CategoriesSection() {
           <div className="grid grid-cols-1 px-4 gap-6 md:gap-14 sm:grid-cols-2 lg:grid-cols-4 w-full auto-rows-fr">
             {/* 1. Authentic */}
             <div className="flex flex-col items-center h-full">
-              <div className="mb-[10px] md:mb-6 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center">
+              <div className="relative mb-[10px] md:mb-6 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center">
                 <Image 
                   src="/100_icon.png" 
                   alt="Authentic icon" 
-                  width={80} 
-                  height={80} 
-                  className="w-full h-full object-contain icon-authentic"
+                  fill
+                  sizes="(min-width: 768px) 80px, 64px"
+                  className="object-contain"
                 />
               </div>
               <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">100% Authentique</h3>
@@ -98,13 +98,13 @@ export default function CategoriesSection() {
 
             {/* 2. Pricing */}
             <div className="flex flex-col items-center h-full">
-              <div className="mb-[10px] md:mb-6 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center">
+              <div className="relative mb-[10px] md:mb-6 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center">
                 <Image 
                   src="/Competitive_icon.png" 
                   alt="Competitive icon" 
-                  width={80} 
-                  height={80} 
-                  className="w-full h-full object-contain icon-competitive"
+                  fill
+                  sizes="(min-width: 768px) 80px, 64px"
+                  className="object-contain"
                 />
               </div>
               <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Prix Compétitifs</h3>
@@ -113,13 +113,13 @@ export default function CategoriesSection() {
 
             {/* 3. Support */}
             <div className="flex flex-col items-center h-full">
-              <div className="mb-[10px] md:mb-6 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center">
+              <div className="relative mb-[10px] md:mb-6 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center">
                 <Image 
                   src="/Customer_icon.png" 
                   alt="Support icon" 
-                  width={80} 
-                  height={80} 
-                  className="w-full h-full object-contain icon-support"
+                  fill
+                  sizes="(min-width: 768px) 80px, 64px"
+                  className="object-contain"
                 />
               </div>
               <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Service Client</h3>
@@ -128,13 +128,13 @@ export default function CategoriesSection() {
 
             {/* 4. COD */}
             <div className="flex flex-col items-center h-full">
-              <div className="mb-[10px] md:mb-6 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center">
+              <div className="relative mb-[10px] md:mb-6 flex h-16 w-16 md:h-20 md:w-20 items-center justify-center">
                 <Image 
                   src="/Cash_Icon.png" 
                   alt="COD icon" 
-                  width={80} 
-                  height={80} 
-                  className="w-full h-full object-contain icon-cod"
+                  fill
+                  sizes="(min-width: 768px) 80px, 64px"
+                  className="object-contain"
                 />
               </div>
               <h3 className="text-sm md:text-base font-bold text-gray-900 font-serif">Paiement à la livraison</h3>
