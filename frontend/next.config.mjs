@@ -88,6 +88,14 @@ const nextConfig = {
       },
       // Backend in development (http)
       ...(process.env.NODE_ENV !== 'production' ? [
+        // Laravel may publish storage URLs using its APP_URL. Allow the
+        // network backend used by the local development environment.
+        {
+          protocol: 'http',
+          hostname: '192.168.11.170',
+          port: '8001',
+          pathname: '/storage/**',
+        },
         {
           protocol: 'http',
           hostname: process.env.NEXT_PUBLIC_API_HOST ?? 'localhost',

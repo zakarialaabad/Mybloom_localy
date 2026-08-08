@@ -64,6 +64,7 @@ export default function PrivacyPolicyPage() {
             </p>
             <ul className="list-disc pl-5 mb-8 space-y-3 marker:text-[#da2966]">
               <li>Lorsque nous avons besoin d'exécuter le contrat que nous sommes sur le point de conclure ou avons conclu avec vous (par exemple, exécuter une commande).</li>
+              <li>Lorsque vous choisissez de recevoir une confirmation transactionnelle de commande sur WhatsApp.</li>
               <li>Lorsqu'il est nécessaire pour nos intérêts légitimes (ou ceux d'un tiers) et que vos intérêts et droits fondamentaux ne dépassent pas ces intérêts.</li>
               <li>Lorsque nous avons besoin de respecter une obligation légale ou réglementaire.</li>
             </ul>

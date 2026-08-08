@@ -10,7 +10,7 @@ import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import { ErrorAlert } from '@/components/ErrorAlert';
 import useCartStore from '@/store/cart';
-import { shippingService, couponService, orderService, ShippingMethod, CouponValidateResult } from '@/services/api';
+import { shippingService, couponService, orderService, ShippingMethod, CouponValidateResult, type PlaceOrderPayload } from '@/services/api';
 import { FREE_SHIPPING_THRESHOLD } from '@/lib/constants';
 
 export default function CheckoutPage() {
@@ -44,9 +44,10 @@ export default function CheckoutPage() {
   const [phone,     setPhone]     = useState('');
   const [phoneTouched, setPhoneTouched] = useState(false);
   const [city,      setCity]      = useState('');
-  const [quartier,  setQuartier]  = useState('');
-  const [zip,       setZip]       = useState('');
+  const [quartier]  = useState('');
+  const [zip]       = useState('');
   const [address,   setAddress]   = useState('');
+  const [whatsAppConfirmationRequested, setWhatsAppConfirmationRequested] = useState(false);
 
   /* ── Coupon ───────────────────────────────────────────────────── */
   const [couponCode,    setCouponCode]    = useState('');
@@ -187,8 +188,8 @@ export default function CheckoutPage() {
 
   const isValidPhone = (value: string): boolean => {
     const normalized = normalizePhone(value);
-    // Accept +212 followed by 5, 6 or 7, then 8 digits
-    return /^\+212[567]\d{8}$/.test(normalized);
+    // Accept Moroccan mobile numbers only.
+    return /^\+212[67]\d{8}$/.test(normalized);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -207,9 +208,10 @@ export default function CheckoutPage() {
     setSubmitting(true);
     try {
       // Construire le payload sans coupon_code si pas de coupon validé
-      const payload: any = {
+      const payload: PlaceOrderPayload = {
         customer_name: `${firstName} ${lastName}`.trim(),
         customer_phone: normalizedPhone,
+        whatsapp_confirmation_requested: whatsAppConfirmationRequested,
         shipping_address: { city, quartier, zip, address },
         shipping_method_id: selectedMethodId,
         items: items.map((i) => ({
@@ -237,6 +239,7 @@ export default function CheckoutPage() {
           city,
           address,
           quartier,
+          whatsappFallbackUrl: result.whatsapp_fallback_url,
         }));
       }
       router.push('/success');
@@ -298,6 +301,18 @@ export default function CheckoutPage() {
                     {phoneTouched && phone && !isValidPhone(phone) && (
                       <p className="mt-1 text-xs text-red-600 font-serif">Numéro invalide. Entrez 06XXXXXXXX ou +212612345678</p>
                     )}
+                    <div className="mt-3 border border-gray-100 bg-[#FAFAFA] px-4 py-3">
+                      <label className="flex items-start gap-3 text-sm font-serif text-gray-700">
+                        <input
+                          type="checkbox"
+                          required
+                          checked={whatsAppConfirmationRequested}
+                          onChange={(e) => setWhatsAppConfirmationRequested(e.target.checked)}
+                          className="mt-0.5 h-4 w-4 shrink-0 accent-[#4a403a]"
+                        />
+                        <span>J&apos;accepte de recevoir sur WhatsApp la confirmation et les mises à jour de cette commande, ainsi que ma facture.</span>
+                      </label>
+                    </div>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>

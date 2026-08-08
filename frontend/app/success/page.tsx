@@ -6,16 +6,18 @@ import { Headphones, ArrowLeft, Check } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import { orderService } from '@/services/api';
 
 export default function OrderSuccessPage() {
   const router = useRouter();
 
   const [orderData, setOrderData] = useState<{
-    order: string; total: string; name: string; phone: string; city: string; address?: string; quartier?: string;
+    order: string; total: string; name: string; phone: string; city: string; address?: string; quartier?: string; whatsappFallbackUrl?: string;
   } | null>(null);
+  const [whatsappStatus, setWhatsappStatus] = useState('queued');
 
   // ── Bloque le scroll du body sur mobile ──
   // Le vrai problème : le layout parent permet au body de scroller,
@@ -34,11 +36,10 @@ export default function OrderSuccessPage() {
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const raw = sessionStorage.getItem('order_success');
-    if (raw) {
-      try { setOrderData(JSON.parse(raw)); } catch { /* ignore */ }
-      sessionStorage.removeItem('order_success');
-    }
+      const raw = sessionStorage.getItem('order_success');
+      if (raw) {
+        try { setOrderData(JSON.parse(raw)); } catch { /* ignore */ }
+      }
   }, []);
 
   const order = orderData?.order ?? '';
@@ -48,10 +49,23 @@ export default function OrderSuccessPage() {
   const city     = orderData?.city     ?? 'MAROC';
   const address  = orderData?.address  ?? '';
   const quartier = orderData?.quartier ?? '';
+  const fallbackUrl = orderData?.whatsappFallbackUrl;
 
-  const [downloadError, setDownloadError] = useState<string | null>(null);
+  useEffect(() => {
+    if (!order || !phone) return;
+    let active = true;
+    const poll = async () => {
+      try {
+        const state = await orderService.whatsAppStatus(order, phone);
+        if (active) setWhatsappStatus(state.status);
+      } catch { /* a status poll must never disturb the confirmation page */ }
+    };
+    void poll();
+    const interval = window.setInterval(() => void poll(), 5000);
+    return () => { active = false; window.clearInterval(interval); };
+  }, [order, phone]);
 
-  const attemptDownload = async (): Promise<boolean> => {
+  const attemptDownload = useCallback(async (): Promise<boolean> => {
     if (!order || !phone) return false;
     const pdfUrl = `${process.env.NEXT_PUBLIC_API_URL}/v1/invoices/${order}/download?phone=${encodeURIComponent(phone)}`;
     try {
@@ -68,29 +82,24 @@ export default function OrderSuccessPage() {
           link.click();
           document.body.removeChild(link);
           URL.revokeObjectURL(blobUrl);
-          setDownloadError(null);
           return true;
         }
 
         const text = await res.text();
         try { console.error('Invoice endpoint returned non-pdf content:', JSON.parse(text)); } catch { console.error('Invoice endpoint returned non-pdf content:', text); }
-        setDownloadError('Le serveur a renvoyé un contenu inattendu.');
       } else {
         try {
           const err = await res.json();
           console.error('Invoice download failed:', res.status, err);
-          setDownloadError(err.message || 'Erreur lors du téléchargement de la facture.');
-        } catch (e) {
+        } catch {
           console.error('Invoice download failed with status', res.status);
-          setDownloadError('Erreur lors du téléchargement de la facture.');
         }
       }
     } catch (e) {
       console.error('Invoice download error:', e);
-      setDownloadError('Erreur réseau lors du téléchargement.');
     }
     return false;
-  };
+  }, [order, phone]);
 
   const downloadedRef = useRef(false);
   useEffect(() => {
@@ -99,7 +108,7 @@ export default function OrderSuccessPage() {
     downloadedRef.current = true;
     const timer = setTimeout(() => { void attemptDownload(); }, 1500);
     return () => clearTimeout(timer);
-  }, [order, phone]);
+  }, [attemptDownload, order, phone]);
 
   return (
     <div className="md:block font-serif bg-white">
@@ -181,7 +190,7 @@ export default function OrderSuccessPage() {
                   <div className="text-right">
                     <div className="font-bold text-gray-900 text-[12px]">{name || 'Client Name'}</div>
                     <div className="text-gray-500 mt-1 text-[11px] leading-relaxed">
-                      {[address, city].filter(Boolean).join(', ')}, MAROC
+                      {[address, quartier, city].filter(Boolean).join(', ')}, MAROC
                     </div>
                   </div>
                 </div>
@@ -206,6 +215,10 @@ export default function OrderSuccessPage() {
                   <strong className="text-gray-800">{phone || '+212 6 XX XX XX XX'}</strong>{' '}
                   pour confirmer vos préférences de livraison.
                 </p>
+                <p className="mt-2 text-gray-500 text-[11.5px]">
+                  {whatsappStatus === 'delivered' || whatsappStatus === 'read' ? 'Confirmation WhatsApp livrée.' : 'Envoi de votre confirmation WhatsApp…'}
+                </p>
+                {fallbackUrl && <a href={fallbackUrl} className="mt-3 inline-block text-[#da2966] underline text-[11.5px] font-bold">Recevoir ma facture sur WhatsApp</a>}
               </div>
 
               {/* Buttons */}
@@ -303,7 +316,7 @@ export default function OrderSuccessPage() {
                 <div className="text-right">
                   <div className="font-bold text-gray-900">{name || 'Client Name'}</div>
                   <div className="text-gray-500 mt-1 max-w-[180px] leading-relaxed text-[11px]">
-                    {[address, city].filter(Boolean).join(', ')}, MAROC
+                    {[address, quartier, city].filter(Boolean).join(', ')}, MAROC
                   </div>
                 </div>
               </div>
@@ -328,6 +341,10 @@ export default function OrderSuccessPage() {
                 <strong className="text-gray-800">{phone || '+212 6 XX XX XX XX'}</strong>{' '}
                 pour confirmer vos préférences de livraison.
               </p>
+              <p className="mt-2 text-gray-500 text-[11px]">
+                {whatsappStatus === 'delivered' || whatsappStatus === 'read' ? 'Confirmation WhatsApp livrée.' : 'Envoi de votre confirmation WhatsApp…'}
+              </p>
+              {fallbackUrl && <a href={fallbackUrl} className="mt-3 inline-block text-[#da2966] underline text-[11px] font-bold">Recevoir ma facture sur WhatsApp</a>}
             </div>
 
             {/* Buttons */}

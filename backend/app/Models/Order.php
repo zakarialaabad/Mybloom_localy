@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Str;
 
 class Order extends Model
@@ -30,15 +31,36 @@ class Order extends Model
         'status',
         'notes',
         'admin_notes',
+        'payment_method',
+        'payment_status',
+        'whatsapp_confirmation_requested',
+        'whatsapp_consent_at',
+        'whatsapp_consent_source',
+        'whatsapp_confirmation_status',
+        'whatsapp_confirmation_message_id',
+        'whatsapp_confirmation_sent_at',
+        'whatsapp_confirmation_failed_at',
+        'whatsapp_confirmation_error',
+        'whatsapp_invoice_status',
+        'whatsapp_invoice_message_id',
+        'whatsapp_invoice_sent_at',
+        'whatsapp_invoice_failed_at',
+        'whatsapp_invoice_error',
     ];
 
     protected function casts(): array
     {
         return [
-            'subtotal'        => 'decimal:2',
+            'subtotal' => 'decimal:2',
             'discount_amount' => 'decimal:2',
-            'shipping_cost'   => 'decimal:2',
-            'total'           => 'decimal:2',
+            'shipping_cost' => 'decimal:2',
+            'total' => 'decimal:2',
+            'whatsapp_confirmation_requested' => 'boolean',
+            'whatsapp_consent_at' => 'datetime',
+            'whatsapp_confirmation_sent_at' => 'datetime',
+            'whatsapp_confirmation_failed_at' => 'datetime',
+            'whatsapp_invoice_sent_at' => 'datetime',
+            'whatsapp_invoice_failed_at' => 'datetime',
         ];
     }
 
@@ -49,9 +71,9 @@ class Order extends Model
         static::creating(function (Order $order) {
             if (empty($order->order_number)) {
                 $order->order_number = 'LX-'
-                    . strtoupper(Str::random(4))
-                    . '-'
-                    . strtoupper(Str::random(3));
+                    .strtoupper(Str::random(4))
+                    .'-'
+                    .strtoupper(Str::random(3));
             }
         });
     }
@@ -66,6 +88,21 @@ class Order extends Model
     public function statusHistories(): HasMany
     {
         return $this->hasMany(OrderStatusHistory::class)->orderBy('created_at');
+    }
+
+    public function whatsappNotifications(): HasMany
+    {
+        return $this->hasMany(OrderWhatsAppNotification::class);
+    }
+
+    public function whatsappDeliveries(): HasMany
+    {
+        return $this->hasMany(OrderWhatsAppDelivery::class);
+    }
+
+    public function adminWhatsAppNotification(): HasOne
+    {
+        return $this->hasOne(AdminOrderWhatsAppNotification::class);
     }
 
     public function shippingMethod(): BelongsTo

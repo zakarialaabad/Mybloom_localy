@@ -275,6 +275,7 @@ export interface AdminCouponStats {
 export interface PlaceOrderPayload {
   customer_name: string;
   customer_phone: string;
+  whatsapp_confirmation_requested: boolean;
   shipping_address: { city: string; quartier: string; zip: string; address: string };
   shipping_method_id: number;
   coupon_code?: string;
@@ -401,12 +402,17 @@ export const adminCouponService = {
 
 export const orderService = {
   place: async (payload: PlaceOrderPayload) => {
-    const { data } = await apiClient.post<{ data: { order_number: string; total: number } }>('/v1/orders', payload);
+    const { data } = await apiClient.post<{ data: { order_number: string; total: number; whatsapp_fallback_url: string } }>('/v1/orders', payload);
     return data.data;
   },
 
   track: async (orderNumber: string, phone: string): Promise<OrderTrackResult> => {
     const { data } = await apiClient.get<{ data: OrderTrackResult }>(`/v1/orders/${orderNumber}/track`, { params: { phone } });
+    return data.data;
+  },
+
+  whatsAppStatus: async (orderNumber: string, phone: string): Promise<{ status: string; fallback_available: boolean }> => {
+    const { data } = await apiClient.get<{ data: { status: string; fallback_available: boolean } }>(`/v1/orders/${orderNumber}/whatsapp-status`, { params: { phone } });
     return data.data;
   },
 };

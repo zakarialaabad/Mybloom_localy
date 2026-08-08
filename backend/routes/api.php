@@ -1,29 +1,30 @@
 <?php
 
+use App\Http\Controllers\Api\V1\Admin\AdminAuthController;
+use App\Http\Controllers\Api\V1\Admin\AdminProfileController;
+use App\Http\Controllers\Api\V1\Admin\BannerController as AdminBannerController;
+use App\Http\Controllers\Api\V1\Admin\BrandController as AdminBrandController;
+use App\Http\Controllers\Api\V1\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Api\V1\Admin\CouponController as AdminCouponController;
+use App\Http\Controllers\Api\V1\Admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\Api\V1\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductController;
+use App\Http\Controllers\Api\V1\Admin\ProductTypeController as AdminProductTypeController;
+use App\Http\Controllers\Api\V1\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\Api\V1\Admin\VideoController as AdminVideoController;
+use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\BrandController;
 use App\Http\Controllers\Api\V1\CategoryController;
-use App\Http\Controllers\Api\V1\IngredientController;
 use App\Http\Controllers\Api\V1\CouponController;
+use App\Http\Controllers\Api\V1\IngredientController;
+use App\Http\Controllers\Api\V1\OpenWaWebhookController;
 use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\ProductController;
 use App\Http\Controllers\Api\V1\ReviewController;
 use App\Http\Controllers\Api\V1\ShippingMethodController;
 use App\Http\Controllers\Api\V1\StoreController;
-use App\Http\Controllers\Api\V1\Admin\AdminAuthController;
-use App\Http\Controllers\Api\V1\Admin\BrandController as AdminBrandController;
-use App\Http\Controllers\Api\V1\Admin\CategoryController as AdminCategoryController;
-use App\Http\Controllers\Api\V1\Admin\CouponController as AdminCouponController;
-use App\Http\Controllers\Api\V1\Admin\OrderController as AdminOrderController;
-use App\Http\Controllers\Api\V1\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Api\V1\Admin\ProductTypeController as AdminProductTypeController;
-use App\Http\Controllers\Api\V1\Admin\ReviewController as AdminReviewController;
-use App\Http\Controllers\Api\V1\Admin\DashboardController as AdminDashboardController;
-use App\Http\Controllers\Api\V1\Admin\AdminProfileController;
-use App\Http\Controllers\Api\V1\BannerController;
 use App\Http\Controllers\Api\V1\VideoController;
 use App\Http\Controllers\Api\V1\VideoStreamController;
-use App\Http\Controllers\Api\V1\Admin\BannerController as AdminBannerController;
-use App\Http\Controllers\Api\V1\Admin\VideoController as AdminVideoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -41,56 +42,60 @@ Route::prefix('api')->group(function () {
     // ── Health check ────────────────────────────────────────────────────────
     Route::get('/health', fn () => response()->json(['status' => 'ok']));
 
-
     // ── v1 ──────────────────────────────────────────────────────────────────
     Route::prefix('v1')->name('v1.')->group(function () {
+        Route::post('/webhooks/openwa', [OpenWaWebhookController::class, 'handle'])->withoutMiddleware('throttle');
 
         // ── Public routes — throttle 120 req/min ────────────────────────────
         Route::middleware('throttle:120,1')->group(function () {
 
             // Catalogue
-            Route::get('/products/aggregates',          [ProductController::class, 'aggregates']);
-            Route::get('/products',                    [ProductController::class, 'index']);
-            Route::get('/products/test/is-gift',       [ProductController::class, 'testIsGiftFilter']);  // Diagnostic endpoint
-            Route::get('/products/{slug}',             [ProductController::class, 'show']);
-            Route::get('/brands',                      [BrandController::class, 'index']);
-            Route::get('/categories',                  [CategoryController::class, 'index']);
-            Route::get('/ingredients',                 [IngredientController::class, 'index']);
-            Route::get('/product-types',               [AdminProductTypeController::class, 'index']);
-            Route::get('/shipping-methods',            [ShippingMethodController::class, 'index']);
+            Route::get('/products/aggregates', [ProductController::class, 'aggregates']);
+            Route::get('/products', [ProductController::class, 'index']);
+            Route::get('/products/test/is-gift', [ProductController::class, 'testIsGiftFilter']);  // Diagnostic endpoint
+            Route::get('/products/{slug}', [ProductController::class, 'show']);
+            Route::get('/brands', [BrandController::class, 'index']);
+            Route::get('/categories', [CategoryController::class, 'index']);
+            Route::get('/ingredients', [IngredientController::class, 'index']);
+            Route::get('/product-types', [AdminProductTypeController::class, 'index']);
+            Route::get('/shipping-methods', [ShippingMethodController::class, 'index']);
 
             // Coupon validation
-            Route::post('/coupons/validate',           [CouponController::class, 'check']);
+            Route::post('/coupons/validate', [CouponController::class, 'check']);
 
             // Orders — create + track (no auth)
-            Route::post('/orders',                                [OrderController::class, 'store'])->middleware('throttle:place-order');
+            Route::post('/orders', [OrderController::class, 'store'])->middleware('throttle:place-order');
+            Route::get('/orders/{orderNumber}/whatsapp-status', [OrderController::class, 'whatsAppStatus']);
             // Track is self-limiting (requires valid order_number + phone) so no strict rate limit needed
-            Route::get('/orders/{orderNumber}/track',             [OrderController::class, 'track'])->withoutMiddleware('throttle');
-            Route::get('/invoices/{orderNumber}/download',        [OrderController::class, 'downloadInvoice']);
+            Route::get('/orders/{orderNumber}/track', [OrderController::class, 'track'])->withoutMiddleware('throttle');
+            Route::get('/invoices/{orderNumber}/whatsapp-download', [OrderController::class, 'downloadInvoiceFromWhatsAppLink'])
+                ->middleware('signed:relative')
+                ->name('invoices.whatsapp-download');
+            Route::get('/invoices/{orderNumber}/download', [OrderController::class, 'downloadInvoice']);
 
             // Reviews — GET (approved, optional product_id scope) | POST (submit, no auth)
-            Route::get('/reviews',                     [ReviewController::class, 'index']);
-            Route::post('/reviews',                    [ReviewController::class, 'store'])->middleware('throttle:10,1');
+            Route::get('/reviews', [ReviewController::class, 'index']);
+            Route::post('/reviews', [ReviewController::class, 'store'])->middleware('throttle:10,1');
 
             // Banners — public read-only
-            Route::get('/banners/homepage',            [BannerController::class, 'homepage']);
-            Route::get('/banners/collection/{id?}',    [BannerController::class, 'collectionHero']);
+            Route::get('/banners/homepage', [BannerController::class, 'homepage']);
+            Route::get('/banners/collection/{id?}', [BannerController::class, 'collectionHero']);
 
             // Hero videos — public read-only (DB-managed, backward-compatible)
-            Route::get('/videos/hero',                 [VideoController::class, 'hero']);
+            Route::get('/videos/hero', [VideoController::class, 'hero']);
             // Streaming endpoint: serves non-legacy videos with HTTP Range support.
-            Route::get('/videos/stream/{video}',       VideoStreamController::class);
+            Route::get('/videos/stream/{video}', VideoStreamController::class);
 
             // Store — public contact info
-            Route::get('/store/contact',               [StoreController::class, 'contact']);
-            Route::post('/store/contact-submit',       [StoreController::class, 'submitContact'])->middleware('throttle:10,1');
+            Route::get('/store/contact', [StoreController::class, 'contact']);
+            Route::post('/store/contact-submit', [StoreController::class, 'submitContact'])->middleware('throttle:10,1');
         });
 
         // ── Admin — auth endpoint (no sanctum guard, only throttle) ─────────
         Route::prefix('admin/auth')->name('admin.auth.')->middleware('throttle:60,1')->group(function () {
-            Route::post('/login',  [AdminAuthController::class, 'login'])->name('login');
+            Route::post('/login', [AdminAuthController::class, 'login'])->name('login');
             Route::post('/logout', [AdminAuthController::class, 'logout'])->name('logout');
-            Route::get('/me',      [AdminAuthController::class, 'me'])->name('me');
+            Route::get('/me', [AdminAuthController::class, 'me'])->name('me');
         });
 
         // ── Admin — protected routes ─────────────────────────────────────────
@@ -107,59 +112,59 @@ Route::prefix('api')->group(function () {
                 Route::put('profile/password', [AdminProfileController::class, 'changePassword']);
 
                 // Ingredients
-                Route::post('ingredients',                [IngredientController::class, 'store']);
-                Route::post('ingredients/{ingredient}',   [IngredientController::class, 'update']);
+                Route::post('ingredients', [IngredientController::class, 'store']);
+                Route::post('ingredients/{ingredient}', [IngredientController::class, 'update']);
                 Route::delete('ingredients/{ingredient}', [IngredientController::class, 'destroy']);
 
                 // Products
                 Route::apiResource('products', AdminProductController::class);
-                Route::post('products/{product}/images',        [AdminProductController::class, 'storeImage']);
+                Route::post('products/{product}/images', [AdminProductController::class, 'storeImage']);
                 Route::delete('products/{product}/images/{id}', [AdminProductController::class, 'destroyImage']);
 
                 // Product Types
                 Route::apiResource('product-types', AdminProductTypeController::class)->except(['show']);
 
                 // Brands
-                Route::apiResource('brands',     AdminBrandController::class);
+                Route::apiResource('brands', AdminBrandController::class);
 
                 // Categories
                 Route::apiResource('categories', AdminCategoryController::class);
 
                 // Coupons
-                Route::get('coupons/stats',  [AdminCouponController::class, 'stats']);
+                Route::get('coupons/stats', [AdminCouponController::class, 'stats']);
                 Route::apiResource('coupons', AdminCouponController::class);
 
                 // Orders
-                Route::get('orders/stats',                 [AdminOrderController::class, 'stats']);
-                Route::delete('orders/bulk-delete',        [AdminOrderController::class, 'bulkDestroyByDateRange']);
-                Route::get('orders',                       [AdminOrderController::class, 'index']);
-                Route::get('orders/{order}',               [AdminOrderController::class, 'show']);
-                Route::patch('orders/{order}/status',      [AdminOrderController::class, 'updateStatus']);
+                Route::get('orders/stats', [AdminOrderController::class, 'stats']);
+                Route::delete('orders/bulk-delete', [AdminOrderController::class, 'bulkDestroyByDateRange']);
+                Route::get('orders', [AdminOrderController::class, 'index']);
+                Route::get('orders/{order}', [AdminOrderController::class, 'show']);
+                Route::patch('orders/{order}/status', [AdminOrderController::class, 'updateStatus']);
                 Route::post('orders/{order}/status-history', [AdminOrderController::class, 'addStatusHistory']);
-                Route::delete('orders/{order}',            [AdminOrderController::class, 'destroy']);
+                Route::delete('orders/{order}', [AdminOrderController::class, 'destroy']);
 
                 // Reviews
-                Route::get('reviews/stats',                [AdminReviewController::class, 'stats']);
-                Route::get('reviews',                      [AdminReviewController::class, 'index']);
-                Route::post('reviews',                     [AdminReviewController::class, 'store']);
-                Route::patch('reviews/{review}',           [AdminReviewController::class, 'update']);
-                Route::patch('reviews/{review}/approve',   [AdminReviewController::class, 'approve']);
-                Route::patch('reviews/{review}/reject',    [AdminReviewController::class, 'reject']);
-                Route::patch('reviews/{review}/traiter',   [AdminReviewController::class, 'traiter']);
-                Route::delete('reviews/{review}',          [AdminReviewController::class, 'destroy']);
+                Route::get('reviews/stats', [AdminReviewController::class, 'stats']);
+                Route::get('reviews', [AdminReviewController::class, 'index']);
+                Route::post('reviews', [AdminReviewController::class, 'store']);
+                Route::patch('reviews/{review}', [AdminReviewController::class, 'update']);
+                Route::patch('reviews/{review}/approve', [AdminReviewController::class, 'approve']);
+                Route::patch('reviews/{review}/reject', [AdminReviewController::class, 'reject']);
+                Route::patch('reviews/{review}/traiter', [AdminReviewController::class, 'traiter']);
+                Route::delete('reviews/{review}', [AdminReviewController::class, 'destroy']);
 
                 // Banners
-                Route::get('banners',                      [AdminBannerController::class, 'index']);
-                Route::post('banners',                     [AdminBannerController::class, 'store']);
-                Route::put('banners/{banner}',             [AdminBannerController::class, 'update']);
-                Route::delete('banners/{banner}',          [AdminBannerController::class, 'destroy']);
+                Route::get('banners', [AdminBannerController::class, 'index']);
+                Route::post('banners', [AdminBannerController::class, 'store']);
+                Route::put('banners/{banner}', [AdminBannerController::class, 'update']);
+                Route::delete('banners/{banner}', [AdminBannerController::class, 'destroy']);
 
                 // Hero videos
-                Route::get('videos',                       [AdminVideoController::class, 'index']);
-                Route::post('videos',                      [AdminVideoController::class, 'store']);
-                Route::patch('videos/reorder',             [AdminVideoController::class, 'reorder']);
-                Route::patch('videos/{video}',             [AdminVideoController::class, 'update']);
-                Route::delete('videos/{video}',            [AdminVideoController::class, 'destroy']);
+                Route::get('videos', [AdminVideoController::class, 'index']);
+                Route::post('videos', [AdminVideoController::class, 'store']);
+                Route::patch('videos/reorder', [AdminVideoController::class, 'reorder']);
+                Route::patch('videos/{video}', [AdminVideoController::class, 'update']);
+                Route::delete('videos/{video}', [AdminVideoController::class, 'destroy']);
             });
     });
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Utilities\ImageUrlResolver;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -59,7 +60,7 @@ class OrderResource extends JsonResource
         // Keep compatibility: return `customer_total_spent` as the total across all orders
         $customer_total_spent = $customer_total_spent_all;
         $customer_total_items = $isAdminContext
-            ? (int) \App\Models\OrderItem::whereHas('order', function ($q) use ($customerEmail, $customerPhone, $normalizedPhone, $sqlPhoneNormalized) {
+            ? (int) OrderItem::whereHas('order', function ($q) use ($customerEmail, $customerPhone, $normalizedPhone, $sqlPhoneNormalized) {
                 $q->where(function ($sub) use ($customerEmail, $customerPhone, $normalizedPhone, $sqlPhoneNormalized) {
                     if ($customerEmail) {
                         $sub->where('customer_email', $customerEmail);
@@ -75,71 +76,110 @@ class OrderResource extends JsonResource
             : null;
 
         return [
-            'id'                   => $this->id,
-            'order_number'         => $this->order_number,
-            'status'               => $this->status,
-            'customer_name'        => $this->customer_name,
-            'customer_phone'       => $this->customer_phone,
-            'customer_email'       => $this->customer_email,
-            'shipping_address'     => $this->shipping_address,
-            'shipping_city'        => $this->shipping_city,
-            'shipping_province'    => $this->shipping_province,
+            'id' => $this->id,
+            'order_number' => $this->order_number,
+            'status' => $this->status,
+            'customer_name' => $this->customer_name,
+            'customer_phone' => $this->customer_phone,
+            'customer_email' => $this->customer_email,
+            'shipping_address' => $this->shipping_address,
+            'shipping_city' => $this->shipping_city,
+            'shipping_province' => $this->shipping_province,
             'shipping_postal_code' => $this->shipping_postal_code,
-            'subtotal'             => (float) $this->subtotal,
-            'discount_amount'      => (float) $this->discount_amount,
-            'shipping_cost'        => (float) $this->shipping_cost,
-            'total'                => (float) $this->total,
-            'notes'                => $this->notes,
-            'admin_notes'          => $this->when(request()->is('*/admin/*'), $this->admin_notes),
-            'shipping_method'      => $this->whenLoaded('shippingMethod', fn () => [
-                'id'   => $this->shippingMethod?->id,
+            'subtotal' => (float) $this->subtotal,
+            'discount_amount' => (float) $this->discount_amount,
+            'shipping_cost' => (float) $this->shipping_cost,
+            'total' => (float) $this->total,
+            'payment_method' => $this->payment_method,
+            'payment_status' => $this->payment_status,
+            'notes' => $this->notes,
+            'admin_notes' => $this->when(request()->is('*/admin/*'), $this->admin_notes),
+            'shipping_method' => $this->whenLoaded('shippingMethod', fn () => [
+                'id' => $this->shippingMethod?->id,
                 'name' => $this->shippingMethod?->name,
             ]),
-            'coupon'               => $this->whenLoaded('coupon', fn () => $this->coupon ? [
+            'coupon' => $this->whenLoaded('coupon', fn () => $this->coupon ? [
                 'code' => $this->coupon->code,
                 'type' => $this->coupon->type,
             ] : null),
-            'items'                => $this->whenLoaded('items', fn () =>
-                $this->items->map(fn ($item) => [
-                    'id'         => $item->id,
-                    'product_id' => $item->product_id,
-                    'product'    => $item->relationLoaded('product') && $item->product ? [
-                        'id'        => $item->product->id,
-                        'name'      => $item->product->name,
-                        'slug'      => $item->product->slug,
-                        // Primary image URL (prioritized) using ImageUrlResolver
-                        'image_url' => $item->product->relationLoaded('images')
-                            ? ImageUrlResolver::resolve(
-                                $item->product->images?->firstWhere('is_primary', true)?->url 
-                                ?? $item->product->images?->first()?->url 
-                                ?? null
-                            )
-                            : null,
-                        // All images array for fallback with resolved URLs
-                        'images'    => $item->product->relationLoaded('images')
-                            ? $item->product->images?->map(fn ($img) => [
-                                'url'        => ImageUrlResolver::resolve($img->url),
-                                'alt'        => $img->alt,
-                                'is_primary' => (bool) $img->is_primary,
-                                'sort_order' => $img->sort_order,
-                            ])
-                            : [],
-                    ] : null,
-                    'size_label' => $item->size_label,
-                    'quantity'   => $item->quantity,
-                    'unit_price' => (float) $item->unit_price,
-                    'line_total' => (float) $item->unit_price * $item->quantity,
-                ])
+            'items' => $this->whenLoaded('items', fn () => $this->items->map(fn ($item) => [
+                'id' => $item->id,
+                'product_id' => $item->product_id,
+                'product_name' => $item->product_name ?: $item->product?->name,
+                'product' => $item->relationLoaded('product') && $item->product ? [
+                    'id' => $item->product->id,
+                    'name' => $item->product->name,
+                    'slug' => $item->product->slug,
+                    // Primary image URL (prioritized) using ImageUrlResolver
+                    'image_url' => $item->product->relationLoaded('images')
+                        ? ImageUrlResolver::resolve(
+                            $item->product->images?->firstWhere('is_primary', true)?->url
+                            ?? $item->product->images?->first()?->url
+                            ?? null
+                        )
+                        : null,
+                    // All images array for fallback with resolved URLs
+                    'images' => $item->product->relationLoaded('images')
+                        ? $item->product->images?->map(fn ($img) => [
+                            'url' => ImageUrlResolver::resolve($img->url),
+                            'alt' => $img->alt,
+                            'is_primary' => (bool) $img->is_primary,
+                            'sort_order' => $img->sort_order,
+                        ])
+                        : [],
+                ] : null,
+                'size_label' => $item->size_label,
+                'quantity' => $item->quantity,
+                'unit_price' => (float) $item->unit_price,
+                'line_total' => (float) $item->unit_price * $item->quantity,
+            ])
             ),
-            'status_histories'     => $this->whenLoaded('statusHistories', fn () =>
-                $this->statusHistories->map(fn ($h) => [
-                    'status'     => $h->status,
-                    'label'      => $h->label,
-                    'location'   => $h->location,
-                    'created_at' => $h->created_at?->toISOString(),
-                ])
+            'status_histories' => $this->whenLoaded('statusHistories', fn () => $this->statusHistories->map(fn ($h) => [
+                'status' => $h->status,
+                'label' => $h->label,
+                'location' => $h->location,
+                'created_at' => $h->created_at?->toISOString(),
+            ])
             ),
-            'items_count'          => $this->whenHas('items_count'),
+            'whatsapp_confirmation_requested' => $this->when(
+                $isAdminContext,
+                fn () => (bool) $this->whatsapp_confirmation_requested
+            ),
+            'whatsapp_confirmation_status' => $this->when(
+                $isAdminContext,
+                fn () => $this->whatsapp_confirmation_status
+            ),
+            'whatsapp_consent_at' => $this->when(
+                $isAdminContext,
+                fn () => $this->whatsapp_consent_at?->toISOString()
+            ),
+            'whatsapp_consent_source' => $this->when(
+                $isAdminContext,
+                fn () => $this->whatsapp_consent_source
+            ),
+            'whatsapp_notification' => $this->when(
+                $isAdminContext && $this->relationLoaded('whatsappNotifications'),
+                function () {
+                    $notification = $this->whatsappNotifications
+                        ->firstWhere('message_type', 'order_confirmation');
+
+                    return $notification ? [
+                        'provider' => $notification->provider,
+                        'status' => $notification->status,
+                        'attempt_count' => $notification->attempt_count,
+                        'accepted_at' => $notification->accepted_at?->toISOString(),
+                        'delivered_at' => $notification->delivered_at?->toISOString(),
+                        'failed_at' => $notification->failed_at?->toISOString(),
+                        'invoice_link_expires_at' => $notification->invoice_link_expires_at?->toISOString(),
+                        'last_error_code' => $notification->last_error_code,
+                    ] : null;
+                }
+            ),
+            'whatsapp_invoice_status' => $this->when(
+                $isAdminContext,
+                fn () => $this->whatsapp_invoice_status
+            ),
+            'items_count' => $this->whenHas('items_count'),
             'customer_total_orders' => $this->when(
                 $isAdminContext,
                 fn () => $customer_total_orders
@@ -156,7 +196,7 @@ class OrderResource extends JsonResource
                 $isAdminContext,
                 fn () => $customer_total_items
             ),
-            'created_at'           => $this->created_at?->toISOString(),
+            'created_at' => $this->created_at?->toISOString(),
         ];
     }
 }

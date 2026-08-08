@@ -298,7 +298,7 @@
     <tbody>
       @foreach($order->items as $item)
       @php
-        $productName = $item->product->name ?? 'Product';
+        $productName = $item->product_name ?: $item->product?->name ?: 'Product';
         $isRtl = preg_match('/[\x{0600}-\x{06FF}]/u', $productName);
       @endphp
       <tr>

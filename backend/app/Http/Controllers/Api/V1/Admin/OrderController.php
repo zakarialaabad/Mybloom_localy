@@ -13,16 +13,14 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class OrderController extends Controller
 {
-    public function __construct(private readonly OrderService $orderService)
-    {
-    }
+    public function __construct(private readonly OrderService $orderService) {}
 
     /**
      * GET /api/v1/admin/orders
      */
     public function index(Request $request): AnonymousResourceCollection
     {
-        $query = Order::with(['shippingMethod'])
+        $query = Order::with(['shippingMethod', 'whatsappNotifications'])
             ->withCount('items')
             ->orderBy('created_at', 'desc');
 
@@ -34,8 +32,8 @@ class OrderController extends Controller
             $escaped = str_replace(['%', '_'], ['\%', '\_'], $search);
             $query->where(function ($q) use ($escaped) {
                 $q->where('order_number', 'like', "%{$escaped}%")
-                  ->orWhere('customer_name', 'like', "%{$escaped}%")
-                  ->orWhere('customer_phone', 'like', "%{$escaped}%");
+                    ->orWhere('customer_name', 'like', "%{$escaped}%")
+                    ->orWhere('customer_phone', 'like', "%{$escaped}%");
             });
         }
 
@@ -52,7 +50,7 @@ class OrderController extends Controller
 
     /**
      * GET /api/v1/admin/orders/{order}
-     * 
+     *
      * Loads full order details including items with product images
      */
     public function show(Order $order): JsonResponse
@@ -60,9 +58,10 @@ class OrderController extends Controller
         // Load relationships: items with product and its images, status histories, shipping, coupon
         $order->load([
             'items.product.images',  // ← Now includes product images for each item
-            'statusHistories', 
-            'shippingMethod', 
-            'coupon'
+            'statusHistories',
+            'shippingMethod',
+            'coupon',
+            'whatsappNotifications',
         ]);
 
         return response()->json(['data' => new OrderResource($order)]);
@@ -90,10 +89,10 @@ class OrderController extends Controller
         }
 
         $statusLabels = [
-            'pending'   => 'Order received and awaiting confirmation.',
+            'pending' => 'Order received and awaiting confirmation.',
             'confirmed' => 'Order confirmed and being processed.',
             'preparing' => 'Your order is being carefully prepared and packed.',
-            'shipped'   => 'Your order is out for delivery and on the way to you.',
+            'shipped' => 'Your order is out for delivery and on the way to you.',
             'delivered' => 'Order delivered successfully.',
             'cancelled' => 'Order has been cancelled.',
         ];
@@ -114,7 +113,7 @@ class OrderController extends Controller
 
         return response()->json([
             'message' => 'Order status updated.',
-            'status'  => $order->fresh()->status,
+            'status' => $order->fresh()->status,
         ]);
     }
 
@@ -127,8 +126,8 @@ class OrderController extends Controller
     public function addStatusHistory(Request $request, Order $order): JsonResponse
     {
         $data = $request->validate([
-            'status'   => ['required', 'string', 'max:50'],
-            'label'    => ['required', 'string', 'max:200'],
+            'status' => ['required', 'string', 'max:50'],
+            'label' => ['required', 'string', 'max:200'],
             'location' => ['nullable', 'string', 'max:200'],
         ]);
 
@@ -145,12 +144,12 @@ class OrderController extends Controller
     {
         $data = $request->validate([
             'date_from' => ['required', 'date_format:Y-m-d'],
-            'date_to'   => ['required', 'date_format:Y-m-d', 'after_or_equal:date_from'],
+            'date_to' => ['required', 'date_format:Y-m-d', 'after_or_equal:date_from'],
         ]);
 
         $orders = Order::whereDate('created_at', '>=', $data['date_from'])
-                       ->whereDate('created_at', '<=', $data['date_to'])
-                       ->get();
+            ->whereDate('created_at', '<=', $data['date_to'])
+            ->get();
 
         $count = $orders->count();
 
@@ -185,26 +184,29 @@ class OrderController extends Controller
      */
     public function stats(): JsonResponse
     {
-        $now                 = now();
+        $now = now();
         $startOfCurrentMonth = $now->copy()->startOfMonth();
-        $startOfLastMonth    = $now->copy()->subMonth()->startOfMonth();
-        $endOfLastMonth      = $now->copy()->subMonth()->endOfMonth();
+        $startOfLastMonth = $now->copy()->subMonth()->startOfMonth();
+        $endOfLastMonth = $now->copy()->subMonth()->endOfMonth();
 
         $calculateTrend = function ($current, $previous) {
-            if ($previous == 0) return $current > 0 ? 100 : 0;
+            if ($previous == 0) {
+                return $current > 0 ? 100 : 0;
+            }
+
             return round((($current - $previous) / $previous) * 100, 1);
         };
 
-        $totalAllTime  = Order::count();
-        $currentTotal  = Order::where('created_at', '>=', $startOfCurrentMonth)->count();
+        $totalAllTime = Order::count();
+        $currentTotal = Order::where('created_at', '>=', $startOfCurrentMonth)->count();
         $previousTotal = Order::whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count();
 
-        $confirmedAllTime  = Order::where('status', 'confirmed')->count();
-        $currentConfirmed  = Order::where('status', 'confirmed')->where('created_at', '>=', $startOfCurrentMonth)->count();
+        $confirmedAllTime = Order::where('status', 'confirmed')->count();
+        $currentConfirmed = Order::where('status', 'confirmed')->where('created_at', '>=', $startOfCurrentMonth)->count();
         $previousConfirmed = Order::where('status', 'confirmed')->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count();
 
-        $deliveredAllTime  = Order::where('status', 'delivered')->count();
-        $currentDelivered  = Order::where('status', 'delivered')->where('created_at', '>=', $startOfCurrentMonth)->count();
+        $deliveredAllTime = Order::where('status', 'delivered')->count();
+        $currentDelivered = Order::where('status', 'delivered')->where('created_at', '>=', $startOfCurrentMonth)->count();
         $previousDelivered = Order::where('status', 'delivered')->whereBetween('created_at', [$startOfLastMonth, $endOfLastMonth])->count();
 
         return response()->json([

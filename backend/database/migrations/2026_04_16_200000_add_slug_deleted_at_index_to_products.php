@@ -32,13 +32,17 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         // Add the virtual generated column (stored=false, so no extra disk usage)
-        DB::statement("
+        DB::statement('
             ALTER TABLE products
             ADD COLUMN slug_active VARCHAR(255) GENERATED ALWAYS AS (
                 IF(deleted_at IS NULL, slug, NULL)
             ) VIRTUAL
-        ");
+        ');
 
         // Unique index on the virtual column — covers: WHERE slug=? AND deleted_at IS NULL
         // NULL values are excluded from uniqueness checks, so soft-deleted rows don't conflict.
@@ -49,6 +53,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         // Drop index first, then column
         Schema::table('products', function (Blueprint $table) {
             $table->dropUnique('products_slug_active_unique');

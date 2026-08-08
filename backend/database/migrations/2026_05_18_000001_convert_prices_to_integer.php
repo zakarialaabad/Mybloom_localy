@@ -9,6 +9,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         // Convert products table prices to integers
         Schema::table('products', function (Blueprint $table) {
             // Use raw SQL to round decimal values before converting to integer
@@ -29,6 +33,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::getDriverName() !== 'mysql') {
+            return;
+        }
+
         // Revert back to decimal(12,2) if needed
         Schema::table('products', function (Blueprint $table) {
             DB::statement('ALTER TABLE products MODIFY COLUMN price DECIMAL(12, 2)');

@@ -11,8 +11,14 @@ node_modules
 backend/.env
 backend/vendor/
 backend/storage/logs/*.log
+backend/logs/
 backend/bootstrap/cache/*.php
 /backend/storage
+backend/.node-persist/
+backend/_IGNORE_*/
+backend/*.data.json
+backend/open-wa-*.postman_collection.json
+backend/open-wa-*.sw_col.json
 # Frontend secrets
 frontend/node_modules/
 frontend/.next/
